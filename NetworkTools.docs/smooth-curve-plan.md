@@ -1,7 +1,8 @@
 # Smooth Curve plan
 
-**Status (Sept 26, 2026):** planning; no smoothing algorithm has been implemented
-in this fork. This document records the agreed prototype scope and open design
+**Status (Sept 26, 2026):** a standalone [node-position fitting module](curve-geometry.md)
+and external tests exist. Game integration and Bézier reconstruction are not yet
+implemented; Smooth Curve remains disabled. This document records the scope and open design
 questions. See [system architecture](system-architecture.md#10-smooth-curve-current-infrastructure)
 for the existing integration points.
 
@@ -27,10 +28,11 @@ vertical profile.
 ## Geometry and integration questions
 
 Path-wide fitting should account for alignment and boundary constraints across the
-selection. The algorithm and its integration point in the transformation pipeline
-remain undecided; `PreProcess` is one possible location, not a requirement.
+selection. The initial node fit uses regularized second differences on original
+chord-length stations. Bézier reconstruction and the integration point in the
+transformation pipeline remain undecided.
 
-Before choosing a solver, define:
+Before game integration, define:
 
 - Which nodes are fixed, including path endpoints and intermediate junctions.
 - How endpoint directions and connections outside the selection are preserved.

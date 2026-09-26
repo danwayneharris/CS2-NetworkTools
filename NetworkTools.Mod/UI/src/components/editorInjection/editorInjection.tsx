@@ -12,7 +12,7 @@ export const EditorInjection = () => {
         <>
             <div className={styles.buttonWrapper}>
                 <Tooltip
-                    tooltip={translate("NetworkTools.UI.Common.NetworkTools")}
+                    tooltip={`${translate("NetworkTools.UI.Common.NetworkTools")} [Dan local]`}
                     delayTime={0}
                     direction="down">
                     <Button

@@ -1,6 +1,6 @@
 # DeezNotas' Network Tools Fork
 
-Welcome to my fork of Luca's Network Tools! I absolutely love this mod, and I've been hoping that the "SmoothCurve" feature would graduate out of the "coming soon" phase and into "check this shit out" phase. I am a professional software developer, although I'm mostly and old embedded audio guy, writing SW for professional and consumer electronics devices that have mics and/or speakers. I've designed and written audio DSP algorithms, audio processing and pipelining frameworks, designed system architectures, conducted subjective listening tests, written factory test sequences and factory data analysis scripts, and everything in between. HOWEVER, I haven't really done that MUCH in gaming ... YET (I'll be joining Roblox as a Staff SW Developer in November).  But in October, I've got some free time!  I've been interested in dipping my toe into CS2 modding, and super stoked about this mod, and I figure Luca probably a busy person: life, family, day job, etc. SO I've decided to try my hand at playing around with the legendary NetworkTools mod and see what pops out! Wish me luck! 
+Welcome to my fork of Luca's Network Tools! I absolutely love this mod, and I've been hoping that the "SmoothCurve" feature would graduate out of the "coming soon" phase and into "check this shit out" phase. I am a professional software developer, although I've mostly been an old-school embedded audio guy, writing SW for professional and consumer electronics devices that have mics and/or speakers. I've designed and written audio DSP algorithms, audio processing and pipelining frameworks, designed system architectures, conducted subjective listening tests, written factory test sequences and factory data analysis scripts, and everything in between. HOWEVER, I haven't really done that MUCH in gaming ... YET (I'll be joining Roblox as a Staff SW Developer in November).  But in October, I've got some free time!  I've been interested in dipping my toe into CS2 modding, and super stoked about this mod, and I figure Luca is probably a busy person: life, family, day job, etc. SO I've decided to try my hand at playing around with the legendary NetworkTools mod and see what pops out! Wish me luck! 
 
 # First: Some Docs! Always!!
 
@@ -15,7 +15,7 @@ The first thing I've done is update this readme, and generate a couple of other 
 - [Build system](NetworkTools.docs/build-system.md): tools, MSBuild targets, code generation, deployment, and diagnosed build issues.
 - [System architecture](NetworkTools.docs/system-architecture.md): mod lifecycle, ECS tools, UI bindings, geometry processing, and open design questions.
 - [Smooth Curve plan](NetworkTools.docs/smooth-curve-plan.md): prototype scope, geometry questions, and later explorations.
-- [AGENTS.md](AGENTS.md): fucking deal with it you turds LOL.
+- [AGENTS.md](AGENTS.md): Instructions for our robot collaborators, you know you love it
 
 # Current Goals (Brain Vomit Edition)
 

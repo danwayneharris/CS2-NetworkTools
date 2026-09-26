@@ -118,7 +118,9 @@ build, and local deployment. .NET 6.0.36 resolved the missing runtime; the user 
 disabled Smart App Control to resolve the Windows block on the unsigned postprocessor
 (`0x800711C7`). See the [build-system diagnosis](NetworkTools.docs/build-system.md#windows-application-control-blocker).
 Both the original-source build and a subsequent UI-marker build passed. Automated
-tests, Release builds, and in-game behavior remain unverified.
+tests and Release builds remain unverified. As of Sept 26, 2026, the maintainer
+confirmed the modified tooltip appeared in-game and Connect successfully joined
+two road segments. Other tool behavior remains unverified in this fork.
 
 ## In-game smoke test after a successful build
 

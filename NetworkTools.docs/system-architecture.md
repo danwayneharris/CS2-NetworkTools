@@ -270,6 +270,10 @@ What is missing:
 Prototype scope, geometry requirements, and future directions are maintained in the
 [Smooth Curve plan](smooth-curve-plan.md).
 
+The standalone [curve geometry module](curve-geometry.md) fits horizontal node
+positions and has external .NET tests. It is compiled into the mod but is not yet
+called by this pipeline; it does not reconstruct Bézier segments.
+
 ## 11. Anarchy and compatibility boundaries
 
 The code's [RefreshAnarchy](../NetworkTools.Mod/Systems/Tools/Base/BaseToolSystem.cs#L878)

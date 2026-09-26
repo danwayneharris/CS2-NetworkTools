@@ -75,7 +75,8 @@ baseline record, not evidence that subsequent changes work.
 ## Geometry work
 
 - Smooth Curve is currently a disabled mode with an empty transformation. The first
-  prototype is planned, not implemented; consult its plan before starting feature work.
+  node-fitting module and external tests exist, but game integration is not implemented.
+  Read [curve geometry](NetworkTools.docs/curve-geometry.md) and the feature plan.
 - The agreed prototype moves existing nodes horizontally, preserves node elevations
   and topology, reuses selection/preview/Apply, and isolates out-of-game-testable math.
   Node removal, resegmentation, and obstacle/terrain routing are later explorations.

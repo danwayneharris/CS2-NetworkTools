@@ -4,11 +4,15 @@ This guide explains how source becomes a locally installed CS2 mod. For commands
 prerequisite installation, and machine-specific paths, use [the bootstrap guide](../BOOTSTRAP.md).
 For behavior inside the running game, see [system architecture](system-architecture.md).
 
-The descriptions below are grounded in this checkout's project files and build
-observations. Two full Debug builds now pass: the original mod source, then a build
-with a small UI tooltip marker. C# compilation, postprocessing, parameter generation,
-webpack, and local deployment succeeded. The deployed UI bundle contains the marker.
-Automated test execution, Release builds, and in-game operation remain unverified.
+This guide is for contributors who know some programming but may be new to MSBuild
+or CS2 modding. The descriptions follow this checkout's project files and installed
+toolchain.
+
+**Verification status (Sept 26, 2026):** Debug compilation, postprocessing, parameter
+generation, webpack, and local deployment pass. An in-game smoke test confirmed the
+modified tooltip appeared and Connect successfully joined two road segments.
+Automated test execution, Release/Burst builds, and other tool behavior remain
+unverified in this fork.
 
 ## 1. Tools and their responsibilities
 
@@ -119,8 +123,7 @@ compilation. The installed postprocessor runs afterward using the Unity mod
 project and resolved references. Shared targets restrict its platform list to
 Windows. See [CustomModPostProcessorConfig](../NetworkTools.Mod/Common/LucaModsCommon.targets#L31).
 
-A compiled DLL alone is not our completion criterion: required postprocessing
-must also succeed.
+Required postprocessing must succeed before the compiled DLL is ready for deployment.
 
 ### Parameter code generation
 
@@ -165,10 +168,10 @@ the C# outputs. UI generation/build and asset copying hook into this stage.
 Close the game before building and preserve any manual edits in that output folder.
 
 `bootstrap.ps1 -Test` builds and then invokes the existing test project with
-`--no-build --no-restore`. The presence of a test project is not evidence that useful
-tests were discovered or passed; test discovery and execution remain unverified.
+`--no-build --no-restore`. Test discovery and execution remain unverified in this
+fork as of Sept 26, 2026.
 
-Publishing uses separate targets and publishing configuration. Our bootstrap calls
+Publishing uses separate targets and publishing configuration. The bootstrap calls
 `build`, not `publish`, and does not upload to Paradox Mods.
 
 ## 6. Environment ownership
@@ -186,7 +189,10 @@ different user settings even when it can read the same repository.
 See [BOOTSTRAP.md](../BOOTSTRAP.md#environment-and-installation-locations) for actual
 locations and PowerShell examples.
 
-## 7. What the initial failures taught us
+## 7. Troubleshooting and known limitations
+
+These issues were encountered during initial setup. They are diagnostic examples;
+not every development machine will require each resolution.
 
 | Failure | Cause established by inspection | Resolution or status |
 | --- | --- | --- |
@@ -196,7 +202,7 @@ locations and PowerShell examples.
 | Missing `ReadOnlySpan<T>` and `KeyValuePair.Deconstruct` | Resolved references selected stock net48 `mscorlib.dll` from NuGet instead of the game's core library. | Select the game's framework directory and explicitly reference `netstandard`. |
 | Missing `netstandard, Version=2.1.0.0` after the first override | Changing the framework directory alone left the required reference incomplete. | Add `AdditionalExplicitAssemblyReferences=netstandard`. |
 | Postprocessor could not start: missing runtime | Its requested .NET 6 runtime was missing; .NET 8 was installed. | Installed and verified runtime 6.0.36. |
-| Postprocessor could not load its DLL: `0x800711C7` | Windows CodeIntegrity events 3033/3077 reported an enforced signing-policy block on the unsigned tool DLL. | The user turned Smart App Control off; the subsequent full build passed. No policy changes made by the bootstrap. |
+| Postprocessor could not load its DLL: `0x800711C7` | Windows CodeIntegrity events 3033/3077 reported an enforced signing-policy block on the unsigned tool DLL. | The developer manually turned Smart App Control off in Windows Settings; the subsequent full build passed. See the diagnostic notes below. |
 
 The working compilation overrides are:
 
@@ -218,35 +224,32 @@ types absent from the stock framework reference set.
 
 ### Windows Application Control blocker
 
-The full build retry reached the postprocessor but Windows refused to load
+For the signing-policy failure above, the blocked file was
 `Cities2_Data/Content/Game/.ModdingToolchain/ModPostProcessor/ModPostProcessor.dll`.
-The file is unsigned and has no `Zone.Identifier` download marker. This is an OS
-code-integrity block, not a PowerShell execution-policy issue or missing runtime.
+It had no `Zone.Identifier` download marker; changing PowerShell execution policy
+or unblocking a downloaded file would not resolve the observed code-integrity block.
 
 Inspect **Windows Security > App & browser control > Smart App Control** and
 **Event Viewer > Applications and Services Logs > Microsoft > Windows >
-CodeIntegrity > Operational**. Do not bypass postprocessing and treat the DLL as
-ready for in-game use.
+CodeIntegrity > Operational** to identify the policy and blocked file.
 
-[Microsoft's Smart App Control FAQ](https://support.microsoft.com/en-us/windows/security/threat-malware-protection/smart-app-control-frequently-asked-questions)
-documents that there is no individual-app exception. Any decision to disable this
-protection affects the PC, not only this repository, and belongs to the user.
-The bootstrap does not change security policies.
+Consult [Microsoft's Smart App Control FAQ](https://support.microsoft.com/en-us/windows/security/threat-malware-protection/smart-app-control-frequently-asked-questions)
+for current policy options. Disabling this protection affects the whole PC and is
+not a routine prerequisite. The bootstrap does not change security policies;
+future bootstrap improvements could detect this failure and provide clearer diagnostics.
 
-### Successful Debug builds and remaining warnings
+### Remaining build warnings and reproducibility work
 
-The original-source baseline completed in about 38 seconds, including first-time
-npm installation. The UI-marker rebuild completed in about 9 seconds. Both emitted
-two MSBuild warnings because the solution-wide `netstandard` override also reaches
+The verified Debug builds emitted two MSBuild warnings because the solution-wide
+`netstandard` override also reaches
 the .NET 8 code generator; scoping this override to net48 projects remains cleanup
 work. Webpack also emitted three warnings; these did not fail either build.
 
-The upstream npm `prebuild` step rewrote `package-lock.json`. That incidental change
-was reverted after verification; no dependency update was intended. Future builds
-may rewrite it again until we establish a reproducible npm installation policy.
+The upstream npm `prebuild` step can rewrite `package-lock.json` during an ordinary
+build. Review those changes separately from intentional dependency updates.
+A lockfile-enforced installation policy remains future work.
 
-The current smoke-test marker appends `[Dan local]` to the Network Tools button
-tooltip in game and editor views. See [the smoke-test procedure](../BOOTSTRAP.md#in-game-smoke-test-after-a-successful-build).
+For deployment verification, see [the smoke-test procedure](../BOOTSTRAP.md#in-game-smoke-test-after-a-successful-build).
 
 ## 8. Updating this guide
 

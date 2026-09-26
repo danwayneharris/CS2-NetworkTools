@@ -4,10 +4,17 @@ This is a living map of the runtime architecture, grounded in the current checko
 For how the package is produced, see [build system](build-system.md); for setup
 commands, see [BOOTSTRAP.md](../BOOTSTRAP.md).
 
-**Evidence boundary:** the mod's source establishes the control flow described here.
-We have not yet audited the installed game's loader internals or completed an
-in-game smoke test. Proposed Smooth Curve directions are explicitly separated from
-implemented behavior.
+This guide is for contributors familiar with programming who are new to this mod
+or Unity's Entity Component System (ECS). For a focused source-reading path, follow
+**parameter declaration → UI binding → job configuration → transformation →
+preview/apply** through sections 6–9.
+
+**Status and limitations (Sept 26, 2026):** the architecture below follows the mod's
+source. Debug builds and local deployment pass; an in-game smoke test confirmed the
+modified tooltip and a successful Connect operation joining two road segments.
+Other tools, automated tests, and Release/Burst behavior remain unverified in this
+fork. The game's loader internals have not been audited. Section 10 separates the
+planned Smooth Curve prototype from existing functionality.
 
 ## 1. A code mod is a hosted plugin
 
@@ -16,8 +23,7 @@ a React/JavaScript UI hosted by the game's UI environment. Assets and localizati
 accompany them. They communicate through the game's binding API.
 
 This resembles an audio plugin's processing implementation and editor UI: related
-parts with different responsibilities and execution environments. It does not imply
-an audio callback's real-time scheduling guarantees.
+parts with different responsibilities and execution environments.
 
 Mods need not all have this structure. Data/asset mods can primarily contribute
 content; code mods can register behavior without a custom UI.
@@ -67,10 +73,9 @@ mod's Harmony patches.
 This is the **Template Method pattern**: the base class owns the sequence; the mod
 overrides steps such as `CreateSettings` and `RegisterSystems`.
 
-Harmony supports patching existing managed methods. Calling `PatchAll` does not
-itself establish that any patches exist. The initial source search found the shared
-patch infrastructure but no patch declarations. The principal extension mechanism
-visible here is system registration.
+Harmony supports patching existing managed methods. This checkout contains shared
+patch infrastructure, but the initial source review found no patch declarations.
+The principal extension mechanism here is system registration.
 
 The [registration list](../NetworkTools.Mod/NetworkToolsMod.cs#L55) assigns systems
 to phases of the game's update loop:
@@ -100,9 +105,7 @@ definition (`PrefabRef`), and mod-specific selection state (`NT_Selected`).
 contains a path index and rendering options as an `IComponentData` struct.
 
 This is **data-oriented design**: process explicit collections of data rather than
-requiring every world object to own a large behavior hierarchy. The comparison to
-DSP block processing is useful for data locality, but not a promise about identical
-memory layout or scheduling.
+requiring every world object to own a large behavior hierarchy.
 
 A **prefab** is a reusable definition/template, distinct from a particular instance
 in the city. This mod also creates tool prefabs. The UI's
@@ -180,8 +183,8 @@ copies current parameter values into `ShapeJobConfig`. The scheduled job receive
 that snapshot alongside cached path geometry and read-only ECS lookups.
 
 This separates the **control plane** (interactive objects, events, preferences)
-from the processing data. Preparing a DSP parameter block outside the processing
-loop is a useful analogy; the actual synchronization here uses Unity job dependencies.
+from the processing data. The job works from a snapshot; Unity job dependencies
+coordinate when that work can run and when its results can be consumed.
 
 [SchedulePathTransformJob](../NetworkTools.Mod/Systems/Tools/RoadShape/RoadShapeToolSystem.JobMethods.cs#L23)
 schedules `ShapeTransformJob` after an input `JobHandle`, supplies an
@@ -263,10 +266,20 @@ What is missing:
 - [CurveSmoothTransform](../NetworkTools.Mod/Systems/Tools/RoadShape/Transforms/CurveSmoothTransform.cs#L9)
   has empty/TODO processing methods.
 
-**Design direction, not an implemented decision:** a path-wide fitting calculation
-can live in `PreProcess`, with per-edge output afterward. This offers a place to
-enforce alignment and boundary constraints across the entire selection rather than
-smoothing each segment independently. We have not selected an algorithm.
+### Planned first prototype
+
+The agreed scope is to:
+
+- Move existing nodes in the horizontal plane while preserving their elevations.
+- Preserve topology: do not add or remove nodes or network segments.
+- Reuse the existing node markers, start/end selection, parameter controls,
+  preview, and Apply workflow.
+- Isolate the geometry computation so it can be unit-tested outside the game.
+
+Path-wide fitting should account for alignment and boundary constraints across the
+selection. The algorithm and its integration point in the transformation pipeline
+remain undecided; `PreProcess` is one possible location, not a requirement.
+Preserving node elevations alone does not guarantee unchanged grades along segments.
 
 The product intent is realistic, non-wiggly road and track geometry, including
 networks constructed with Anarchy. Algorithm work must address path direction,
@@ -274,15 +287,19 @@ intersection offsets, endpoint constraints, preview/apply agreement, and effects
 unselected connections. Position, tangent direction, and curvature continuity are
 different requirements and need explicit acceptance criteria.
 
+Later explorations may remove or redistribute nodes, rebuild subsegments using
+Connect, combine curve and slope editing, and incorporate obstacle or terrain
+constraints. These are outside the first prototype.
+
 ## 11. Anarchy and compatibility boundaries
 
 The code's [RefreshAnarchy](../NetworkTools.Mod/Systems/Tools/Base/BaseToolSystem.cs#L878)
-toggles the game's validation system for tools that support it. This is not by
-itself evidence of integration with the separately installed Anarchy mod.
+toggles the game's validation system for tools that support it. This built-in option
+is distinct from integration with the separately installed Anarchy mod.
 
 Supporting networks built with Anarchy requires inspecting the topology and geometry
-we actually receive, then testing representative cases. Turning validation off does
-not establish geometric correctness or compatibility.
+we actually receive, then testing representative cases with the intended geometry
+constraints, even when game validation is disabled.
 
 ## 12. Keeping this document useful
 
@@ -296,15 +313,10 @@ When exploring or changing a subsystem:
 
 ### Open questions and verification work
 
-- Debug compilation, postprocessing, UI build, and deployment now pass, including
-  a `[Dan local]` tooltip marker verified in the deployed bundle. Complete test
-  discovery and an in-game smoke test next.
+- Verify automated test discovery and execution, and extend in-game checks beyond
+  the successful tooltip and Connect smoke test.
 - Verify Release/Burst behavior separately from Debug compilation.
 - Audit path extraction, cached geometry lifetime, and selection invalidation in detail.
 - Check preview/apply consistency and propagation into game network updates.
 - Define Smooth Curve boundary and continuity requirements before selecting a solver.
 - Inspect actual Anarchy-created networks and the relevant installed game/mod APIs.
-
-For a focused reading path, follow **parameter declaration → UI binding → job
-configuration → transformation → preview/apply**. This crosses the key architectural
-boundaries without requiring a tour of every system at once.

@@ -1,8 +1,11 @@
 # Smooth Curve plan
 
-**Status (Sept 26, 2026):** a standalone [node-position fitting module](curve-geometry.md)
-and external tests exist. Game integration and Bézier reconstruction are not yet
-implemented; Smooth Curve remains disabled. This document records the scope and open design
+**Status (Sept 26, 2026):** the [geometry module](curve-geometry.md) has a first
+game-integration prototype with Bézier reconstruction and the existing smoothing
+control. External tests and full Debug/Release builds pass, including Windows
+Burst compilation. Debug is deployed. In-game verification, including execution
+of the Release build, remains pending.
+This document records the scope and open design
 questions. See [system architecture](system-architecture.md#10-smooth-curve-current-infrastructure)
 for the existing integration points.
 
@@ -29,17 +32,21 @@ vertical profile.
 
 Path-wide fitting should account for alignment and boundary constraints across the
 selection. The initial node fit uses regularized second differences on original
-chord-length stations. Bézier reconstruction and the integration point in the
-transformation pipeline remain undecided.
+chord-length stations. Smooth Curve now has a dedicated path-wide transformation
+inside the shape job, bypassing the generic edge-to-node displacement averaging.
+Endpoint nodes and nodes with other than two incident edges are fixed. Original
+horizontal tangent directions are retained at these fixed nodes; ordinary interior
+nodes share the bisector of adjacent fitted chord directions.
 
-Before game integration, define:
+Remaining design questions include:
 
-- Which nodes are fixed, including path endpoints and intermediate junctions.
-- How endpoint directions and connections outside the selection are preserved.
+- Whether to add optional boundary matching to unselected connections, beyond
+  preserving the selected edges' existing directions at fixed nodes.
 - How much movement is allowed and what each UI parameter controls.
 - What continuity is required: matching positions, tangent directions, and curvature
   are distinct requirements.
-- How degenerate geometry or unsuitable selections are reported to the user.
+- Whether rejected selections need more detailed feedback than the current hint
+  and disabled Apply button.
 
 Implementation must account for edge direction relative to path traversal and for
 the offsets between intersection centers and Bézier endpoints. The existing

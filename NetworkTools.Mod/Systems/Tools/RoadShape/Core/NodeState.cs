@@ -37,5 +37,8 @@ namespace NetworkTools.Systems.Tools.RoadShape {
         /// Used as the base for applying transformation deltas.
         /// </summary>
         public float3 OriginalPosition;
+
+        /// <summary>Keep junctions and unknown connectivity fixed during horizontal smoothing.</summary>
+        public bool SmoothPinned;
     }
 }

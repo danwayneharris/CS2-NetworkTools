@@ -32,6 +32,10 @@
             [ReadOnly] public required ComponentLookup<Elevation>        ElevationLookup;
             public required            ToolOutputMode                    OutputMode;
             public required            EntityCommandBuffer               ECB;
+            public NativeReference<int> SmoothResult;
+#if IS_DEBUG
+            public int SmoothTraceId;
+#endif
 
             /// <summary>
             ///     Minimum height delta (in meters) to consider for intersection adjustments.
@@ -78,8 +82,17 @@
                         TransformPipeline.Execute(ref straightenTransform, ref edges, ref nodes, in Context, in Config);
                         break;
                     case ShapeTransformTemplate.CurveSmooth:
-                        var smoothTransform = new CurveSmoothTransform();
-                        TransformPipeline.Execute(ref smoothTransform, ref edges, ref nodes, in Context, in Config);
+                        var valid = CurveSmoothTransform.Execute(ref edges, ref nodes, Config.SmoothingFactor);
+                        SmoothResult.Value = valid ? 1 : -1;
+#if IS_DEBUG
+                        TraceSmooth(SmoothTraceId, OutputMode, Config.SmoothingFactor, valid,
+                            NodeStates, EdgeStates, nodes, edges);
+#endif
+                        if (!valid) {
+                            edges.Dispose();
+                            nodes.Dispose();
+                            return;
+                        }
                         break;
                 }
 

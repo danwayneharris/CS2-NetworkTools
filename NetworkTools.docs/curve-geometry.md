@@ -1,9 +1,10 @@
 # Curve geometry module
 
 `NetworkTools.Mod/Geometry/PlanarFairing.cs` implements a game-independent fit of
-horizontal node positions. It is compiled into the mod but is not called by a tool
-yet. Smooth Curve remains disabled. This is the numerical foundation for a prototype,
-not a complete road-curve generator.
+horizontal node positions. `PlanarBezier.cs` supplies horizontal tangent and handle
+calculations. The Smooth Curve integration prototype calls both. Full Debug and
+Release builds pass, including postprocessing and Windows Burst compilation.
+Debug is deployed; in-game behavior remains unverified.
 
 ## Objective
 
@@ -38,8 +39,8 @@ diagonals. Banded Cholesky solves both coordinates in O(n) time and O(n) storage
   doubles. All buffers must be valid and non-overlapping. The unsafe API cannot
   verify buffer capacities; the caller owns allocation and lifetime.
 - The core allocates no memory and depends only on `System`, allowing the exact
-  same source to run in ordinary .NET tests. Burst compatibility is intended but
-  remains unverified until it is called from a Burst-compiled job.
+  same source to run in ordinary .NET tests. The integrated job passes Windows
+  Burst compilation; executing that Release build in-game remains unverified.
 - Coordinates must be finite, consecutive points at least 1 cm apart, and strength
   finite and within [0, 1]. Strength zero returns an exact copy of valid input.
 - Invalid input, numerical failure, or a fitted chord that collapses or reverses
@@ -48,8 +49,24 @@ diagonals. Banded Cholesky solves both coordinates in O(n) time and O(n) storage
 - Positional pins do not constrain tangents. There is no self-intersection check,
   minimum turning radius, obstacle avoidance, terrain query, or displacement cap.
 - There are no elevations, game entities, intersection offsets, or Bézier handles
-  in this API. The game adapter must preserve elevations/topology, decide which
-  junctions to pin, fit segment handles, and reject unsuitable results before Apply.
+  in the fitter's API. The game adapter preserves elevations/topology, pins junctions,
+  fits segment handles, and rejects unsuitable results before Apply.
+
+## Prototype cubic reconstruction
+
+`PlanarBezier` uses a shared normalized bisector of incident chord directions at
+ordinary interior nodes. The adapter retains original directions at endpoints and
+junctions, translates intersection offsets with node displacement, and preserves
+all original control-point Y coordinates. Each horizontal handle is one third of
+its segment's horizontal endpoint distance. A direction projecting less than 0.05
+onto the forward unit chord is rejected. Accepted control points have strictly
+ordered chord projections, preventing a loop within that individual cubic.
+
+This provides matching planar directions at movable nodes, not continuous curvature
+or a guarantee about the game's intersection geometry. Inter-segment crossings and
+terrain/obstacle conflicts are not checked. Strength zero preserves the input;
+positive strength refits handles fully, even for very small values. That transition
+and the fixed 50-metre fitting scale are prototype tuning limitations.
 
 ## Run the external checks
 
@@ -68,6 +85,31 @@ Checks cover an analytic three-point solution, nonuniform straight paths, zero
 strength, zigzag reduction, fixed points, traversal reversal, translation and
 rotation invariance, and invalid inputs. A 257-point unevenly spaced path with
 multiple pins is checked against the independently differentiated objective.
+Handle checks cover straight cubics, shared tangents, reversal, and cusp/backward
+direction rejection.
 These establish numerical behavior; they do not verify rendering or game integration.
 
 See the [Smooth Curve plan](smooth-curve-plan.md) for integration decisions still open.
+
+## Debugging slider behavior
+
+The first in-game trial reported abrupt movement around the slider midpoint and
+side-to-side movement on another selection. Apply looked acceptable to the tester;
+preview/Apply disagreement is not established. The original logs capture parameter
+changes but not sufficient geometry to diagnose this report.
+
+Debug builds now emit `[NetworkTools.SmoothTrace]` followed by JSON in `Player.log`
+through Unity logging. Each actual smoothing job records its ID, Preview/Apply
+mode, factor, validity, entity IDs, pins, input/output positions, edge orientation,
+and input/output Bézier controls. Coordinates are world-space XYZ in metres;
+edge controls retain stored edge order, with `forward` identifying path traversal.
+On rejection, output arrays retain input geometry, not the rejected candidate.
+Selections exceeding 128 nodes emit only a summary to bound logging cost.
+
+Reproduce on a short path using explicit factors such as 0.45, 0.49, 0.50, 0.51,
+and 0.55, then revisit the same values without applying. Preserve the logs before
+restarting the game. Compare identical-input captures first; only then attribute
+changes to the solver. These traces capture requested geometry before the game's
+preview/rendering or subsequent network updates, not the resulting live entities.
+Managed formatting and logging are excluded from Release builds. Debug logging
+can affect timing, particularly during rapid slider dragging.

@@ -20,6 +20,9 @@ namespace NetworkTools.Systems.Tools.RoadShape {
     using Unity.Collections;
 
     public partial class NT_RoadShapeToolSystem {
+        private NativeReference<int> m_SmoothResult;
+        private JobHandle m_LastShapeJob;
+
         /// <inheritdoc />
         public override bool TrySetPrefab(PrefabBase prefab) {
             var hasShapeSlope = m_PrefabSystem.HasComponent<NT_ShapeSlopeTool>(prefab);
@@ -70,10 +73,13 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             // Cached path data for handles and jobs
             m_EdgeStates = new NativeList<EdgeState>(32, Allocator.Persistent);
             m_NodeStates = new NativeList<NodeState>(33, Allocator.Persistent);
+            m_SmoothResult = new NativeReference<int>(Allocator.Persistent);
             m_PathDataValid = false;
         }
 
         protected override void OnDestroy() {
+            m_LastShapeJob.Complete();
+            if (m_SmoothResult.IsCreated) { m_SmoothResult.Dispose(); }
             // Dispose cached path data
             if (m_EdgeStates.IsCreated) {
                 m_EdgeStates.Dispose();
@@ -95,6 +101,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
         }
 
         protected override void OnStopRunning() {
+            m_LastShapeJob.Complete();
             base.OnStopRunning();
 
             // Invalidate cached path data

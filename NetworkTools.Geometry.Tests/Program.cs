@@ -20,6 +20,7 @@ internal static class Program {
         for (var i = 0; i < a.Length; i++) { Near(a[i].X, b[i].X, name); Near(a[i].Z, b[i].Z, name); }
     }
     private static unsafe void Main() {
+        CheckBezier();
         // Analytic three-point solution: equal chords h, only the middle Z is free.
         // E(z) = h*(z-z0)^2 + lambda*4*z^2/h^3, so z=z0/(1+4*lambda/h^4).
         var three = new[] { new P(0, 0), new P(20, 15), new P(40, 0) };
@@ -85,6 +86,29 @@ internal static class Program {
             }
         }
         Console.WriteLine("PASS: analytic solution, nonuniform straight line, zero strength, zigzag reduction, endpoint/junction pins, reversal/translation/rotation invariance, long-path stationarity, two nodes, invalid inputs.");
+    }
+
+    private static void CheckBezier() {
+        var a = new P(0, 0); var d = new P(30, 0);
+        if (!PlanarBezier.Handles(a, d, new P(1, 0), new P(1, 0), out var b, out var c)) {
+            throw new Exception("straight cubic rejected");
+        }
+        Near(10, b.X, "straight handle B"); Near(20, c.X, "straight handle C");
+        var middle = new P(30, 10); var end = new P(60, 0);
+        if (!PlanarBezier.Tangent(a, middle, end, out var tangent)) { throw new Exception("tangent rejected"); }
+        if (!PlanarBezier.Handles(a, middle, new P(1, 0), tangent, out b, out c)
+            || !PlanarBezier.Handles(middle, end, tangent, new P(1, 0), out var e, out var f)) {
+            throw new Exception("bend rejected");
+        }
+        Near(0, (middle.X - c.X) * (e.Z - middle.Z) - (middle.Z - c.Z) * (e.X - middle.X), "shared tangent cross product");
+        if (!PlanarBezier.Handles(middle, a, new P(-tangent.X, -tangent.Z), new P(-1, 0), out var rb, out var rc)) {
+            throw new Exception("reversed cubic rejected");
+        }
+        Near(c.X, rb.X, "reverse handle"); Near(c.Z, rb.Z, "reverse handle");
+        Near(b.X, rc.X, "reverse handle"); Near(b.Z, rc.Z, "reverse handle");
+        if (PlanarBezier.Handles(a, d, new P(-1, 0), new P(1, 0), out _, out _)
+            || PlanarBezier.Tangent(a, d, a, out _)) { throw new Exception("backward/cusp accepted"); }
+        Console.WriteLine("PASS: cubic handles, shared planar tangents, reversal, backward/cusp rejection.");
     }
 
     // Independently differentiate the documented objective at the fitted points.

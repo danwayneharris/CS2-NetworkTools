@@ -26,6 +26,9 @@
             }
 
             var config = BuildJobConfig();
+            // The result is consumed by the UI only after this job completes.
+            m_LastShapeJob.Complete();
+            m_SmoothResult.Value = 0;
             m_Log.Debug($"SchedulePathTransformJob: Template={config.Template}, EaseIn={config.EaseInLength:F3}, EaseOut={config.EaseOutLength:F3}");
             m_Log.Debug($"  Path: Start={m_ShapeTransformContext.StartPosition}, End={m_ShapeTransformContext.EndPosition}, DeltaHeight={m_ShapeTransformContext.DeltaHeight:F2}");
 
@@ -49,7 +52,12 @@
                 ElevationLookup = SystemAPI.GetComponentLookup<Elevation>(true),
                 OutputMode = outputMode,
                 ECB = m_Barrier.CreateCommandBuffer(),
+                SmoothResult = m_SmoothResult,
+#if IS_DEBUG
+                SmoothTraceId = ++m_SmoothTraceId,
+#endif
             }.Schedule(inputDeps);
+            m_LastShapeJob = jobHandle;
             m_Barrier.AddJobHandleForProducer(jobHandle);
             return jobHandle;
         }
@@ -85,6 +93,8 @@
             inputDeps = DestroyDefinitions(m_DefinitionQuery, m_Barrier, inputDeps);
             var jobHandle = SchedulePathTransformJob(inputDeps, ToolOutputMode.Apply);
 
+            // Reset clears native selection lists read by the scheduled job.
+            jobHandle.Complete();
             ResetToIdle();
 
             return jobHandle;

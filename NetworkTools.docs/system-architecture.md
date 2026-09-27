@@ -261,18 +261,26 @@ What exists:
 - A dispatch branch selecting `CurveSmoothTransform`.
 - A common path-selection, parameter, preview, and apply framework.
 
-What is missing:
+The mode is enabled in metadata on the integration branch.
+[CurveSmoothTransform](../NetworkTools.Mod/Systems/Tools/RoadShape/Transforms/CurveSmoothTransform.cs)
+fits node positions, reconstructs horizontal Bézier handles, and publishes its
+candidate arrays only if the whole selection passes validation. It bypasses the
+generic transform pipeline's node-position averaging. Endpoints and junctions are
+fixed; node and control-point elevations are preserved.
 
-- The mode is [disabled in metadata](../NetworkTools.Mod/Systems/Tools/RoadShape/Core/ShapeTransformTemplate.cs#L25).
-- [CurveSmoothTransform](../NetworkTools.Mod/Systems/Tools/RoadShape/Transforms/CurveSmoothTransform.cs#L9)
-  has empty/TODO processing methods.
+A native result flag is read only after the producing job completes. Invalid fits
+produce no preview, disable Apply, and provide a hint to change strength or selection.
+Selection mutations, cache refresh, and disposal wait for the prior shape job;
+Apply finishes recording commands before resetting the selection lists it reads.
 
 Prototype scope, geometry requirements, and future directions are maintained in the
 [Smooth Curve plan](smooth-curve-plan.md).
 
-The standalone [curve geometry module](curve-geometry.md) fits horizontal node
-positions and has external .NET tests. It is compiled into the mod but is not yet
-called by this pipeline; it does not reconstruct Bézier segments.
+The [curve geometry module](curve-geometry.md) supplies the independent node fitter
+and horizontal tangent/handle calculations. External tests and full Debug/Release
+builds pass, including postprocessing, UI generation/build, and Windows Burst
+compilation. Debug is deployed. In-game smoothing and Release execution remain
+unverified.
 
 ## 11. Anarchy and compatibility boundaries
 

@@ -5,80 +5,66 @@
     using Unity.Mathematics;
     using Point = NetworkTools.Geometry.PlanarFairing.Point;
 
-    /// <summary>
-    /// Fits nodes and reconstructs horizontal cubics as one validated path operation.
-    /// </summary>
+    /// <summary>Maps a shared horizontal target onto the existing path topology.</summary>
     public static class CurveSmoothTransform {
-        /// <summary>Only publishes geometry when the whole path is suitable.</summary>
+        private static Point Horizontal(float3 p) => new Point(p.x, p.z);
+        private static float3 WithHorizontal(float3 original, Point p) => new float3((float)p.X, original.y, (float)p.Z);
+
         public static unsafe bool Execute(ref NativeArray<EdgeState> edges, ref NativeArray<NodeState> nodes, float strength) {
-            if (nodes.Length < 2 || edges.Length != nodes.Length - 1) { return false; }
+            if (nodes.Length < 2 || edges.Length != nodes.Length - 1) return false;
             var input = new NativeArray<Point>(nodes.Length, Allocator.Temp);
             var fitted = new NativeArray<Point>(nodes.Length, Allocator.Temp);
-            var scratch = new NativeArray<double>(nodes.Length * 5, Allocator.Temp);
-            var candidates = new NativeArray<EdgeState>(edges.Length, Allocator.Temp);
+            var curves = new NativeArray<PlanarCubic>(edges.Length, Allocator.Temp);
+            var output = new NativeArray<PlanarCubic>(edges.Length, Allocator.Temp);
+            var stations = new NativeArray<double>(nodes.Length, Allocator.Temp);
             var valid = true;
             for (var i = 0; i < nodes.Length; i++) {
-                var position = nodes[i].OriginalPosition;
-                valid &= math.all(math.isfinite(position));
-                input[i] = new Point(position.x, position.z, nodes[i].SmoothPinned);
-                // A repeated entity cannot be assigned two fitted positions in one Apply.
+                var p = nodes[i].OriginalPosition;
+                valid &= math.all(math.isfinite(p));
+                input[i] = new Point(p.x, p.z, nodes[i].SmoothPinned);
                 for (var j = 0; j < i; j++) {
-                    if (nodes[j].Entity == nodes[i].Entity) { valid = false; }
+                    if (nodes[j].Entity == nodes[i].Entity) valid = false;
                 }
             }
-            valid = valid && PlanarFairing.Fit((Point*)input.GetUnsafeReadOnlyPtr(), (Point*)fitted.GetUnsafePtr(),
-                nodes.Length, strength, (double*)scratch.GetUnsafePtr());
+            for (var i = 0; i < edges.Length; i++) {
+                var c = edges[i].Bezier;
+                valid &= math.all(math.isfinite(c.a)) && math.all(math.isfinite(c.b))
+                    && math.all(math.isfinite(c.c)) && math.all(math.isfinite(c.d));
+                curves[i] = edges[i].IsForward
+                    ? new PlanarCubic(Horizontal(c.a), Horizontal(c.b), Horizontal(c.c), Horizontal(c.d))
+                    : new PlanarCubic(Horizontal(c.d), Horizontal(c.c), Horizontal(c.b), Horizontal(c.a));
+            }
+            valid = valid && PlanarPathTarget.Fit((Point*)input.GetUnsafeReadOnlyPtr(),
+                (PlanarCubic*)curves.GetUnsafeReadOnlyPtr(), nodes.Length, strength,
+                (Point*)fitted.GetUnsafePtr(), (PlanarCubic*)output.GetUnsafePtr(), (double*)stations.GetUnsafePtr());
+            // Validate float conversion before publishing any results.
+            for (var i = 0; valid && i < nodes.Length; i++) {
+                valid &= math.all(math.isfinite(WithHorizontal(nodes[i].OriginalPosition, fitted[i])));
+            }
             for (var i = 0; valid && i < edges.Length; i++) {
-                var edge = edges[i];
-                var curve = edge.Bezier;
-                var a = edge.IsForward ? curve.a : curve.d;
-                var b = edge.IsForward ? curve.b : curve.c;
-                var c = edge.IsForward ? curve.c : curve.b;
-                var d = edge.IsForward ? curve.d : curve.a;
-                if (!math.all(math.isfinite(a)) || !math.all(math.isfinite(b))
-                    || !math.all(math.isfinite(c)) || !math.all(math.isfinite(d))) { valid = false; break; }
-                if (strength > 0) {
-                    // Move intersection offsets with their node; retain every control point's Y.
-                    var startDelta = new float3((float)(fitted[i].X - input[i].X), 0, (float)(fitted[i].Z - input[i].Z));
-                    var endDelta = new float3((float)(fitted[i + 1].X - input[i + 1].X), 0, (float)(fitted[i + 1].Z - input[i + 1].Z));
-                    var startDirection = new Point(b.x - a.x, b.z - a.z);
-                    var endDirection = new Point(d.x - c.x, d.z - c.z);
-                    if (i > 0 && !input[i].Fixed) {
-                        valid = PlanarBezier.Tangent(fitted[i - 1], fitted[i], fitted[i + 1], out startDirection);
-                    }
-                    if (valid && i + 2 < nodes.Length && !input[i + 1].Fixed) {
-                        valid = PlanarBezier.Tangent(fitted[i], fitted[i + 1], fitted[i + 2], out endDirection);
-                    }
-                    a += startDelta;
-                    d += endDelta;
-                    if (!valid || !PlanarBezier.Handles(new Point(a.x, a.z), new Point(d.x, d.z),
-                        startDirection, endDirection, out var first, out var second)) { valid = false; break; }
-                    first = PlanarBezier.BlendHandle(new Point(b.x, b.z),
-                        new Point(startDelta.x, startDelta.z), first, strength);
-                    second = PlanarBezier.BlendHandle(new Point(c.x, c.z),
-                        new Point(endDelta.x, endDelta.z), second, strength);
-                    b.x = (float)first.X; b.z = (float)first.Z;
-                    c.x = (float)second.X; c.z = (float)second.Z;
-                    curve.a = edge.IsForward ? a : d;
-                    curve.b = edge.IsForward ? b : c;
-                    curve.c = edge.IsForward ? c : b;
-                    curve.d = edge.IsForward ? d : a;
-                    edge.Bezier = curve;
-                }
-                candidates[i] = edge;
+                var c = output[i];
+                valid &= math.all(math.isfinite(WithHorizontal(float3.zero, c.A)))
+                    && math.all(math.isfinite(WithHorizontal(float3.zero, c.B)))
+                    && math.all(math.isfinite(WithHorizontal(float3.zero, c.C)))
+                    && math.all(math.isfinite(WithHorizontal(float3.zero, c.D)));
             }
-            if (valid) {
-                for (var i = 0; i < edges.Length; i++) { edges[i] = candidates[i]; }
+            if (valid && strength > 0) {
+                for (var i = 0; i < edges.Length; i++) {
+                    var edge = edges[i]; var c = edge.Bezier; var target = output[i];
+                    c.a = WithHorizontal(c.a, edge.IsForward ? target.A : target.D);
+                    c.b = WithHorizontal(c.b, edge.IsForward ? target.B : target.C);
+                    c.c = WithHorizontal(c.c, edge.IsForward ? target.C : target.B);
+                    c.d = WithHorizontal(c.d, edge.IsForward ? target.D : target.A);
+                    edge.Bezier = c;
+                    edges[i] = edge;
+                }
                 for (var i = 0; i < nodes.Length; i++) {
                     var node = nodes[i];
-                    node.Position = new float3((float)fitted[i].X, node.OriginalPosition.y, (float)fitted[i].Z);
+                    node.Position = WithHorizontal(node.OriginalPosition, fitted[i]);
                     nodes[i] = node;
                 }
             }
-            candidates.Dispose();
-            scratch.Dispose();
-            fitted.Dispose();
-            input.Dispose();
+            stations.Dispose(); output.Dispose(); curves.Dispose(); fitted.Dispose(); input.Dispose();
             return valid;
         }
     }

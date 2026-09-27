@@ -11,6 +11,13 @@ for the existing integration points.
 
 ## Goal
 
+The current experiment now integrates the boundary-target reconstruction tested
+in the [session notes](session-notes/2026-09-26-1806.md). It replaces the active
+node-fairing policy for simple forward-going selections, rejecting interior
+junctions. The earlier node-fitter discussion below records the preceding design.
+Next validate game-generated connections, then generalize target selection beyond
+a single cubic. Explicit boundary UI controls remain deferred.
+
 Produce realistic, non-wiggly road and track geometry, including networks built
 with Anarchy. The first prototype should let a user select an awkward path,
 adjust smoothing parameters, preview the result, and apply it using the familiar

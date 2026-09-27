@@ -13,7 +13,7 @@ internal static class TargetReplay {
     private static double[][] Controls(PlanarCubic c) => new[] { c.A,c.B,c.C,c.D }.Select(p => new[] { p.X,p.Z }).ToArray();
     private static void Check(bool ok, string message) { if (!ok) throw new Exception(message); }
 
-    public static void Run(string[] args) {
+    public static unsafe void Run(string[] args) {
         var curve = new PlanarCubic(new P(0,0), new P(20,40), new P(80,-30), new P(100,10));
         Check(curve.TrySlice(.13,.79,out var slice), "slice rejected");
         for (var i=0; i<=100; i++) {
@@ -62,6 +62,35 @@ internal static class TargetReplay {
             }).ToArray()
         }).ToArray();
         var middle=target.Evaluate(station);
+        var actualNodes=new P[3]; var actualCurves=new PlanarCubic[2]; var scratch=new double[3];
+        fixed(P* inputNodes=nodes, fittedNodes=actualNodes)
+        fixed(PlanarCubic* inputEdges=edges, fittedEdges=actualCurves)
+        fixed(double* stations=scratch) {
+            foreach(var sweep in sweeps) {
+                Check(PlanarPathTarget.Fit(inputNodes,inputEdges,3,sweep.strength,fittedNodes,fittedEdges,stations),"production target rejected fixture");
+                for(var j=0;j<2;j++) {
+                    var controls=Controls(actualCurves[j]);
+                    for(var k=0;k<4;k++) {
+                        Check(Distance(new P(controls[k][0],controls[k][1]),new P(sweep.edges[j][k][0],sweep.edges[j][k][1]))<1e-9,"production target differs from replay");
+                    }
+                }
+                Check(Distance(actualNodes[0],nodes[0])==0 && Distance(actualNodes[2],nodes[2])==0,"boundary node moved");
+            }
+            nodes[1].Fixed=true;
+            Check(!PlanarPathTarget.Fit(inputNodes,inputEdges,3,1,fittedNodes,fittedEdges,stations),"interior junction accepted");
+            nodes[1].Fixed=false;
+            Check(!PlanarPathTarget.Fit(inputNodes,inputEdges,3,double.NaN,fittedNodes,fittedEdges,stations),"NaN strength accepted");
+            Array.Reverse(nodes); Array.Reverse(edges);
+            for(var j=0;j<2;j++) { var e=edges[j]; edges[j]=new PlanarCubic(e.D,e.C,e.B,e.A); }
+            Check(PlanarPathTarget.Fit(inputNodes,inputEdges,3,1,fittedNodes,fittedEdges,stations),"reversed target rejected");
+            Check(Distance(actualNodes[1],middle)<1e-9,"reversal changed middle node");
+            for(var j=0;j<2;j++) {
+                var q=Controls(actualCurves[j]); var p=Controls(pieces[1-j]);
+                for(var k=0;k<4;k++) Check(Distance(new P(q[k][0],q[k][1]),new P(p[3-k][0],p[3-k][1]))<1e-9,"reversal changed target controls");
+            }
+            Array.Reverse(nodes); Array.Reverse(edges);
+            for(var j=0;j<2;j++) { var e=edges[j]; edges[j]=new PlanarCubic(e.D,e.C,e.B,e.A); }
+        }
         foreach (var sweep in sweeps) {
             var leftEnd=sweep.edges[0][3]; var rightStart=sweep.edges[1][0];
             var gap=Distance(new P(leftEnd[0],leftEnd[1]),new P(rightStart[0],rightStart[1]));

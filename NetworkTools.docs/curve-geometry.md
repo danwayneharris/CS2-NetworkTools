@@ -1,5 +1,28 @@
 # Curve geometry module
 
+## Current integration: single-target experiment
+
+Smooth Curve now calls `PlanarPathTarget.Fit`, shared with the external replay.
+It constructs one planar cubic from the selected outer curve endpoints and their
+existing tangent directions, using chord/3 handles. Original node chord-length
+ratios partition its parameter interval into exact `PlanarCubic` subcurves.
+Interior nodes and segment endpoints move onto that target at full strength;
+all four controls and interior node positions blend linearly from input as the
+slider increases. Outer endpoints and endpoint nodes stay fixed. The adapter
+retains each original control-point Y and node Y, so this is planar continuity,
+not a promise of vertical tangent continuity or unchanged grade.
+
+Positive-strength selections with interior junction pins, repeated node entities,
+degenerate geometry, or node chords going backward along the overall target chord
+are rejected. This experimental policy suits simple paths, not arbitrary winding
+routes. No terrain avoidance, curvature limit, movement cap, or complete
+self-intersection check is implemented. Partial strength retains some input defects.
+Preview/Apply still need an in-game check of coincident interior curve endpoints.
+
+`PlanarFairing` remains independently tested but is no longer the active Smooth
+Curve algorithm. The sections below retain the previous approach and findings
+for comparison. See the session notes for per-change verification status.
+
 `NetworkTools.Mod/Geometry/PlanarFairing.cs` implements a game-independent fit of
 horizontal node positions. `PlanarBezier.cs` supplies horizontal tangent and handle
 calculations. The Smooth Curve integration prototype calls both. Full Debug and

@@ -55,6 +55,7 @@
                 SmoothResult = m_SmoothResult,
 #if IS_DEBUG
                 SmoothTraceId = ++m_SmoothTraceId,
+                SmoothSelectedNodes = m_SelectedNodes,
 #endif
             }.Schedule(inputDeps);
             m_LastShapeJob = jobHandle;

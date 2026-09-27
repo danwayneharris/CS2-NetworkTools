@@ -64,9 +64,18 @@ ordered chord projections, preventing a loop within that individual cubic.
 
 This provides matching planar directions at movable nodes, not continuous curvature
 or a guarantee about the game's intersection geometry. Inter-segment crossings and
-terrain/obstacle conflicts are not checked. Strength zero preserves the input;
-positive strength refits handles fully, even for very small values. That transition
-and the fixed 50-metre fitting scale are prototype tuning limitations.
+terrain/obstacle conflicts are not checked. Strength zero preserves the input.
+Handles now blend from their original positions, translated with their respective
+endpoints, toward the reconstructed handles using the smoothing factor. Full
+strength reaches the reconstructed target; intermediate strengths can retain
+original tangent mismatches and non-monotone control polygons. The target's
+ordered-projection check does not establish that a blended cubic is loop-free.
+The fixed 50-metre node-fitting scale remains a prototype tuning limitation.
+
+The initial implementation fully refitted handles at every positive strength,
+causing a discontinuity observed in-game. The captured-handle regression now
+checks a strength sweep and endpoint translation. See the
+[session record](session-notes/2026-09-26-1806.md) for measurements and limitations.
 
 ## Run the external checks
 

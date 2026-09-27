@@ -74,8 +74,8 @@ baseline record, not evidence that subsequent changes work.
 
 ## Geometry work
 
-- Smooth Curve is currently a disabled mode with an empty transformation. The first
-  prototype is planned, not implemented; consult its plan before starting feature work.
+- Smooth Curve has an integration prototype. Consult the geometry guide and
+  session notes for current behavior, known limitations, and verification results.
 - The agreed prototype moves existing nodes horizontally, preserves node elevations
   and topology, reuses selection/preview/Apply, and isolates out-of-game-testable math.
   Node removal, resegmentation, and obstacle/terrain routing are later explorations.
@@ -89,4 +89,4 @@ baseline record, not evidence that subsequent changes work.
 
 ## General Operating Philosophy
 
-- At the beginning of each session, create a new .md doc in NetworkTools.docs/session-notes/ that includes the \ date and time in the filename, and for each small incremental change during that session, document what the change was, whether it did or didn't work, or what was learned from testing it. Then commit that change to git along with the updated doc EVEN IF THE CHANGE DIDN'T WORK.  If the change was bad, manually revert (not git revert) and update the doc accordingly.  This is to ensure that all lessons are learned and we have a clear picture of our potentially messy journey.  
+- At the beginning of each session, create a new .md doc in NetworkTools.docs/session-notes/ that includes the \ date and time in the filename, and for each small incremental change during that session, document what the change was, whether it did or didn't work, or what was learned from testing it. Then commit that change to git along with the updated doc EVEN IF THE CHANGE DIDN'T WORK.  If the change was bad, manually revert (not git revert) and update the doc accordingly.  This is to ensure that all lessons are learned and we have a clear picture of our potentially messy journey.

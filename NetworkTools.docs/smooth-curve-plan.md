@@ -37,6 +37,15 @@ inside the shape job, bypassing the generic edge-to-node displacement averaging.
 Endpoint nodes and nodes with other than two incident edges are fixed. Original
 horizontal tangent directions are retained at these fixed nodes; ordinary interior
 nodes share the bisector of adjacent fitted chord directions.
+These directions describe the full-strength reconstruction target. A subsequent
+slider-continuity experiment blends original handles toward that target, so
+partial strength can retain tangent mismatches. See the
+[session notes](session-notes/2026-09-26-1806.md) for observed failures and tests.
+
+Next investigate segment endpoint offsets and game connection reconstruction,
+then a fit using samples of the actual centerline. Automatic corner classification
+is deferred; explicit player choices for boundary direction (such as perpendicular
+connections) may be preferable initially. No additional UI option is implemented.
 
 Remaining design questions include:
 

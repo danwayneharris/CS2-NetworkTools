@@ -266,7 +266,12 @@ The mode is enabled in metadata on the integration branch.
 fits node positions, reconstructs horizontal Bézier handles, and publishes its
 candidate arrays only if the whole selection passes validation. It bypasses the
 generic transform pipeline's node-position averaging. Endpoints and junctions are
-fixed; node and control-point elevations are preserved.
+fixed; node and control-point elevations are preserved. Reconstructed horizontal
+handles are blended with translated original handles by smoothing strength;
+partial strength does not guarantee matching tangent directions. The first
+in-game trials exposed a zero-to-positive handle jump; the follow-up blend change
+has external regression coverage and Debug compilation, but is not yet tested
+in-game. See the [session record](session-notes/2026-09-26-1806.md).
 
 A native result flag is read only after the producing job completes. Invalid fits
 produce no preview, disable Apply, and provide a hint to change strength or selection.

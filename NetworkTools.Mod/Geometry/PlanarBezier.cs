@@ -4,6 +4,18 @@ namespace NetworkTools.Geometry {
 
     /// <summary>Horizontal cubic reconstruction; callers keep vertical coordinates separately.</summary>
     public static class PlanarBezier {
+        /// <summary>
+        /// Blends a handle after translating it with its endpoint. Strength is validated
+        /// by the caller. Intermediate curves may retain defects from the original.
+        /// </summary>
+        public static Point BlendHandle(Point original, Point endpointDelta, Point target, double strength) {
+            if (strength == 0) { return original; }
+            if (strength == 1) { return target; }
+            var x = original.X + endpointDelta.X;
+            var z = original.Z + endpointDelta.Z;
+            return new Point(x + strength * (target.X - x), z + strength * (target.Z - z));
+        }
+
         /// <summary>Returns a shared unit tangent, weighting incident chord directions equally.</summary>
         public static bool Tangent(Point previous, Point current, Point next, out Point tangent) {
             tangent = default;

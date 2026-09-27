@@ -53,6 +53,10 @@
                     d += endDelta;
                     if (!valid || !PlanarBezier.Handles(new Point(a.x, a.z), new Point(d.x, d.z),
                         startDirection, endDirection, out var first, out var second)) { valid = false; break; }
+                    first = PlanarBezier.BlendHandle(new Point(b.x, b.z),
+                        new Point(startDelta.x, startDelta.z), first, strength);
+                    second = PlanarBezier.BlendHandle(new Point(c.x, c.z),
+                        new Point(endDelta.x, endDelta.z), second, strength);
                     b.x = (float)first.X; b.z = (float)first.Z;
                     c.x = (float)second.X; c.z = (float)second.Z;
                     curve.a = edge.IsForward ? a : d;

@@ -21,6 +21,7 @@ internal static class Program {
     }
     private static unsafe void Main() {
         CheckBezier();
+        CheckCapturedHandleBlend();
         // Analytic three-point solution: equal chords h, only the middle Z is free.
         // E(z) = h*(z-z0)^2 + lambda*4*z^2/h^3, so z=z0/(1+4*lambda/h^4).
         var three = new[] { new P(0, 0), new P(20, 15), new P(40, 0) };
@@ -86,6 +87,32 @@ internal static class Program {
             }
         }
         Console.WriteLine("PASS: analytic solution, nonuniform straight line, zero strength, zigzag reduction, endpoint/junction pins, reversal/translation/rotation invariance, long-path stationarity, two nodes, invalid inputs.");
+    }
+
+    private static void CheckCapturedHandleBlend() {
+        // Player.log trace 566, Sept 26: second handle on edge 111496:1.
+        // At strength .001 the old adapter jumped 81.68 m with stationary nodes.
+        var original = new P(-1559.512, -1867.44067);
+        var target = new P(-1533.36365, -1944.82434);
+        var zero = PlanarBezier.BlendHandle(original, default, target, 0);
+        Near(original.X, zero.X, "captured zero X"); Near(original.Z, zero.Z, "captured zero Z");
+        var previous = 0.0;
+        foreach (var strength in new[] { 0.000001, 0.001, 0.1, 0.49, 0.5, 0.51, 1.0 }) {
+            var point = PlanarBezier.BlendHandle(original, default, target, strength);
+            var distance = Math.Sqrt(Math.Pow(point.X - original.X, 2) + Math.Pow(point.Z - original.Z, 2));
+            var fullDistance = Math.Sqrt(Math.Pow(target.X - original.X, 2) + Math.Pow(target.Z - original.Z, 2));
+            Near(fullDistance * strength, distance, "captured displacement scales with strength");
+            if (distance < previous || (strength <= 0.001 && distance > 0.082)) {
+                throw new Exception("captured handle jumps or reverses during sweep");
+            }
+            previous = distance;
+        }
+        var delta = new P(7, -3);
+        var moved = PlanarBezier.BlendHandle(original, delta, new P(target.X + 7, target.Z - 3), 0.5);
+        var stationary = PlanarBezier.BlendHandle(original, default, target, 0.5);
+        Near(stationary.X + 7, moved.X, "endpoint translation X");
+        Near(stationary.Z - 3, moved.Z, "endpoint translation Z");
+        Console.WriteLine("PASS: captured handle continuity, strength sweep, endpoint translation.");
     }
 
     private static void CheckBezier() {

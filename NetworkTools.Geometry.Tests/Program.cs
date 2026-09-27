@@ -19,7 +19,8 @@ internal static class Program {
     private static void Same(P[] a, P[] b, string name) {
         for (var i = 0; i < a.Length; i++) { Near(a[i].X, b[i].X, name); Near(a[i].Z, b[i].Z, name); }
     }
-    private static unsafe void Main() {
+    private static unsafe void Main(string[] args) {
+        TargetReplay.Run(args);
         CheckBezier();
         CheckCapturedHandleBlend();
         // Analytic three-point solution: equal chords h, only the middle Z is free.

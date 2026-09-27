@@ -8,6 +8,13 @@ Debug is deployed; in-game behavior remains unverified.
 
 ## Objective
 
+An additional offline target-reconstruction experiment uses `PlanarCubic` and
+`NetworkTools.Geometry.Tests/TargetReplay.cs`. It partitions one boundary cubic
+exactly into segment cubics, moving the interior node and endpoints together.
+It does not replace the deployed fitter. See the
+[session record](session-notes/2026-09-26-1806.md#target-first-reconstruction-and-slope-comparison)
+for replay commands, numerical results, plots, and game-code findings.
+
 Let original points be `p[i]` in metres, fitted points `q[i]`, and original chord
 lengths `h[i] = |p[i+1] - p[i]|`. Each point's fidelity weight `w[i]` is half the
 sum of its incident chord lengths. The solver minimizes:

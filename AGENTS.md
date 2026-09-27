@@ -75,8 +75,7 @@ baseline record, not evidence that subsequent changes work.
 ## Geometry work
 
 - Smooth Curve is currently a disabled mode with an empty transformation. The first
-  node-fitting module and external tests exist, but game integration is not implemented.
-  Read [curve geometry](NetworkTools.docs/curve-geometry.md) and the feature plan.
+  prototype is planned, not implemented; consult its plan before starting feature work.
 - The agreed prototype moves existing nodes horizontally, preserves node elevations
   and topology, reuses selection/preview/Apply, and isolates out-of-game-testable math.
   Node removal, resegmentation, and obstacle/terrain routing are later explorations.
@@ -87,3 +86,7 @@ baseline record, not evidence that subsequent changes work.
   when choosing the geometry module's API and implementation.
 - The tool's built-in Anarchy option disables validation. Test geometry explicitly;
   disabled validation does not establish correct curves or external-mod compatibility.
+
+## General Operating Philosophy
+
+- At the beginning of each session, create a new .md doc in NetworkTools.docs/session-notes/ that includes the \ date and time in the filename, and for each small incremental change during that session, document what the change was, whether it did or didn't work, or what was learned from testing it. Then commit that change to git along with the updated doc EVEN IF THE CHANGE DIDN'T WORK.  If the change was bad, manually revert (not git revert) and update the doc accordingly.  This is to ensure that all lessons are learned and we have a clear picture of our potentially messy journey.  

@@ -17,7 +17,10 @@ degenerate geometry, or node chords going backward along the overall target chor
 are rejected. This experimental policy suits simple paths, not arbitrary winding
 routes. No terrain avoidance, curvature limit, movement cap, or complete
 self-intersection check is implemented. Partial strength retains some input defects.
-Preview/Apply still need an in-game check of coincident interior curve endpoints.
+Debug in-game trials now include heavily distorted test paths and three elevated
+rail selections in Pinkleton. The last screenshot sequence shows Apply visually
+matching the preview. Train traversal, save/reload, and Release runtime execution
+remain unverified; this is not a general compatibility claim.
 
 `PlanarFairing` remains independently tested but is no longer the active Smooth
 Curve algorithm. The sections below retain the previous approach and findings
@@ -25,16 +28,16 @@ for comparison. See the session notes for per-change verification status.
 
 `NetworkTools.Mod/Geometry/PlanarFairing.cs` implements a game-independent fit of
 horizontal node positions. `PlanarBezier.cs` supplies horizontal tangent and handle
-calculations. The Smooth Curve integration prototype calls both. Full Debug and
+calculations. The previous integration prototype called both. Full Debug and
 Release builds pass, including postprocessing and Windows Burst compilation.
-Debug is deployed; in-game behavior remains unverified.
+Debug is deployed; the visual checks above cover the current target-based version.
 
-## Objective
+## Previous node-fitter objective
 
-An additional offline target-reconstruction experiment uses `PlanarCubic` and
+The target-reconstruction replay uses `PlanarCubic` and
 `NetworkTools.Geometry.Tests/TargetReplay.cs`. It partitions one boundary cubic
 exactly into segment cubics, moving the interior node and endpoints together.
-It does not replace the deployed fitter. See the
+It now also checks the deployed `PlanarPathTarget` math against that reconstruction. See the
 [session record](session-notes/2026-09-26-1806.md#target-first-reconstruction-and-slope-comparison)
 for replay commands, numerical results, plots, and game-code findings.
 
@@ -63,7 +66,7 @@ cancellation from large absolute map coordinates. Each second-difference term
 couples three adjacent points; the resulting positive-definite system has five
 diagonals. Banded Cholesky solves both coordinates in O(n) time and O(n) storage.
 
-## API and limitations
+## Previous node-fitter API and limitations
 
 - Input and output each contain `count` points; scratch storage contains `5*count`
   doubles. All buffers must be valid and non-overlapping. The unsafe API cannot
@@ -79,13 +82,13 @@ diagonals. Banded Cholesky solves both coordinates in O(n) time and O(n) storage
 - Positional pins do not constrain tangents. There is no self-intersection check,
   minimum turning radius, obstacle avoidance, terrain query, or displacement cap.
 - There are no elevations, game entities, intersection offsets, or Bézier handles
-  in the fitter's API. The game adapter preserves elevations/topology, pins junctions,
-  fits segment handles, and rejects unsuitable results before Apply.
+  in this fitter's API. The previous adapter pinned junctions and fitted handles;
+  the current adapter instead rejects interior junctions at positive strength.
 
-## Prototype cubic reconstruction
+## Previous prototype cubic reconstruction
 
 `PlanarBezier` uses a shared normalized bisector of incident chord directions at
-ordinary interior nodes. The adapter retains original directions at endpoints and
+ordinary interior nodes. The previous adapter retained original directions at endpoints and
 junctions, translates intersection offsets with node displacement, and preserves
 all original control-point Y coordinates. Each horizontal handle is one third of
 its segment's horizontal endpoint distance. A direction projecting less than 0.05
@@ -95,7 +98,7 @@ ordered chord projections, preventing a loop within that individual cubic.
 This provides matching planar directions at movable nodes, not continuous curvature
 or a guarantee about the game's intersection geometry. Inter-segment crossings and
 terrain/obstacle conflicts are not checked. Strength zero preserves the input.
-Handles now blend from their original positions, translated with their respective
+The second prototype blended handles from their original positions, translated with their respective
 endpoints, toward the reconstructed handles using the smoothing factor. Full
 strength reaches the reconstructed target; intermediate strengths can retain
 original tangent mismatches and non-monotone control polygons. The target's

@@ -3,8 +3,10 @@
 **Status (Sept 26, 2026):** the [geometry module](curve-geometry.md) has a first
 game-integration prototype with Bézier reconstruction and the existing smoothing
 control. External tests and full Debug/Release builds pass, including Windows
-Burst compilation. Debug is deployed. In-game verification, including execution
-of the Release build, remains pending.
+Burst compilation. Debug is deployed. The maintainer reports successful smoothing
+of distorted test paths; real-city elevated-rail screenshots show improved curves
+and a matching post-Apply view. Train traversal, save/reload, and Release execution
+remain unverified.
 This document records the scope and open design
 questions. See [system architecture](system-architecture.md#10-smooth-curve-current-infrastructure)
 for the existing integration points.
@@ -14,8 +16,8 @@ for the existing integration points.
 The current experiment now integrates the boundary-target reconstruction tested
 in the [session notes](session-notes/2026-09-26-1806.md). It replaces the active
 node-fairing policy for simple forward-going selections, rejecting interior
-junctions. The earlier node-fitter discussion below records the preceding design.
-Next validate game-generated connections, then generalize target selection beyond
+junctions. Earlier approaches are preserved in the session notes and geometry guide.
+Next broaden validation of game-generated connections, then generalize target selection beyond
 a single cubic. Explicit boundary UI controls remain deferred.
 
 Produce realistic, non-wiggly road and track geometry, including networks built
@@ -37,17 +39,14 @@ vertical profile.
 
 ## Geometry and integration questions
 
-Path-wide fitting should account for alignment and boundary constraints across the
-selection. The initial node fit uses regularized second differences on original
-chord-length stations. Smooth Curve now has a dedicated path-wide transformation
-inside the shape job, bypassing the generic edge-to-node displacement averaging.
-Endpoint nodes and nodes with other than two incident edges are fixed. Original
-horizontal tangent directions are retained at these fixed nodes; ordinary interior
-nodes share the bisector of adjacent fitted chord directions.
-These directions describe the full-strength reconstruction target. A subsequent
-slider-continuity experiment blends original handles toward that target, so
-partial strength can retain tangent mismatches. See the
-[session notes](session-notes/2026-09-26-1806.md) for observed failures and tests.
+The current implementation builds one planar cubic from the selected outer curve
+endpoints and their tangent directions. It partitions the target by original node
+chord-length ratios and blends all controls and interior nodes toward it. Endpoint
+nodes stay fixed; positive-strength selections with interior junctions or backward
+node chords are rejected. The dedicated transformation bypasses generic
+edge-to-node displacement averaging. Partial strength may retain input defects.
+See the [geometry guide](curve-geometry.md) for the implemented algorithm and
+[session notes](session-notes/2026-09-26-1806.md) for the experiments that led to it.
 
 Next investigate segment endpoint offsets and game connection reconstruction,
 then a fit using samples of the actual centerline. Automatic corner classification

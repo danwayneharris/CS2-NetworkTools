@@ -229,7 +229,7 @@ PreProcess(all edges)
 This is a **Strategy pattern** inside a common pipeline. The generic struct design
 is intended for job/Burst compatibility.
 
-Current node-position policy keeps the path's first and last nodes fixed. Interior
+The generic pipeline's node-position policy keeps the path's first and last nodes fixed. Interior
 positions use the average displacement contributed by adjacent transformed edge
 endpoints. That is implemented policy, not a guarantee of tangent or curvature continuity.
 
@@ -271,8 +271,10 @@ experiment. Node and control-point elevations are preserved. Interior endpoints,
 nodes, and handles blend toward exact subcurves of a shared target by strength;
 partial strength does not guarantee matching tangent directions. The first
 in-game trials exposed a zero-to-positive handle jump; the follow-up blend change
-has external regression coverage and Debug compilation, but is not yet tested
-in-game. See the [session record](session-notes/2026-09-26-1806.md).
+was confirmed by the maintainer to remove that jump. The current target-based
+version also smooths heavily distorted test paths and real-city elevated rail.
+The final real-city screenshot sequence shows Apply visually matching preview.
+See the [session record](session-notes/2026-09-26-1806.md).
 
 A native result flag is read only after the producing job completes. Invalid fits
 produce no preview, disable Apply, and provide a hint to change strength or selection.
@@ -282,11 +284,12 @@ Apply finishes recording commands before resetting the selection lists it reads.
 Prototype scope, geometry requirements, and future directions are maintained in the
 [Smooth Curve plan](smooth-curve-plan.md).
 
-The [curve geometry module](curve-geometry.md) supplies the independent node fitter
-and horizontal tangent/handle calculations. External tests and full Debug/Release
+The [curve geometry module](curve-geometry.md) supplies target construction and
+exact cubic subdivision; the earlier node fitter remains available but unused by
+Smooth Curve. External tests and full Debug/Release
 builds pass, including postprocessing, UI generation/build, and Windows Burst
-compilation. Debug is deployed. In-game smoothing and Release execution remain
-unverified.
+compilation. Debug is deployed and visually tested. Train traversal, save/reload,
+and Release execution remain unverified.
 
 ## 11. Anarchy and compatibility boundaries
 

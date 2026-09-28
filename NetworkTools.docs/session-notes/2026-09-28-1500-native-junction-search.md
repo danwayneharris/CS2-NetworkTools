@@ -69,3 +69,16 @@ Installed and build DLL SHA256 both:
 New runtime behavior still awaits in-game verification. User should reload the
 saved pre-Apply network, repeat branch-endpoint to junction selection at strength1,
 and leave preview selected for capture without applying.
+
+## First live preview succeeds
+
+Reloaded saved case has new entity identities: selected53095:1 ->53107:1,
+strength1. Trace input coordinates match the prior saved selection. Search accepted
+submission13, revision24, attempt5 (+3 degrees authored boundary rotation), after
+trying 0,+1,-1,+2,-2. Required4, observed4. User reports no visible breakage.
+Independent bridge snapshots of permanent53107:1 and the resolved preview are
+complete/error-free and contain the same four directed rail connections:
+359709:1026 ->359710:2;359710:1 ->359709:1025;
+362240:1 ->359710:2;359710:1 ->362240:2.
+Captures and search trace are in `captures/comparison-save-20260928`.
+This verifies one live preview search, not Apply, train traversal or broader coverage.

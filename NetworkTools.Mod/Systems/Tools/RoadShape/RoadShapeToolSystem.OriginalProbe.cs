@@ -73,12 +73,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
 
         private string OriginalProbeStatus() {
             var current = CaptureOriginalProbeInputs();
-            if (m_SubmittedOriginalInputs == null || current == null) { return "unavailable"; }
-            if (current.Count != m_SubmittedOriginalInputs.Count) { return "changed"; }
-            for (var i = 0; i < current.Count; i++) {
-                if (!current[i].Equals(m_SubmittedOriginalInputs[i])) { return "changed"; }
-            }
-            return "matches";
+            return NetworkTools.Geometry.OriginalInputComparison.Compare(m_SubmittedOriginalInputs, current);
         }
     }
 }

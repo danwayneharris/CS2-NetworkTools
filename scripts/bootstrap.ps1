@@ -4,6 +4,8 @@ param(
     [switch]$Build,
     [switch]$Test,
     [switch]$CheckBridge,
+    [switch]$Decompile,
+    [string]$DecompilePath,
     [string]$BridgePath = (Join-Path $PSScriptRoot '../../cities2-agent-bridge-ndc'),
     [ValidateSet('Debug', 'Release')][string]$Configuration = 'Debug'
 )
@@ -99,6 +101,11 @@ try {
     }
     if (-not ((& dotnet --list-runtimes) -match $runtimePattern)) { throw 'The postprocessor runtime is still unavailable.' }
     Write-Host 'Prerequisite checks passed.'
+
+    if ($Decompile) {
+        if (-not $DecompilePath) { throw 'Supply -DecompilePath for the separate, local source repository.' }
+        & (Join-Path $PSScriptRoot 'decompile-game.ps1') -Destination $DecompilePath
+    }
 
     if ($Build -or $Test) {
         $deploy = [IO.Path]::GetFullPath((Join-Path $env:CSII_LOCALMODSPATH 'NetworkTools'))

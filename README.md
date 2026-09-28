@@ -10,6 +10,9 @@ The first thing I've done is update this readme, and generate a couple of other 
 
 - [BOOTSTRAP.md](BOOTSTRAP.md)
 
+The bootstrap also supports an optional full local game decompile with
+`-Decompile -DecompilePath <directory>` for source-grounded modding investigations.
+
 ## Useful Project Guides:
 
 - [Build system](NetworkTools.docs/build-system.md): tools, MSBuild targets, code generation, deployment, and diagnosed build issues.

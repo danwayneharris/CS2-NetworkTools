@@ -3,6 +3,8 @@ param(
     [switch]$Install,
     [switch]$Build,
     [switch]$Test,
+    [switch]$CheckBridge,
+    [string]$BridgePath = (Join-Path $PSScriptRoot '../../cities2-agent-bridge-ndc'),
     [ValidateSet('Debug', 'Release')][string]$Configuration = 'Debug'
 )
 
@@ -38,6 +40,10 @@ function Install-Package {
     Invoke-Checked winget @('install', '-e', '--id', $Id, '--accept-source-agreements',
         '--accept-package-agreements', '--silent')
     Refresh-Environment
+    Write-Host 'Junction diagnostics require our local bridge extension; ordinary NetworkTools builds do not. See BOOTSTRAP.md.'
+    if ($CheckBridge) {
+        & (Join-Path $PSScriptRoot 'check-bridge.ps1') -BridgePath $BridgePath
+    }
 }
 
 Push-Location $repo

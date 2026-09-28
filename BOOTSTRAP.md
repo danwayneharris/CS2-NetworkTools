@@ -141,3 +141,69 @@ two road segments. Other tool behavior remains unverified in this fork.
 Build success cannot establish in-game behavior or Anarchy compatibility. Record
 the marker, panel, tool operation, and log results separately. Smooth Curve work
 starts after this baseline is confirmed.
+
+## Junction development dependencies
+
+Our junction diagnostic workflow depends on the locally extended Cities II Agent
+Bridge, maintained in sibling `../cities2-agent-bridge-ndc`. Network Tools itself
+has no bridge assembly/runtime dependency: normal players do not need it.
+Upstream releases alone lack our snapshot/preview queries. The extension is still
+local on `dan/junction-snapshot`; a public fork/package is deferred. New contributors
+must obtain that branch from the maintainer, not assume an upstream clone contains it.
+
+From the NetworkTools root, build the available local checkout without deploying:
+
+```powershell
+$bridge = Resolve-Path ../cities2-agent-bridge-ndc
+$game = [Environment]::GetEnvironmentVariable('CSII_INSTALLATIONPATH', 'User')
+& "$bridge/build.ps1" -GamePath $game -OutputDirectory "$bridge/rebuilt" -CommunityRelease
+& "$bridge/tests/JunctionApiTests.ps1" -GamePath $game
+```
+
+To install this local build, save and close CS2, confirm no Cities2 process remains,
+then use the following explicit copy procedure. This is separate from ordinary
+bootstrap checks; `-Install` does not install or enable the bridge.
+
+```powershell
+if (Get-Process Cities2 -ErrorAction SilentlyContinue) { throw 'Close CS2 first' }
+$manifest = Get-Content "$bridge/rebuilt/build-manifest.json" -Raw | ConvertFrom-Json
+$source = "$bridge/rebuilt/CitiesIIAgentBridge.dll"
+if ((Get-FileHash $source).Hash -ne $manifest.dllSha256) { throw 'DLL mismatch' }
+if ((Get-FileHash "$game/Cities2_Data/Managed/Game.dll").Hash -ne $manifest.gameAssemblySha256) { throw 'Game mismatch' }
+$mods = [Environment]::GetEnvironmentVariable('CSII_LOCALMODSPATH', 'User')
+if (!$mods) { throw 'Missing CSII_LOCALMODSPATH' }
+$destination = Join-Path $mods 'CitiesIIAgentBridge'
+New-Item -ItemType Directory -Force $destination | Out-Null
+$dll = Join-Path $destination 'CitiesIIAgentBridge.dll'
+if (Test-Path $dll) { Copy-Item $dll "$dll.$([guid]::NewGuid().ToString('N')).bak" }
+Copy-Item $source $dll
+if ((Get-FileHash $dll).Hash -ne $manifest.dllSha256) { throw 'Copy mismatch' }
+.\scripts\check-bridge.ps1 -BridgePath $bridge
+```
+
+Or add `-CheckBridge` (and optional `-BridgePath`) to `bootstrap.ps1` to run the
+same read-only diagnostic dependency checks alongside prerequisites. Checks do not
+launch the game or send mailbox commands. A stale installed DLL is an error, not an
+automatic deployment request. Enable the local bridge and local Network Tools in
+your disposable test playset using Skyve; avoid duplicate published versions.
+Load the toy save, pause manually, and leave **Allow local bridge controls off**
+for snapshot queries. See the bridge's `docs/JUNCTION-SNAPSHOTS.md` and `INSTALL.md`.
+
+## Coding-agent plugin
+
+We use `cs2-modding@csmodding`, a knowledge/skills plugin rather than an in-game mod.
+It is recommended for source-grounded development, not required to compile or play.
+The marketplace's README and the installed Codex CLI document:
+
+```powershell
+codex plugin marketplace add CitiesSkylinesModding/agents-plugins
+codex plugin add cs2-modding@csmodding
+codex plugin list
+```
+
+Start a new agent session and verify the cs2-modding skills are available. This
+plugin has no MCP server, so absence from `/mcp` is not a failure. Installing it
+does not install Unity, the CS2 SDK, the bridge, or a game-debugging patch. The
+marketplace's unity-devtools/coherent-gameface plugins are separate optional tools.
+See [marketplace instructions](https://github.com/CitiesSkylinesModding/agents-plugins#install)
+and [OpenAI marketplace guidance](https://developers.openai.com/plugins/build/plugins).

@@ -90,3 +90,13 @@ baseline record, not evidence that subsequent changes work.
 ## General Operating Philosophy
 
 - At the beginning of each session, create a new .md doc in NetworkTools.docs/session-notes/ that includes the \ date and time in the filename, and for each small incremental change during that session, document what the change was, whether it did or didn't work, or what was learned from testing it. Then commit that change to git along with the updated doc EVEN IF THE CHANGE DIDN'T WORK.  If the change was bad, manually revert (not git revert) and update the doc accordingly.  This is to ensure that all lessons are learned and we have a clear picture of our potentially messy journey.
+
+## Bridge and agent-plugin setup
+
+For junction diagnostics, read BOOTSTRAP.md's local bridge and coding-agent plugin
+sections and the sibling bridge's AGENTS.md, INSTALL.md and docs/JUNCTION-SNAPSHOTS.md.
+The bridge is a diagnostic-workflow dependency, not a NetworkTools assembly dependency.
+Use scripts/check-bridge.ps1 or bootstrap.ps1 -CheckBridge for read-only file/hash
+checks. Never equate installed files with live query support. Keep bridge code/local
+commits in its own repository; publishing/fork ownership is deferred. The cs2-modding
+plugin provides source-reading guidance, not game access or mutation authorization.

@@ -28,3 +28,12 @@ I want to try and take some incremental steps towards a more complete Network To
 - Step 5: Add agentic/natural language sophistication: "find the optimal route between these buildings and around that mountain and over that river to get this freight rail segment connected to that terminal over there across the map, no at grade crossings, keep grade lower than 3%, etc etc" or "why the fuck is that node opening a hole into the Upside Down right now?!?!" - this is a bit lofty, and will probably never actually happen, and I know that this community tends to be pretty anti-AI, but I still think it could be a lot of fun.  
 - Step 6: ???
 - Step 7: profit
+
+## Junction investigation setup
+
+The development diagnostics use our locally extended **Cities II Agent Bridge**;
+ordinary Network Tools use and builds do not require that mod. Follow
+[local bridge setup and checks](BOOTSTRAP.md#junction-development-dependencies).
+That guide also covers the `cs2-modding@csmodding` coding-agent plugin. Our bridge
+extension currently lives on a local sibling branch; upstream releases do not
+include these diagnostic commands yet.

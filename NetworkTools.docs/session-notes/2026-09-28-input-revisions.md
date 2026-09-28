@@ -29,3 +29,14 @@ Same incidental npm optional-platform additions/nested TypeScript removal as pri
 build were reviewed and discarded. Bridge unchanged. Next load paused toy save,
 select branch endpoint to junction at 0.5, inspect inputRevision/submittedRevision
 and revisionMatches before the slider and reselection tests. Live result pending.
+
+## First live input-revision observation
+
+Captured initial-trace.log and initial-preview.json under captures/input-revisions-20260928.
+New session ce6704b3297a4ba69c94fa10a9f8ce64: submission 1 at strength 0.5 has
+inputRevision=16, submittedRevision=16, revisionMatches=True, dirty=False. All four
+selected edge curves match, zero ambiguous mappings/missing buffers. Bridge snapshot
+in citySession b70629112dc64f638a7d3c1be595b7d1 resolves junction 53266:3, complete
+with no errors and four junction track lanes. Stationary association passed; this
+does not exercise an invalidated/stale observation. Next: slider roundtrip, then
+cancel/reselect to check monotonic revision advancement and final candidate matches.

@@ -52,3 +52,16 @@ the initial 0.5 snapshot. Evidence: roundtrip-trace.log and roundtrip-preview.js
 in captures/input-revisions-20260928. Returning to the same value advances the
 revision; no revision-mismatch window was observed, so stale rejection remains
 unexercised by this test. Next cancel/reselect without Apply.
+
+## Live revision cancel/reselect
+
+User cleared/reselected the same endpoints. New submission 6 at 0.5 reports
+inputRevision=23 and submittedRevision=23 (previously 20), revisionMatches=True,
+four matching selected curves, zero ambiguity/missing buffers. Bridge resolves
+53266:5, complete without errors, four junction track lanes; all three incident
+curves match initial 0.5. Captures: reselection-trace.log/reselection-preview.json.
+This verifies revision advancement through the observed selection lifecycle.
+No stale mismatch was induced; no production gate or general race-freedom claim.
+The manual stationary/slider/reselection checks for this instrumentation are done.
+Next independent work: external-input fingerprints and explicit stale-observation
+regressions before integrating any native connectivity acceptance decision.

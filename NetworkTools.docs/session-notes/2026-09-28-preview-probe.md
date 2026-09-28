@@ -37,3 +37,15 @@ and four junction-owned track lanes. Captured original/preview and trace under
 captures/post-barrier-20260928. This verifies the observer runs and sees matching
 candidate geometry for a stationary preview; rapid-change correctness is not yet tested.
 Next ask user to move 0.5 -> 0.8 -> 0.5 without Apply and leave the final preview.
+
+## Slider roundtrip
+
+Captured slider-roundtrip-trace.log and 85022-roundtrip-preview.json after user
+reported completion. Actual submissions were 1=0.5, 2=0, 3=0.8, 4=0, 5=0.5;
+intermediate zeros are observed, not assumed to be a defect. Every submission's
+post-barrier probe matched all four selected curves, with no ambiguous mappings or
+missing lane buffers. Final bridge snapshot remains complete and resolves 53266:3
+with four junction track lanes. Its three incident curves exactly match the initial
+0.5 snapshot at serialized precision. This demonstrates a fresh submission on return
+to the same strength; it is not proof of all possible timing interleavings.
+Next supervised test: cancel selection and reselect the same endpoints at 0.5.

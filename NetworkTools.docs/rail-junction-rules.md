@@ -80,3 +80,14 @@ the junction fitter. No game/system patching is indicated by this result.
 
 Keep research local for now. Eventually fork the bridge into Dan's GitHub account
 and push its development branch; do not open a junction PR yet.
+## Schema-2 preparation
+
+Bridge commit 2483de2 adds the actual prefab limits, composition lanes and side
+curves, plus generated EdgeLane metadata. It is built but awaits live capture.
+`scripts/rail-composition-inputs.py` reconstructs ordinary fresh-composition track
+inputs; run `uv run python scripts/test-rail-composition-inputs.py` for its tests.
+This is explicitly one native input path, not a full lane-generation replay.
+Do not feed schema-1 captures into it or treat its output as a connectivity verdict.
+Existing-lane reuse/matching and native target grouping remain to be implemented
+or verified against the next captures. The existing analyzer retains its clearly
+labelled terminal-proxy calculation for the old pair.

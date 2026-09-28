@@ -26,6 +26,11 @@
             }
 
             var config = BuildJobConfig();
+            // Complete previous readers before collecting candidate-search inputs.
+            m_LastShapeJob.Complete();
+#if IS_DEBUG
+            ConfigureJunctionSearch(ref config);
+#endif
             // The result is consumed by the UI only after this job completes.
             m_LastShapeJob.Complete();
 #if IS_DEBUG

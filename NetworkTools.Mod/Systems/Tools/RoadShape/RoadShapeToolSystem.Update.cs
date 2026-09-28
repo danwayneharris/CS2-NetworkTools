@@ -117,6 +117,9 @@
             get {
                 if (m_UpdateNeeded || !m_PathDataValid || !m_LastShapeJob.IsCompleted) { return 0; }
                 m_LastShapeJob.Complete();
+#if IS_DEBUG
+                if (!JunctionSearchAllowsApply()) { return 0; }
+#endif
                 return m_SmoothResult.IsCreated ? m_SmoothResult.Value : 0;
             }
         }

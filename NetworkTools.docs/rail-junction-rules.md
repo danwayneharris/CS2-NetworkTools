@@ -115,3 +115,13 @@ that arbitrary proposed centerline edits can be checked from old composition dat
 EdgeGeometry and composition are derived game outputs and can change on rebuilding.
 A fitter must predict or observe the candidate's rebuilt geometry, not substitute
 new centerline tangents into unchanged captured lane positions and call it exact.
+
+## Junction constraint research prototype
+
+`scripts/rail-junction-constraints.py` consumes single-track composition-analysis
+candidates. Preservation obligations come from existing directed connectors; repair
+requires explicit additional intended directions. It evaluates actual source-prefab
+curvature limits, optionally reserves headroom, and reports angle/span alternatives.
+Run `uv run python scripts/test-rail-junction-constraints.py` for captured regressions.
+It is not wired into the game fitter: proposed edits require fresh candidate
+composition data, and the other native eligibility rules still apply.

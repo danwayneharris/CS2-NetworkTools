@@ -89,3 +89,11 @@ These possibilities are outside the first prototype:
 
 Update this plan as decisions are made. Once behavior is implemented, document its
 actual architecture in the architecture guide and retain unresolved design work here.
+
+## Junction investigation checkpoint (Sept 28)
+
+See [rail junction rules](rail-junction-rules.md) for the installed game's curviness
+filter and an offline comparison of connected/disconnected merges. Exact eligibility
+replay still needs prefab limits and composition-derived connection geometry.
+Keep junction work local until it is further along. Bridge fork/push is a later
+repository-management task; the bridge remains a development-only tool.

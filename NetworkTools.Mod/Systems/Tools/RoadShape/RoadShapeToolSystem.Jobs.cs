@@ -35,6 +35,7 @@
             public NativeReference<int> SmoothResult;
 #if IS_DEBUG
             public int SmoothTraceId;
+            [ReadOnly] public NativeList<Entity> SmoothSelectedNodes;
 #endif
 
             /// <summary>
@@ -82,11 +83,11 @@
                         TransformPipeline.Execute(ref straightenTransform, ref edges, ref nodes, in Context, in Config);
                         break;
                     case ShapeTransformTemplate.CurveSmooth:
-                        var valid = CurveSmoothTransform.Execute(ref edges, ref nodes, Config.SmoothingFactor);
+                        var valid = CurveSmoothTransform.Execute(ref edges, ref nodes, Config.SmoothingFactor, out var failure, out var failureIndex);
                         SmoothResult.Value = valid ? 1 : -1;
 #if IS_DEBUG
                         TraceSmooth(SmoothTraceId, OutputMode, Config.SmoothingFactor, valid,
-                            NodeStates, EdgeStates, nodes, edges);
+                            NodeStates, EdgeStates, nodes, edges, failure, failureIndex, ConnectedEdgeLookup, EdgeLookup, SmoothSelectedNodes);
 #endif
                         if (!valid) {
                             edges.Dispose();

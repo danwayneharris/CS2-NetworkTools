@@ -1,0 +1,72 @@
+﻿{
+  "protocol": 1,
+  "id": "578124bdb579444baebe7f098ac0be59",
+  "session": "ad5343a651c642798677240ef63ee1ec",
+  "citySession": "a8247cea00bf4e518ddade3dc9e746ac",
+  "utc": "2026-09-28T11:12:49.4393082Z",
+  "result": {
+    "original": {
+      "index": 51682,
+      "version": 1
+    },
+    "matches": [
+      {
+        "index": 51117,
+        "version": 59
+      }
+    ],
+    "status": "observed",
+    "validationReady": false,
+    "meaning": "Observation only: no tool revision association or completed-rebuild guarantee. Never use to authorize Apply.",
+    "snapshot": {
+      "schemaVersion": 2,
+      "scope": "preview-observation",
+      "snapshotId": "cce8ba4b419a4234b28a716deb858e19",
+      "citySession": "a8247cea00bf4e518ddade3dc9e746ac",
+      "capturedUtc": "2026-09-28T11:12:49.4433031Z",
+      "simulationFrame": 6541503,
+      "junction": {
+        "index": 51117,
+        "version": 59
+      },
+      "incidentEdges": [],
+      "owners": [
+        {
+          "index": 51117,
+          "version": 59,
+          "live": true,
+          "prefab": {
+            "index": 16115,
+            "version": 1,
+            "netGeometryData": {
+              "mergeLayers": "TrainTrack",
+              "flags": "BlockZone, Directional, SmoothElevation, FlattenTerrain, ClipTerrain, ExclusiveGround, InvertCompositionHandedness",
+              "defaultWidth": 12.0
+            }
+          },
+          "temp": {
+            "original": {
+              "index": 51682,
+              "version": 1
+            },
+            "flags": "0"
+          },
+          "updated": false,
+          "created": false,
+          "position": {
+            "x": -162.24913,
+            "y": 617.6969,
+            "z": -550.316956
+          },
+          "curve": null,
+          "subLanes": []
+        }
+      ],
+      "lanes": [],
+      "complete": true,
+      "errors": [],
+      "meaning": "Native local lane data, not proof of vehicle routing or completed rebuild. Matching equalityId values mean PathNode.Equals within this snapshot only. Owner indices lack entity versions."
+    }
+  },
+  "ok": true
+}

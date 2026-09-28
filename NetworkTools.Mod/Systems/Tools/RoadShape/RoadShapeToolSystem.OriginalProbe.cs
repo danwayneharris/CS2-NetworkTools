@@ -10,6 +10,9 @@ namespace NetworkTools.Systems.Tools.RoadShape {
 
     public partial class NT_RoadShapeToolSystem {
         private List<object> m_SubmittedOriginalInputs;
+        private long m_LastFailureTestRevision = -1;
+        private long m_HeldProbeRevision;
+        private List<object> m_HeldProbeInputs;
 
         // Exact typed component copies, scoped to this tool instance/world.
         // Not a complete fingerprint of every prefab or lane-generation input.
@@ -73,7 +76,29 @@ namespace NetworkTools.Systems.Tools.RoadShape {
 
         private string OriginalProbeStatus() {
             var current = CaptureOriginalProbeInputs();
-            return NetworkTools.Geometry.OriginalInputComparison.Compare(m_SubmittedOriginalInputs, current);
+            var status = NetworkTools.Geometry.OriginalInputComparison.Observe(
+                m_PreviewInputRevision, m_SubmittedPreviewRevision, m_SubmittedOriginalInputs, current);
+            if (status == "matches" && current.Count > 0 && m_LastFailureTestRevision != m_PreviewInputRevision) {
+                m_LastFailureTestRevision = m_PreviewInputRevision;
+                // Deliberately corrupt a COPY, never an ECS component or the real baseline.
+                var altered = new List<object>(current);
+                var entity = (Entity)altered[0];
+                entity.Version = entity.Version == int.MaxValue ? 1 : entity.Version + 1;
+                altered[0] = entity;
+                var changed = NetworkTools.Geometry.OriginalInputComparison.Observe(
+                    m_PreviewInputRevision, m_SubmittedPreviewRevision, m_SubmittedOriginalInputs, altered);
+                var missing = NetworkTools.Geometry.OriginalInputComparison.Observe(
+                    m_PreviewInputRevision, m_SubmittedPreviewRevision, m_SubmittedOriginalInputs, null);
+                UnityEngine.Debug.Log($"[NetworkTools.PreviewFailureTest] revision={m_PreviewInputRevision} copiedEntityVersion={changed} missingCopy={missing} expected=changed,unavailable diagnosticOnly=true");
+                if (m_HeldProbeInputs != null && m_HeldProbeRevision != m_PreviewInputRevision) {
+                    var stale = NetworkTools.Geometry.OriginalInputComparison.Observe(
+                        m_PreviewInputRevision, m_HeldProbeRevision, m_HeldProbeInputs, current);
+                    UnityEngine.Debug.Log($"[NetworkTools.PreviewFailureTest] heldRevision={m_HeldProbeRevision} currentRevision={m_PreviewInputRevision} delayedObservation={stale} expected=stale_revision diagnosticOnly=true");
+                }
+                m_HeldProbeRevision = m_PreviewInputRevision;
+                m_HeldProbeInputs = new List<object>(current);
+            }
+            return status;
         }
     }
 }

@@ -21,9 +21,15 @@ public static class OriginalComparisonChecks {
         Check(submitted, new object[0], "changed");
         Check(null, submitted, "unavailable");
         Check(submitted, null, "unavailable");
+        if (NetworkTools.Geometry.OriginalInputComparison.Observe(2, 1, submitted, submitted) != "stale_revision")
+            throw new System.Exception("Delayed revision was not rejected");
+        if (NetworkTools.Geometry.OriginalInputComparison.Observe(0, 0, submitted, submitted) != "stale_revision")
+            throw new System.Exception("Uninitialized revision was not rejected");
+        if (NetworkTools.Geometry.OriginalInputComparison.Observe(2, 2, submitted, submitted) != "matches")
+            throw new System.Exception("Current observation mismatch");
     }
 }
 '@
 Add-Type -TypeDefinition ($source + "`n" + $tests)
 [OriginalComparisonChecks]::Run()
-Write-Output '8 original-input comparison checks passed (actual shared C# helper).'
+Write-Output '11 original-input comparison checks passed (actual shared C# helper).'

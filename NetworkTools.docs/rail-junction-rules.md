@@ -91,3 +91,27 @@ Do not feed schema-1 captures into it or treat its output as a connectivity verd
 Existing-lane reuse/matching and native target grouping remain to be implemented
 or verified against the next captures. The existing analyzer retains its clearly
 labelled terminal-proxy calculation for the old pair.
+## Live schema-2 evidence (September 28)
+
+The preparation above is now complete: both side-by-side toy merges were captured
+with schema 2 and no collection errors. See
+[the investigation record](session-notes/2026-09-28-0345.md).
+Their actual track prefab limit is 0.0314159244. The fresh-composition reconstruction
+and curvature gate agree with all twelve directed, different-arm candidates:
+four observed connectors on the working merge, two on the broken merge.
+This supersedes the earlier statement that the instance limit was unavailable.
+
+`scripts/analyze-rail-composition.py` deliberately restricts analysis to one source
+and one target track per arm. It compares owner-pair connectivity within each
+snapshot, not identities between different junctions. It does not implement the
+entire native target range/sorting process or additional eligibility gates.
+Run `uv run python scripts/test-rail-composition-analysis.py` for the two captured
+regressions; the existing reconstruction and terminal-proxy suites also pass.
+
+The broken branch requires curviness 0.0448894 and 0.0358219 in its two directions,
+against 0.0314159. The working branch requires 0.0268156 and 0.0210989.
+Matching these examples supports the geometric explanation but does not establish
+that arbitrary proposed centerline edits can be checked from old composition data.
+EdgeGeometry and composition are derived game outputs and can change on rebuilding.
+A fitter must predict or observe the candidate's rebuilt geometry, not substitute
+new centerline tangents into unchanged captured lane positions and call it exact.

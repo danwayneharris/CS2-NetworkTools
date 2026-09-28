@@ -25,3 +25,15 @@ E22113B5E8671FF6E1F388DC209101AE0AC3119DC46A8F310688B0C72488AF70.
 User confirmed game closed before deployment. Next supervised test: load toy save,
 pause, select branch endpoint to junction at 0.5; inspect PreviewProbe log and bridge
 snapshot. Then rapid 0.5/0.8/0.5 changes and cancel/reselect. No in-game result yet.
+
+## First live probe result
+
+User prepared 0.5 preview after restarting. Current selected nodes are 85028:1 to
+junction 85022:1 (fresh identities, not the earlier save-session IDs). Submission 1
+reports dirty=False, expectedEdges=4, matchedEdges=4, ambiguousEdges=0,
+curveMismatches=0, missingLaneBuffers=0, edgeTrackLanes=8 after ModificationEndBarrier.
+Bridge independently resolves connected junction 53266:3, complete with no errors,
+and four junction-owned track lanes. Captured original/preview and trace under
+captures/post-barrier-20260928. This verifies the observer runs and sees matching
+candidate geometry for a stationary preview; rapid-change correctness is not yet tested.
+Next ask user to move 0.5 -> 0.8 -> 0.5 without Apply and leave the final preview.

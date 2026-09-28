@@ -69,7 +69,9 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             var duplicates = 0;
             foreach (var count in matches.Values) { if (count != 1) { duplicates++; } }
             var revisionMatches = m_SubmittedPreviewRevision == m_PreviewInputRevision && !m_UpdateNeeded && m_PathDataValid;
+            var originalInputs = OriginalProbeStatus();
             var message = $"[NetworkTools.PreviewProbe] session={s_SmoothSession} submission={probe.Id} inputRevision={m_PreviewInputRevision} submittedRevision={m_SubmittedPreviewRevision} revisionMatches={revisionMatches} dirty={m_UpdateNeeded} expectedEdges={probe.Curves.Count} matchedEdges={matches.Count} ambiguousEdges={duplicates} curveMismatches={mismatches} missingLaneBuffers={missingBuffers} edgeTrackLanes={tracks} phase=AfterModificationEndBarrier validationReady=false";
+            message += $" originalInputs={originalInputs}";
             if (message != m_LastProbeMessage) {
                 UnityEngine.Debug.Log(message);
                 m_LastProbeMessage = message;

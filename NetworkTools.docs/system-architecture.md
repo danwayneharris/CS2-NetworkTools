@@ -4,7 +4,7 @@ Experimental Debug junction search (Sept 28): Smooth Curve can search bounded
 boundary-direction changes for one three-arm rail junction at a selection endpoint,
 using rebuilt native preview connections as its acceptance test. See the
 [experiment and limits](session-notes/2026-09-28-1500-native-junction-search.md) and
-[validation confidence](offline-validation-confidence.md). Live verification is pending;
+[validation confidence](offline-validation-confidence.md). One saved rail case passed preview and Apply;
 Release behavior and interior-junction rejection are unchanged.
 
 This is a living map of the runtime architecture, grounded in the current checkout.

@@ -40,3 +40,15 @@ in citySession b70629112dc64f638a7d3c1be595b7d1 resolves junction 53266:3, compl
 with no errors and four junction track lanes. Stationary association passed; this
 does not exercise an invalidated/stale observation. Next: slider roundtrip, then
 cancel/reselect to check monotonic revision advancement and final candidate matches.
+
+## Live revision slider roundtrip
+
+User completed 0.5 -> 0.8 -> 0.5. Trace includes intermediate zero inputs:
+submissions 1..5 have strengths 0.5, 0, 0.8, 0, 0.5 and input/submitted revisions
+16,17,18,19,20 respectively. Each observed pair matches, with all four candidate
+curves matching and no missing lane buffers/ambiguous edges. Final complete bridge
+snapshot has four junction track lanes and all three incident curves identical to
+the initial 0.5 snapshot. Evidence: roundtrip-trace.log and roundtrip-preview.json
+in captures/input-revisions-20260928. Returning to the same value advances the
+revision; no revision-mismatch window was observed, so stale rejection remains
+unexercised by this test. Next cancel/reselect without Apply.

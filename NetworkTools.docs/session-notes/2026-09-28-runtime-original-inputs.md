@@ -22,3 +22,8 @@ Next: full build with game closed, stationary preview expects matches, then an
 external edit while a candidate remains pending (if tools allow it) should report
 changed/unavailable. Switching tools may instead cancel the candidate; that is not
 proof the changed-input path ran. No live edits or deployment this session.
+
+## Deployment
+
+User confirmed game closed; no Cities2 process present. Full Debug build, postprocessing, UI build and deployment passed (0 errors, 33 compiler warnings). Installed DLL SHA256: 3EFDFB97CEBB8742C3C64B93D43975D5ADAB09A6F226C5E045ACCE22067E5BB5. Package-lock changes retained for review after automated approval rejected restoration due to possible pre-existing edits. Untracked programmatic-mod-ui note preserved. Live originalInputs verification pending; next stationary preview at 0.5.
+

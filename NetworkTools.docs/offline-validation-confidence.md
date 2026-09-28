@@ -10,7 +10,7 @@ when live observations support or contradict the model; preserve counterexamples
 | Joint lane-direction correction is feasible | High for the fixed-position mathematical model; all constraints tested simultaneously | Does not predict authored handle changes or reconstructed positions |
 | Native candidate search finds a useful correction | One live saved regression passes: +3 degrees accepted; independent bridge confirms all four directed connections; user sees no break | Other cases, exhaustion and rapid user edits; not general validation |
 | Repeated fresh observations establish final preview | Limited: revision/control checks already exercised; three-observation policy is new | Native rebuild completion is not proven by frame count |
-| Accepted preview survives Apply | Prior unchanged fitter previews matched Apply | New rotation/search must be captured before/after Apply |
+| Accepted preview survives Apply | One new-search round trip confirmed: same four directed rail connections and exact serialized curves on all three incident edges; user sees no break | Broader layouts, repeated edits and other prefabs |
 | Connections remain operational | Not established by geometry or connector presence alone | Train traversal and save/reload |
 
 ## Opportunities to reduce manual work

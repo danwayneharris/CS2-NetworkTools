@@ -82,3 +82,13 @@ complete/error-free and contain the same four directed rail connections:
 362240:1 ->359710:2;359710:1 ->362240:2.
 Captures and search trace are in `captures/comparison-save-20260928`.
 This verifies one live preview search, not Apply, train traversal or broader coverage.
+
+## Apply verification
+
+User applied and reports no visible breakage. Read-only permanent snapshot53107:1
+is complete/error-free and retains all four directed connections listed above.
+All three incident edge curves match the accepted preview exactly at serialized
+precision (owners362240,359709,359710). Saved `53107-applied.json` and
+`search-applied-trace.log` beside the preview captures. This establishes one
+successful preview-to-Apply round trip for the new boundary search. Train traversal,
+save/reload after Apply, other prefabs and rapid parameter changes remain untested.

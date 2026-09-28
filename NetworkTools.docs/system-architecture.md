@@ -229,7 +229,7 @@ PreProcess(all edges)
 This is a **Strategy pattern** inside a common pipeline. The generic struct design
 is intended for job/Burst compatibility.
 
-Current node-position policy keeps the path's first and last nodes fixed. Interior
+The generic pipeline's node-position policy keeps the path's first and last nodes fixed. Interior
 positions use the average displacement contributed by adjacent transformed edge
 endpoints. That is implemented policy, not a guarantee of tangent or curvature continuity.
 
@@ -261,18 +261,35 @@ What exists:
 - A dispatch branch selecting `CurveSmoothTransform`.
 - A common path-selection, parameter, preview, and apply framework.
 
-What is missing:
+The mode is enabled in metadata on the integration branch.
+[CurveSmoothTransform](../NetworkTools.Mod/Systems/Tools/RoadShape/Transforms/CurveSmoothTransform.cs)
+calls the independent `PlanarPathTarget` single-boundary-cubic reconstruction and publishes its
+candidate arrays only if the whole selection passes validation. It bypasses the
+generic transform pipeline's node-position averaging. Endpoints and junctions are
+fixed at selection boundaries; interior junction selections are rejected by this
+experiment. Node and control-point elevations are preserved. Interior endpoints,
+nodes, and handles blend toward exact subcurves of a shared target by strength;
+partial strength does not guarantee matching tangent directions. The first
+in-game trials exposed a zero-to-positive handle jump; the follow-up blend change
+was confirmed by the maintainer to remove that jump. The current target-based
+version also smooths heavily distorted test paths and real-city elevated rail.
+The final real-city screenshot sequence shows Apply visually matching preview.
+See the [session record](session-notes/2026-09-26-1806.md).
 
-- The mode is [disabled in metadata](../NetworkTools.Mod/Systems/Tools/RoadShape/Core/ShapeTransformTemplate.cs#L25).
-- [CurveSmoothTransform](../NetworkTools.Mod/Systems/Tools/RoadShape/Transforms/CurveSmoothTransform.cs#L9)
-  has empty/TODO processing methods.
+A native result flag is read only after the producing job completes. Invalid fits
+produce no preview, disable Apply, and provide a hint to change strength or selection.
+Selection mutations, cache refresh, and disposal wait for the prior shape job;
+Apply finishes recording commands before resetting the selection lists it reads.
 
 Prototype scope, geometry requirements, and future directions are maintained in the
 [Smooth Curve plan](smooth-curve-plan.md).
 
-The standalone [curve geometry module](curve-geometry.md) fits horizontal node
-positions and has external .NET tests. It is compiled into the mod but is not yet
-called by this pipeline; it does not reconstruct Bézier segments.
+The [curve geometry module](curve-geometry.md) supplies target construction and
+exact cubic subdivision; the earlier node fitter remains available but unused by
+Smooth Curve. External tests and full Debug/Release
+builds pass, including postprocessing, UI generation/build, and Windows Burst
+compilation. Debug is deployed and visually tested. Train traversal, save/reload,
+and Release execution remain unverified.
 
 ## 11. Anarchy and compatibility boundaries
 

@@ -16,6 +16,8 @@
 
     public partial class NT_RoadShapeToolSystem {
         protected override JobHandle OnUpdate(JobHandle inputDeps) {
+            // Selection processing may clear/resize native lists held by the previous job.
+            m_LastShapeJob.Complete();
             UpdateActions();
 
             // ═══════════════════════════════════════════════════════════════════════════
@@ -108,13 +110,22 @@
         public int ApplyMinNodeCount => 2;
 
         /// <inheritdoc />
-        public bool CanApply => Phase == OperationPhase.Ready && Template.Value != ShapeTransformTemplate.Preserve;
+        public bool CanApply => Phase == OperationPhase.Ready && Template.Value != ShapeTransformTemplate.Preserve
+            && (Template.Value != ShapeTransformTemplate.CurveSmooth || SmoothPreviewResult == 1);
+
+        private int SmoothPreviewResult {
+            get {
+                if (m_UpdateNeeded || !m_PathDataValid || !m_LastShapeJob.IsCompleted) { return 0; }
+                m_LastShapeJob.Complete();
+                return m_SmoothResult.IsCreated ? m_SmoothResult.Value : 0;
+            }
+        }
 
         /// <summary>
         ///     Requests the tool to apply the current transformation.
         /// </summary>
         public void RequestApply() {
-            if (Phase != OperationPhase.Ready) {
+            if (!CanApply) {
                 return;
             }
 
@@ -128,6 +139,7 @@
         ///     Resets the tool to idle state, clearing all selection.
         /// </summary>
         public void ResetToIdle() {
+            m_LastShapeJob.Complete();
             // Clear state to completely blank
             Phase = OperationPhase.Idle;
 

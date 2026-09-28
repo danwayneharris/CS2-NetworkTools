@@ -1,12 +1,24 @@
 # Smooth Curve plan
 
-**Status (Sept 26, 2026):** a standalone [node-position fitting module](curve-geometry.md)
-and external tests exist. Game integration and Bézier reconstruction are not yet
-implemented; Smooth Curve remains disabled. This document records the scope and open design
+**Status (Sept 26, 2026):** the [geometry module](curve-geometry.md) has a first
+game-integration prototype with Bézier reconstruction and the existing smoothing
+control. External tests and full Debug/Release builds pass, including Windows
+Burst compilation. Debug is deployed. The maintainer reports successful smoothing
+of distorted test paths; real-city elevated-rail screenshots show improved curves
+and a matching post-Apply view. Train traversal, save/reload, and Release execution
+remain unverified.
+This document records the scope and open design
 questions. See [system architecture](system-architecture.md#10-smooth-curve-current-infrastructure)
 for the existing integration points.
 
 ## Goal
+
+The current experiment now integrates the boundary-target reconstruction tested
+in the [session notes](session-notes/2026-09-26-1806.md). It replaces the active
+node-fairing policy for simple forward-going selections, rejecting interior
+junctions. Earlier approaches are preserved in the session notes and geometry guide.
+Next broaden validation of game-generated connections, then generalize target selection beyond
+a single cubic. Explicit boundary UI controls remain deferred.
 
 Produce realistic, non-wiggly road and track geometry, including networks built
 with Anarchy. The first prototype should let a user select an awkward path,
@@ -27,19 +39,29 @@ vertical profile.
 
 ## Geometry and integration questions
 
-Path-wide fitting should account for alignment and boundary constraints across the
-selection. The initial node fit uses regularized second differences on original
-chord-length stations. Bézier reconstruction and the integration point in the
-transformation pipeline remain undecided.
+The current implementation builds one planar cubic from the selected outer curve
+endpoints and their tangent directions. It partitions the target by original node
+chord-length ratios and blends all controls and interior nodes toward it. Endpoint
+nodes stay fixed; positive-strength selections with interior junctions or backward
+node chords are rejected. The dedicated transformation bypasses generic
+edge-to-node displacement averaging. Partial strength may retain input defects.
+See the [geometry guide](curve-geometry.md) for the implemented algorithm and
+[session notes](session-notes/2026-09-26-1806.md) for the experiments that led to it.
 
-Before game integration, define:
+Next investigate segment endpoint offsets and game connection reconstruction,
+then a fit using samples of the actual centerline. Automatic corner classification
+is deferred; explicit player choices for boundary direction (such as perpendicular
+connections) may be preferable initially. No additional UI option is implemented.
 
-- Which nodes are fixed, including path endpoints and intermediate junctions.
-- How endpoint directions and connections outside the selection are preserved.
+Remaining design questions include:
+
+- Whether to add optional boundary matching to unselected connections, beyond
+  preserving the selected edges' existing directions at fixed nodes.
 - How much movement is allowed and what each UI parameter controls.
 - What continuity is required: matching positions, tangent directions, and curvature
   are distinct requirements.
-- How degenerate geometry or unsuitable selections are reported to the user.
+- Whether rejected selections need more detailed feedback than the current hint
+  and disabled Apply button.
 
 Implementation must account for edge direction relative to path traversal and for
 the offsets between intersection centers and Bézier endpoints. The existing

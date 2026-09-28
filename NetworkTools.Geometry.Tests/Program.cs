@@ -19,7 +19,10 @@ internal static class Program {
     private static void Same(P[] a, P[] b, string name) {
         for (var i = 0; i < a.Length; i++) { Near(a[i].X, b[i].X, name); Near(a[i].Z, b[i].Z, name); }
     }
-    private static unsafe void Main() {
+    private static unsafe void Main(string[] args) {
+        TargetReplay.Run(args);
+        CheckBezier();
+        CheckCapturedHandleBlend();
         // Analytic three-point solution: equal chords h, only the middle Z is free.
         // E(z) = h*(z-z0)^2 + lambda*4*z^2/h^3, so z=z0/(1+4*lambda/h^4).
         var three = new[] { new P(0, 0), new P(20, 15), new P(40, 0) };
@@ -85,6 +88,55 @@ internal static class Program {
             }
         }
         Console.WriteLine("PASS: analytic solution, nonuniform straight line, zero strength, zigzag reduction, endpoint/junction pins, reversal/translation/rotation invariance, long-path stationarity, two nodes, invalid inputs.");
+    }
+
+    private static void CheckCapturedHandleBlend() {
+        // Player.log trace 566, Sept 26: second handle on edge 111496:1.
+        // At strength .001 the old adapter jumped 81.68 m with stationary nodes.
+        var original = new P(-1559.512, -1867.44067);
+        var target = new P(-1533.36365, -1944.82434);
+        var zero = PlanarBezier.BlendHandle(original, default, target, 0);
+        Near(original.X, zero.X, "captured zero X"); Near(original.Z, zero.Z, "captured zero Z");
+        var previous = 0.0;
+        foreach (var strength in new[] { 0.000001, 0.001, 0.1, 0.49, 0.5, 0.51, 1.0 }) {
+            var point = PlanarBezier.BlendHandle(original, default, target, strength);
+            var distance = Math.Sqrt(Math.Pow(point.X - original.X, 2) + Math.Pow(point.Z - original.Z, 2));
+            var fullDistance = Math.Sqrt(Math.Pow(target.X - original.X, 2) + Math.Pow(target.Z - original.Z, 2));
+            Near(fullDistance * strength, distance, "captured displacement scales with strength");
+            if (distance < previous || (strength <= 0.001 && distance > 0.082)) {
+                throw new Exception("captured handle jumps or reverses during sweep");
+            }
+            previous = distance;
+        }
+        var delta = new P(7, -3);
+        var moved = PlanarBezier.BlendHandle(original, delta, new P(target.X + 7, target.Z - 3), 0.5);
+        var stationary = PlanarBezier.BlendHandle(original, default, target, 0.5);
+        Near(stationary.X + 7, moved.X, "endpoint translation X");
+        Near(stationary.Z - 3, moved.Z, "endpoint translation Z");
+        Console.WriteLine("PASS: captured handle continuity, strength sweep, endpoint translation.");
+    }
+
+    private static void CheckBezier() {
+        var a = new P(0, 0); var d = new P(30, 0);
+        if (!PlanarBezier.Handles(a, d, new P(1, 0), new P(1, 0), out var b, out var c)) {
+            throw new Exception("straight cubic rejected");
+        }
+        Near(10, b.X, "straight handle B"); Near(20, c.X, "straight handle C");
+        var middle = new P(30, 10); var end = new P(60, 0);
+        if (!PlanarBezier.Tangent(a, middle, end, out var tangent)) { throw new Exception("tangent rejected"); }
+        if (!PlanarBezier.Handles(a, middle, new P(1, 0), tangent, out b, out c)
+            || !PlanarBezier.Handles(middle, end, tangent, new P(1, 0), out var e, out var f)) {
+            throw new Exception("bend rejected");
+        }
+        Near(0, (middle.X - c.X) * (e.Z - middle.Z) - (middle.Z - c.Z) * (e.X - middle.X), "shared tangent cross product");
+        if (!PlanarBezier.Handles(middle, a, new P(-tangent.X, -tangent.Z), new P(-1, 0), out var rb, out var rc)) {
+            throw new Exception("reversed cubic rejected");
+        }
+        Near(c.X, rb.X, "reverse handle"); Near(c.Z, rb.Z, "reverse handle");
+        Near(b.X, rc.X, "reverse handle"); Near(b.Z, rc.Z, "reverse handle");
+        if (PlanarBezier.Handles(a, d, new P(-1, 0), new P(1, 0), out _, out _)
+            || PlanarBezier.Tangent(a, d, a, out _)) { throw new Exception("backward/cusp accepted"); }
+        Console.WriteLine("PASS: cubic handles, shared planar tangents, reversal, backward/cusp rejection.");
     }
 
     // Independently differentiate the documented objective at the fitted points.

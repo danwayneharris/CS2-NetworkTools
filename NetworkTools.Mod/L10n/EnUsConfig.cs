@@ -240,6 +240,7 @@ namespace NetworkTools.L10n {
                 { "NetworkTools.UI.Curve.StraightenCurve", "Straighten Curve" },
                 { "NetworkTools.UI.Curve.SmoothCurve", "Smooth Curve" },
                 { "NetworkTools.UI.Curve.SmoothingFactor", "Smoothing Factor" },
+                { "NetworkTools.HintTooltip.ShapeCurve.Invalid", "Cannot smooth this path. Reduce smoothing or change the selection." },
 
                 // ## Connect Tool
                 { "NetworkTools.UI.Connect.None", "None" },

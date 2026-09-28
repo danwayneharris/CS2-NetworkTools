@@ -53,6 +53,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
         /// Stores results in m_ShapeTransformContext and m_EdgeStates.
         /// </summary>
         private void RefreshPathData() {
+            m_LastShapeJob.Complete();
             if (m_SelectedNodes.Length < 2 || m_CurrentPathEdges.Length == 0) {
                 m_Log.Debug("RefreshPathData: Insufficient selection, skipping");
                 m_PathDataValid = false;
@@ -172,7 +173,9 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                         Entity = nodeEntity,
                         PathIndex = i,
                         Position = nodePos,
-                        OriginalPosition = nodePos
+                        OriginalPosition = nodePos,
+                        SmoothPinned = !ConnectedEdgeLookup.TryGetBuffer(nodeEntity, out var incidentEdges)
+                            || incidentEdges.Length != 2
                     };
                 }
 

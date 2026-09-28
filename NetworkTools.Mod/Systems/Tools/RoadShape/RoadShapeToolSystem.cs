@@ -105,6 +105,12 @@ namespace NetworkTools.Systems.Tools.RoadShape {
     OperationPhase phase,
     ProxyAction applyAction,
     ProxyAction secondaryApplyAction) {
+            if (phase == OperationPhase.Ready && Template.Value == ShapeTransformTemplate.CurveSmooth
+                && SmoothPreviewResult < 0) {
+                return new HintTooltipEntry[] {
+                    new("NetworkTools.HintTooltip.ShapeCurve.Invalid", secondaryApplyAction)
+                };
+            }
             return phase switch {
                 OperationPhase.Idle => new HintTooltipEntry[] {
                     new("NetworkTools.HintTooltip.ShapeSlope.SelectStart", applyAction),

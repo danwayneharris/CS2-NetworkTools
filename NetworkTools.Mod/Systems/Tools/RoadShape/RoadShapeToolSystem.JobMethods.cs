@@ -28,6 +28,9 @@
             var config = BuildJobConfig();
             // The result is consumed by the UI only after this job completes.
             m_LastShapeJob.Complete();
+#if IS_DEBUG
+            m_SubmittedPreviewRevision = m_PreviewInputRevision;
+#endif
             m_SmoothResult.Value = 0;
             m_Log.Debug($"SchedulePathTransformJob: Template={config.Template}, EaseIn={config.EaseInLength:F3}, EaseOut={config.EaseOutLength:F3}");
             m_Log.Debug($"  Path: Start={m_ShapeTransformContext.StartPosition}, End={m_ShapeTransformContext.EndPosition}, DeltaHeight={m_ShapeTransformContext.DeltaHeight:F2}");

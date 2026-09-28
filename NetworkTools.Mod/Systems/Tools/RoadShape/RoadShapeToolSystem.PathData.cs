@@ -53,6 +53,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
         /// Stores results in m_ShapeTransformContext and m_EdgeStates.
         /// </summary>
         private void RefreshPathData() {
+            InvalidatePreviewObservation();
             m_LastShapeJob.Complete();
             if (m_SelectedNodes.Length < 2 || m_CurrentPathEdges.Length == 0) {
                 m_Log.Debug("RefreshPathData: Insufficient selection, skipping");
@@ -108,6 +109,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
         /// Invalidates cached path data. Called when selection changes.
         /// </summary>
         private void InvalidatePathData() {
+            InvalidatePreviewObservation();
             m_PathDataValid = false;
         }
 

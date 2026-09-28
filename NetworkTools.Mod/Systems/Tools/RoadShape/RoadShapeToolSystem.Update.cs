@@ -139,6 +139,7 @@
         ///     Resets the tool to idle state, clearing all selection.
         /// </summary>
         public void ResetToIdle() {
+            InvalidatePreviewObservation();
             m_LastShapeJob.Complete();
             // Clear state to completely blank
             Phase = OperationPhase.Idle;

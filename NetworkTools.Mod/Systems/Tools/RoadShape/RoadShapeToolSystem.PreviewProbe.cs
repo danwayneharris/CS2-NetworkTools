@@ -19,6 +19,8 @@ namespace NetworkTools.Systems.Tools.RoadShape {
         private static readonly object s_ProbeLock = new();
         private static PreviewProbe s_Probe;
         private string m_LastProbeMessage;
+        private long m_PreviewInputRevision;
+        private long m_SubmittedPreviewRevision;
 
         private static void CapturePreviewProbe(int id, ToolOutputMode mode, bool valid,
             NativeArray<EdgeState> edges) {
@@ -66,7 +68,8 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             }
             var duplicates = 0;
             foreach (var count in matches.Values) { if (count != 1) { duplicates++; } }
-            var message = $"[NetworkTools.PreviewProbe] session={s_SmoothSession} submission={probe.Id} dirty={m_UpdateNeeded} expectedEdges={probe.Curves.Count} matchedEdges={matches.Count} ambiguousEdges={duplicates} curveMismatches={mismatches} missingLaneBuffers={missingBuffers} edgeTrackLanes={tracks} phase=AfterModificationEndBarrier validationReady=false";
+            var revisionMatches = m_SubmittedPreviewRevision == m_PreviewInputRevision && !m_UpdateNeeded && m_PathDataValid;
+            var message = $"[NetworkTools.PreviewProbe] session={s_SmoothSession} submission={probe.Id} inputRevision={m_PreviewInputRevision} submittedRevision={m_SubmittedPreviewRevision} revisionMatches={revisionMatches} dirty={m_UpdateNeeded} expectedEdges={probe.Curves.Count} matchedEdges={matches.Count} ambiguousEdges={duplicates} curveMismatches={mismatches} missingLaneBuffers={missingBuffers} edgeTrackLanes={tracks} phase=AfterModificationEndBarrier validationReady=false";
             if (message != m_LastProbeMessage) {
                 UnityEngine.Debug.Log(message);
                 m_LastProbeMessage = message;

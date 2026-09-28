@@ -49,3 +49,19 @@ with four junction track lanes. Its three incident curves exactly match the init
 0.5 snapshot at serialized precision. This demonstrates a fresh submission on return
 to the same strength; it is not proof of all possible timing interleavings.
 Next supervised test: cancel selection and reselect the same endpoints at 0.5.
+
+## Cancel/reselection result
+
+User confirmed clearing/reselecting. Latest trace is submission 23, strength 0.5,
+selected 85028:1 -> 85022:1. Captured reselection-trace.log and
+85022-reselection-preview.json. Latest probe matches all four expected selected
+edges, zero ambiguity/mismatches/missing buffers, eight edge track lanes. Bridge
+resolves 53266:5 (previously 53266:3), complete with no errors and four junction
+track lanes. All three incident curves equal the original 0.5 capture at serialized
+precision. Entity index reuse with a changed version reinforces the need for full
+entity identities. Intervening slider submissions also exist; this was not an
+isolated single-transition timing trace. No complete race-freedom claim follows.
+
+Stationary, slider-roundtrip, and user-reported cancel/reselection observations now
+support the diagnostic observation point. Next is production-style input revision
+invalidation and candidate association; no additional manual action needed yet.

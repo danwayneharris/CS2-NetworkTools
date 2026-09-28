@@ -22,7 +22,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
         [EnumOption("NetworkTools.UI.Curve.StraightenCurve", "coui://nt/Modes/CurveStraighten.svg", Group = "Curve")]
         CurveStraighten = 8,
 
-        [EnumOption("NetworkTools.UI.Curve.SmoothCurve", "coui://nt/Modes/CurveSmooth.svg", Group = "Curve", Disabled = true)]
+        [EnumOption("NetworkTools.UI.Curve.SmoothCurve", "coui://nt/Modes/CurveSmooth.svg", Group = "Curve")]
         CurveSmooth = 16,
     }
 }

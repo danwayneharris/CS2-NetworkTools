@@ -15,3 +15,14 @@ Verification: five Python tests passed against saved live evidence. This validat
 the offline observation/contract checks only, not runtime stale-result protection.
 Next: identify a native post-lane-rebuild observation hook and candidate revision
 propagation before using native connectivity to authorize any newly supported case.
+
+## Native ordering source investigation
+
+Located an explicit candidate observer point after ModificationEndBarrier using
+installed Game.dll, rather than relying on a delay or simulation frame. Confirmed
+LaneSystem registers its producer with ModificationBarrier4 and the scheduler runs
+later lane stages before ModificationEnd playback. See preview-freshness.md for
+source locations, fingerprint, failed namespace probes and proposed registration.
+No runtime observer is implemented yet. Next change is diagnostic instrumentation
+with revision/candidate association, followed by a game restart and supervised
+rapid-slider/cancel/reselect tests. Current game may stay open meanwhile.

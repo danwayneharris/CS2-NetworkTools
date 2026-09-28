@@ -58,3 +58,43 @@ The small `may_accept` function models required token equality and a separately
 proven completion condition. Tests exercise stale revisions, city/tool replacement,
 missing completion, and returning to an old value. The completion argument is a
 placeholder for a future proven native integration hook, not evidence we have one.
+
+## Installed scheduling evidence (September 28)
+
+Targeted ILSpy 9.1.0.7988 extraction of installed Game.dll, SHA256
+AAEE15C4FA41C130ABAA1183840667E4FAAE531D67E8A9FA7536618EFFA2F86A.
+Local source is under %TEMP%/nt-preview-order-source; copyrighted source is not
+committed. Full decompile setup record is absent. Wrong namespace probes for
+Game.Tools.ModificationSystem and Game.Common.SafeCommandBufferSystem failed;
+correct namespaces are Game.Common and Game respectively.
+
+- Game.Common.SystemOrder.cs:58-60 registers ToolSystem before ModificationSystem
+  in MainLoop. Lines 82-93 bracket modification phases with allowance and playback
+  barriers. LaneSystem is registered at Modification4 (155), SecondaryLaneSystem
+  at Modification4B (184), LaneConnectionSystem at Modification5 (211).
+- Game.Common.ModificationSystem.OnUpdate invokes Modification1 through
+  ModificationEnd sequentially; it is not a GameSimulation-phase system.
+- Game.Tools.ToolSystem.cs:251-260 invokes PreTool, ToolUpdate, PostTool. A PostTool
+  observer would therefore be too early for the subsequent modification pipeline.
+- LaneSystem.cs:9234,9258,9382-9386 (earlier targeted extraction under
+  %TEMP%/nt-rail-rule-source) uses ModificationBarrier4, creates its command buffer,
+  and registers its lane job as a producer on that barrier.
+- ModificationBarrier4 and ModificationEndBarrier derive from
+  Game.SafeCommandBufferSystem. Its OnUpdate disables further command-buffer
+  creation for that phase and calls EntityCommandBufferSystem.OnUpdate.
+- Game.UpdateSystem.cs:178-180 supports an explicit UpdateAfter<T, Other> anchor.
+
+Candidate diagnostic registration:
+`UpdateAfter<Observer, ModificationEndBarrier>(SystemUpdatePhase.ModificationEnd)`.
+This is a source-supported observation location, not yet an implemented or
+live-verified completion certificate. An observer must use appropriate ECS read
+synchronization, correlate a current submitted revision and its expected curves,
+resolve all incident preview edges unambiguously, and report incomplete reads.
+Later pathfinding processing and actual train traversal remain separate concerns.
+Do not insert command-buffer writes after a barrier whose usage has closed.
+
+Next implementation should be diagnostic-only: record submitted revision, observed
+revision, candidate matching, and native lane evidence at this phase without
+changing CanApply. Supervised acceptance: stationary preview, rapid 0.5/0.8/0.5
+slider changes, cancel/reselect, then preview/Apply comparison. Only after those
+checks should native verdicts participate in enabling newly supported geometry.

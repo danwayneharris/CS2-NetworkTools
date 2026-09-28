@@ -20,7 +20,9 @@ internal static class Program {
         for (var i = 0; i < a.Length; i++) { Near(a[i].X, b[i].X, name); Near(a[i].Z, b[i].Z, name); }
     }
     private static unsafe void Main(string[] args) {
+        if (args.Length == 2 && args[0] == "--trace-log") { TraceReplay.Run(args[1]); return; }
         TargetReplay.Run(args);
+        FailureTests.Run();
         CheckBezier();
         CheckCapturedHandleBlend();
         // Analytic three-point solution: equal chords h, only the middle Z is free.

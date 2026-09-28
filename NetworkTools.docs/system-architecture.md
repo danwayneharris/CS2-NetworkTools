@@ -313,6 +313,10 @@ When exploring or changing a subsystem:
 
 ### Open questions and verification work
 
+The Debug Smooth Curve trace now includes explicit rejection reasons and topology
+context. See [junction diagnostics](junction-diagnostics.md) for its schema,
+offline replay commands, bridge review, and limits of the captured evidence.
+
 - Verify automated test discovery and execution, and extend in-game checks beyond
   the successful tooltip and Connect smoke test.
 - Verify Release/Burst behavior separately from Debug compilation.

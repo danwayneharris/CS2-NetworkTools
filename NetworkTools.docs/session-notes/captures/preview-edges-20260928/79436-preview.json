@@ -1,0 +1,1209 @@
+﻿{
+  "protocol": 1,
+  "id": "4a8377e235294fcd9d0a5845db7fd24f",
+  "session": "776c75238f7c477a8f23ebc8bb87208d",
+  "citySession": "72585db807fe41c2b676cb636b733c7d",
+  "utc": "2026-09-28T11:27:29.6471591Z",
+  "result": {
+    "original": {
+      "index": 79436,
+      "version": 1
+    },
+    "matches": [
+      {
+        "index": 54185,
+        "version": 3
+      }
+    ],
+    "status": "observed",
+    "validationReady": false,
+    "meaning": "Observation only: no tool revision association or completed-rebuild guarantee. Never use to authorize Apply.",
+    "snapshot": {
+      "schemaVersion": 2,
+      "scope": "preview-observation",
+      "snapshotId": "eb2b5aa105a54bbfb99ecd1164e0c52b",
+      "citySession": "72585db807fe41c2b676cb636b733c7d",
+      "capturedUtc": "2026-09-28T11:27:29.6511612Z",
+      "simulationFrame": 6541503,
+      "junction": {
+        "index": 54185,
+        "version": 3
+      },
+      "incidentEdges": [],
+      "owners": [
+        {
+          "index": 54185,
+          "version": 3,
+          "live": true,
+          "prefab": {
+            "index": 16115,
+            "version": 1,
+            "netGeometryData": {
+              "mergeLayers": "TrainTrack",
+              "flags": "BlockZone, Directional, SmoothElevation, FlattenTerrain, ClipTerrain, ExclusiveGround, InvertCompositionHandedness",
+              "defaultWidth": 12.0
+            }
+          },
+          "temp": {
+            "original": {
+              "index": 79436,
+              "version": 1
+            },
+            "flags": "0"
+          },
+          "updated": false,
+          "created": false,
+          "position": {
+            "x": -162.24913,
+            "y": 617.6969,
+            "z": -550.316956
+          },
+          "curve": null,
+          "subLanes": []
+        }
+      ],
+      "lanes": [],
+      "complete": true,
+      "errors": [],
+      "meaning": "Native local lane data, not proof of vehicle routing or completed rebuild. Matching equalityId values mean PathNode.Equals within this snapshot only. Owner indices lack entity versions."
+    },
+    "relatedPreviewEdges": {
+      "edges": [
+        {
+          "index": 54334,
+          "version": 3,
+          "temp": {
+            "original": {
+              "index": 57331,
+              "version": 1
+            },
+            "flags": "0"
+          },
+          "startNode": {
+            "index": 54183,
+            "version": 3,
+            "live": true,
+            "position": {
+              "x": -162.24913,
+              "y": 617.6969,
+              "z": -550.316956
+            }
+          },
+          "endNode": {
+            "index": 54184,
+            "version": 3,
+            "live": true,
+            "position": {
+              "x": -199.844376,
+              "y": 617.6969,
+              "z": -551.8424
+            }
+          },
+          "startTemp": {
+            "original": {
+              "index": 0,
+              "version": 0
+            },
+            "flags": "Create, IsLast"
+          },
+          "endTemp": {
+            "original": {
+              "index": 79434,
+              "version": 1
+            },
+            "flags": "Regenerate"
+          },
+          "matchesOriginalEdge": true,
+          "startMatchesJunction": false,
+          "endMatchesJunction": false,
+          "curve": [
+            {
+              "x": -162.249146,
+              "y": 617.6969,
+              "z": -550.317
+            },
+            {
+              "x": -174.768356,
+              "y": 617.6969,
+              "z": -550.823242
+            },
+            {
+              "x": -187.287567,
+              "y": 617.6969,
+              "z": -551.329468
+            },
+            {
+              "x": -199.806763,
+              "y": 617.6969,
+              "z": -551.8357
+            }
+          ],
+          "updated": false,
+          "prefab": {
+            "index": 16115,
+            "version": 1,
+            "netGeometryData": {
+              "mergeLayers": "TrainTrack",
+              "flags": "BlockZone, Directional, SmoothElevation, FlattenTerrain, ClipTerrain, ExclusiveGround, InvertCompositionHandedness",
+              "defaultWidth": 12.0
+            }
+          },
+          "edgeGeometry": {
+            "start": {
+              "left": [
+                {
+                  "x": -171.998581,
+                  "y": 617.6969,
+                  "z": -556.7162
+                },
+                {
+                  "x": -174.927582,
+                  "y": 617.6969,
+                  "z": -556.8346
+                },
+                {
+                  "x": -177.856567,
+                  "y": 617.6969,
+                  "z": -556.953
+                },
+                {
+                  "x": -180.785538,
+                  "y": 617.6969,
+                  "z": -557.0715
+                }
+              ],
+              "right": [
+                {
+                  "x": -172.483383,
+                  "y": 617.696838,
+                  "z": -544.725952
+                },
+                {
+                  "x": -175.4124,
+                  "y": 617.6969,
+                  "z": -544.84436
+                },
+                {
+                  "x": -178.3414,
+                  "y": 617.6969,
+                  "z": -544.962769
+                },
+                {
+                  "x": -181.27037,
+                  "y": 617.6969,
+                  "z": -545.081238
+                }
+              ],
+              "length": [
+                8.794137,
+                8.79416752
+              ]
+            },
+            "end": {
+              "left": [
+                {
+                  "x": -180.785538,
+                  "y": 617.6969,
+                  "z": -557.0715
+                },
+                {
+                  "x": -183.726944,
+                  "y": 617.6969,
+                  "z": -557.1904
+                },
+                {
+                  "x": -186.668381,
+                  "y": 617.6969,
+                  "z": -557.3093
+                },
+                {
+                  "x": -189.609818,
+                  "y": 617.69696,
+                  "z": -557.428345
+                }
+              ],
+              "right": [
+                {
+                  "x": -181.27037,
+                  "y": 617.6969,
+                  "z": -545.081238
+                },
+                {
+                  "x": -184.211792,
+                  "y": 617.6969,
+                  "z": -545.2002
+                },
+                {
+                  "x": -187.153229,
+                  "y": 617.6969,
+                  "z": -545.3191
+                },
+                {
+                  "x": -190.094681,
+                  "y": 617.69696,
+                  "z": -545.4381
+                }
+              ],
+              "length": [
+                8.831492,
+                8.831523
+              ]
+            }
+          },
+          "composition": {
+            "edge": {
+              "index": 50974,
+              "version": 3,
+              "width": 12.0,
+              "state": "ExclusiveGround, HasSurface, SeparatedCarriageways, HasPedestrianLanes, HasForwardTrackLanes, HasBackwardTrackLanes, BlockZone, LowerToTerrain",
+              "flags": {
+                "general": "Edge",
+                "left": "0",
+                "right": "0"
+              },
+              "lanes": [
+                {
+                  "bufferIndex": 0,
+                  "index": 0,
+                  "group": 0,
+                  "carriageway": 0,
+                  "position": {
+                    "x": -5.0,
+                    "y": -0.2,
+                    "z": 0.0
+                  },
+                  "flags": "Invert, Pedestrian, Twoway, LeftLimit, RightLimit",
+                  "prefab": {
+                    "index": 50083,
+                    "version": 1,
+                    "netLaneFlags": "Pedestrian, Twoway"
+                  }
+                },
+                {
+                  "bufferIndex": 1,
+                  "index": 1,
+                  "group": 1,
+                  "carriageway": 0,
+                  "position": {
+                    "x": -2.0,
+                    "y": 0.0,
+                    "z": 0.0
+                  },
+                  "flags": "Invert, Track, LeftLimit, RightLimit, HasAuxiliary",
+                  "prefab": {
+                    "index": 50087,
+                    "version": 1,
+                    "trackLaneData": {
+                      "maxCurviness": 0.0314159244,
+                      "trackTypes": "Train",
+                      "fallbackPrefab": {
+                        "index": 0,
+                        "version": 0
+                      }
+                    },
+                    "netLaneFlags": "Track, HasAuxiliary"
+                  }
+                },
+                {
+                  "bufferIndex": 2,
+                  "index": 2,
+                  "group": 2,
+                  "carriageway": 0,
+                  "position": {
+                    "x": 2.0,
+                    "y": 0.0,
+                    "z": 0.0
+                  },
+                  "flags": "Track, LeftLimit, RightLimit, HasAuxiliary",
+                  "prefab": {
+                    "index": 50087,
+                    "version": 1,
+                    "trackLaneData": {
+                      "maxCurviness": 0.0314159244,
+                      "trackTypes": "Train",
+                      "fallbackPrefab": {
+                        "index": 0,
+                        "version": 0
+                      }
+                    },
+                    "netLaneFlags": "Track, HasAuxiliary"
+                  }
+                },
+                {
+                  "bufferIndex": 3,
+                  "index": 3,
+                  "group": 3,
+                  "carriageway": 0,
+                  "position": {
+                    "x": 5.0,
+                    "y": -0.2,
+                    "z": 0.0
+                  },
+                  "flags": "Pedestrian, Twoway, LeftLimit, RightLimit",
+                  "prefab": {
+                    "index": 50083,
+                    "version": 1,
+                    "netLaneFlags": "Pedestrian, Twoway"
+                  }
+                }
+              ]
+            },
+            "startNode": {
+              "index": 51309,
+              "version": 3,
+              "width": 12.0,
+              "state": "ExclusiveGround, HasSurface, BlockZone, LowerToTerrain",
+              "flags": {
+                "general": "Node, Invert, Intersection",
+                "left": "0",
+                "right": "0"
+              }
+            },
+            "endNode": {
+              "index": 51020,
+              "version": 3,
+              "width": 12.0,
+              "state": "ExclusiveGround, HasSurface, BlockZone, LowerToTerrain",
+              "flags": {
+                "general": "Node",
+                "left": "0",
+                "right": "0"
+              }
+            }
+          },
+          "subLanes": [
+            {
+              "index": 54412,
+              "version": 3
+            },
+            {
+              "index": 54415,
+              "version": 3
+            },
+            {
+              "index": 54413,
+              "version": 3
+            },
+            {
+              "index": 54414,
+              "version": 3
+            },
+            {
+              "index": 54416,
+              "version": 3
+            },
+            {
+              "index": 54418,
+              "version": 3
+            },
+            {
+              "index": 54417,
+              "version": 3
+            },
+            {
+              "index": 54419,
+              "version": 3
+            },
+            {
+              "index": 54533,
+              "version": 3
+            },
+            {
+              "index": 54534,
+              "version": 3
+            }
+          ]
+        },
+        {
+          "index": 54335,
+          "version": 3,
+          "temp": {
+            "original": {
+              "index": 79288,
+              "version": 1
+            },
+            "flags": "0"
+          },
+          "startNode": {
+            "index": 54329,
+            "version": 3,
+            "live": true,
+            "position": {
+              "x": -75.3372,
+              "y": 617.6969,
+              "z": -582.901367
+            }
+          },
+          "endNode": {
+            "index": 54183,
+            "version": 3,
+            "live": true,
+            "position": {
+              "x": -162.24913,
+              "y": 617.6969,
+              "z": -550.316956
+            }
+          },
+          "startTemp": {
+            "original": {
+              "index": 79432,
+              "version": 1
+            },
+            "flags": "Regenerate"
+          },
+          "endTemp": {
+            "original": {
+              "index": 0,
+              "version": 0
+            },
+            "flags": "Create, IsLast"
+          },
+          "matchesOriginalEdge": true,
+          "startMatchesJunction": false,
+          "endMatchesJunction": false,
+          "curve": [
+            {
+              "x": -73.67465,
+              "y": 617.6969,
+              "z": -583.251831
+            },
+            {
+              "x": -96.16871,
+              "y": 617.6969,
+              "z": -576.578247
+            },
+            {
+              "x": -125.693542,
+              "y": 617.6969,
+              "z": -565.6
+            },
+            {
+              "x": -162.249146,
+              "y": 617.6969,
+              "z": -550.3169
+            }
+          ],
+          "updated": false,
+          "prefab": {
+            "index": 16115,
+            "version": 1,
+            "netGeometryData": {
+              "mergeLayers": "TrainTrack",
+              "flags": "BlockZone, Directional, SmoothElevation, FlattenTerrain, ClipTerrain, ExclusiveGround, InvertCompositionHandedness",
+              "defaultWidth": 12.0
+            }
+          },
+          "edgeGeometry": {
+            "start": {
+              "left": [
+                {
+                  "x": -87.0062256,
+                  "y": 617.696838,
+                  "z": -585.3785
+                },
+                {
+                  "x": -95.7685242,
+                  "y": 617.6969,
+                  "z": -582.524841
+                },
+                {
+                  "x": -105.374306,
+                  "y": 617.6969,
+                  "z": -579.1472
+                },
+                {
+                  "x": -115.81723,
+                  "y": 617.6969,
+                  "z": -575.250366
+                }
+              ],
+              "right": [
+                {
+                  "x": -83.2928543,
+                  "y": 617.696838,
+                  "z": -573.9674
+                },
+                {
+                  "x": -91.85768,
+                  "y": 617.6969,
+                  "z": -571.177856
+                },
+                {
+                  "x": -101.303329,
+                  "y": 617.6969,
+                  "z": -567.858032
+                },
+                {
+                  "x": -111.621933,
+                  "y": 617.6969,
+                  "z": -564.007568
+                }
+              ],
+              "length": [
+                30.5416031,
+                30.0311012
+              ]
+            },
+            "end": {
+              "left": [
+                {
+                  "x": -115.817238,
+                  "y": 617.6969,
+                  "z": -575.250366
+                },
+                {
+                  "x": -127.85408,
+                  "y": 617.6969,
+                  "z": -570.7588
+                },
+                {
+                  "x": -141.024429,
+                  "y": 617.69696,
+                  "z": -565.5698
+                },
+                {
+                  "x": -155.323456,
+                  "y": 617.69696,
+                  "z": -559.685852
+                }
+              ],
+              "right": [
+                {
+                  "x": -111.621925,
+                  "y": 617.6969,
+                  "z": -564.007568
+                },
+                {
+                  "x": -117.504768,
+                  "y": 617.6969,
+                  "z": -561.8124
+                },
+                {
+                  "x": -123.670753,
+                  "y": 617.6969,
+                  "z": -559.445068
+                },
+                {
+                  "x": -130.119186,
+                  "y": 617.6969,
+                  "z": -556.9058
+                }
+              ],
+              "length": [
+                42.46362,
+                19.8139839
+              ]
+            }
+          },
+          "composition": {
+            "edge": {
+              "index": 50974,
+              "version": 3,
+              "width": 12.0,
+              "state": "ExclusiveGround, HasSurface, SeparatedCarriageways, HasPedestrianLanes, HasForwardTrackLanes, HasBackwardTrackLanes, BlockZone, LowerToTerrain",
+              "flags": {
+                "general": "Edge",
+                "left": "0",
+                "right": "0"
+              },
+              "lanes": [
+                {
+                  "bufferIndex": 0,
+                  "index": 0,
+                  "group": 0,
+                  "carriageway": 0,
+                  "position": {
+                    "x": -5.0,
+                    "y": -0.2,
+                    "z": 0.0
+                  },
+                  "flags": "Invert, Pedestrian, Twoway, LeftLimit, RightLimit",
+                  "prefab": {
+                    "index": 50083,
+                    "version": 1,
+                    "netLaneFlags": "Pedestrian, Twoway"
+                  }
+                },
+                {
+                  "bufferIndex": 1,
+                  "index": 1,
+                  "group": 1,
+                  "carriageway": 0,
+                  "position": {
+                    "x": -2.0,
+                    "y": 0.0,
+                    "z": 0.0
+                  },
+                  "flags": "Invert, Track, LeftLimit, RightLimit, HasAuxiliary",
+                  "prefab": {
+                    "index": 50087,
+                    "version": 1,
+                    "trackLaneData": {
+                      "maxCurviness": 0.0314159244,
+                      "trackTypes": "Train",
+                      "fallbackPrefab": {
+                        "index": 0,
+                        "version": 0
+                      }
+                    },
+                    "netLaneFlags": "Track, HasAuxiliary"
+                  }
+                },
+                {
+                  "bufferIndex": 2,
+                  "index": 2,
+                  "group": 2,
+                  "carriageway": 0,
+                  "position": {
+                    "x": 2.0,
+                    "y": 0.0,
+                    "z": 0.0
+                  },
+                  "flags": "Track, LeftLimit, RightLimit, HasAuxiliary",
+                  "prefab": {
+                    "index": 50087,
+                    "version": 1,
+                    "trackLaneData": {
+                      "maxCurviness": 0.0314159244,
+                      "trackTypes": "Train",
+                      "fallbackPrefab": {
+                        "index": 0,
+                        "version": 0
+                      }
+                    },
+                    "netLaneFlags": "Track, HasAuxiliary"
+                  }
+                },
+                {
+                  "bufferIndex": 3,
+                  "index": 3,
+                  "group": 3,
+                  "carriageway": 0,
+                  "position": {
+                    "x": 5.0,
+                    "y": -0.2,
+                    "z": 0.0
+                  },
+                  "flags": "Pedestrian, Twoway, LeftLimit, RightLimit",
+                  "prefab": {
+                    "index": 50083,
+                    "version": 1,
+                    "netLaneFlags": "Pedestrian, Twoway"
+                  }
+                }
+              ]
+            },
+            "startNode": {
+              "index": 50975,
+              "version": 3,
+              "width": 12.0,
+              "state": "ExclusiveGround, HasSurface, BlockZone, LowerToTerrain",
+              "flags": {
+                "general": "Node, Invert",
+                "left": "0",
+                "right": "0"
+              }
+            },
+            "endNode": {
+              "index": 52677,
+              "version": 3,
+              "width": 12.0,
+              "state": "ExclusiveGround, HasSurface, BlockZone, LowerToTerrain",
+              "flags": {
+                "general": "Node, Intersection",
+                "left": "0",
+                "right": "0"
+              }
+            }
+          },
+          "subLanes": [
+            {
+              "index": 54420,
+              "version": 3
+            },
+            {
+              "index": 54423,
+              "version": 3
+            },
+            {
+              "index": 54421,
+              "version": 3
+            },
+            {
+              "index": 54422,
+              "version": 3
+            },
+            {
+              "index": 54424,
+              "version": 3
+            },
+            {
+              "index": 54426,
+              "version": 3
+            },
+            {
+              "index": 54425,
+              "version": 3
+            },
+            {
+              "index": 54427,
+              "version": 3
+            },
+            {
+              "index": 54535,
+              "version": 3
+            },
+            {
+              "index": 54536,
+              "version": 3
+            },
+            {
+              "index": 54537,
+              "version": 3
+            },
+            {
+              "index": 54538,
+              "version": 3
+            },
+            {
+              "index": 54539,
+              "version": 3
+            },
+            {
+              "index": 54540,
+              "version": 3
+            },
+            {
+              "index": 54541,
+              "version": 3
+            },
+            {
+              "index": 54542,
+              "version": 3
+            },
+            {
+              "index": 54543,
+              "version": 3
+            }
+          ]
+        },
+        {
+          "index": 54333,
+          "version": 3,
+          "temp": {
+            "original": {
+              "index": 57330,
+              "version": 1
+            },
+            "flags": "Parent"
+          },
+          "startNode": {
+            "index": 54182,
+            "version": 3,
+            "live": true,
+            "position": {
+              "x": -27.0903969,
+              "y": 617.6969,
+              "z": -557.547241
+            }
+          },
+          "endNode": {
+            "index": 54183,
+            "version": 3,
+            "live": true,
+            "position": {
+              "x": -162.24913,
+              "y": 617.6969,
+              "z": -550.316956
+            }
+          },
+          "startTemp": {
+            "original": {
+              "index": 0,
+              "version": 0
+            },
+            "flags": "Create"
+          },
+          "endTemp": {
+            "original": {
+              "index": 0,
+              "version": 0
+            },
+            "flags": "Create, IsLast"
+          },
+          "matchesOriginalEdge": true,
+          "startMatchesJunction": false,
+          "endMatchesJunction": false,
+          "curve": [
+            {
+              "x": -27.0903969,
+              "y": 617.6969,
+              "z": -557.547241
+            },
+            {
+              "x": -71.82119,
+              "y": 617.6969,
+              "z": -551.9162
+            },
+            {
+              "x": -117.785126,
+              "y": 617.6969,
+              "z": -549.778564
+            },
+            {
+              "x": -162.249146,
+              "y": 617.6969,
+              "z": -550.317
+            }
+          ],
+          "updated": false,
+          "prefab": {
+            "index": 16115,
+            "version": 1,
+            "netGeometryData": {
+              "mergeLayers": "TrainTrack",
+              "flags": "BlockZone, Directional, SmoothElevation, FlattenTerrain, ClipTerrain, ExclusiveGround, InvertCompositionHandedness",
+              "defaultWidth": 12.0
+            }
+          },
+          "edgeGeometry": {
+            "start": {
+              "left": [
+                {
+                  "x": -37.768383,
+                  "y": 617.6969,
+                  "z": -562.3099
+                },
+                {
+                  "x": -56.75341,
+                  "y": 617.6969,
+                  "z": -560.1459
+                },
+                {
+                  "x": -75.86136,
+                  "y": 617.6969,
+                  "z": -558.6054
+                },
+                {
+                  "x": -95.05692,
+                  "y": 617.6969,
+                  "z": -557.611755
+                }
+              ],
+              "right": [
+                {
+                  "x": -36.40915,
+                  "y": 617.6969,
+                  "z": -550.387146
+                },
+                {
+                  "x": -55.6578026,
+                  "y": 617.6969,
+                  "z": -548.193054
+                },
+                {
+                  "x": -75.01236,
+                  "y": 617.6969,
+                  "z": -546.6333
+                },
+                {
+                  "x": -94.43684,
+                  "y": 617.6969,
+                  "z": -545.627747
+                }
+              ],
+              "length": [
+                57.4899635,
+                58.2317657
+              ]
+            },
+            "end": {
+              "left": [
+                {
+                  "x": -95.05692,
+                  "y": 617.6969,
+                  "z": -557.611755
+                },
+                {
+                  "x": -106.762962,
+                  "y": 617.6969,
+                  "z": -557.005737
+                },
+                {
+                  "x": -118.420929,
+                  "y": 617.6969,
+                  "z": -556.6079
+                },
+                {
+                  "x": -130.02565,
+                  "y": 617.696838,
+                  "z": -556.4026
+                }
+              ],
+              "right": [
+                {
+                  "x": -94.43684,
+                  "y": 617.6969,
+                  "z": -545.627747
+                },
+                {
+                  "x": -113.879456,
+                  "y": 617.6969,
+                  "z": -544.621338
+                },
+                {
+                  "x": -133.182449,
+                  "y": 617.6969,
+                  "z": -544.1824
+                },
+                {
+                  "x": -152.322662,
+                  "y": 617.6969,
+                  "z": -544.241455
+                }
+              ],
+              "length": [
+                34.99131,
+                57.90965
+              ]
+            }
+          },
+          "composition": {
+            "edge": {
+              "index": 50974,
+              "version": 3,
+              "width": 12.0,
+              "state": "ExclusiveGround, HasSurface, SeparatedCarriageways, HasPedestrianLanes, HasForwardTrackLanes, HasBackwardTrackLanes, BlockZone, LowerToTerrain",
+              "flags": {
+                "general": "Edge",
+                "left": "0",
+                "right": "0"
+              },
+              "lanes": [
+                {
+                  "bufferIndex": 0,
+                  "index": 0,
+                  "group": 0,
+                  "carriageway": 0,
+                  "position": {
+                    "x": -5.0,
+                    "y": -0.2,
+                    "z": 0.0
+                  },
+                  "flags": "Invert, Pedestrian, Twoway, LeftLimit, RightLimit",
+                  "prefab": {
+                    "index": 50083,
+                    "version": 1,
+                    "netLaneFlags": "Pedestrian, Twoway"
+                  }
+                },
+                {
+                  "bufferIndex": 1,
+                  "index": 1,
+                  "group": 1,
+                  "carriageway": 0,
+                  "position": {
+                    "x": -2.0,
+                    "y": 0.0,
+                    "z": 0.0
+                  },
+                  "flags": "Invert, Track, LeftLimit, RightLimit, HasAuxiliary",
+                  "prefab": {
+                    "index": 50087,
+                    "version": 1,
+                    "trackLaneData": {
+                      "maxCurviness": 0.0314159244,
+                      "trackTypes": "Train",
+                      "fallbackPrefab": {
+                        "index": 0,
+                        "version": 0
+                      }
+                    },
+                    "netLaneFlags": "Track, HasAuxiliary"
+                  }
+                },
+                {
+                  "bufferIndex": 2,
+                  "index": 2,
+                  "group": 2,
+                  "carriageway": 0,
+                  "position": {
+                    "x": 2.0,
+                    "y": 0.0,
+                    "z": 0.0
+                  },
+                  "flags": "Track, LeftLimit, RightLimit, HasAuxiliary",
+                  "prefab": {
+                    "index": 50087,
+                    "version": 1,
+                    "trackLaneData": {
+                      "maxCurviness": 0.0314159244,
+                      "trackTypes": "Train",
+                      "fallbackPrefab": {
+                        "index": 0,
+                        "version": 0
+                      }
+                    },
+                    "netLaneFlags": "Track, HasAuxiliary"
+                  }
+                },
+                {
+                  "bufferIndex": 3,
+                  "index": 3,
+                  "group": 3,
+                  "carriageway": 0,
+                  "position": {
+                    "x": 5.0,
+                    "y": -0.2,
+                    "z": 0.0
+                  },
+                  "flags": "Pedestrian, Twoway, LeftLimit, RightLimit",
+                  "prefab": {
+                    "index": 50083,
+                    "version": 1,
+                    "netLaneFlags": "Pedestrian, Twoway"
+                  }
+                }
+              ]
+            },
+            "startNode": {
+              "index": 50975,
+              "version": 3,
+              "width": 12.0,
+              "state": "ExclusiveGround, HasSurface, BlockZone, LowerToTerrain",
+              "flags": {
+                "general": "Node, Invert",
+                "left": "0",
+                "right": "0"
+              }
+            },
+            "endNode": {
+              "index": 52677,
+              "version": 3,
+              "width": 12.0,
+              "state": "ExclusiveGround, HasSurface, BlockZone, LowerToTerrain",
+              "flags": {
+                "general": "Node, Intersection",
+                "left": "0",
+                "right": "0"
+              }
+            }
+          },
+          "subLanes": [
+            {
+              "index": 54400,
+              "version": 3
+            },
+            {
+              "index": 54403,
+              "version": 3
+            },
+            {
+              "index": 54401,
+              "version": 3
+            },
+            {
+              "index": 54402,
+              "version": 3
+            },
+            {
+              "index": 54404,
+              "version": 3
+            },
+            {
+              "index": 54405,
+              "version": 3
+            },
+            {
+              "index": 54408,
+              "version": 3
+            },
+            {
+              "index": 54409,
+              "version": 3
+            },
+            {
+              "index": 54406,
+              "version": 3
+            },
+            {
+              "index": 54407,
+              "version": 3
+            },
+            {
+              "index": 54410,
+              "version": 3
+            },
+            {
+              "index": 54411,
+              "version": 3
+            },
+            {
+              "index": 54518,
+              "version": 3
+            },
+            {
+              "index": 54519,
+              "version": 3
+            },
+            {
+              "index": 54520,
+              "version": 3
+            },
+            {
+              "index": 54521,
+              "version": 3
+            },
+            {
+              "index": 54522,
+              "version": 3
+            },
+            {
+              "index": 54523,
+              "version": 3
+            },
+            {
+              "index": 54524,
+              "version": 3
+            },
+            {
+              "index": 54525,
+              "version": 3
+            },
+            {
+              "index": 54526,
+              "version": 3
+            },
+            {
+              "index": 54527,
+              "version": 3
+            },
+            {
+              "index": 54528,
+              "version": 3
+            },
+            {
+              "index": 54529,
+              "version": 3
+            },
+            {
+              "index": 54530,
+              "version": 3
+            },
+            {
+              "index": 54531,
+              "version": 3
+            },
+            {
+              "index": 54532,
+              "version": 3
+            }
+          ]
+        }
+      ],
+      "complete": true,
+      "errors": []
+    }
+  },
+  "ok": true
+}

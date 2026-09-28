@@ -89,3 +89,40 @@ These possibilities are outside the first prototype:
 
 Update this plan as decisions are made. Once behavior is implemented, document its
 actual architecture in the architecture guide and retain unresolved design work here.
+
+## Junction investigation checkpoint (Sept 28)
+
+See [rail junction rules](rail-junction-rules.md) for the installed game's curviness
+filter and an offline comparison of connected/disconnected merges. Exact eligibility
+replay still needs prefab limits and composition-derived connection geometry.
+Keep junction work local until it is further along. Bridge fork/push is a later
+repository-management task; the bridge remains a development-only tool.
+
+## Signed length controls and split points (research, September 28)
+
+The current 0..1 factor blends original geometry toward one boundary target; it is
+not an arc-length controller and has no general shorter-length guarantee. Merely
+allowing negative input extrapolates existing errors. Run
+`uv run python scripts/explore-smoothing-controls.py`: the illustrative S-curve
+increases from 103.57 m to 113.02 m at -1 while doubling lateral excursion. This
+counterexample is not an execution of PlanarPathTarget, whose boundary tangents
+remain fixed. It refutes the general claim that negative blending is smoothing.
+
+A signed control should choose a target arc length relative to the original,
+then minimize bending/curvature variation under endpoint, tangent, topology,
+elevation and junction constraints. Some lengths are infeasible (below endpoint
+chord distance, or longer within a bounded corridor with restrictive tangents).
+Report infeasibility rather than generate loops. Expose length bias separately
+from smoothing strength initially; signed UI semantics need in-game evaluation.
+
+For split points, retain separate ordered split-node identities inside the existing
+selected path; existing selected waypoints currently extend path selection and are
+not automatically split constraints. Convert splits to inclusive node ranges with
+shared boundary nodes and disjoint edges; a tested research helper is in
+scripts/explore-smoothing-controls.py. Fit each range from the same original
+snapshot, then publish all outputs only if every range succeeds. Fix split node
+positions/elevations, but choose one consistent tangent direction on both sides
+for a smooth join, or explicitly allow a player-designated corner. Independently
+preserving each side's original tangent can preserve a kink. Keep endpoint offsets
+separate from node positions. A split at an intersection does not exempt unselected
+connections from validation. No runtime UI or fitter changes are implemented here.

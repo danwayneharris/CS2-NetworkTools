@@ -18,3 +18,14 @@ avoids AfterBuild and therefore does not run postprocessing, UI build or deploym
 No full build or in-game verification of this revision yet. Next supervised run
 requires game closed, full Debug build/deploy, then stationary, slider roundtrip,
 and cancel/reselect tests with inputRevision/submittedRevision fields captured.
+
+## Deployment for supervised revision test
+
+User confirmed game closed; verified no Cities2 process. Full Debug bootstrap build
+passed with 0 errors and 33 compiler warnings; postprocessing, webpack and local
+copy completed. Installed DLL SHA256:
+2443C2F1A9C3A284ADC9F9404C41C6DEDDA0E16A312EAB284100925905287E40.
+Same incidental npm optional-platform additions/nested TypeScript removal as prior
+build were reviewed and discarded. Bridge unchanged. Next load paused toy save,
+select branch endpoint to junction at 0.5, inspect inputRevision/submittedRevision
+and revisionMatches before the slider and reselection tests. Live result pending.

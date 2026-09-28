@@ -98,5 +98,5 @@ sections and the sibling bridge's AGENTS.md, INSTALL.md and docs/JUNCTION-SNAPSH
 The bridge is a diagnostic-workflow dependency, not a NetworkTools assembly dependency.
 Use scripts/check-bridge.ps1 or bootstrap.ps1 -CheckBridge for read-only file/hash
 checks. Never equate installed files with live query support. Keep bridge code/local
-commits in its own repository; publishing/fork ownership is deferred. The cs2-modding
+commits in its own repository; origin is danwayneharris/cities2-agent-bridge-ndc and upstream is FTPAiYT/cities2-agent-bridge-ndc. Changes go through PRs to our fork. The cs2-modding
 plugin provides source-reading guidance, not game access or mutation authorization.

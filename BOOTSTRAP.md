@@ -147,9 +147,7 @@ starts after this baseline is confirmed.
 Our junction diagnostic workflow depends on the locally extended Cities II Agent
 Bridge, maintained in sibling `../cities2-agent-bridge-ndc`. Network Tools itself
 has no bridge assembly/runtime dependency: normal players do not need it.
-Upstream releases alone lack our snapshot/preview queries. The extension is still
-local on `dan/junction-snapshot`; a public fork/package is deferred. New contributors
-must obtain that branch from the maintainer, not assume an upstream clone contains it.
+Upstream releases alone lack our snapshot/preview queries. Clone https://github.com/danwayneharris/cities2-agent-bridge-ndc with `git clone --branch dan/junction-snapshot https://github.com/danwayneharris/cities2-agent-bridge-ndc.git ../cities2-agent-bridge-ndc` from this repository root. The diagnostic branch is pending review into our fork; upstream releases do not contain it.
 
 From the NetworkTools root, build the available local checkout without deploying:
 

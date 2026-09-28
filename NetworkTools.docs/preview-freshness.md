@@ -98,3 +98,12 @@ revision, candidate matching, and native lane evidence at this phase without
 changing CanApply. Supervised acceptance: stationary preview, rapid 0.5/0.8/0.5
 slider changes, cancel/reselect, then preview/Apply comparison. Only after those
 checks should native verdicts participate in enabling newly supported geometry.
+
+## Offline original-network invalidation prototype
+
+`scripts/preview-freshness.py` now also fingerprints complete permanent junction
+snapshots and returns explicit stale-revision, changed-network or unavailable-input
+reasons. Run `uv run python scripts/test-original-freshness.py`. Five tests cover
+synthetic external changes and a real captured Apply. This is conservative captured
+state comparison, not exhaustive game-input coverage or a live acceptance gate.
+See session-notes/2026-09-28-original-freshness.md for scope and limitations.

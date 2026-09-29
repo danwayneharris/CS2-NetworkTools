@@ -55,3 +55,14 @@ highway-jank toy save. Its rail-merge case passed on the milestone deployment on
 watched directed lane-pair sets were preserved. Other cases remain pending.
 Optional `splits` contain pinned node coordinates; their post-Apply checks include
 fixed positions and planar tangent agreement. Split checks are not live-verified yet.
+
+Use `scripts/reload-toy-baseline.py --fixture <fixture> --save-root <Saves>
+--expected-city-session <observed-toy-session> --output <new-directory>` for a
+checkpointed graceful restart to the fixture baseline. It never force-kills or
+changes playsets. Supply only a session independently identified as the toy city.
+Check readiness afterward; successful launch is not successful loading.
+
+Post-Apply now requires three matching permanent observations with no observed
+Updated/Created owners. This is stability evidence, not a native completion fence.
+The newer baseline's road-four-way-branch also passed on the milestone deployment;
+see the session note for exact coverage and lane-identity limitations.

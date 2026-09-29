@@ -63,3 +63,35 @@ tests pass. This is observed stability, not a native job-completion fence.
 Live read-only stability check on the already-applied rail case passed: three
 matching observations, 42 nodes/39 edges, directed connection sets of 4/2/2.
 Captures: sprint-20260929-rail-stability. No additional game mutation occurred.
+
+## Guarded baseline reload and road regression
+
+Added scripts/reload-toy-baseline.py: requires an independently identified live
+citySession, paused empty toy city and enabled controls; verifies baseline checksum
+and ZIP metadata; saves and verifies a unique checkpoint before shutdown. Checks
+STOP and exact heartbeat PID before CloseMainWindow; waits at most 45 seconds,
+never kills, then uses existing visible launch helper. Launch acceptance is not
+readiness: subsequent runner checks session, pause and baseline fingerprint.
+Two offline package-guard tests pass. Two live graceful reload cycles succeeded.
+
+Road-four-way-branch passed strength 0.5 then 0.8 after a fresh baseline load:
+three selected edges changed, watched directed car-lane sets remained 4/16/4,
+incident preview/permanent errors were zero, and three permanent observations
+settled. Captured topology/elevations/unselected geometry passed. No traffic or
+human visual claim. Capture: sprint-20260929-jank-road.
+
+Source follow-up: installed Game.Pathfind/PathNode.cs packs owner in upper 32 bits,
+composition lane byte plus segment byte in lower 16; GetLaneIndex returns both.
+LaneSystem.cs:4147-4149 constructs edge PathNodes from composition lane index and
+segment indices. Lines 2649-2658 associate composition lane indices with lateral
+m_Position.x. Thus owner/lane keys carry more meaning than lane entity IDs, but
+unchanged composition/order still needs verification for physical outermost-lane
+claims. The current native corrective junction search is TrackLane-only
+(RoadShapeToolSystem.JunctionSearch.cs:81); road regression checks must not be
+misrepresented as an implemented road connection-preserving search.
+
+Highway-on-ramp passed 0.5 then 0.8: two selected edges changed, unchanged directed
+car-lane pair sets at the three watched nodes (1/0/5), zero incident curve errors,
+three stable observations and unchanged captured topology/elevations/outside
+geometry. Zero pairs at one watched node is a recorded empty set, not a claim of
+traffic traversal through that node. Capture: sprint-20260929-jank-onramp.

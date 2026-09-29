@@ -66,3 +66,9 @@ permanent Apply at 0.8: 16 directed junction connections, physical lane mappings
 topology, elevations, unselected curves and strict fixed-node checks all passed.
 Preview/Apply curve differences were zero. Vehicle traversal and human visual
 quality remain outside this automated result.
+
+The highway path through both the on-merge and off-merge also passed preview at
+0.5/0.8 and Apply at 0.8. Both junctions retained five directed lane connections
+and unchanged physical lane mappings. Fixed-node, topology, elevation, unselected
+curve and preview/Apply checks passed. Three selected edges changed; the constrained
+single edge between the junctions remained unchanged.

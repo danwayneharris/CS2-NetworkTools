@@ -370,3 +370,34 @@ was zero. report.json reports passed:true. No human visual or vehicle traversal
 claim. Game remains paused on the toy save, PID 48684, citySession
 d745a117da614d0d8bf3ff014efc9691, with unsaved applied road-test changes. Baseline
 file untouched; the runner saved a uniquely named pre-Apply checkpoint.
+
+## Crossing feasibility and multi-junction highway fixture
+
+Read the bridge's native placement path (BuildCommands.BuildPrefab/StartRoad and
+Construction.BridgeRoadTool). It uses native snapping/preview/Apply and validates
+new edges, but explicitly rejects enabled Locked prefabs. Live paginated discovery
+completed with all eight train network prefabs locked (including Double Train
+Track); no unlock command exists in the current bridge source. No construction
+was attempted and no unlock/Anarchy bypass added. The requested crossing test
+therefore needs an unlocked toy scenario or a player-built diamond. This is an
+uncovered case, not a pass. It must verify straight-through movements and absent
+cross-route turns, not merely total counts or physical adjacency.
+
+Added highway-two-interior-merges to the existing fixture, using fresh-node
+resolution from authored coordinates: janky input ramp through the on-merge,
+three-lane center section and off-merge to the two-lane highway end. This exercises
+two interior junctions including a one-edge section between them. Checkpointed
+the road Apply result and gracefully reloaded the original baseline; test pending.
+
+### Two-interior-merge highway result: passed
+
+Strengths 0.5 and 0.8 accepted with zero rotation. Permanent Apply at 0.8 retained
+five directed connections at each merge (and one at each other watched join),
+with unchanged physical lane composition mappings, topology, elevations and
+unselected curves. Strict fixed-node checks passed; preview/permanent curve error
+zero. Three selected edges changed, so this was not a no-op. The one-edge middle
+section remained constrained while adjacent sections smoothed. Captures and
+report.json establish automated passage; no vehicle traversal or visual approval.
+Game paused, PID 50568, citySession 15c1bc97ada74142b5c794bcf1a7835c, original
+toy baseline loaded with unsaved applied highway-test changes. Baseline untouched,
+unique pre-Apply checkpoint verified by runner.

@@ -37,6 +37,7 @@ def main():
     parser.add_argument('--expected-city-session', required=True)
     parser.add_argument('--output', required=True)
     parser.add_argument('--bridge', default='../cities2-agent-bridge-ndc')
+    parser.add_argument('--close-only', action='store_true', help='Checkpoint and close for deployment; do not launch')
     args = parser.parse_args()
     fixture = json.loads(Path(args.fixture).read_bytes())
     baseline = verified_package(args.save_root, fixture['baseline'], fixture['baselineSha256'])
@@ -70,6 +71,11 @@ if(!$game.WaitForExit(45000)){throw 'Graceful close timed out; no force kill att
     (runner.output/'shutdown.txt').write_text(closed.stdout+closed.stderr)
     if closed.returncode:
         raise RuntimeError('Shutdown stopped; inspect shutdown.txt, do not force-kill')
+    if args.close_only:
+        report={'baseline':baseline.name,'checkpoint':checkpoint.name,'status':'Checkpoint verified; game closed gracefully.'}
+        (runner.output/'lifecycle.json').write_text(json.dumps(report,indent=2))
+        print(json.dumps(report,indent=2))
+        return
     launched = subprocess.run(['powershell.exe','-NoProfile','-File',
         str(runner.bridge/'launch-v2-experiment.ps1'),'-SavePath',str(baseline),'-Launch'],
         capture_output=True,text=True,timeout=30)

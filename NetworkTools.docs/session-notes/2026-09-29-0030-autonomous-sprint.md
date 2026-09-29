@@ -95,3 +95,41 @@ car-lane pair sets at the three watched nodes (1/0/5), zero incident curve error
 three stable observations and unchanged captured topology/elevations/outside
 geometry. Zero pairs at one watched node is a recorded empty set, not a claim of
 traffic traversal through that node. Capture: sprint-20260929-jank-onramp.
+
+## Off-ramp pass and split deployment
+
+Highway-off-ramp passed 0.5 then 0.8 on a fresh baseline: two selected edges changed,
+unchanged directed sets (1/5/1), zero incident curve errors, three stable permanent
+observations, topology/elevation/outside-selection checks passed. Saved final test
+state to a unique checkpoint and gracefully closed the game using --close-only.
+
+Full Debug bootstrap build passed including IL postprocessing, webpack and local
+deployment (33 existing C# warnings, webpack size warnings). NT deployed SHA256:
+96AAFE46716BBEE2DA7BFB0617FBAFEE577D3A80FC551B52F96DECD5473DED1A.
+Matching bridge rebuilt DLL copied with timestamped backup and verified SHA256:
+F765BC3714CB7409B99E668EE8F7523932A93203804ED5296BCC22061C89FBBB.
+Visible baseline launch started PID 33860; split behavior still awaiting live test.
+Added separate one/two-split rail fixture definitions using captured interior-node
+positions; strengths 0/0.5/1. Baseline save untouched. Existing user lockfile remains
+unstaged; Release/Burst is not established by this Debug deployment.
+
+## First live split run failed strict regression
+
+rail-one-split completed preview sweeps 0/0.5/1 and Apply, but runner rejected a
+fixed endpoint movement of 0.003008 m. Split node 350911 stayed at its original
+position. End junction 350934 moved from (-74.86412,617.6969,-1925.09436) to
+(-74.86254,617.6969,-1925.0918). Native preview already contained the shifted
+position, so this is not solely Apply disagreement. No tolerance relaxed.
+
+Further capture inspection: three-way merge directed track pairs preserved, but
+junction-owned pairs at degree-two nodes 350909 and 350911 disappeared (two each).
+Need distinguish actual loss from native direct-join representation before fixing
+or revising the oracle. Do not call this split test a pass. Captures retained in
+sprint-20260929-one-split; game paused with failed-test Apply unsaved and pre-test
+checkpoint intact.
+
+Installed NodeAlignSystem.cs:87-169 recomputes non-standalone node centers from
+incident endpoints and tangent-line interactions; assigning a fixed Node position
+alone is insufficient. It explains a mechanism consistent with observed native
+preview drift, but exact replay/causality still needs verification. Follow-up must
+address native center constraints and independently trace degree-two connectivity.

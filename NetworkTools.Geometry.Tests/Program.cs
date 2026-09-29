@@ -24,6 +24,7 @@ internal static class Program {
         TargetReplay.Run(args);
         FailureTests.Run();
         BoundaryRotationTests.Run();
+        SplitTargetTests.Run();
         CheckBezier();
         CheckCapturedHandleBlend();
         // Analytic three-point solution: equal chords h, only the middle Z is free.

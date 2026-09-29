@@ -434,3 +434,25 @@ unlocked and placeable, so a dedicated slip fixture can be investigated without
 an unlock bypass. No new road construction yet. Game remains paused, PID 10724,
 citySession 254c2801a2334ff8a721775bc6dd2949, with unsaved applied endpoint rail
 test changes; baseline untouched and checkpoint retained.
+
+## Dedicated slip fixture construction: first attempt stopped safely
+
+Added reusable build-slip-fixture.py: verifies paused toy session, baseline file
+hash and geometry fingerprint, clearance, purchased tiles and unlocked prefabs;
+creates a verified unique checkpoint; uses native placement with cost caps and
+checks terminal operations and fresh endpoint identities after every placement.
+No unlock bypass or mutation retry. Completed fixtures would receive a separate
+saved baseline and generated regression fixture.
+
+First candidate clearance overlapped a residual Double Train Track bounding box;
+second candidate overlapped high-voltage lines. Both stopped before mutation.
+Third candidate west of the original location passed clearance and placement.
+After extending the first straight road, native construction removed the collinear
+degree-two intermediate node. The second placement completed but endpoint checks
+failed and construction stopped. Capture confirms endpoints at (-850,-1100) and
+(-650,-1100), with intended intermediate (-750,-1100) absent. No blind replay or
+cleanup. Two isolated road placements are unsaved on the paused toy save, PID
+42884, citySession e610f4c248c94afdb6bca622cb679d7c. Pre-build checkpoint verified.
+Next: reload original baseline and order construction so future slip attachment
+points become junctions before collinear extensions can merge them away. This is
+fixture infrastructure evidence, not a slip smoothing test.

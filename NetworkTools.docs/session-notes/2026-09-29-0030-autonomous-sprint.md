@@ -357,3 +357,16 @@ The existing 1 mm fixed-node assertion therefore reports FAIL; report.json retai
 all successful checks and this exception. No tolerance changed. This is the first
 interior Apply evidence, not a fully passing regression or human visual approval.
 Game remains paused on the toy baseline with unsaved applied test changes.
+
+## Interior four-way road regression passed
+
+Checkpointed the applied rail test, gracefully reloaded the original baseline and
+verified fresh identities/fingerprint before the road test. Strengths 0.5 and 0.8
+previews passed; permanent Apply at 0.8 preserved all 16 directed four-way junction
+connections and four at each other watched join, including same-edge U-turn
+semantics in the independent oracle. Physical lane mappings, topology, elevations,
+unselected curves and strict fixed-node checks passed. Preview/Apply curve error
+was zero. report.json reports passed:true. No human visual or vehicle traversal
+claim. Game remains paused on the toy save, PID 48684, citySession
+d745a117da614d0d8bf3ff014efc9691, with unsaved applied road-test changes. Baseline
+file untouched; the runner saved a uniquely named pre-Apply checkpoint.

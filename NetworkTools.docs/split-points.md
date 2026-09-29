@@ -1,6 +1,7 @@
 # Split-point prototype
 
-Implementation on `dan/autonomous-regressions`; not yet live-verified.
+Implementation on `dan/autonomous-regressions`; automated live results are listed below.
+Human UI and visual validation remain pending.
 
 Select an existing Smooth Curve path, then choose intermediate nodes from the
 Split points list. Nodes are numbered from the start; distances are approximate
@@ -29,7 +30,8 @@ the same pointer implementation for executable tests.
 All node and control-point elevations are retained by `CurveSmoothTransform`.
 The continuity guarantee is planar tangent direction (G1), not matching derivative
 magnitude, curvature, vertical grade, or physical vehicle traversal. Interior
-junction restrictions remain; a split never overrides them. Boundary junction
+junctions use a separate Debug validation path; a junction cannot itself be chosen
+as a split. A split never overrides junction validation. Boundary junction
 search rotations affect only the outer selection boundaries.
 
 `RoadShapeToolSystem.Splits.cs` owns entity-based split choices and validates both

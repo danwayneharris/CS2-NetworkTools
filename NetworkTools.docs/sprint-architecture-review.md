@@ -14,8 +14,8 @@ This is a source review and design proposal, not evidence of new runtime behavio
   bridge owns permission and STOP checks. The runner owns fixtures and evidence.
 
 Keep these boundaries; do not fold bridge transport or test orchestration into the
-geometry solver. The managed split-target prototype is deliberately not called
-from the Burst job. Port its allocation model before runtime integration.
+geometry solver. The split target now has a caller-owned pointer implementation used by the game
+transform and its managed offline wrapper; managed allocations stay outside the job.
 
 ## Focused issues exposed by automation
 
@@ -24,12 +24,13 @@ from the Burst job. Port its allocation model before runtime integration.
    commands or an installed DLL hash. Playset identity needs a separate readiness check.
 2. A city name and population are weak identifiers. Require a verified baseline
    package plus a geometry fingerprint, and reject city-session changes mid-test.
-3. `PreviewProbe.cs` still calls itself diagnostic-only, but its matched submission
-   now participates in automation readiness. Update the comment when strengthening
-   that contract; repeated observations do not prove a formal rebuild fence.
-4. The current runner checks bounded network identities/elevations and watched
-   junction curves. It does not yet verify every selected preview edge, every remote
-   lane, or traffic traversal. Do not advertise a complete regression suite yet.
+3. `PreviewProbe.cs` supplies diagnostic evidence and a correlated submission for
+   Debug automation. Its comment now reflects that contract; repeated observations
+   still do not prove a formal rebuild fence.
+4. The runner now requires preview coverage of every selected edge and compares
+   permanent curves after stable readback. It checks bounded network identities,
+   elevations, unselected curves and watched semantic lane transitions/compositions.
+   Remote lane behavior and traffic traversal remain outside coverage.
 5. Captures are large. Retain evidence, but future runs should avoid duplicate raw
    JSON in both `.txt` and `.json` on success; preserve raw output only on parse errors.
 

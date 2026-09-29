@@ -401,3 +401,19 @@ report.json establish automated passage; no vehicle traversal or visual approval
 Game paused, PID 50568, citySession 15c1bc97ada74142b5c794bcf1a7835c, original
 toy baseline loaded with unsaved applied highway-test changes. Baseline untouched,
 unique pre-Apply checkpoint verified by runner.
+
+## Side-bias research and documentation audit
+
+Added reusable explore-side-bias.py and PNG/SVG/JSON comparison of coupled
+strength/side versus independent controls. Center/mirror/corridor research checks
+pass. Plain Python lacked matplotlib; used uv's isolated --with environment.
+An initial exact tuple equality test compared differently associated floating-point
+x coordinates; corrected the check to test the intended unchanged ordinate at
+zero. This does not change production tolerances. Plot shown in conversation.
+No runtime change or native validation claim. Side convention and zero semantics
+remain decisions for Dan; longer-route research is not silently substituted for
+the clarified side-bias request.
+
+Reconciled split and architecture docs: removed stale not-live-tested and managed-
+only statements, recorded full selected-edge preview coverage and current probe
+comment. Kept Release/Burst and human validation limitations explicit.

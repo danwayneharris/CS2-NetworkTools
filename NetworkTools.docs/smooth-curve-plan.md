@@ -171,3 +171,27 @@ connectivity and geometric validity take precedence over angle preference. Curre
 prototype preserves both selected incident handles exactly and rejects combining
 junction and ordinary split flags. That rejection must remain explicit until this
 separate semantic case is designed and tested.
+
+## Side-bias UX experiment (2026-09-29)
+
+Run `uv run --with matplotlib python scripts/explore-side-bias.py --output <folder>`
+for the saved comparison in `session-notes/plots/side-bias-20260929`. This is an
+offline analytic research example, not the production fitter or native feasibility.
+
+Two coherent choices remain for discussion:
+
+1. One centered slider: strength is absolute slider displacement. Center restores
+   the original path; either extreme smooths fully toward a side-biased target.
+   Passing through zero necessarily reintroduces the original wiggles.
+2. Separate strength and side bias: zero bias gives the ordinary smooth target at
+   the chosen strength. Sweeping sides need not unsmooth the route, but center does
+   not mean original geometry unless strength is also zero.
+
+The plotted displacement uses a bounded sextic envelope with zero value, first
+and second derivatives at section endpoints. It demonstrates endpoint-preserving
+side choice, not a solution for arbitrary hairpins or intersections. Its fixed
+chord normal has a clear side only in this example; selection-relative side flips
+when selection order reverses, world-canonical orientation can jump near its sign
+boundary, and screen-relative side changes with the camera. Do not silently choose
+one of these conventions. Junctions/splits would require constrained section fits
+and native validation; neither alternative is integrated yet.

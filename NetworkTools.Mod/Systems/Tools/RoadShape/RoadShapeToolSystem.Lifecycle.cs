@@ -56,6 +56,15 @@ namespace NetworkTools.Systems.Tools.RoadShape {
         protected override void OnCreate() {
             base.OnCreate();
 
+            Template.OnChanged += _ => InvalidatePreviewObservation();
+            SmoothingFactor.OnChanged += _ => InvalidatePreviewObservation();
+            EaseInLength.OnChanged += _ => InvalidatePreviewObservation();
+            EaseOutLength.OnChanged += _ => InvalidatePreviewObservation();
+            ArchHeight.OnChanged += _ => InvalidatePreviewObservation();
+            ArchPosition.OnChanged += _ => InvalidatePreviewObservation();
+            SmoothStart.OnChanged += _ => InvalidatePreviewObservation();
+            SmoothEnd.OnChanged += _ => InvalidatePreviewObservation();
+
             m_Log.Prefix = nameof(NT_RoadShapeToolSystem);
 
             // Configuration
@@ -93,6 +102,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
         }
 
         protected override void OnStartRunning() {
+            InvalidatePreviewObservation();
             base.OnStartRunning();
 
             // Reset internal state
@@ -109,7 +119,15 @@ namespace NetworkTools.Systems.Tools.RoadShape {
         }
 
         public void MarkDirty() {
+            InvalidatePreviewObservation();
             m_UpdateNeeded = true;
+        }
+
+        [System.Diagnostics.Conditional("IS_DEBUG")]
+        private void InvalidatePreviewObservation() {
+#if IS_DEBUG
+            ++m_PreviewInputRevision;
+#endif
         }
 
         /// <summary>

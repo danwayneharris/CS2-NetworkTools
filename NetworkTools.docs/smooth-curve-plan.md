@@ -1,5 +1,15 @@
 # Smooth Curve plan
 
+**Current checkpoint (Sept 28, 2026):** Debug builds now experiment with native
+preview candidate search for one three-arm rail junction at a selection endpoint.
+One saved regression passed preview and Apply: a +3 degree boundary correction
+preserved all four directed track connections where the previous fit lost one.
+This is not general junction support or Release validation. Interior junctions
+remain rejected; roads retain previous behavior; already-broken connections are not
+automatically repaired. See [validation confidence](offline-validation-confidence.md)
+and [search experiment](session-notes/2026-09-28-1500-native-junction-search.md).
+The Sept 26 status below describes the earlier baseline.
+
 **Status (Sept 26, 2026):** the [geometry module](curve-geometry.md) has a first
 game-integration prototype with Bézier reconstruction and the existing smoothing
 control. External tests and full Debug/Release builds pass, including Windows

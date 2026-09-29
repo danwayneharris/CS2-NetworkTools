@@ -4,11 +4,19 @@ Welcome to my fork of Luca's Network Tools! I absolutely love this mod, and I've
 
 # First: Some Docs! Always!!
 
+Current development checkpoint: an experimental **Debug-only** Smooth Curve search
+preserves connections at one rail junction endpoint by adjusting the selected path.
+One saved failing case now passes preview and Apply. Broader junction support remains
+work in progress; see [validation evidence and limits](NetworkTools.docs/offline-validation-confidence.md).
+
 The first thing I've done is update this readme, and generate a couple of other docs to make others' lives easier if they ever wanted to contribute and to make my own life easier because I am forgetful as all hell: 
 
 ## Windows Build Setup: 
 
 - [BOOTSTRAP.md](BOOTSTRAP.md)
+
+The bootstrap also supports an optional full local game decompile with
+`-Decompile -DecompilePath <directory>` for source-grounded modding investigations.
 
 ## Useful Project Guides:
 

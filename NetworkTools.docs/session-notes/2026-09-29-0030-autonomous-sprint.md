@@ -158,3 +158,8 @@ unselected curves, selected preview/permanent curves, actual split pin and tange
 checks, and semantic lane transitions. It still fails the unchanged strict 1 mm
 boundary-center check and reports that drift explicitly. Six runner tests and three
 graph tests pass. No further live mutation in this investigation.
+
+Dan added interior-junction smoothing to this sprint explicitly. Current split
+implementation intentionally rejects it. Finish current split validation, then
+prioritize this addition with a tested replacement for the guard and coverage of
+selected/unselected incident branches; recorded in the feature plan.

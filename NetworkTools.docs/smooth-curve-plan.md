@@ -148,3 +148,13 @@ Side orientation (selection direction versus world/screen direction) and the exa
 relationship between bias and smoothing remain design questions; do not silently
 choose them as established requirements. Lower priority than live regression and
 split points. Retain the longer-route experiment as research, not the chosen UX.
+
+## Sprint scope addition: interior junctions (2026-09-29)
+
+Dan explicitly added smoothing a selected path whose junction is an interior node,
+not only its start/end. This is separate from split points. Finish the current
+split validation before starting it, then prioritize using the regression harness.
+Preserve intended lane/rail connections and absent crossing connections, topology,
+elevations and account explicitly for unselected incident branches. Existing
+interior-junction rejection stays until a tested replacement exists; do not simply
+remove the guard or silently treat a junction as an ordinary degree-two split.

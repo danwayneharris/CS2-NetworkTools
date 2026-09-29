@@ -31,6 +31,16 @@ class ConnectivityTests(unittest.TestCase):
         lane['start']['equalityId']=999999
         self.assertNotEqual(before,lanes.transitions(s,'track'))
 
+    def test_composition_mapping_preserved_but_lateral_swap_detected(self):
+        for group in self.groups.values():
+            self.assertEqual(lanes.composition_signature(group[0]),lanes.composition_signature(group[-1]))
+        s=copy.deepcopy(self.groups[350911][-1])
+        before=lanes.composition_signature(s)
+        owner=next(o for o in s['owners'] if 'composition' in o)
+        rows=owner['composition']['edge']['lanes']
+        rows[0]['position'],rows[1]['position']=rows[1]['position'],rows[0]['position']
+        self.assertNotEqual(before,lanes.composition_signature(s))
+
     def test_target_lane_swap_is_not_hidden_by_equal_counts(self):
         s=copy.deepcopy(self.groups[350911][-1])
         before=lanes.transitions(s,'track')

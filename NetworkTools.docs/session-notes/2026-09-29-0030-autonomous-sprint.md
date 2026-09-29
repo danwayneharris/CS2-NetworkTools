@@ -163,3 +163,29 @@ Dan added interior-junction smoothing to this sprint explicitly. Current split
 implementation intentionally rejects it. Finish current split validation, then
 prioritize this addition with a tested replacement for the guard and coverage of
 selected/unselected incident branches; recorded in the feature plan.
+
+## Two-split native pass and physical lane mapping
+
+Two pinned interior rail nodes passed strength sweep 0/0.5/1 and permanent Apply
+at 1.0, including strict 1 mm fixed-node check, pinned curve endpoints and shared
+planar tangent directions. Three selected edges changed; directed transitions
+remain 4/2/2. Native preview/permanent curves match exactly in captured output.
+No fixed-node drift reported in this case. Capture: sprint-20260929-two-splits.
+
+Added edge composition comparisons (lane index, lateral position, direction flags,
+carriageway/group, prefab and width), so unchanged numeric lane transitions cannot
+hide swapped lane positions. All stored road/on-ramp/off-ramp and one-split
+snapshots retain the same composition mappings. Four lane-graph tests now include
+a deliberate lateral lane swap and pass; six runner tests pass.
+
+Observed stale splitChoices in Idle after Apply: path data cache outlives active
+selection. Added Phase.Ready gate to SplitChoicesJson; no geometry changes. This
+small UI-state fix is not deployed yet. Starting a separate partial-strength Apply
+case rather than claiming that preview readiness alone proves its permanent result.
+
+Partial-strength permanent Apply at 0.5 also passed for two rail splits, including
+strict node-position tolerance, tangent joins, semantic lane transitions and stable
+composition mapping. Native preview/permanent incident curve errors were zero.
+Capture: sprint-20260929-half-splits. Stale split-choice UI fix compiled without
+deployment. Game currently paused in the named highway-jank toy baseline with the
+half-strength two-split Apply unsaved; its pre-test checkpoint is preserved.

@@ -46,4 +46,13 @@ candidates. Apply still requires the current verified submission.
   0..1 strength sweep, reversal, multiple-split and nonfinite-input checks pass.
 - C# Debug compilation and TypeScript no-emit check pass.
 - Bridge compile and 61-command contract check pass.
-- Full postprocessed build, Release/Burst, live UI and live split Apply: pending.
+- Full Debug postprocessing, webpack and deployment passed on 2026-09-29.
+- Two interior rail splits passed native preview and permanent Apply at strengths
+  1.0 and 0.5, including pinned positions, planar tangent continuity, topology,
+  elevations, lane composition/directed transitions and preview/Apply agreement.
+- One-split run passes those join/connectivity checks but retains a strict-test
+  failure for about 3 mm of native alignment drift at the outer junction center.
+  Offline replay of installed NodeAlignSystem predicts that drift within 0.052 mm.
+- Release/Burst, human UI/visual validation and broader asset coverage remain pending.
+  Preview readiness at zero is observed; zero-strength permanent Apply is not yet
+  verified. See the sprint session note and captures for exact case scope.

@@ -10,7 +10,8 @@ namespace NetworkTools.Systems.Tools.RoadShape {
 
         public string SplitChoicesJson() {
             var choices = new JArray();
-            if (!m_PathDataValid || Template.Value != ShapeTransformTemplate.CurveSmooth) return "[]";
+            if (Phase != OperationPhase.Ready || !m_PathDataValid
+                || Template.Value != ShapeTransformTemplate.CurveSmooth) return "[]";
             m_LastShapeJob.Complete();
             var distance = 0f;
             for (var i=1;i<m_NodeStates.Length-1;i++) {

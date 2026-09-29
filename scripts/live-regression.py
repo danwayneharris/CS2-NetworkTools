@@ -258,6 +258,8 @@ class Runner:
             if lengths<1e-8 or (a[0]*b[0]+a[1]*b[1])/lengths<1-1e-6:
                 raise AssertionError('Split planar tangents do not agree')
         for b, p, a in zip(before, previews, after):
+            if _lane_module.composition_signature(b)!=_lane_module.composition_signature(a):
+                raise AssertionError('Incident lane composition changed; lane indices may no longer have the same physical meaning')
             missing, added = lane_transitions(b)-lane_transitions(a), lane_transitions(a)-lane_transitions(b)
             if missing or added:
                 raise AssertionError(f'Directed connections changed: missing={missing}, added={added}')

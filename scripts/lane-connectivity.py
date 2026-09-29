@@ -5,6 +5,25 @@ and node-owned connector indices are graph plumbing, not physical lane labels.
 This checks native lane graph reachability, not traffic rules or vehicle traversal.
 """
 from collections import defaultdict
+import json
+
+
+def composition_signature(snapshot):
+    """Lane index -> lateral position/direction/carriageway must retain meaning."""
+    if not snapshot['complete'] or snapshot['errors']:
+        raise ValueError('Incomplete snapshot')
+    result={}
+    for owner in snapshot['owners']:
+        if 'composition' not in owner:
+            continue
+        edge=owner['composition']['edge']
+        rows=[{k:lane[k] for k in ('index','group','carriageway','position','flags','prefab')}
+              for lane in edge['lanes']]
+        result[owner['index']]=json.dumps({'width':edge['width'],
+            'lanes':sorted(rows,key=lambda row:row['index'])},sort_keys=True)
+    if len(result)!=len(snapshot['incidentEdges']):
+        raise ValueError('Missing incident edge composition')
+    return result
 
 
 def key(node):

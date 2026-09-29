@@ -194,3 +194,12 @@ Zero-strength two-split permanent Apply passed: hard pin/join constraints apply
 at zero as designed, with positions, tangents, composition mappings, directed
 transitions and preview/Apply agreement verified. Capture: sprint-20260929-zero-splits.
 A separate road split fixture is prepared, and its baseline reload is in progress.
+
+Road two-split full-strength Apply passed geometry/pins/tangents and lane checks.
+Review caught that the semantic graph initially omitted same-edge U-turns. Fixed
+traversal to retain transitions to another lane on the same edge and transitions
+back through a connector. Added captured four-way U-turn deletion test; all five
+graph tests pass. Offline road-capture replay with corrected oracle still passes,
+with 4/16/4 transitions and zero curve errors, no fixed-node drift. Both original
+report and corrected replay retained. This was an oracle coverage bug, not a game
+change. Game remains paused with road split Apply unsaved and checkpoint intact.

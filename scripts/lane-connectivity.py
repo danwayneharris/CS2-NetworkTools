@@ -57,16 +57,17 @@ def transitions(snapshot, kind):
             edge_arcs.append(arc)
     result=set()
     for end,source in edge_arcs:
-        pending=[end];visited=set()
+        pending=[(end,False)];visited=set()
         while pending:
-            vertex=pending.pop()
-            if vertex in visited:
+            vertex,crossed_connector=pending.pop()
+            state=(vertex,crossed_connector)
+            if state in visited:
                 continue
-            visited.add(vertex)
+            visited.add(state)
             for target,destination in arcs[vertex]:
-                if destination is not None and destination[0]!=source[0]:
+                if destination is not None and (destination!=source or crossed_connector):
                     result.add((source,destination))
                     # Do not traverse a second network edge and infer remote routes.
                 else:
-                    pending.append(target)
+                    pending.append((target,crossed_connector or destination is None))
     return result

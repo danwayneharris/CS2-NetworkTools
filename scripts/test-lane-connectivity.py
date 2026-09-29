@@ -54,5 +54,18 @@ class ConnectivityTests(unittest.TestCase):
         self.assertEqual(len(before),len(after))
         self.assertNotEqual(before,after)
 
+    def test_same_edge_uturn_is_preserved_and_loss_detected(self):
+        root=Path(__file__).resolve().parents[1]/'NetworkTools.docs/session-notes/captures/sprint-20260929-road-splits'
+        snapshots=[json.loads(p.read_text())['result'] for p in sorted(root.glob('*get_junction_snapshot.json'))]
+        s=next(s for s in snapshots if len(s['incidentEdges'])==4)
+        before=lanes.transitions(s,'car')
+        self.assertEqual(len(before),16)
+        self.assertTrue(any(a[0]==b[0] for a,b in before))
+        changed=copy.deepcopy(s)
+        turn=next(l for l in changed['lanes'] if 'car' in l and l['owner']==changed['junction']
+                  and l['start']['ownerIndex']==l['end']['ownerIndex'])
+        changed['lanes'].remove(turn)
+        self.assertNotEqual(before,lanes.transitions(changed,'car'))
+
 
 if __name__=='__main__':unittest.main()

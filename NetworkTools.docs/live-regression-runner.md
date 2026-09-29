@@ -52,9 +52,21 @@ tests do not establish in-game correctness.
 The separate `scripts/fixtures/toy-highway-jank.json` describes the user's newer
 highway-jank toy save. Its rail-merge case passed on the milestone deployment on
 2026-09-29: three selected edges changed, preview/permanent curves matched and
-watched directed lane-pair sets were preserved. Other cases remain pending.
+watched directed lane-pair sets were preserved. Road-four-way-branch and highway
+on/off-ramp cases also passed on that deployment.
 Optional `splits` contain pinned node coordinates; their post-Apply checks include
-fixed positions and planar tangent agreement. Split checks are not live-verified yet.
+fixed positions and planar tangent agreement. Two-pin rail Apply passed at 0,
+0.5 and 1.0 on the split deployment. The one-pin case retains a strict-test failure
+for 3 mm outer junction-center drift, independently reproduced offline.
+
+Lane verification follows directed transitions between incident composition lanes,
+including direct joins represented by shared PathNodes without connector lanes.
+It compares physical lane composition mappings too (lateral positions, direction,
+carriageway, prefab, width), and retains raw connector changes as diagnostics.
+`test-lane-connectivity.py` exercises recorded direct joins plus deliberately broken
+connections and lane swaps. This does not establish vehicle traversal or all
+traffic/access permissions. `replay-regression.py` can rerun assertions on captures
+without contacting the game; `replay-node-center.py` is a bounded alignment model.
 
 Use `scripts/reload-toy-baseline.py --fixture <fixture> --save-root <Saves>
 --expected-city-session <observed-toy-session> --output <new-directory>` for a

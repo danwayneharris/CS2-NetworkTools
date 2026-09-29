@@ -189,3 +189,8 @@ composition mapping. Native preview/permanent incident curve errors were zero.
 Capture: sprint-20260929-half-splits. Stale split-choice UI fix compiled without
 deployment. Game currently paused in the named highway-jank toy baseline with the
 half-strength two-split Apply unsaved; its pre-test checkpoint is preserved.
+
+Zero-strength two-split permanent Apply passed: hard pin/join constraints apply
+at zero as designed, with positions, tangents, composition mappings, directed
+transitions and preview/Apply agreement verified. Capture: sprint-20260929-zero-splits.
+A separate road split fixture is prepared, and its baseline reload is in progress.

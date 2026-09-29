@@ -203,3 +203,24 @@ graph tests pass. Offline road-capture replay with corrected oracle still passes
 with 4/16/4 transitions and zero curve errors, no fixed-node drift. Both original
 report and corrected replay retained. This was an oracle coverage bug, not a game
 change. Game remains paused with road split Apply unsaved and checkpoint intact.
+
+## Interior-junction section prototype (offline only)
+
+Added PlanarJunctionTarget, deliberately not called by the game transform. It
+partitions at fixed interior junction nodes, fits sections using the split target,
+and restores each selected junction port's original endpoint and adjacent handle.
+This preserves existing incident tangent lines and handle lengths rather than
+forcing all branches into a shared ordinary-split tangent. The selected path gives
+the route; no arbitrary main/merging branch classification is introduced.
+
+Tests pass across 21 strengths: exact center/port/handle preservation, real movement
+inside sections, reverse traversal, split point alongside junction, ambiguous
+junction+ordinary-split rejection, and nonfinite input rejection. Full geometry
+executable suite passes. This does not prove native curviness/lane connectivity or
+visual quality. A one-edge section between two junctions can have no free controls
+under these constraints; do not claim smoothing where none is possible.
+
+Runtime interior guard remains intact. Next integration requirement is repeated,
+fresh native validation for every affected junction, including unselected branches
+and exact intended/forbidden lane transitions. Current endpoint search supports only
+one rail junction, so simply invoking this fitter would be insufficient.

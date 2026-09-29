@@ -158,3 +158,16 @@ Preserve intended lane/rail connections and absent crossing connections, topolog
 elevations and account explicitly for unselected incident branches. Existing
 interior-junction rejection stays until a tested replacement exists; do not simply
 remove the guard or silently treat a junction as an ordinary degree-two split.
+
+### Follow-up test: interior junction selected as a split
+
+After interior-junction smoothing is working, explicitly test selecting that junction
+as a player split. Unlike an ordinary degree-two split, selected junction branches
+can have an intentional nonzero relative tangent angle. Do not automatically force
+G1 continuity across them. Pin the junction, minimize change to the original
+relative angle where feasible, and preserve intended/forbidden connections on all
+incident branches. Consider coordinated tangent rotation as a later refinement;
+connectivity and geometric validity take precedence over angle preference. Current
+prototype preserves both selected incident handles exactly and rejects combining
+junction and ordinary split flags. That rejection must remain explicit until this
+separate semantic case is designed and tested.

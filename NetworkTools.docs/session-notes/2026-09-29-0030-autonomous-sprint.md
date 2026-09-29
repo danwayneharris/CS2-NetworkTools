@@ -224,3 +224,9 @@ Runtime interior guard remains intact. Next integration requirement is repeated,
 fresh native validation for every affected junction, including unselected branches
 and exact intended/forbidden lane transitions. Current endpoint search supports only
 one rail junction, so simply invoking this fitter would be insufficient.
+
+Dan added a later junction-as-split case: preserve/prefer the relative selected-branch
+tangent angle rather than force a common tangent, while pinning the junction and
+preserving all connections. Recorded after interior functionality in the feature
+plan. Current runtime work continues; combined junction+ordinary split remains
+explicitly unsupported rather than silently collapsing the angle.

@@ -13,6 +13,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
         public double JunctionStartRotation;
         public double JunctionEndRotation;
         public bool AllowInteriorJunctions;
+        public double InteriorHandleScale;
 
         /// <summary>
         ///     When true, the first control point of the path is forced onto the tangent of the

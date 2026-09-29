@@ -282,3 +282,25 @@ or live mutation in this increment; native efficacy remains unknown.
 User's junction-as-split follow-up remains recorded: prefer preserving relative
 branch angle rather than imposing an ordinary split's common tangent. Implement
 after interior-junction support, with connectivity checks retained.
+
+## Interior handle search integration
+
+Wired the bounded multiplier through the job snapshot and transform. Only resolved
+connection mismatches advance candidates; unresolved mappings reject. Candidate
+retry is latched until a new submission, preserving the user revision and strength.
+Geometry tests and Debug compile/full build/postprocessing/UI/deployment passed.
+Checkpointed the toy game and closed gracefully; visible PID 2816 launched the
+verified baseline. Native result pending at this point.
+
+### Live result: length-only search did not solve the rail case
+
+The runner verified the baseline, made a unique checkpoint and selected the rail
+path. At strength 0.5, all eleven candidates (1, 1.1, 0.9, ... 1.5, 0.5) failed
+exact native connection preservation. The native gate exhausted its bounded
+search and refused Apply. The runner therefore could not reach permanent-result
+verification. Captures and native-search.log retain the evidence. This is a failed
+geometry experiment with a functioning rejection gate, not successful interior
+smoothing. No permanent network changes were applied. Game remains paused on the
+toy baseline with the rejected preview selected. Next: inspect actual native lane
+construction at the missing connection; do not weaken the gate or reduce strength
+silently. Offline invariants passed; live efficacy disproved for this search family.

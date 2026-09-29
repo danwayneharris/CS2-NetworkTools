@@ -21,12 +21,18 @@ namespace NetworkTools.Systems.Tools.RoadShape {
         private int m_InteriorWaitFrames;
         private bool m_InteriorFailed;
         private bool m_InteriorAccepted;
+        private int m_InteriorAttempt;
+        private bool m_InteriorRetryPending;
+        private double InteriorHandleScale => m_InteriorAttempt == 0 ? 1
+            : 1 + ((m_InteriorAttempt + 1) / 2) * (m_InteriorAttempt % 2 == 1 ? 0.1 : -0.1);
 
         private void ConfigureInteriorJunctions(ref ShapeJobConfig config) {
             if (config.Template != ShapeTransformTemplate.CurveSmooth) return;
             if (m_InteriorRevision != m_PreviewInputRevision) {
                 m_InteriorRevision = m_PreviewInputRevision;
                 m_InteriorJunctions.Clear();
+                m_InteriorAttempt = 0;
+                m_InteriorRetryPending = false;
                 m_InteriorFailed = false;
                 m_InteriorAccepted = false;
                 m_InteriorSubmission = 0;
@@ -53,6 +59,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                     m_InteriorJunctions.Add(junction);
                 }
             }
+            config.InteriorHandleScale = InteriorHandleScale;
             config.AllowInteriorJunctions = !m_InteriorFailed && m_InteriorJunctions.Count > 0;
         }
 
@@ -99,10 +106,12 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             if (m_InteriorFailed || m_InteriorRevision != m_PreviewInputRevision || m_InteriorJunctions.Count == 0) return;
             if (m_InteriorSubmission != submission) {
                 m_InteriorSubmission = submission;
+                m_InteriorRetryPending = false;
                 m_InteriorStableFrames = 0;
                 m_InteriorWaitFrames = 0;
                 m_InteriorAccepted = false;
             }
+            if (m_InteriorRetryPending) return;
             if (!fresh) { m_InteriorAccepted = false; m_InteriorStableFrames = 0; return; }
             if (!InteriorBaselineMatches()) { RejectInterior("baseline connections changed"); return; }
             var maps = new Dictionary<Entity, Entity>();
@@ -146,17 +155,28 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                 foreach (var node in shared) candidate = node;
                 if (!EntityManager.HasComponent<Temp>(candidate)) { WaitInterior(); return; }
                 var actual = ReadInteriorConnections(candidate, owners);
-                if (actual == null || !junction.Required.SetEquals(actual)) { WaitInterior(); return; }
+                if (actual == null) { WaitInterior(); return; }
+                if (!junction.Required.SetEquals(actual)) { WaitInterior(true); return; }
             }
             if (++m_InteriorStableFrames >= 3) {
-                if (!m_InteriorAccepted) UnityEngine.Debug.Log($"[NetworkTools.InteriorJunction] accepted submission={submission} junctions={m_InteriorJunctions.Count}");
+                if (!m_InteriorAccepted) UnityEngine.Debug.Log($"[NetworkTools.InteriorJunction] accepted submission={submission} junctions={m_InteriorJunctions.Count} attempt={m_InteriorAttempt} handleScale={InteriorHandleScale}");
                 m_InteriorAccepted = true;
             }
         }
 
-        private void WaitInterior() {
+        private void WaitInterior(bool connectionMismatch = false) {
             m_InteriorAccepted = false; m_InteriorStableFrames = 0;
-            if (++m_InteriorWaitFrames >= 120) RejectInterior("missing, ambiguous or changed native connections");
+            if (++m_InteriorWaitFrames < 120) return;
+            // Only a resolved native connection mismatch can explore geometry.
+            // Missing or ambiguous observations must never trigger a guessed repair.
+            if (!connectionMismatch) { RejectInterior("missing or ambiguous native connections"); return; }
+            if (m_InteriorAttempt >= 10 || SmoothingFactor.Value == 0) {
+                RejectInterior("no connection-preserving handle candidate within 0.5-1.5"); return;
+            }
+            ++m_InteriorAttempt;
+            m_InteriorRetryPending = true;
+            m_UpdateNeeded = true; // Same input revision, new correlated submission.
+            UnityEngine.Debug.Log($"[NetworkTools.InteriorJunction] retry attempt={m_InteriorAttempt} handleScale={InteriorHandleScale}");
         }
         private void RejectInterior(string reason) {
             m_InteriorFailed = true; m_InteriorAccepted = false;

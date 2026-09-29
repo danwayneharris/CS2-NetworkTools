@@ -36,9 +36,17 @@ preserved four directed track connections at strengths 0 and 0.1, but lost one a
 The offline fitter now exposes an experimental handle-length multiplier bounded
 to 0.5–1.5, defaulting to 1. It preserves incident endpoint positions and original
 handle directions, hence the relative branch angle. Tests cover derivative scaling,
-reversed traversal and invalid bounds. Runtime candidate search does not yet use
-this parameter. The bounds are exploratory, not a native safety guarantee; keeping
+reversed traversal and invalid bounds. The Debug native search tries 1, 1.1, 0.9, ... through 1.5 and 0.5 at the
+requested strength. A resolved connection mismatch waits up to 120 observations
+before advancing; missing or ambiguous mappings reject instead. A pending retry
+cannot advance again until a new submission arrives. Apply still requires exact
+connection preservation and three fresh matching observations. The bounds are exploratory, not a native safety guarantee; keeping
 the direction alone has already proved insufficient to guarantee connectivity.
 
 Junction-as-player-split is a separate follow-up. Prefer preserving the relative
 branch angle rather than forcing one shared tangent; see the feature plan.
+
+The first live handle-length search exhausted all eleven candidates at strength
+0.5 on the captured rail-through-merge case. None passed exact native connectivity,
+and Apply remained blocked. Length-only adjustment is insufficient for this case;
+there is no verified interior-junction Apply result yet.

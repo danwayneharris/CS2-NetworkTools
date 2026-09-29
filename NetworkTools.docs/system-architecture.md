@@ -315,6 +315,11 @@ constraints, even when game validation is disabled.
 
 ## 12. Keeping this document useful
 
+The current Debug-only [interior-junction prototype](interior-junctions.md) fits
+separate sections around fixed junction attachments and gates Apply on native
+connection preservation. Its verification status is tracked separately from the
+ordinary [split-point implementation](split-points.md).
+
 When exploring or changing a subsystem:
 
 1. Update the relevant responsibility and data-flow description, with source links.

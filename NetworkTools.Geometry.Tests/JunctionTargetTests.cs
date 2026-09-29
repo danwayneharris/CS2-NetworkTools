@@ -60,7 +60,14 @@ internal static class JunctionTargetTests {
             throw new Exception("junction section broke ordinary split tangent");
         splits[3]=1;
         if(Fit(nodes,curves,splits,1,out _,out _)) throw new Exception("ambiguous junction/split accepted");
-        splits[3]=0; curves[3].B=new P(double.NaN,0);
+        splits[3]=0;
+        var multiple=(P[])nodes.Clone(); multiple[4]=new P(nodes[4].X,nodes[4].Z,true);
+        if(!Fit(multiple,curves,splits,1,out var multiNodes,out var multiCurves))
+            throw new Exception("multiple junctions rejected");
+        Near(multiple[3],multiNodes[3]); Near(multiple[4],multiNodes[4]);
+        Near(curves[3].A,multiCurves[3].A); Near(curves[3].B,multiCurves[3].B);
+        Near(curves[3].C,multiCurves[3].C); Near(curves[3].D,multiCurves[3].D);
+        curves[3].B=new P(double.NaN,0);
         if(Fit(nodes,curves,splits,1,out _,out _)) throw new Exception("nonfinite junction handle accepted");
         Console.WriteLine("PASS: isolated junction sections preserve ports, smooth interiors, reverse and combine with splits.");
     }

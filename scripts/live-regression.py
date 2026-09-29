@@ -223,7 +223,7 @@ class Runner:
         for key, node in old_nodes.items():
             if abs(node['position']['y'] - new_nodes[key]['position']['y']) > 0.001:
                 raise AssertionError('Node elevation changed')
-            if key not in selected_nodes or key in {identity(start),identity(end),*(identity(n) for n in split_nodes)}:
+            if key not in selected_nodes or len(node['edges']) > 2 or key in {identity(start),identity(end),*(identity(n) for n in split_nodes)}:
                 drift=math.dist(position(node['position']),position(new_nodes[key]['position']))
                 if drift>0.001:
                     fixed_node_drifts.append({'node':key,'distance':drift})

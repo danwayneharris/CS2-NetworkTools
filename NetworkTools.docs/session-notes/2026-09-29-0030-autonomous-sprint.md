@@ -248,3 +248,24 @@ C# Compile and the full geometry executable tests pass. New rail-through-merge a
 road-through-four-way fixture definitions prepared; deployment/live verification
 are next. This is an experimental guarded replacement, not a claim of proven
 native behavior from compilation.
+
+## First interior native experiment: rejection is meaningful
+
+Full Debug build/postprocess/deploy passed, NT SHA256
+ABAB6AA9707ABA8C15A26065C895EC1D3C2411DBE4E673C3EFD1CCEEE250DE46.
+Rail-through-merge at requested strength 0.5 failed native validation before Apply.
+Bridge independently resolved the connected temporary junction; it had only three
+of four baseline directed track pairs. Missing reverse connection was from the
+selected output branch into the unselected input branch. Temporary mapping itself
+was valid. Captures: sprint-20260929-interior-rail and interior-rail-probe.
+
+Zero preview preserves four pairs and is accepted. Bounded read-only preview probes
+found 0.1 accepted with four, 0.25 and 0.4 rejected with three. Restored strength zero;
+no Apply occurred. This supports curvature/trim-dependent native behavior beyond
+fixed junction endpoints and tangent lines. Next experiment: vary junction-adjacent
+handle lengths within bounds, preserving their directions and requested smoothing
+strength, rather than silently cap strength or weaken connection validation.
+
+Added multi-junction offline case: adjacent pinned junctions preserve all four
+controls of their shared one-edge section. Full geometry tests pass. Runner now
+also treats interior degree>2 centers as fixed for this prototype's contract.

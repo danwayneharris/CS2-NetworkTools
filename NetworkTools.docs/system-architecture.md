@@ -1,11 +1,13 @@
 # NetworkTools system architecture
 
-Experimental Debug junction search (Sept 28): Smooth Curve can search bounded
-boundary-direction changes for one three-arm rail junction at a selection endpoint,
-using rebuilt native preview connections as its acceptance test. See the
-[experiment and limits](session-notes/2026-09-28-1500-native-junction-search.md) and
-[validation confidence](offline-validation-confidence.md). One saved rail case passed preview and Apply;
-Release behavior and interior-junction rejection are unchanged.
+Current checkpoint (Sept 29): ordinary split constraints and Debug-only interior
+junction section fitting are implemented. Native preview and independent Apply
+captures cover rail, road and highway cases; two rail cases retain strict failures
+for millimeter-scale native node-center drift. See [split points](split-points.md),
+[interior junctions](interior-junctions.md), and the
+[sprint report](session-notes/2026-09-29-sprint-report.md). Release/Burst for these
+additions and vehicle routing remain unverified. Earlier dated claims below are
+historical baselines, not verification of the new features.
 
 This is a living map of the runtime architecture, grounded in the current checkout.
 For how the package is produced, see [build system](build-system.md); for setup
@@ -273,8 +275,9 @@ The mode is enabled in metadata on the integration branch.
 calls the independent `PlanarPathTarget` single-boundary-cubic reconstruction and publishes its
 candidate arrays only if the whole selection passes validation. It bypasses the
 generic transform pipeline's node-position averaging. Endpoints and junctions are
-fixed at selection boundaries; interior junction selections are rejected by this
-experiment. Node and control-point elevations are preserved. Interior endpoints,
+fixed at selection boundaries. The Debug interior-junction path now partitions
+the selection using PlanarJunctionTarget and accepts candidates only after exact
+native connection-set validation. Release retains interior-junction rejection. Node and control-point elevations are preserved. Interior endpoints,
 nodes, and handles blend toward exact subcurves of a shared target by strength;
 partial strength does not guarantee matching tangent directions. The first
 in-game trials exposed a zero-to-positive handle jump; the follow-up blend change
@@ -300,6 +303,11 @@ and Release execution remain unverified.
 
 ## 11. Anarchy and compatibility boundaries
 
+The development branch adds explicit split constraints and a live regression
+harness. See [split-point implementation and limits](split-points.md) and
+[regression runner](live-regression-runner.md); these additions have captured native preview/Apply checks documented in those
+guides. They do not establish Release compatibility or vehicle routing.
+
 The code's [RefreshAnarchy](../NetworkTools.Mod/Systems/Tools/Base/BaseToolSystem.cs#L878)
 toggles the game's validation system for tools that support it. This built-in option
 is distinct from integration with the separately installed Anarchy mod.
@@ -309,6 +317,11 @@ we actually receive, then testing representative cases with the intended geometr
 constraints, even when game validation is disabled.
 
 ## 12. Keeping this document useful
+
+The current Debug-only [interior-junction prototype](interior-junctions.md) fits
+separate sections around fixed junction attachments and gates Apply on native
+connection preservation. Its verification status is tracked separately from the
+ordinary [split-point implementation](split-points.md).
 
 When exploring or changing a subsystem:
 

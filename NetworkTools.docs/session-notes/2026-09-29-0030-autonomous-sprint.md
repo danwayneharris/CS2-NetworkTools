@@ -331,3 +331,29 @@ rejects fewer than two track arms instead of silently producing empty results.
 Three captured analysis tests and four composition-input tests pass. This affects
 research analysis only; the live regression runner already uses connectedSnapshot.
 No Apply or simulation change occurred.
+
+## Common-rotation candidate experiment
+
+Replaced the unsuccessful length-only live search with unit-length common handle
+rotations: 0, +1, -1, ... +15, -15 degrees. The pure fitter retains its separately
+tested length parameter. Rotation preserves the relative selected-branch tangent
+angle and attachment positions, without editing unselected branches or strength.
+Geometry tests (including reversal, relative dot/cross invariants and bounds),
+Debug compile, full build and deployment pass. Native efficacy remains to be tested.
+The interior fixtures allow 180 seconds of bounded preview observation because
+31 candidates may each wait 120 native observations; ordinary cases retain 35s.
+This changes only observation budget, not acceptance checks. Six runner tests pass.
+Checkpoint saved and graceful shutdown completed before deployment. Visible PID
+47124 launched the original hashed toy baseline.
+
+### Common rotation: connectivity success, strict center check fails
+
+Native search accepted +2 degrees at 0.5 and +3 at 0.8. Runner then applied 0.8
+and independently observed stable permanent state: all four directed junction
+connections and two at each other watched join remain, lane composition mappings
+unchanged, topology/elevation/unselected curves preserved, preview/permanent curve
+error zero. Interior node 350934 moved 0.0051738916 m under native rebuilding.
+The existing 1 mm fixed-node assertion therefore reports FAIL; report.json retains
+all successful checks and this exception. No tolerance changed. This is the first
+interior Apply evidence, not a fully passing regression or human visual approval.
+Game remains paused on the toy baseline with unsaved applied test changes.

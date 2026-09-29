@@ -1,10 +1,11 @@
 namespace NetworkTools.Geometry {
+    using System;
     using Point = PlanarFairing.Point;
 
     /// <summary>
     /// Experimental section fit around fixed junction ports. Native connection
     /// validation is required before accepting its result in the game transform.
-    /// A junction keeps its original incident endpoint and handle direction, rather
+    /// A junction keeps its original incident endpoint and relative handle angle, rather
     /// than imposing an ordinary split's shared tangent across different branches.
     /// </summary>
     public static class PlanarJunctionTarget {
@@ -12,7 +13,7 @@ namespace NetworkTools.Geometry {
             double strength, Point* outputNodes, PlanarCubic* outputCurves,
             Point* workNodes, PlanarCubic* workCurves, double* stations,
             out SmoothFailure failure, out int index,
-            double startRotation = 0, double endRotation = 0, double junctionHandleScale = 1) {
+            double startRotation = 0, double endRotation = 0, double junctionHandleScale = 1, double junctionRotation = 0) {
             failure = SmoothFailure.InvalidArguments;
             index = -1;
             if (nodes == null || curves == null || splits == null || outputNodes == null
@@ -20,6 +21,7 @@ namespace NetworkTools.Geometry {
                 || stations == null || count < 2 || count > 512) return false;
             // Bounded candidate parameter, not a replacement for native validation.
             // Strictly positive scaling preserves tangent direction and branch angle.
+            if (!(junctionRotation >= -Math.PI / 12 && junctionRotation <= Math.PI / 12)) return false;
             if (!(junctionHandleScale >= 0.5 && junctionHandleScale <= 1.5)) return false;
             // Junction pins and player splits have distinct meanings. Reject an
             // ambiguous request rather than silently changing its constraint type.
@@ -40,13 +42,13 @@ namespace NetworkTools.Geometry {
                 if (start > 0) {
                     var edge = outputCurves[start];
                     edge.A = curves[start].A;
-                    edge.B = ScaleHandle(curves[start].A, curves[start].B, junctionHandleScale);
+                    edge.B = ScaleHandle(curves[start].A, curves[start].B, junctionHandleScale, junctionRotation);
                     outputCurves[start] = edge;
                     outputNodes[start] = nodes[start];
                 }
                 if (end < count - 1) {
                     var edge = outputCurves[end - 1];
-                    edge.C = ScaleHandle(curves[end - 1].D, curves[end - 1].C, junctionHandleScale);
+                    edge.C = ScaleHandle(curves[end - 1].D, curves[end - 1].C, junctionHandleScale, junctionRotation);
                     edge.D = curves[end - 1].D;
                     outputCurves[end - 1] = edge;
                     outputNodes[end] = nodes[end];
@@ -58,10 +60,13 @@ namespace NetworkTools.Geometry {
             return true;
         }
 
-        private static Point ScaleHandle(Point endpoint, Point handle, double scale) {
-            if (scale == 1) return handle;
-            return new Point(endpoint.X + (handle.X - endpoint.X) * scale,
-                endpoint.Z + (handle.Z - endpoint.Z) * scale);
+        private static Point ScaleHandle(Point endpoint, Point handle, double scale, double rotation) {
+            if (scale == 1 && rotation == 0) return handle;
+            var x = (handle.X - endpoint.X) * scale;
+            var z = (handle.Z - endpoint.Z) * scale;
+            var c = Math.Cos(rotation); var s = Math.Sin(rotation);
+            return new Point(endpoint.X + c * x - s * z,
+                endpoint.Z + s * x + c * z);
         }
     }
 }

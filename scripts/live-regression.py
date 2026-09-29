@@ -193,7 +193,10 @@ class Runner:
             self.control('nt_split', node=node, enabled=True)
         for value in case.get('strengths', [0.5,0.8]):
             self.control('nt_strength', value=value)
-            state = self.poll('nt_get_state', lambda s: s['previewReady'])
+            preview_timeout = case.get('previewTimeoutSeconds', 35)
+            if not isinstance(preview_timeout, (int, float)) or not 1 <= preview_timeout <= 180:
+                raise ValueError('Preview timeout must be bounded to 1-180 seconds')
+            state = self.poll('nt_get_state', lambda s: s['previewReady'], seconds=preview_timeout)
         previews = [self.call('get_junction_preview', n) for n in watched]
         preview_curves = {}
         for p in previews:

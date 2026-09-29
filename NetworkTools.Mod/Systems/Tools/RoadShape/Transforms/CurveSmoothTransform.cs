@@ -10,7 +10,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
         private static Point Horizontal(float3 p) => new Point(p.x, p.z);
         private static float3 WithHorizontal(float3 original, Point p) => new float3((float)p.X, original.y, (float)p.Z);
 
-        public static unsafe bool Execute(ref NativeArray<EdgeState> edges, ref NativeArray<NodeState> nodes, float strength, out SmoothFailure failure, out int failureIndex, double startRotation = 0, double endRotation = 0, bool allowInteriorJunctions = false, double interiorHandleScale = 1) {
+        public static unsafe bool Execute(ref NativeArray<EdgeState> edges, ref NativeArray<NodeState> nodes, float strength, out SmoothFailure failure, out int failureIndex, double startRotation = 0, double endRotation = 0, bool allowInteriorJunctions = false, double interiorHandleScale = 1, double interiorRotation = 0) {
             failure = SmoothFailure.None; failureIndex = -1;
             if (nodes.Length < 2 || edges.Length != nodes.Length - 1) return PlanarPathTarget.Fail(SmoothFailure.PathCountMismatch, -1, out failure, out failureIndex);
             var input = new NativeArray<Point>(nodes.Length, Allocator.Temp);
@@ -45,7 +45,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                 (PlanarCubic*)curves.GetUnsafeReadOnlyPtr(), (byte*)splits.GetUnsafeReadOnlyPtr(), nodes.Length, strength,
                 (Point*)fitted.GetUnsafePtr(), (PlanarCubic*)output.GetUnsafePtr(),
                 (Point*)workNodes.GetUnsafePtr(), (PlanarCubic*)workCurves.GetUnsafePtr(), (double*)stations.GetUnsafePtr(),
-                out failure, out failureIndex, startRotation, endRotation, interiorHandleScale) : hasSplits ? PlanarSplitTarget.Fit((Point*)input.GetUnsafeReadOnlyPtr(),
+                out failure, out failureIndex, startRotation, endRotation, interiorHandleScale, interiorRotation) : hasSplits ? PlanarSplitTarget.Fit((Point*)input.GetUnsafeReadOnlyPtr(),
                 (PlanarCubic*)curves.GetUnsafeReadOnlyPtr(), (byte*)splits.GetUnsafeReadOnlyPtr(), nodes.Length, strength,
                 (Point*)fitted.GetUnsafePtr(), (PlanarCubic*)output.GetUnsafePtr(),
                 (Point*)workNodes.GetUnsafePtr(), (PlanarCubic*)workCurves.GetUnsafePtr(), (double*)stations.GetUnsafePtr(),

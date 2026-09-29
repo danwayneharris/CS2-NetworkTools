@@ -23,8 +23,9 @@ namespace NetworkTools.Systems.Tools.RoadShape {
         private bool m_InteriorAccepted;
         private int m_InteriorAttempt;
         private bool m_InteriorRetryPending;
-        private double InteriorHandleScale => m_InteriorAttempt == 0 ? 1
-            : 1 + ((m_InteriorAttempt + 1) / 2) * (m_InteriorAttempt % 2 == 1 ? 0.1 : -0.1);
+        private double InteriorHandleScale => 1;
+        private double InteriorRotation => m_InteriorAttempt == 0 ? 0
+            : ((m_InteriorAttempt + 1) / 2) * (m_InteriorAttempt % 2 == 1 ? 1 : -1) * System.Math.PI / 180;
 
         private void ConfigureInteriorJunctions(ref ShapeJobConfig config) {
             if (config.Template != ShapeTransformTemplate.CurveSmooth) return;
@@ -60,6 +61,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                 }
             }
             config.InteriorHandleScale = InteriorHandleScale;
+            config.InteriorRotation = InteriorRotation;
             config.AllowInteriorJunctions = !m_InteriorFailed && m_InteriorJunctions.Count > 0;
         }
 
@@ -159,7 +161,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                 if (!junction.Required.SetEquals(actual)) { WaitInterior(true); return; }
             }
             if (++m_InteriorStableFrames >= 3) {
-                if (!m_InteriorAccepted) UnityEngine.Debug.Log($"[NetworkTools.InteriorJunction] accepted submission={submission} junctions={m_InteriorJunctions.Count} attempt={m_InteriorAttempt} handleScale={InteriorHandleScale}");
+                if (!m_InteriorAccepted) UnityEngine.Debug.Log($"[NetworkTools.InteriorJunction] accepted submission={submission} junctions={m_InteriorJunctions.Count} attempt={m_InteriorAttempt} handleScale={InteriorHandleScale} rotationDegrees={InteriorRotation * 180 / System.Math.PI}");
                 m_InteriorAccepted = true;
             }
         }
@@ -170,13 +172,13 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             // Only a resolved native connection mismatch can explore geometry.
             // Missing or ambiguous observations must never trigger a guessed repair.
             if (!connectionMismatch) { RejectInterior("missing or ambiguous native connections"); return; }
-            if (m_InteriorAttempt >= 10 || SmoothingFactor.Value == 0) {
-                RejectInterior("no connection-preserving handle candidate within 0.5-1.5"); return;
+            if (m_InteriorAttempt >= 30 || SmoothingFactor.Value == 0) {
+                RejectInterior("no connection-preserving common rotation within +/-15 degrees"); return;
             }
             ++m_InteriorAttempt;
             m_InteriorRetryPending = true;
             m_UpdateNeeded = true; // Same input revision, new correlated submission.
-            UnityEngine.Debug.Log($"[NetworkTools.InteriorJunction] retry attempt={m_InteriorAttempt} handleScale={InteriorHandleScale}");
+            UnityEngine.Debug.Log($"[NetworkTools.InteriorJunction] retry attempt={m_InteriorAttempt} handleScale={InteriorHandleScale} rotationDegrees={InteriorRotation * 180 / System.Math.PI}");
         }
         private void RejectInterior(string reason) {
             m_InteriorFailed = true; m_InteriorAccepted = false;

@@ -50,3 +50,18 @@ The first live handle-length search exhausted all eleven candidates at strength
 0.5 on the captured rail-through-merge case. None passed exact native connectivity,
 and Apply remained blocked. Length-only adjustment is insufficient for this case;
 there is no verified interior-junction Apply result yet.
+
+## Common-rotation live experiment
+
+The current Debug search uses unit-length handles and common rotations of both
+selected incident tangents: 0, +1, -1, ... +15, -15 degrees. This preserves their
+relative angle, but permits changing their angle to an unselected branch. Exact
+native connector preservation still gates Apply. Length-only search remains a
+recorded failed experiment; the pure fitter still exposes its tested multiplier.
+
+The rail-through-merge case accepted +2 degrees at strength 0.5 and +3 at 0.8.
+Permanent Apply at 0.8 preserved all four junction connections and the physical
+lane mappings, topology, elevations and unselected curves. Preview/permanent
+control-point differences were zero. The strict regression result remains FAIL:
+native rebuilding moved the interior junction center 5.17 mm, exceeding the 1 mm
+fixed-center check. No human visual approval or vehicle traversal test exists.

@@ -4,7 +4,7 @@ using P = NetworkTools.Geometry.PlanarFairing.Point;
 
 internal static class JunctionTargetTests {
     private static unsafe bool Fit(P[] nodes, PlanarCubic[] curves, byte[] splits, double strength,
-        out P[] outputNodes, out PlanarCubic[] outputCurves, double handleScale = 1) {
+        out P[] outputNodes, out PlanarCubic[] outputCurves, double handleScale = 1, double rotation = 0) {
         outputNodes = new P[nodes.Length]; outputCurves = new PlanarCubic[curves.Length];
         var workNodes = new P[nodes.Length]; var workCurves = new PlanarCubic[curves.Length];
         var stations = new double[nodes.Length];
@@ -13,7 +13,7 @@ internal static class JunctionTargetTests {
         fixed (byte* flags = splits)
         fixed (double* s = stations) {
             return PlanarJunctionTarget.Fit(input, original, flags, nodes.Length, strength,
-                output, result, work, scratch, s, out _, out _, junctionHandleScale: handleScale);
+                output, result, work, scratch, s, out _, out _, junctionHandleScale: handleScale, junctionRotation: rotation);
         }
     }
 
@@ -70,6 +70,26 @@ internal static class JunctionTargetTests {
         foreach (var scale in new[] { double.NaN, double.PositiveInfinity, -1, 0, 0.49, 1.51 })
             if (Fit(nodes,curves,splits,1,out _,out _,scale))
                 throw new Exception("invalid junction handle scale accepted");
+        foreach (var rotation in new[] { -Math.PI/12, -0.05, 0.05, Math.PI/12 }) {
+            if (!Fit(nodes,curves,splits,0.8,out var rotatedNodes,out var rotated,1,rotation)
+                || !Fit(reverseNodes,reverseCurves,splits,0.8,out _,out var reverseRotated,1,rotation))
+                throw new Exception("junction rotation rejected");
+            Near(nodes[3],rotatedNodes[3]);
+            Near(curves[2].D,rotated[2].D); Near(curves[3].A,rotated[3].A);
+            var a=curves[2].Derivative(1); var b=curves[3].Derivative(0);
+            var c=rotated[2].Derivative(1); var d=rotated[3].Derivative(0);
+            if(Math.Abs(a.X*b.X+a.Z*b.Z-c.X*d.X-c.Z*d.Z)>1e-7
+                || Math.Abs(a.X*b.Z-a.Z*b.X-c.X*d.Z+c.Z*d.X)>1e-7)
+                throw new Exception("common rotation changed relative tangent angle");
+            for(var j=0;j<rotated.Length;j++) {
+                var v=reverseRotated[reverseRotated.Length-1-j];
+                Near(rotated[j].A,v.D); Near(rotated[j].B,v.C);
+                Near(rotated[j].C,v.B); Near(rotated[j].D,v.A);
+            }
+        }
+        foreach(var rotation in new[] { double.NaN, double.PositiveInfinity, -0.27, 0.27 })
+            if(Fit(nodes,curves,splits,1,out _,out _,1,rotation))
+                throw new Exception("unbounded junction rotation accepted");
         splits[1]=1;
         if(!Fit(nodes,curves,splits,0.5,out var pinned,out var combined))
             throw new Exception("split alongside junction rejected");

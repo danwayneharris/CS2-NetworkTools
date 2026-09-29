@@ -479,3 +479,17 @@ visual or vehicle traversal assertion. Raw captures and report retained. Game
 paused, PID 39084, citySession f5bbecb3fbd84cd7afda7d850dd2ac7b, with applied slip
 test changes not yet checkpointed after Apply. Original and new baseline files
 untouched; runner's unique pre-Apply checkpoint verified.
+
+## Final verification and handoff
+
+Current geometry executable suite and 31 Python tests passed; bridge native adapter
+and 61-command contract verification passed. Rechecked worktrees and milestone
+ancestry. Verified both baseline hashes; saved and verified the unique final applied
+slip checkpoint. Game paused, no known unsaved network changes. A transient sharing
+violation reading heartbeat was resolved by a fresh semantic query, not a restart.
+Saved reusable checkpoint-toy.py; its no-save preflight passed. The preceding actual
+save used the same guarded sequence and is captured in sprint-20260929-handoff.
+Added final report and evidence audit. Preserved user lockfile and untracked Python
+cache; no push/publication. Conditional crossing remains unavailable with current
+locked prefabs; signed-side control remains research pending UX choice, as allowed
+by the sprint. Release/human/vehicle checks are explicitly not claimed.

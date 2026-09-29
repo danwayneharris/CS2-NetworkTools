@@ -417,3 +417,20 @@ the clarified side-bias request.
 Reconciled split and architecture docs: removed stale not-live-tested and managed-
 only statements, recorded full selected-edge preview coverage and current probe
 comment. Kept Release/Burst and human validation limitations explicit.
+
+## Endpoint exact-set preservation and scope audit
+
+Replaced the older endpoint rail gate's subset check with exact set equality: an
+extra turn is a preservation failure too. Debug compile/full build/deployment and
+live rail endpoint test at 0.5/0.8 followed by Apply at 0.8 passed. Permanent
+connections, physical lane mappings, topology/elevation/unselected curves and
+fixed nodes passed; preview/Apply curve error zero. Captures retained.
+
+Rechecked local milestone ancestry in both repos and clean bridge working tree;
+NT package-lock user changes remain unstaged. Added requirement/evidence audit,
+including explicit missing crossing/slip coverage and strict small-drift failures.
+Read-only road prefab discovery found Small Road and Small Road Oneway - 1 lane
+unlocked and placeable, so a dedicated slip fixture can be investigated without
+an unlock bypass. No new road construction yet. Game remains paused, PID 10724,
+citySession 254c2801a2334ff8a721775bc6dd2949, with unsaved applied endpoint rail
+test changes; baseline untouched and checkpoint retained.

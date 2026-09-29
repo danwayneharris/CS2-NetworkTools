@@ -171,7 +171,8 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                 m_JunctionLastConnections = connections;
             }
             if (++m_JunctionStableFrames < 3) { return; }
-            if (m_JunctionRequired.IsSubsetOf(connections)) {
+            // Preservation includes absent movements: a new turn is not harmless.
+            if (m_JunctionRequired.SetEquals(connections)) {
                 if (!m_JunctionAccepted) UnityEngine.Debug.Log($"[NetworkTools.JunctionSearch] accepted submission={id} attempt={m_JunctionAttempt} rotationDegrees={JunctionRotation * 180 / Math.PI} required={m_JunctionRequired.Count} observed={connections.Count}");
                 m_JunctionAccepted = true;
                 return;

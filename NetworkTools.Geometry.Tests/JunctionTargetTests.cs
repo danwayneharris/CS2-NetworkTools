@@ -4,7 +4,7 @@ using P = NetworkTools.Geometry.PlanarFairing.Point;
 
 internal static class JunctionTargetTests {
     private static unsafe bool Fit(P[] nodes, PlanarCubic[] curves, byte[] splits, double strength,
-        out P[] outputNodes, out PlanarCubic[] outputCurves) {
+        out P[] outputNodes, out PlanarCubic[] outputCurves, double handleScale = 1) {
         outputNodes = new P[nodes.Length]; outputCurves = new PlanarCubic[curves.Length];
         var workNodes = new P[nodes.Length]; var workCurves = new PlanarCubic[curves.Length];
         var stations = new double[nodes.Length];
@@ -13,7 +13,7 @@ internal static class JunctionTargetTests {
         fixed (byte* flags = splits)
         fixed (double* s = stations) {
             return PlanarJunctionTarget.Fit(input, original, flags, nodes.Length, strength,
-                output, result, work, scratch, s, out _, out _);
+                output, result, work, scratch, s, out _, out _, junctionHandleScale: handleScale);
         }
     }
 
@@ -51,6 +51,25 @@ internal static class JunctionTargetTests {
             Near(forward[i].A,c.D); Near(forward[i].B,c.C);
             Near(forward[i].C,c.B); Near(forward[i].D,c.A);
         }
+        foreach (var scale in new[] { 0.5, 0.8, 1.2, 1.5 }) {
+            if (!Fit(nodes,curves,splits,1,out var scaledNodes,out var scaled,scale)
+                || !Fit(reverseNodes,reverseCurves,splits,1,out _,out var scaledReverse,scale))
+                throw new Exception("bounded junction handle candidate rejected");
+            Near(nodes[3],scaledNodes[3]);
+            Near(curves[2].D,scaled[2].D); Near(curves[3].A,scaled[3].A);
+            var before = curves[2].Derivative(1); var after = scaled[2].Derivative(1);
+            Near(new P(before.X*scale,before.Z*scale),after);
+            before = curves[3].Derivative(0); after = scaled[3].Derivative(0);
+            Near(new P(before.X*scale,before.Z*scale),after);
+            for (var i=0;i<scaled.Length;i++) {
+                var c=scaledReverse[scaledReverse.Length-1-i];
+                Near(scaled[i].A,c.D); Near(scaled[i].B,c.C);
+                Near(scaled[i].C,c.B); Near(scaled[i].D,c.A);
+            }
+        }
+        foreach (var scale in new[] { double.NaN, double.PositiveInfinity, -1, 0, 0.49, 1.51 })
+            if (Fit(nodes,curves,splits,1,out _,out _,scale))
+                throw new Exception("invalid junction handle scale accepted");
         splits[1]=1;
         if(!Fit(nodes,curves,splits,0.5,out var pinned,out var combined))
             throw new Exception("split alongside junction rejected");

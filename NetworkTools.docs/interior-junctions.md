@@ -29,7 +29,16 @@ Release does not enable this prototype and retains interior-junction rejection.
 Offline tests pass for constrained controls, strength sweep, reversed selection,
 ordinary split points in adjacent sections and invalid input rejection. Debug
 compilation, postprocessing and deployment passed. Native validation is pending;
-build success does not prove game behavior.
+build success does not prove game behavior. The first captured interior rail case
+preserved four directed track connections at strengths 0 and 0.1, but lost one at
+0.25, 0.4 and 0.5; the native gate blocked Apply. No interior Apply was performed.
+
+The offline fitter now exposes an experimental handle-length multiplier bounded
+to 0.5–1.5, defaulting to 1. It preserves incident endpoint positions and original
+handle directions, hence the relative branch angle. Tests cover derivative scaling,
+reversed traversal and invalid bounds. Runtime candidate search does not yet use
+this parameter. The bounds are exploratory, not a native safety guarantee; keeping
+the direction alone has already proved insufficient to guarantee connectivity.
 
 Junction-as-player-split is a separate follow-up. Prefer preserving the relative
 branch angle rather than forcing one shared tangent; see the feature plan.

@@ -269,3 +269,16 @@ strength, rather than silently cap strength or weaken connection validation.
 Added multi-junction offline case: adjacent pinned junctions preserve all four
 controls of their shared one-edge section. Full geometry tests pass. Runner now
 also treats interior degree>2 centers as fixed for this prototype's contract.
+# Bounded interior handle-length experiment
+
+Added an optional 0.5–1.5 handle-length multiplier to `PlanarJunctionTarget`,
+default 1 (exact original handle). It changes only the selected incident handles,
+preserving endpoint positions and planar tangent directions. This is preparation
+for a bounded native candidate search, not a relaxation of connection validation
+or a silent reduction of the requested strength. Geometry tests passed, including
+derivative scaling, reversal and invalid parameter rejection. No new deployment
+or live mutation in this increment; native efficacy remains unknown.
+
+User's junction-as-split follow-up remains recorded: prefer preserving relative
+branch angle rather than imposing an ordinary split's common tangent. Implement
+after interior-junction support, with connectivity checks retained.

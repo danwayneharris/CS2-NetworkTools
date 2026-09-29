@@ -1,5 +1,12 @@
 # Smooth Curve plan
 
+**Current status (Sept 29):** ordinary split points and Debug interior-junction
+smoothing are implemented and have bounded native preview/Apply evidence. Read
+[split points](split-points.md), [interior junctions](interior-junctions.md), and the
+[sprint report](session-notes/2026-09-29-sprint-report.md) for current limits. Dated
+Sept 26–28 sections below record the earlier design history. Side-bias controls,
+junction-as-split semantics, and combined curve/slope smoothing remain proposals.
+
 **Current checkpoint (Sept 28, 2026):** Debug builds now experiment with native
 preview candidate search for one three-arm rail junction at a selection endpoint.
 One saved regression passed preview and Apply: a +3 degree boundary correction
@@ -136,3 +143,63 @@ for a smooth join, or explicitly allow a player-designated corner. Independently
 preserving each side's original tangent can preserve a kink. Keep endpoint offsets
 separate from node positions. A split at an intersection does not exempt unselected
 connections from validation. No runtime UI or fitter changes are implemented here.
+
+## User clarification: centered side-bias control
+
+Dan clarified that "negative" smoothing is a UX description, not a requirement to
+negate weights or increase path length. The desired exploratory behavior is a
+centered slider: one extreme biases the smoothed result toward one side of a janky
+path, the opposite extreme toward the other side, and the middle is equivalent to
+zero. This supersedes treating extra route length as the primary requirement.
+Side orientation (selection direction versus world/screen direction) and the exact
+relationship between bias and smoothing remain design questions; do not silently
+choose them as established requirements. Lower priority than live regression and
+split points. Retain the longer-route experiment as research, not the chosen UX.
+
+## Sprint scope addition: interior junctions (2026-09-29)
+
+Dan explicitly added smoothing a selected path whose junction is an interior node,
+not only its start/end. This is separate from split points. Finish the current
+split validation before starting it, then prioritize using the regression harness.
+Preserve intended lane/rail connections and absent crossing connections, topology,
+elevations and account explicitly for unselected incident branches. Existing
+interior-junction rejection stays until a tested replacement exists; do not simply
+remove the guard or silently treat a junction as an ordinary degree-two split.
+
+### Follow-up test: interior junction selected as a split
+
+After interior-junction smoothing is working, explicitly test selecting that junction
+as a player split. Unlike an ordinary degree-two split, selected junction branches
+can have an intentional nonzero relative tangent angle. Do not automatically force
+G1 continuity across them. Pin the junction, minimize change to the original
+relative angle where feasible, and preserve intended/forbidden connections on all
+incident branches. Consider coordinated tangent rotation as a later refinement;
+connectivity and geometric validity take precedence over angle preference. The initial
+prototype preserved both selected incident handles exactly; the current bounded
+common-rotation search preserves their relative angle. It still rejects combining
+junction and ordinary split flags. That rejection must remain explicit until this
+separate semantic case is designed and tested.
+
+## Side-bias UX experiment (2026-09-29)
+
+Run `uv run --with matplotlib python scripts/explore-side-bias.py --output <folder>`
+for the saved comparison in `session-notes/plots/side-bias-20260929`. This is an
+offline analytic research example, not the production fitter or native feasibility.
+
+Two coherent choices remain for discussion:
+
+1. One centered slider: strength is absolute slider displacement. Center restores
+   the original path; either extreme smooths fully toward a side-biased target.
+   Passing through zero necessarily reintroduces the original wiggles.
+2. Separate strength and side bias: zero bias gives the ordinary smooth target at
+   the chosen strength. Sweeping sides need not unsmooth the route, but center does
+   not mean original geometry unless strength is also zero.
+
+The plotted displacement uses a bounded sextic envelope with zero value, first
+and second derivatives at section endpoints. It demonstrates endpoint-preserving
+side choice, not a solution for arbitrary hairpins or intersections. Its fixed
+chord normal has a clear side only in this example; selection-relative side flips
+when selection order reverses, world-canonical orientation can jump near its sign
+boundary, and screen-relative side changes with the camera. Do not silently choose
+one of these conventions. Junctions/splits would require constrained section fits
+and native validation; neither alternative is integrated yet.

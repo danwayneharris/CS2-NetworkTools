@@ -133,3 +133,28 @@ incident endpoints and tangent-line interactions; assigning a fixed Node positio
 alone is insufficient. It explains a mechanism consistent with observed native
 preview drift, but exact replay/causality still needs verification. Follow-up must
 address native center constraints and independently trace degree-two connectivity.
+
+## Direct-join graph oracle and node-center replay
+
+New lane-connectivity.py reconstructs directed transitions between incident edge
+composition lanes through full snapshot-local PathNode equality. This covers both
+junction-owned connector lanes and shared-node direct joins. It stops upon reaching
+another edge rather than inferring remote paths. Tests on actual one-split captures
+show identical transitions before/after at all three watched nodes; injected broken
+shared endpoint and same-count destination-lane swap are detected. Current runner
+now compares these transitions and records raw connector-pair changes separately.
+This is native graph reachability, not full traffic/access restrictions or a proof
+of physical lane ordering under arbitrary composition changes.
+
+replay-node-center.py implements bounded same-layer, non-Standalone XZ alignment
+from installed source. Predicted 2.9648 mm shift versus observed 3.0083 mm, error
+0.0517 mm (double diagnostic versus native floats). This supports native alignment
+as cause. Dan regards 3 mm as trivial visually; retain it diagnostically rather than
+claim a player-visible defect or silently remove the check.
+
+Added replay-regression.py to run current assertions on recorded requests/results
+without contacting the game. One-split replay passes topology, elevations,
+unselected curves, selected preview/permanent curves, actual split pin and tangent
+checks, and semantic lane transitions. It still fails the unchanged strict 1 mm
+boundary-center check and reports that drift explicitly. Six runner tests and three
+graph tests pass. No further live mutation in this investigation.

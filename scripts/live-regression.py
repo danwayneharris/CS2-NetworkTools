@@ -12,6 +12,16 @@ import os
 from pathlib import Path
 import subprocess
 import time
+import importlib.util
+
+_lane_spec = importlib.util.spec_from_file_location('lane_connectivity', Path(__file__).with_name('lane-connectivity.py'))
+_lane_module = importlib.util.module_from_spec(_lane_spec)
+_lane_spec.loader.exec_module(_lane_module)
+
+
+def lane_transitions(snapshot):
+    return {(kind, source, target) for kind in ('track','car')
+            for source,target in _lane_module.transitions(snapshot,kind)}
 
 
 def identity(entity):
@@ -54,7 +64,7 @@ def permanent_signature(snapshots, nodes, edges):
     """Observed stability, not a native job-completion fence."""
     junctions = []
     for snapshot in snapshots:
-        pairs = sorted(connections(snapshot))  # Reject incomplete observations.
+        pairs = sorted(lane_transitions(snapshot))  # Includes native direct joins.
         owners = snapshot['owners']
         if any(o.get('updated') or o.get('created') for o in owners):
             return None
@@ -209,12 +219,14 @@ class Runner:
         old_edges, new_edges = ({identity(e): e for e in es} for es in (edges, after_edges))
         if old_nodes.keys() != new_nodes.keys() or old_edges.keys() != new_edges.keys():
             raise AssertionError('Topology identities changed')
+        fixed_node_drifts = []
         for key, node in old_nodes.items():
             if abs(node['position']['y'] - new_nodes[key]['position']['y']) > 0.001:
                 raise AssertionError('Node elevation changed')
             if key not in selected_nodes or key in {identity(start),identity(end),*(identity(n) for n in split_nodes)}:
-                if math.dist(position(node['position']),position(new_nodes[key]['position']))>0.001:
-                    raise AssertionError('Fixed or unselected node moved')
+                drift=math.dist(position(node['position']),position(new_nodes[key]['position']))
+                if drift>0.001:
+                    fixed_node_drifts.append({'node':key,'distance':drift})
         for key, edge in old_edges.items():
             if any(edge[k] != new_edges[key][k] for k in ('startNode','endNode','prefab')):
                 raise AssertionError('Topology or prefab changed')
@@ -226,7 +238,8 @@ class Runner:
                    zip(preview_curves[key],new_edges[key]['curve']))>0.001:
                 raise AssertionError('Selected preview/permanent geometry mismatch')
         report = {'case':case['name'], 'checkpoint':saved['saveName'], 'changedEdges':changes,
-                  'junctions':[], 'limits':'Local snapshot checks; not vehicle traversal or visual approval.'}
+                  'junctions':[], 'fixedNodeDrifts':fixed_node_drifts,
+                  'limits':'Local snapshot checks; not vehicle traversal or visual approval.'}
         for node in split_nodes:
             incident=[new_edges[identity(e)] for e in path['edges'] if identity(node) in
                       (identity(new_edges[identity(e)]['startNode']),identity(new_edges[identity(e)]['endNode']))]
@@ -245,7 +258,7 @@ class Runner:
             if lengths<1e-8 or (a[0]*b[0]+a[1]*b[1])/lengths<1-1e-6:
                 raise AssertionError('Split planar tangents do not agree')
         for b, p, a in zip(before, previews, after):
-            missing, added = connections(b)-connections(a), connections(a)-connections(b)
+            missing, added = lane_transitions(b)-lane_transitions(a), lane_transitions(a)-lane_transitions(b)
             if missing or added:
                 raise AssertionError(f'Directed connections changed: missing={missing}, added={added}')
             temp = p.get('connectedSnapshot')
@@ -259,8 +272,12 @@ class Runner:
                     errors += [math.dist(position(x),position(y)) for x,y in zip(owner['curve'],curve)]
             if not errors or max(errors)>0.001:
                 raise AssertionError('Incident preview/permanent curve mismatch')
-            report['junctions'].append({'connections':len(connections(a)), 'maxCurveError':max(errors)})
+            report['junctions'].append({'connections':len(lane_transitions(a)),
+                'rawConnectorPairsChanged':connections(b)!=connections(a), 'maxCurveError':max(errors)})
+        report['passed']=not fixed_node_drifts
         (self.output/'report.json').write_text(json.dumps(report, indent=2))
+        if fixed_node_drifts:
+            raise AssertionError('Fixed or unselected node moved; other checks completed, inspect report.json')
         return report
 
 

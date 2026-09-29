@@ -47,7 +47,7 @@ class FixtureTests(unittest.TestCase):
         edges=copy.deepcopy(self.edges)
         edges[0].update(index=3,version=1)
         snapshot=dict(complete=True,errors=[],junction=dict(index=1,version=1),
-                      lanes=[],owners=[dict(index=1,version=1,updated=False)])
+                      lanes=[],incidentEdges=[],owners=[dict(index=1,version=1,updated=False)])
         original=runner.permanent_signature([snapshot],self.nodes,edges)
         snapshot['capturedUtc']='later'
         self.assertEqual(original,runner.permanent_signature([snapshot],self.nodes,edges))

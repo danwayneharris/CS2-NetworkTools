@@ -75,6 +75,8 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                 && matches.Count == probe.Curves.Count && duplicates == 0 && mismatches == 0 && missingBuffers == 0 ? probe.Id : 0;
             ObserveJunctionSearch(probe.Id, revisionMatches && originalInputs == "matches"
                 && matches.Count == probe.Curves.Count && duplicates == 0 && mismatches == 0 && missingBuffers == 0);
+            ObserveInteriorJunctions(probe.Id, revisionMatches && originalInputs == "matches"
+                && matches.Count == probe.Curves.Count && duplicates == 0 && mismatches == 0 && missingBuffers == 0);
             var message = $"[NetworkTools.PreviewProbe] session={s_SmoothSession} submission={probe.Id} inputRevision={m_PreviewInputRevision} submittedRevision={m_SubmittedPreviewRevision} revisionMatches={revisionMatches} dirty={m_UpdateNeeded} expectedEdges={probe.Curves.Count} matchedEdges={matches.Count} ambiguousEdges={duplicates} curveMismatches={mismatches} missingLaneBuffers={missingBuffers} edgeTrackLanes={tracks} phase=AfterModificationEndBarrier validationReady=false";
             message += $" originalInputs={originalInputs}";
             if (message != m_LastProbeMessage) {

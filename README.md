@@ -4,10 +4,14 @@ Welcome to my fork of Luca's Network Tools! I absolutely love this mod, and I've
 
 # First: Some Docs! Always!!
 
-Current development checkpoint: an experimental **Debug-only** Smooth Curve search
-preserves connections at one rail junction endpoint by adjusting the selected path.
-One saved failing case now passes preview and Apply. Broader junction support remains
-work in progress; see [validation evidence and limits](NetworkTools.docs/offline-validation-confidence.md).
+Current development checkpoint (Sept 29, 2026): ordinary **split-point smoothing**
+and experimental **Debug-only interior-junction smoothing** have captured native
+preview/Apply coverage on toy rail, road, and highway networks. Exact connector-set
+checks guard the interior search. Two rail cases still fail strict fixed-center
+tolerances by roughly 3–5 mm; Release/Burst and vehicle routing remain unverified.
+See [split points](NetworkTools.docs/split-points.md),
+[interior junctions](NetworkTools.docs/interior-junctions.md), and
+[the regression workflow](NetworkTools.docs/live-regression-runner.md).
 
 The first thing I've done is update this readme, and generate a couple of other docs to make others' lives easier if they ever wanted to contribute and to make my own life easier because I am forgetful as all hell: 
 
@@ -42,4 +46,4 @@ I want to try and take some incremental steps towards a more complete Network To
 The development diagnostics use our locally extended **Cities II Agent Bridge**;
 ordinary Network Tools use and builds do not require that mod. Follow
 [local bridge setup and checks](BOOTSTRAP.md#junction-development-dependencies).
-That guide also covers the `cs2-modding@csmodding` coding-agent plugin. Our bridge extension is maintained in [our fork](https://github.com/danwayneharris/cities2-agent-bridge-ndc), on `dan/junction-snapshot` pending review; upstream releases do not include these diagnostic commands yet.
+That guide also covers the `cs2-modding@csmodding` coding-agent plugin. Our bridge extension is maintained in [our fork](https://github.com/danwayneharris/cities2-agent-bridge-ndc), with further development reviewed through PRs there. Consult its current command documentation for supported diagnostics and controls.

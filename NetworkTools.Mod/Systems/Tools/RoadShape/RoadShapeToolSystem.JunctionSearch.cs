@@ -92,6 +92,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
         }
 
         private bool JunctionSearchAllowsApply() {
+            if (!InteriorJunctionsAllowApply()) { return false; }
             if (m_JunctionRevision != m_PreviewInputRevision || m_JunctionFailed) { return false; }
             if (m_Junction == Entity.Null) { return true; }
             return m_JunctionAccepted && m_JunctionObservedId == m_SmoothTraceId

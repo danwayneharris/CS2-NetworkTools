@@ -12,6 +12,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
         public float SmoothingFactor;
         public double JunctionStartRotation;
         public double JunctionEndRotation;
+        public bool AllowInteriorJunctions;
 
         /// <summary>
         ///     When true, the first control point of the path is forced onto the tangent of the

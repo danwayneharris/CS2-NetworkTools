@@ -230,3 +230,21 @@ tangent angle rather than force a common tangent, while pinning the junction and
 preserving all connections. Recorded after interior functionality in the feature
 plan. Current runtime work continues; combined junction+ordinary split remains
 explicitly unsupported rather than silently collapsing the angle.
+
+## Guarded interior-junction development integration
+
+Added a Debug-only native gate for each interior junction (3-8 incident edges).
+Missing connectivity, repeated edges, unknown endpoint ownership, missing/ambiguous
+temporary mappings and changed unselected curves reject or wait boundedly. Baseline
+car/track directed pairs must match exactly (both missing and extra connections
+reject), through three observations of the current fresh submission. Original
+input freshness still comes from the existing probe; Apply rechecks baseline pairs.
+This gate does not claim support for roundabout connector ownership or degree-two
+direct-join rewrites at a junction. Unsupported cases stay rejected.
+
+Only successfully captured interior baselines enable the new section fitter in
+Debug job config. Failed/unknown baselines and Release retain the old rejection.
+C# Compile and the full geometry executable tests pass. New rail-through-merge and
+road-through-four-way fixture definitions prepared; deployment/live verification
+are next. This is an experimental guarded replacement, not a claim of proven
+native behavior from compilation.

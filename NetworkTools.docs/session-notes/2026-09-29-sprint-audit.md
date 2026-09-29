@@ -14,15 +14,14 @@ Detailed experiments remain in `2026-09-29-0030-autonomous-sprint.md`.
 | Split-point math and UI | PlanarSplitTarget pointer implementation and managed wrapper, CurveSmoothTransform, Splits.cs, UI list, bridge nt_split. Reversal/strength/offset/invalid tests; live rail two-pin strengths 0/0.5/1 and road two-pin full strength pass. |
 | Split limitations | One-pin rail preserves the pin, G1 and connections but has 3 mm outer-junction center drift. Human UI/visual approval pending. Junction-as-split remains a deliberately separate follow-up. |
 | Non-merging rail crossing | Discovery completed; train prefabs locked, bridge rejects them, no unlock command. No crossing built/tested. Need suitable toy fixture or supported unlocked setup. |
-| Slip lane distinct from highway ramps | No separately identified slip-lane fixture yet. Do not conflate the passing highway ramps with this coverage. |
+| Slip lane distinct from highway ramps | Dedicated native-built one-way bypass saved separately; toy-slip-lane.json and sprint-20260929-slip-regression report pass at 0.5/0.8 preview and 0.8 Apply. Scope is its last two edges through the exit junction, not the whole cyclic route. |
 | Negative/side-bias research | explore-longer-target.py and explore-side-bias.py with plots. Clarified side bias supersedes mandatory longer route. Center semantics and orientation choices documented; not shipped. |
 | Slope/combined architecture | sprint-architecture-review.md reads current transforms/pipeline and proposes independent horizontal/vertical solvers with recomputed stations. No speculative slope rewrite. |
 | Incremental history | Local commits include failed length-only search, curvature evidence, successful common rotations and all captures. |
 | Confidence | Offline math has executable tests; native preview and permanent results have separate captures. No vehicle traversal, human visual, broad asset or Release/Burst claim. |
 
 Before a release, resolve Debug-only validation behavior, evaluate fixed-center
-policy, and run supervised UI/visual checks. Crossing and dedicated slip-lane
-coverage remain explicit gaps. The endpoint exact-set tightening passed live rail preview and Apply in
+policy, and run supervised UI/visual checks. Crossing coverage remains an explicit gap. The endpoint exact-set tightening passed live rail preview and Apply in
 `sprint-20260929-exact-endpoint`, with zero curve error and no fixed-node drift.
-Basic small road assets are unlocked in the current toy save; dedicated slip-lane
-construction remains feasible to investigate using the existing bridge controls.
+Dedicated slip construction and regression are now captured and verified, with
+no claim of broad slip-lane asset or traffic coverage.

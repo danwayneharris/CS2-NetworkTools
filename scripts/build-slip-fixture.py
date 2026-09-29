@@ -13,7 +13,8 @@ A=(-750,-1100);B=(-650,-1100);C=(-550,-1100);D=(-350,-1100)
 E=(-550,-1300);F=(-550,-1200);G=(-550,-900)
 H=(-655,-1150);I=(-600,-1215)
 A,B,C,D,E,F,G,H,I=[(p[0]-100,p[1]) for p in (A,B,C,D,E,F,G,H,I)]
-PLAN=[(A,B),(B,C),(C,D),(E,F),(F,C),(C,G),(B,H),(H,I),(I,F)]
+PLAN=[(A,B),(B,H),(H,I),(I,F),(F,E),(F,C),(C,B),(C,G),(C,D)]
+SLIP={(B,H),(H,I),(I,F)}
 
 
 def checkpoint(r,root,label):
@@ -59,7 +60,7 @@ def main():
     for number,(start,end) in enumerate(PLAN):
         city=r.call('get_city_state')
         if city['selectedSpeed']!=0 or city['population']!=0:raise ValueError('Toy state changed')
-        prefab=prefabs['Small Road' if number<6 else 'Small Road Oneway - 1 lane']
+        prefab=prefabs['Small Road Oneway - 1 lane' if (start,end) in SLIP else 'Small Road']
         def point(p):
             value={'x':p[0],'z':p[1]}
             if p in known:value.update(known[p])

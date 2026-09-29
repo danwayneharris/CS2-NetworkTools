@@ -456,3 +456,26 @@ cleanup. Two isolated road placements are unsaved on the paused toy save, PID
 Next: reload original baseline and order construction so future slip attachment
 points become junctions before collinear extensions can merge them away. This is
 fixture infrastructure evidence, not a slip smoothing test.
+
+## Dedicated slip fixture and regression passed
+
+Reloaded baseline after checkpointing partial construction. Reordered placement:
+main stub, one-way bypass, southern road, then remaining intersection arms. All
+nine native placements completed and fresh endpoints matched. This avoids native
+collinear degree-two node consolidation by establishing branches first. Saved
+CitiesIIAgentBridge-slip-baseline-20260929-095819-5a44d850.cok separately; generated
+toy-slip-lane.json pins its hash and local geometry fingerprint.
+
+Independent snapshots confirmed the bypass's directed one-way progression through
+its two internal joins and six existing exit-junction transitions (including both
+allowed main-road directions). The smoothing selection starts at the first bypass
+intermediate node and ends at its exit junction; it does not claim coverage of
+smoothing the entire cycle between the two junctions or all slip-lane designs.
+
+Native preview 0.5/0.8 and permanent Apply 0.8 passed. Two selected edges changed;
+exact semantic lane transitions, composition mapping, topology, elevations, fixed
+nodes and unselected curves passed; preview/permanent curve error zero. No human
+visual or vehicle traversal assertion. Raw captures and report retained. Game
+paused, PID 39084, citySession f5bbecb3fbd84cd7afda7d850dd2ac7b, with applied slip
+test changes not yet checkpointed after Apply. Original and new baseline files
+untouched; runner's unique pre-Apply checkpoint verified.

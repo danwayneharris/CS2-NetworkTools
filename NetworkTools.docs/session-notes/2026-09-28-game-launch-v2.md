@@ -16,3 +16,13 @@ launch guard remains. The experiment needs a safe enabled-control checkpoint or
 closed game before restart work. A typed mod-control adapter remains unimplemented.
 Bridge notes document the exact offline work and limitations; these follow-up
 commits are local and separate from the published PRs.
+
+## Successful launch/load follow-up
+
+User subsequently closed the game. The isolated Steam app-ID-hint experiment
+started Cities2.exe and loaded the exact saved rail-regression metadata ID;
+native logs confirm the named save. Bridge reports loading=false, gameMode=Game,
+selectedSpeed=0 and controls disabled. Expected test mods initialized. One launch
+and paused-load cycle is now verified; save, exit/repeat, and mod-control are not.
+See sibling bridge launch-v2-experiment.ps1 and its v2 session note. No new
+NetworkTools build/deployment or game-state mutation beyond loading was performed.

@@ -25,8 +25,19 @@ namespace NetworkTools.Geometry {
         public static unsafe bool Fit(Point* nodes, PlanarCubic* curves, int count, double strength,
             Point* outputNodes, PlanarCubic* outputCurves, double* stations,
             out SmoothFailure failure, out int failureIndex) {
+            return Fit(nodes, curves, count, strength, outputNodes, outputCurves, stations,
+                out failure, out failureIndex, 0, 0);
+        }
+
+        public static unsafe bool Fit(Point* nodes, PlanarCubic* curves, int count, double strength,
+            Point* outputNodes, PlanarCubic* outputCurves, double* stations,
+            out SmoothFailure failure, out int failureIndex, double startRotation, double endRotation) {
             failure = SmoothFailure.None;
             failureIndex = -1;
+            if (double.IsNaN(startRotation) || double.IsInfinity(startRotation)
+                || double.IsNaN(endRotation) || double.IsInfinity(endRotation)
+                || Math.Abs(startRotation) > Math.PI / 12 || Math.Abs(endRotation) > Math.PI / 12)
+                return Fail(SmoothFailure.InvalidArguments, -1, out failure, out failureIndex);
             if (nodes == null || curves == null || outputNodes == null || outputCurves == null
                 || stations == null || count < 2 || double.IsNaN(strength) || strength < 0 || strength > 1) return Fail(SmoothFailure.InvalidArguments, -1, out failure, out failureIndex);
             stations[0] = 0;
@@ -54,8 +65,8 @@ namespace NetworkTools.Geometry {
                 var delta=Difference(nodes[i],nodes[i-1]);
                 if ((delta.X*chord.X+delta.Z*chord.Z)/chordLength < .01) return Fail(SmoothFailure.BackwardNodeChord, i, out failure, out failureIndex);
             }
-            if (!PlanarBezier.Handles(first.A,last.D,Difference(first.B,first.A),
-                Difference(last.D,last.C),out var b,out var c2)) return Fail(SmoothFailure.BoundaryTangents, -1, out failure, out failureIndex);
+            if (!PlanarBezier.Handles(first.A,last.D,Rotate(Difference(first.B,first.A), startRotation),
+                Rotate(Difference(last.D,last.C), endRotation),out var b,out var c2)) return Fail(SmoothFailure.BoundaryTangents, -1, out failure, out failureIndex);
             var target=new PlanarCubic(first.A,b,c2,last.D);
             var total=stations[count-1];
             for (var i=0;i<count;i++) {
@@ -72,6 +83,10 @@ namespace NetworkTools.Geometry {
             }
             return true;
         }
+
+        private static Point Rotate(Point p, double angle) => new Point(
+            p.X * Math.Cos(angle) - p.Z * Math.Sin(angle),
+            p.X * Math.Sin(angle) + p.Z * Math.Cos(angle));
 
         public static bool Fail(SmoothFailure reason, int index, out SmoothFailure failure, out int failureIndex) {
             failure = reason; failureIndex = index; return false;

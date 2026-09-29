@@ -19,6 +19,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             NativeArray<NodeState> nodes, NativeArray<EdgeState> edges,
             SmoothFailure failure, int failureIndex, BufferLookup<ConnectedEdge> connected,
             ComponentLookup<Edge> edgeLookup, NativeList<Entity> selectedNodes) {
+            CapturePreviewProbe(id, mode, valid, edges);
             var text = new StringBuilder();
             var strengthJson = math.isfinite(strength) ? strength.ToString("R", System.Globalization.CultureInfo.InvariantCulture) : "null";
             text.Append(FormattableString.Invariant($"[NetworkTools.SmoothTrace] {{\"id\":{id},\"mode\":\"{mode}\",\"strength\":{strengthJson},\"valid\":{(valid ? "true" : "false")},\"nodeCount\":{nodes.Length},\"edgeCount\":{edges.Length}"));

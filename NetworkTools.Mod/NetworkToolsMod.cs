@@ -58,6 +58,9 @@ namespace NetworkTools {
             updateSystem.UpdateAt<NT_PostProcessingSystem>(SystemUpdatePhase.Modification4); // Search system updates on Mod5, run before then
             // Tools
             updateSystem.UpdateAt<NT_RoadShapeToolSystem>(SystemUpdatePhase.ToolUpdate);
+#if IS_DEBUG
+            updateSystem.UpdateAfter<NT_PreviewProbeSystem, Game.Common.ModificationEndBarrier>(SystemUpdatePhase.ModificationEnd);
+#endif
             updateSystem.UpdateAt<NT_AddNodeToolSystem>(SystemUpdatePhase.ToolUpdate);
             updateSystem.UpdateAt<NT_RemoveNodeToolSystem>(SystemUpdatePhase.ToolUpdate);
             updateSystem.UpdateAt<NT_SuperNodeToolSystem>(SystemUpdatePhase.ToolUpdate);

@@ -1,0 +1,324 @@
+{
+  "requiredConnections": 4,
+  "baseline": {
+    "passesCurvatureConstraints": true,
+    "constraints": [
+      {
+        "source": [
+          55023,
+          29
+        ],
+        "target": [
+          55025,
+          29
+        ],
+        "passes": true,
+        "utilization": 3.7332087335832554e-06,
+        "minimumSpanMetres": 8.610158753990213e-05,
+        "maximumAngleDegrees": 42.48101825001408,
+        "availableSpanMetres": 23.063694983178454,
+        "angleDegrees": 0.00015498284703493643
+      },
+      {
+        "source": [
+          55025,
+          29
+        ],
+        "target": [
+          55023,
+          29
+        ],
+        "passes": true,
+        "utilization": 4.243871097978703e-06,
+        "minimumSpanMetres": 0.00011088106936473944,
+        "maximumAngleDegrees": 48.46084566878137,
+        "availableSpanMetres": 26.127341477819755,
+        "angleDegrees": 0.0001995859112872354
+      },
+      {
+        "source": [
+          55025,
+          29
+        ],
+        "target": [
+          80305,
+          23
+        ],
+        "passes": true,
+        "utilization": 0.9560771690903862,
+        "minimumSpanMetres": 19.790335243561852,
+        "maximumAngleDegrees": 37.94898955214305,
+        "availableSpanMetres": 20.69951661160408,
+        "angleDegrees": 36.222835286921374
+      },
+      {
+        "source": [
+          80305,
+          23
+        ],
+        "target": [
+          55025,
+          29
+        ],
+        "passes": true,
+        "utilization": 0.7569200585246649,
+        "minimumSpanMetres": 19.790313859957575,
+        "maximumAngleDegrees": 48.49737056685515,
+        "availableSpanMetres": 26.14584411797919,
+        "angleDegrees": 36.222794789968496
+      }
+    ],
+    "validationReady": false,
+    "scope": "Curvature gate only; requires candidate composition and native validation"
+  },
+  "candidate": {
+    "passesCurvatureConstraints": false,
+    "constraints": [
+      {
+        "source": [
+          55023,
+          29
+        ],
+        "target": [
+          55025,
+          29
+        ],
+        "passes": true,
+        "utilization": 4.1942924197867474e-06,
+        "minimumSpanMetres": 9.484358423387451e-05,
+        "maximumAngleDegrees": 41.61101811476894,
+        "availableSpanMetres": 22.61253502174669,
+        "angleDegrees": 0.00017071844001427514
+      },
+      {
+        "source": [
+          55025,
+          29
+        ],
+        "target": [
+          55023,
+          29
+        ],
+        "passes": true,
+        "utilization": 5.099355617113417e-06,
+        "minimumSpanMetres": 0.00012863135535806948,
+        "maximumAngleDegrees": 46.685876153911586,
+        "availableSpanMetres": 25.225021554955525,
+        "angleDegrees": 0.0002315364239030427
+      },
+      {
+        "source": [
+          55025,
+          29
+        ],
+        "target": [
+          80305,
+          23
+        ],
+        "passes": false,
+        "utilization": 1.0725978010956114,
+        "minimumSpanMetres": 21.690208882268596,
+        "maximumAngleDegrees": 37.04153975425969,
+        "availableSpanMetres": 20.222126933425557,
+        "angleDegrees": 39.840149830635184
+      },
+      {
+        "source": [
+          80305,
+          23
+        ],
+        "target": [
+          55025,
+          29
+        ],
+        "passes": true,
+        "utilization": 0.8718862983167953,
+        "minimumSpanMetres": 22.038344218078638,
+        "maximumAngleDegrees": 46.787064896374616,
+        "availableSpanMetres": 25.276626391106696,
+        "angleDegrees": 40.50737994635876
+      }
+    ],
+    "validationReady": false,
+    "scope": "Curvature gate only; requires candidate composition and native validation"
+  },
+  "connections": [
+    {
+      "source": [
+        80305,
+        23
+      ],
+      "target": [
+        55025,
+        29
+      ],
+      "before": {
+        "sourceEdge": {
+          "index": 80305,
+          "version": 23
+        },
+        "targetEdge": {
+          "index": 55025,
+          "version": 29
+        },
+        "angleDegrees": 36.222794789968496,
+        "distanceMetres": 26.14584411797919,
+        "curviness": 0.02377934333545445,
+        "limit": 0.0314159244,
+        "passesCurvatureGate": true,
+        "observedConnector": true
+      },
+      "after": {
+        "sourceEdge": {
+          "index": 80305,
+          "version": 23
+        },
+        "targetEdge": {
+          "index": 55025,
+          "version": 29
+        },
+        "angleDegrees": 40.50737994635876,
+        "distanceMetres": 25.276626391106696,
+        "curviness": 0.027391114033316292,
+        "limit": 0.0314159244,
+        "passesCurvatureGate": true,
+        "observedConnector": true
+      },
+      "requiredAngleReductionDegrees": 0,
+      "requiredSpanIncreaseMetres": 0
+    },
+    {
+      "source": [
+        55023,
+        29
+      ],
+      "target": [
+        55025,
+        29
+      ],
+      "before": {
+        "sourceEdge": {
+          "index": 55023,
+          "version": 29
+        },
+        "targetEdge": {
+          "index": 55025,
+          "version": 29
+        },
+        "angleDegrees": 0.00015498284703493643,
+        "distanceMetres": 23.063694983178454,
+        "curviness": 1.1728220334367131e-07,
+        "limit": 0.0314159244,
+        "passesCurvatureGate": true,
+        "observedConnector": true
+      },
+      "after": {
+        "sourceEdge": {
+          "index": 55023,
+          "version": 29
+        },
+        "targetEdge": {
+          "index": 55025,
+          "version": 29
+        },
+        "angleDegrees": 0.00017071844001427514,
+        "distanceMetres": 22.61253502174669,
+        "curviness": 1.3176757357151354e-07,
+        "limit": 0.0314159244,
+        "passesCurvatureGate": true,
+        "observedConnector": true
+      },
+      "requiredAngleReductionDegrees": 0,
+      "requiredSpanIncreaseMetres": 0
+    },
+    {
+      "source": [
+        55025,
+        29
+      ],
+      "target": [
+        80305,
+        23
+      ],
+      "before": {
+        "sourceEdge": {
+          "index": 55025,
+          "version": 29
+        },
+        "targetEdge": {
+          "index": 80305,
+          "version": 23
+        },
+        "angleDegrees": 36.222835286921374,
+        "distanceMetres": 20.69951661160408,
+        "curviness": 0.03003604806470959,
+        "limit": 0.0314159244,
+        "passesCurvatureGate": true,
+        "observedConnector": true
+      },
+      "after": {
+        "sourceEdge": {
+          "index": 55025,
+          "version": 29
+        },
+        "targetEdge": {
+          "index": 80305,
+          "version": 23
+        },
+        "angleDegrees": 39.840149830635184,
+        "distanceMetres": 20.222126933425557,
+        "curviness": 0.033696651430825966,
+        "limit": 0.0314159244,
+        "passesCurvatureGate": false,
+        "observedConnector": false
+      },
+      "requiredAngleReductionDegrees": 2.798610076375496,
+      "requiredSpanIncreaseMetres": 1.4680819488430394
+    },
+    {
+      "source": [
+        55025,
+        29
+      ],
+      "target": [
+        55023,
+        29
+      ],
+      "before": {
+        "sourceEdge": {
+          "index": 55025,
+          "version": 29
+        },
+        "targetEdge": {
+          "index": 55023,
+          "version": 29
+        },
+        "angleDegrees": 0.0001995859112872354,
+        "distanceMetres": 26.127341477819755,
+        "curviness": 1.3332513357744395e-07,
+        "limit": 0.0314159244,
+        "passesCurvatureGate": true,
+        "observedConnector": true
+      },
+      "after": {
+        "sourceEdge": {
+          "index": 55025,
+          "version": 29
+        },
+        "targetEdge": {
+          "index": 55023,
+          "version": 29
+        },
+        "angleDegrees": 0.0002315364239030427,
+        "distanceMetres": 25.225021554955525,
+        "curviness": 1.6020097055595046e-07,
+        "limit": 0.0314159244,
+        "passesCurvatureGate": true,
+        "observedConnector": true
+      },
+      "requiredAngleReductionDegrees": 0,
+      "requiredSpanIncreaseMetres": 0
+    }
+  ],
+  "meaning": "Fixed-span/fixed-angle bounds in generated lane-connection space. Not authored Bezier control corrections; requires fresh native geometry."
+}

@@ -10,7 +10,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
         private static Point Horizontal(float3 p) => new Point(p.x, p.z);
         private static float3 WithHorizontal(float3 original, Point p) => new float3((float)p.X, original.y, (float)p.Z);
 
-        public static unsafe bool Execute(ref NativeArray<EdgeState> edges, ref NativeArray<NodeState> nodes, float strength, out SmoothFailure failure, out int failureIndex) {
+        public static unsafe bool Execute(ref NativeArray<EdgeState> edges, ref NativeArray<NodeState> nodes, float strength, out SmoothFailure failure, out int failureIndex, double startRotation = 0, double endRotation = 0) {
             failure = SmoothFailure.None; failureIndex = -1;
             if (nodes.Length < 2 || edges.Length != nodes.Length - 1) return PlanarPathTarget.Fail(SmoothFailure.PathCountMismatch, -1, out failure, out failureIndex);
             var input = new NativeArray<Point>(nodes.Length, Allocator.Temp);
@@ -37,7 +37,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             }
             valid = valid && PlanarPathTarget.Fit((Point*)input.GetUnsafeReadOnlyPtr(),
                 (PlanarCubic*)curves.GetUnsafeReadOnlyPtr(), nodes.Length, strength,
-                (Point*)fitted.GetUnsafePtr(), (PlanarCubic*)output.GetUnsafePtr(), (double*)stations.GetUnsafePtr(), out failure, out failureIndex);
+                (Point*)fitted.GetUnsafePtr(), (PlanarCubic*)output.GetUnsafePtr(), (double*)stations.GetUnsafePtr(), out failure, out failureIndex, startRotation, endRotation);
             // Validate float conversion before publishing any results.
             for (var i = 0; valid && i < nodes.Length; i++) {
                 valid &= math.all(math.isfinite(WithHorizontal(nodes[i].OriginalPosition, fitted[i])));

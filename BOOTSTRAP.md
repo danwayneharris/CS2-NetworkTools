@@ -22,7 +22,46 @@ does not publish to Paradox Mods, alter global NuGet sources, or change game cod
 The existing build replaces the local `NetworkTools` development mod directory.
 Back up any manually edited files there before building.
 
-## One-time game toolchain setup
+## Optional: full local game source for investigation
+
+Use a separate directory outside this mod repository and the game installation:
+
+```powershell
+.\scripts\bootstrap.ps1 -Decompile -DecompilePath 'C:\Users\danwa\dev\cs2-mods\cs2-decompile'
+# Any other empty destination is supported through -DecompilePath.
+# Standalone export, without checking UI/postprocessor prerequisites:
+.\scripts\decompile-game.ps1 -Destination 'D:\source\cs2-decompile'
+```
+
+`-Decompile` is opt-in and requires an explicit configurable path. It neither
+builds nor deploys a mod unless you also specify `-Build`/`-Test`. The game may
+remain open: export only reads its installed assemblies. Avoid updating the game
+while it runs; the helper checks assembly hashes again before recording success.
+
+The helper installs **ILSpy 9.1.0.7988** as a pinned local .NET tool (compatible
+with our .NET 8 SDK), exports every DLL in `CSII_MANAGEDPATH` into
+`src/<Assembly>/<Namespace>/<Type>.cs`, and creates a separate local Git repository
+with the source, tool manifest, and per-assembly SHA256 manifest committed. Expect
+many files and several minutes. No Git remote is configured or source uploaded.
+The generated projects are for source inspection; export does not promise that
+the game can be rebuilt from them.
+
+After success it updates `%USERPROFILE%\.cs2-modding\setup.md`, preserving unrelated
+settings. This lets the modding skills find the source across projects. Game version
+comes from `Player.log` when available, Unity version from `Cities2.exe`, and assembly
+hashes identify the actual input even if the log is stale. ILSpy's version stays
+pinned so a decompiler change does not masquerade as a game-code change.
+
+The first implementation refuses nonempty destinations rather than deleting or
+overwriting local source. After a game update, export into a new sibling directory
+(for example `cs2-decompile-next`), compare its manifest/source with the previous
+snapshot, and retain both local Git histories. The setup record switches only after
+the new export and commit succeed. In-place refresh is not yet automated. A failed
+export retains its partial files for diagnosis and does not write a success record;
+use a new empty destination for a retry. Do not push proprietary decompiled source
+into either mod repository.
+
+## One-time game toolchain setup (in game)
 
 1. Install and launch Cities: Skylines II.
 2. Open **Options > Modding** and install the modding toolchain.

@@ -83,7 +83,8 @@
                         TransformPipeline.Execute(ref straightenTransform, ref edges, ref nodes, in Context, in Config);
                         break;
                     case ShapeTransformTemplate.CurveSmooth:
-                        var valid = CurveSmoothTransform.Execute(ref edges, ref nodes, Config.SmoothingFactor, out var failure, out var failureIndex);
+                        var valid = CurveSmoothTransform.Execute(ref edges, ref nodes, Config.SmoothingFactor, out var failure, out var failureIndex,
+                            Config.JunctionStartRotation, Config.JunctionEndRotation);
                         SmoothResult.Value = valid ? 1 : -1;
 #if IS_DEBUG
                         TraceSmooth(SmoothTraceId, OutputMode, Config.SmoothingFactor, valid,

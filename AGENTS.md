@@ -74,6 +74,11 @@ baseline record, not evidence that subsequent changes work.
 
 ## Geometry work
 
+- Full local source setup is optional via `bootstrap.ps1 -Decompile -DecompilePath`.
+  Read `%USERPROFILE%/.cs2-modding/setup.md` to locate it and inspect its
+  `source-manifest.json` before relying on version-sensitive code. Keep decompiled
+  source in that separate local repository; do not add it to this repository.
+
 - Smooth Curve has an integration prototype. Consult the geometry guide and
   session notes for current behavior, known limitations, and verification results.
 - The agreed prototype moves existing nodes horizontally, preserves node elevations

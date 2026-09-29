@@ -10,6 +10,8 @@ namespace NetworkTools.Systems.Tools.RoadShape {
         public float ArchHeight;
         public float ArchPosition;
         public float SmoothingFactor;
+        public double JunctionStartRotation;
+        public double JunctionEndRotation;
 
         /// <summary>
         ///     When true, the first control point of the path is forced onto the tangent of the

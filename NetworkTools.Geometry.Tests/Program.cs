@@ -23,6 +23,7 @@ internal static class Program {
         if (args.Length == 2 && args[0] == "--trace-log") { TraceReplay.Run(args[1]); return; }
         TargetReplay.Run(args);
         FailureTests.Run();
+        BoundaryRotationTests.Run();
         CheckBezier();
         CheckCapturedHandleBlend();
         // Analytic three-point solution: equal chords h, only the middle Z is free.

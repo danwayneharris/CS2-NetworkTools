@@ -48,3 +48,10 @@ First live attempt stopped before selecting because the local mod was disabled;
 the checkpoint succeeded and no smoothing was applied. See the sprint session
 note. Run `python scripts/test-live-regression.py` for offline guard tests; those
 tests do not establish in-game correctness.
+
+The separate `scripts/fixtures/toy-highway-jank.json` describes the user's newer
+highway-jank toy save. Its rail-merge case passed on the milestone deployment on
+2026-09-29: three selected edges changed, preview/permanent curves matched and
+watched directed lane-pair sets were preserved. Other cases remain pending.
+Optional `splits` contain pinned node coordinates; their post-Apply checks include
+fixed positions and planar tangent agreement. Split checks are not live-verified yet.

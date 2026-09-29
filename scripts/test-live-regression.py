@@ -34,4 +34,13 @@ class FixtureTests(unittest.TestCase):
     def test_partial_snapshot_rejected(self):
         with self.assertRaises(ValueError): runner.connections(dict(complete=False,errors=[]))
 
+    def test_equal_counts_do_not_hide_changed_connections(self):
+        node=dict(index=10,version=1)
+        def endpoint(owner): return dict(ownerIndex=owner,laneIndex=1,secondary=False)
+        a=dict(complete=True,errors=[],junction=node,lanes=[dict(owner=node,track={},
+            start=endpoint(1),end=endpoint(2))])
+        b=copy.deepcopy(a); b['lanes'][0]['end']=endpoint(3)
+        self.assertEqual(len(runner.connections(a)),len(runner.connections(b)))
+        self.assertNotEqual(runner.connections(a),runner.connections(b))
+
 if __name__=='__main__': unittest.main()

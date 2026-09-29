@@ -115,6 +115,7 @@ class Runner:
         if fingerprint(nodes, edges) != fixture['fingerprint']:
             raise ValueError('Baseline geometry mismatch; reload the named baseline before this case')
         start, end = (resolve(nodes, case[k]) for k in ('start', 'end'))
+        split_nodes = [resolve(nodes, p) for p in case.get('splits', [])]
         path = self.call('trace_network', dict(fromIndex=start['index'],fromVersion=start['version'],
             toIndex=end['index'],toVersion=end['version']))
         if not path['connected'] or not path['edges']:
@@ -147,6 +148,8 @@ class Runner:
         self.control('nt_clear')
         self.control('nt_strength', value=case.get('strengths', [0.5,0.8])[0])
         self.control('nt_select', start=start, end=end)
+        for node in split_nodes:
+            self.control('nt_split', node=node, enabled=True)
         for value in case.get('strengths', [0.5,0.8]):
             self.control('nt_strength', value=value)
             state = self.poll('nt_get_state', lambda s: s['previewReady'])
@@ -179,7 +182,7 @@ class Runner:
         for key, node in old_nodes.items():
             if abs(node['position']['y'] - new_nodes[key]['position']['y']) > 0.001:
                 raise AssertionError('Node elevation changed')
-            if key not in selected_nodes or key in (identity(start),identity(end)):
+            if key not in selected_nodes or key in {identity(start),identity(end),*(identity(n) for n in split_nodes)}:
                 if math.dist(position(node['position']),position(new_nodes[key]['position']))>0.001:
                     raise AssertionError('Fixed or unselected node moved')
         for key, edge in old_edges.items():
@@ -194,6 +197,23 @@ class Runner:
                 raise AssertionError('Selected preview/permanent geometry mismatch')
         report = {'case':case['name'], 'checkpoint':saved['saveName'], 'changedEdges':changes,
                   'junctions':[], 'limits':'Local snapshot checks; not vehicle traversal or visual approval.'}
+        for node in split_nodes:
+            incident=[new_edges[identity(e)] for e in path['edges'] if identity(node) in
+                      (identity(new_edges[identity(e)]['startNode']),identity(new_edges[identity(e)]['endNode']))]
+            if len(incident)!=2:
+                raise AssertionError('Split does not have two selected incident edges')
+            incoming,outgoing=incident
+            left=incoming['curve'] if incoming['endNode']==node else list(reversed(incoming['curve']))
+            right=outgoing['curve'] if outgoing['startNode']==node else list(reversed(outgoing['curve']))
+            p=new_nodes[identity(node)]['position']
+            for endpoint in (left[-1],right[0]):
+                if math.hypot(endpoint['x']-p['x'],endpoint['z']-p['z'])>0.001:
+                    raise AssertionError('Split curve endpoint is not at pinned node')
+            a=(left[3]['x']-left[2]['x'],left[3]['z']-left[2]['z'])
+            b=(right[1]['x']-right[0]['x'],right[1]['z']-right[0]['z'])
+            lengths=math.hypot(*a)*math.hypot(*b)
+            if lengths<1e-8 or (a[0]*b[0]+a[1]*b[1])/lengths<1-1e-6:
+                raise AssertionError('Split planar tangents do not agree')
         for b, p, a in zip(before, previews, after):
             missing, added = connections(b)-connections(a), connections(a)-connections(b)
             if missing or added:

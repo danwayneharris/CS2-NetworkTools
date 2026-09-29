@@ -136,3 +136,15 @@ for a smooth join, or explicitly allow a player-designated corner. Independently
 preserving each side's original tangent can preserve a kink. Keep endpoint offsets
 separate from node positions. A split at an intersection does not exempt unselected
 connections from validation. No runtime UI or fitter changes are implemented here.
+
+## User clarification: centered side-bias control
+
+Dan clarified that "negative" smoothing is a UX description, not a requirement to
+negate weights or increase path length. The desired exploratory behavior is a
+centered slider: one extreme biases the smoothed result toward one side of a janky
+path, the opposite extreme toward the other side, and the middle is equivalent to
+zero. This supersedes treating extra route length as the primary requirement.
+Side orientation (selection direction versus world/screen direction) and the exact
+relationship between bias and smoothing remain design questions; do not silently
+choose them as established requirements. Lower priority than live regression and
+split points. Retain the longer-route experiment as research, not the chosen UX.

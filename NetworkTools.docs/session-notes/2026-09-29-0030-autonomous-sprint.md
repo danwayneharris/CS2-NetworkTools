@@ -39,3 +39,8 @@ The previous baseline guard correctly rejected the user's newly edited toy layou
 Rail regression on the restored milestone deployment passed at strengths 0.5 then 0.8. Unique pre-mutation checkpoint: `CitiesIIAgentBridge-regression-rail-merge-20260929-082016-27c19dcb`. Three selected edges changed. All selected preview/permanent control points agreed within the runner's 1 mm tolerance; reported incident maximum errors were zero. Three watched shared nodes preserved directed lane-pair sets (4, 2, 2 connections). Captured topology, elevations, fixed/unselected nodes and unselected edge curves passed. Requests/responses retained in `captures/sprint-20260929-jank-rail`.
 
 Five offline runner tests pass, including equal-count/different-pair rejection. Added split automation and permanent pinned-position/tangent checks; those branches remain unverified live because sprint split binaries are not deployed yet. No traffic traversal or new human visual approval. Native rebuild stability across delayed samples remains an open runner improvement. Game left paused in the new toy city, with the rail Apply unsaved; baseline and checkpoint preserved.
+
+User clarified the lower-priority negative-strength idea as a centered side-bias
+control, midpoint equivalent to zero; extra length is not the defining requirement.
+Recorded in smooth-curve-plan.md. Existing longer-route research remains historical,
+not an implementation commitment. Continue regression/split work first.

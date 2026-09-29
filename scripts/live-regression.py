@@ -50,6 +50,21 @@ def connections(snapshot):
             for kind in ('track', 'car') if kind in l}
 
 
+def permanent_signature(snapshots, nodes, edges):
+    """Observed stability, not a native job-completion fence."""
+    junctions = []
+    for snapshot in snapshots:
+        pairs = sorted(connections(snapshot))  # Reject incomplete observations.
+        owners = snapshot['owners']
+        if any(o.get('updated') or o.get('created') for o in owners):
+            return None
+        junctions.append((identity(snapshot['junction']), pairs,
+            sorted((identity(o), o.get('position'), o.get('curve')) for o in owners)))
+    return json.dumps([fingerprint(nodes, edges),
+        sorted(identity(n) for n in nodes), sorted(identity(e) for e in edges),
+        junctions], sort_keys=True)
+
+
 class Runner:
     def __init__(self, bridge, output):
         self.bridge, self.output = Path(bridge).resolve(), Path(output)
@@ -98,6 +113,22 @@ class Runner:
 
     def state(self):
         return self.call('nt_get_state')
+
+    def settled_permanent(self, watched, region, seconds=35):
+        deadline = time.monotonic() + seconds
+        previous, matches = None, 0
+        while time.monotonic() < deadline:
+            snapshots = [self.call('get_junction_snapshot', n) for n in watched]
+            nodes, edges = self.network(region)
+            signature = permanent_signature(snapshots, nodes, edges)
+            matches = matches + 1 if signature is not None and signature == previous else 1
+            if signature is None:
+                matches = 0
+            previous = signature
+            if matches >= 3:
+                return snapshots, nodes, edges
+            time.sleep(1)
+        raise TimeoutError('Permanent results did not settle across three observations')
 
     def control(self, command, **args):
         state = self.state()
@@ -173,8 +204,7 @@ class Runner:
         # Apply uses the observed token, not a freshly substituted submission.
         self.call('nt_apply', {k: state[k] for k in ('session','revision','submission')})
         self.poll('nt_get_state', lambda s: s['phase'] == 'Idle')
-        after = [self.call('get_junction_snapshot', n) for n in watched]
-        after_nodes, after_edges = self.network(fixture['region'])
+        after, after_nodes, after_edges = self.settled_permanent(watched, fixture['region'])
         old_nodes, new_nodes = ({identity(n): n for n in ns} for ns in (nodes, after_nodes))
         old_edges, new_edges = ({identity(e): e for e in es} for es in (edges, after_edges))
         if old_nodes.keys() != new_nodes.keys() or old_edges.keys() != new_edges.keys():

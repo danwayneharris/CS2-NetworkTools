@@ -43,4 +43,18 @@ class FixtureTests(unittest.TestCase):
         self.assertEqual(len(runner.connections(a)),len(runner.connections(b)))
         self.assertNotEqual(runner.connections(a),runner.connections(b))
 
+    def test_stability_ignores_capture_time_but_not_pending_or_geometry(self):
+        edges=copy.deepcopy(self.edges)
+        edges[0].update(index=3,version=1)
+        snapshot=dict(complete=True,errors=[],junction=dict(index=1,version=1),
+                      lanes=[],owners=[dict(index=1,version=1,updated=False)])
+        original=runner.permanent_signature([snapshot],self.nodes,edges)
+        snapshot['capturedUtc']='later'
+        self.assertEqual(original,runner.permanent_signature([snapshot],self.nodes,edges))
+        snapshot['owners'][0]['updated']=True
+        self.assertIsNone(runner.permanent_signature([snapshot],self.nodes,edges))
+        snapshot['owners'][0]['updated']=False
+        edges[0]['curve'][1]['z']=0.01
+        self.assertNotEqual(original,runner.permanent_signature([snapshot],self.nodes,edges))
+
 if __name__=='__main__': unittest.main()

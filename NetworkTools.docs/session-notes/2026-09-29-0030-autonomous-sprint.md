@@ -44,3 +44,22 @@ User clarified the lower-priority negative-strength idea as a centered side-bias
 control, midpoint equivalent to zero; extra length is not the defining requirement.
 Recorded in smooth-curve-plan.md. Existing longer-route research remains historical,
 not an implementation commitment. Continue regression/split work first.
+
+## Road lane connectivity requirement and stability sampling
+
+Dan explicitly requires road lane connections to be preserved just as rail
+connections are: a ramp feeding the outermost highway lane must still feed that
+lane after smoothing. Equal counts are insufficient. The runner already compares
+directed owner/lane-index/secondary endpoint pairs, but mapping lane indices to
+physical lanes must be checked against actual snapshots/source before claiming
+outermost-lane semantic coverage. Rail crossings likewise preserve absent pairs.
+
+Added bounded permanent-result sampling: require three equal observations separated
+by at least one second, reject incomplete snapshots and wait while owners carry
+Updated/Created. Compare network geometry/identities plus watched owner geometry
+and directed connection sets; ignore timestamp-only changes. Six offline guard
+tests pass. This is observed stability, not a native job-completion fence.
+
+Live read-only stability check on the already-applied rail case passed: three
+matching observations, 42 nodes/39 edges, directed connection sets of 4/2/2.
+Captures: sprint-20260929-rail-stability. No additional game mutation occurred.

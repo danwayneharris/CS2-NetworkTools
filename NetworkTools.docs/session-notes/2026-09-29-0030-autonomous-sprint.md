@@ -23,3 +23,11 @@ Not integrated or deployed. Managed arrays are unsuitable inside the current Bur
 Added sprint-architecture-review.md with source-grounded boundaries, runner readiness gaps, slope test recommendations and a combined horizontal/vertical candidate design. No slope bug claimed or runtime slope changes made.
 
 Added scripts/explore-longer-target.py and retained PNG/SVG/JSON plots. A sextic single-bulge profile preserves straight boundary tangents and zero endpoint curvature, with explicit +/-20 m corridor. Numerically solving sampled arc length gives +2 m with 8.74 m amplitude and +5 m with 13.99 m amplitude. +10/+20 m are infeasible within this particular target family and corridor (not universally impossible). Mirrored routes have equal length, exposing the missing side-selection policy. No negative slider implementation: length bias and smoothing strength remain separate concepts. Plot generation succeeded through isolated uv matplotlib environment.
+
+## Runtime split wiring (not deployed)
+
+Replaced the managed-only target with a shared pointer implementation and managed test wrapper. Added per-node split flags, selection-owned identity set, UI list, and shared mutation validation. Split constraints are hard at every strength including zero; paths without splits retain prior behavior. Offline sweep/reversal/multiple-split/nonfinite tests pass, C# Compile and TypeScript --noEmit pass. Bridge nt_split compiled and 61-command catalog check passed. Full deployment and live tests still pending while user manually launches corrected playset.
+
+User reported local mod absent. Verified original DLL remained intact in Mods/.NetworkTools with SHA C093D6FB7005F2AEB97663318F6E8E1FE993835FF69967BB850A3D13F780BB41. With no game process running, renamed only that directory to NetworkTools; destination absent, parent paths checked, DLL hash unchanged. This restored the milestone binary, not sprint code. A new game process 37508 appeared afterward; no city loaded at last observation.
+
+Expanded runner now traces the selected path, captures every selected preview edge through shared nodes, rechecks the exact submission token before Apply, and checks fixed/unselected geometry afterward. It rejects missing preview coverage. Successful response duplication (.txt plus .json) removed for future captures. No claim that these new checks have passed live yet.

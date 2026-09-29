@@ -300,6 +300,11 @@ and Release execution remain unverified.
 
 ## 11. Anarchy and compatibility boundaries
 
+The development branch adds explicit split constraints and a live regression
+harness. See [split-point implementation and limits](split-points.md) and
+[regression runner](live-regression-runner.md); these additions are not yet
+live-verified and do not change the historical verification claims above.
+
 The code's [RefreshAnarchy](../NetworkTools.Mod/Systems/Tools/Base/BaseToolSystem.cs#L878)
 toggles the game's validation system for tools that support it. This built-in option
 is distinct from integration with the separately installed Anarchy mod.

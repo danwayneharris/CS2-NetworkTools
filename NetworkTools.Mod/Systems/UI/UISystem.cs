@@ -44,6 +44,7 @@
         private ValueBindingHelper<int>                 m_SelectedTargetsBinding;
         private ValueBindingHelper<int>                 m_SelectedViewsBinding;
         private ValueBindingHelper<int>                 m_ApplyStateBinding;
+        private ValueBindingHelper<string>              m_SplitChoicesBinding;
         private ValueBindingHelper<bool>                m_PanelOpenBinding;
         private ValueBindingHelper<NT_ToolPrefab[]>     m_ToolUIDataBinding;
 
@@ -102,6 +103,9 @@
             m_AvailableViewsBinding = CreateBinding("AVAILABLE_VIEWS", (int)ViewOption.All);
             m_SelectedViewsBinding  = CreateBinding("SELECTED_VIEWS",  (int)ViewOption.None, HandleUpdateSelectedViews);
             m_ApplyStateBinding = CreateBinding("APPLY_STATE", (int)ApplyState.Hidden);
+            m_SplitChoicesBinding = CreateBinding("SPLIT_CHOICES", "[]");
+            CreateTrigger<int, int, bool>("SET_SPLIT_NODE", (index, version, enabled) =>
+                m_NtRoadShapeToolSystem.SetSplitNode(new Entity { Index=index, Version=version }, enabled));
 
             CreateTrigger<string>("SELECT_TOOL", HandleSelectTool);
             CreateTrigger("REQUEST_APPLY", HandleRequestApply);

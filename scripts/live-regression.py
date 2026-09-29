@@ -70,6 +70,8 @@ class Runner:
             raise RuntimeError('Bridge failure; inspect original request, never blindly retry: ' + str(prefix))
         response = json.loads(packet.stdout)
         prefix.with_suffix('.json').write_text(json.dumps(response, indent=2))
+        if not packet.stderr:
+            prefix.with_suffix('.txt').unlink()  # JSON retained; avoid duplicate successful captures.
         if self.city_session is None:
             self.city_session = response['citySession']
         if response['citySession'] != self.city_session:
@@ -113,7 +115,19 @@ class Runner:
         if fingerprint(nodes, edges) != fixture['fingerprint']:
             raise ValueError('Baseline geometry mismatch; reload the named baseline before this case')
         start, end = (resolve(nodes, case[k]) for k in ('start', 'end'))
-        watched = [resolve(nodes, p) for p in case.get('watch', [])]
+        path = self.call('trace_network', dict(fromIndex=start['index'],fromVersion=start['version'],
+            toIndex=end['index'],toVersion=end['version']))
+        if not path['connected'] or not path['edges']:
+            raise ValueError('Fixture endpoints have no path')
+        selected_edges = {identity(e) for e in path['edges']}
+        selected_nodes = {identity(n) for e in edges if identity(e) in selected_edges
+                          for n in (e['startNode'],e['endNode'])}
+        if len(selected_nodes) != len(selected_edges)+1:
+            raise ValueError('Path outside bounded capture or ambiguous topology')
+        watched = [{k:n[k] for k in ('index','version')} for n in nodes
+                   if identity(n) in selected_nodes and len(n['edges'])>1]
+        if not watched:
+            raise ValueError('No observable shared-node preview; capture coverage unsupported')
         before = [self.call('get_junction_snapshot', n) for n in watched]
         checkpoint = self.call('save_checkpoint', {'label': 'regression-' + case['name']})
         saved = self.poll('get_operation', lambda s: s['status'] in ('complete','failed','interrupted'),
@@ -137,6 +151,22 @@ class Runner:
             self.control('nt_strength', value=value)
             state = self.poll('nt_get_state', lambda s: s['previewReady'])
         previews = [self.call('get_junction_preview', n) for n in watched]
+        preview_curves = {}
+        for p in previews:
+            temp = p.get('connectedSnapshot')
+            if not temp or not temp['complete']:
+                raise ValueError('Complete connected preview required before Apply')
+            for owner in temp['owners']:
+                if owner.get('curve'):
+                    key=identity(owner['temp']['original'])
+                    if key in preview_curves and preview_curves[key] != owner['curve']:
+                        raise ValueError('Preview changed across snapshot reads')
+                    preview_curves[key]=owner['curve']
+        if not selected_edges.issubset(preview_curves):
+            raise ValueError('Not every selected edge has an independently captured preview')
+        final_state=self.state()
+        if any(final_state[k]!=state[k] for k in ('session','revision','submission')) or not final_state['previewReady']:
+            raise ValueError('Preview changed during independent capture')
         # Apply uses the observed token, not a freshly substituted submission.
         self.call('nt_apply', {k: state[k] for k in ('session','revision','submission')})
         self.poll('nt_get_state', lambda s: s['phase'] == 'Idle')
@@ -149,10 +179,19 @@ class Runner:
         for key, node in old_nodes.items():
             if abs(node['position']['y'] - new_nodes[key]['position']['y']) > 0.001:
                 raise AssertionError('Node elevation changed')
+            if key not in selected_nodes or key in (identity(start),identity(end)):
+                if math.dist(position(node['position']),position(new_nodes[key]['position']))>0.001:
+                    raise AssertionError('Fixed or unselected node moved')
         for key, edge in old_edges.items():
             if any(edge[k] != new_edges[key][k] for k in ('startNode','endNode','prefab')):
                 raise AssertionError('Topology or prefab changed')
         changes = [key for key in old_edges if old_edges[key]['curve'] != new_edges[key]['curve']]
+        if not set(changes).issubset(selected_edges):
+            raise AssertionError('Unselected edge geometry changed')
+        for key in selected_edges:
+            if max(math.dist(position(a),position(b)) for a,b in
+                   zip(preview_curves[key],new_edges[key]['curve']))>0.001:
+                raise AssertionError('Selected preview/permanent geometry mismatch')
         report = {'case':case['name'], 'checkpoint':saved['saveName'], 'changedEdges':changes,
                   'junctions':[], 'limits':'Local snapshot checks; not vehicle traversal or visual approval.'}
         for b, p, a in zip(before, previews, after):

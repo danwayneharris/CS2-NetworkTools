@@ -304,3 +304,30 @@ smoothing. No permanent network changes were applied. Game remains paused on the
 toy baseline with the rejected preview selected. Next: inspect actual native lane
 construction at the missing connection; do not weaken the gate or reduce strength
 silently. Offline invariants passed; live efficacy disproved for this search family.
+
+## Interior rail loss: native composition evidence
+
+Captured original and rejected final candidate read-only from the paused toy save.
+The final candidate used strength 0.5 and handle scale 0.5. Reconstructed native
+composition inputs reproduce the observed three connections versus four originally.
+The missing output-to-unselected-branch direction changes from 36.8385 degrees /
+20.5348 m / 0.0307739 curviness to 39.1745 degrees / 19.9914 m / 0.0335386.
+The actual prefab limit is 0.0314159244. The reverse direction remains valid.
+This distinguishes a directional curvature failure from a connectivity-count guess.
+
+Source: installed Game.Net/LaneSystem.cs 5402?5420 constructs lane connection
+positions and tangents from interpolated EdgeGeometry boundary curves, not directly
+from the authored centerline endpoint tangent. Lines 6600, 6615 and 6703 compare
+curviness against TrackLaneData.m_MaxCurviness. Thus preserving authored direction
+does not preserve the generated connection-space angle after surrounding geometry
+changes. Next experiment: bounded common rotation of selected junction handles,
+initially preserving their relative angle and endpoints. Native exact-set validation
+remains mandatory; no claim of success from the offline curvature calculation.
+
+Analysis initially inspected the bridge's detached Temp.Original proxy snapshot,
+which had no incident edges. Corrected to the topology-resolved connectedSnapshot.
+The analyzer now accepts preview packets directly, requires resolved topology, and
+rejects fewer than two track arms instead of silently producing empty results.
+Three captured analysis tests and four composition-input tests pass. This affects
+research analysis only; the live regression runner already uses connectedSnapshot.
+No Apply or simulation change occurred.

@@ -1,6 +1,25 @@
 @use "../shared/animations.module.scss" as *;
 @use "../shared/variables.module.scss" as *;
 
+.splitChoices {
+    display: flex;
+    flex-direction: column;
+    max-height: 260rem;
+    overflow-y: auto;
+    font-size: 12rem;
+}
+
+.splitChoice {
+    margin-top: 4rem;
+    padding: 6rem;
+    color: white;
+    background-color: rgba(255, 255, 255, 0.08);
+    text-align: left;
+    &:hover { background-color: rgba(255, 255, 255, 0.18); }
+    &:disabled { opacity: 0.4; }
+    &[aria-pressed="true"] { background-color: rgba(180, 40, 230, 0.4); }
+}
+
 .wrapper {
     position: relative;
     display: flex;

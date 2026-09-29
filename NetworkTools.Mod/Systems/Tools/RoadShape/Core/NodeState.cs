@@ -40,5 +40,6 @@ namespace NetworkTools.Systems.Tools.RoadShape {
 
         /// <summary>Keep junctions and unknown connectivity fixed during horizontal smoothing.</summary>
         public bool SmoothPinned;
+        public bool SmoothSplit;
     }
 }

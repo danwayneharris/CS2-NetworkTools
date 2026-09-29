@@ -10,7 +10,8 @@ namespace NetworkTools.Systems.Tools.RoadShape {
     using Unity.Entities;
     using Unity.Mathematics;
 
-    // Diagnostic only: never participates in CanApply. Reads after native playback.
+    // Reads after native playback. Supplies diagnostic evidence and the correlated
+    // submission required by Debug automation; not a general native completion fence.
     public partial class NT_RoadShapeToolSystem {
         private sealed class PreviewProbe {
             public int Id;

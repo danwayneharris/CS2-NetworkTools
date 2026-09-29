@@ -24,6 +24,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                 ["active"] = active, ["phase"] = Phase.ToString(),
                 ["revision"] = m_PreviewInputRevision, ["submission"] = m_SmoothTraceId,
                 ["strength"] = SmoothingFactor.Value, ["previewReady"] = ready,
+                ["splitChoices"] = JArray.Parse(SplitChoicesJson()),
                 ["start"] = new JObject { ["index"] = StartNode.Index, ["version"] = StartNode.Version },
                 ["end"] = new JObject { ["index"] = EndNode.Index, ["version"] = EndNode.Version },
                 ["pathNodes"] = PathNodeCount, ["pathEdges"] = PathEdgeCount
@@ -49,6 +50,11 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             m_LastShapeJob.Complete();
             Dependency.Complete();
             switch (action) {
+                case "split":
+                    if (args["enabled"]?.Type != JTokenType.Boolean
+                        || !SetSplitNode(AutomationNode(args["node"]), (bool)args["enabled"]))
+                        throw new ArgumentException("ineligible_split_node");
+                    break;
                 case "clear": ResetToIdle(); break;
                 case "strength":
                     if (args["value"] == null || (args["value"].Type != JTokenType.Float && args["value"].Type != JTokenType.Integer))

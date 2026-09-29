@@ -28,6 +28,7 @@
             var config = BuildJobConfig();
             // Complete previous readers before collecting candidate-search inputs.
             m_LastShapeJob.Complete();
+            SnapshotSplitNodes();
 #if IS_DEBUG
             ConfigureJunctionSearch(ref config);
 #endif

@@ -67,18 +67,21 @@ namespace NetworkTools.Systems.Tools.RoadShape {
 
         /// <inheritdoc />
         protected override void OnSelectionCleared() {
+            m_SplitNodes.Clear();
             DestroyAllHandles();
             InvalidatePathData();
         }
 
         /// <inheritdoc />
         protected override void OnPathExtended(Entity newEndNode) {
+            m_SplitNodes.Clear();
             RefreshPathData();
             RefreshTransformHandles();
         }
 
         /// <inheritdoc />
         protected override void OnPathTrimmed(Entity newEndNode) {
+            m_SplitNodes.Clear();
             RefreshPathData();
             RefreshTransformHandles();
         }

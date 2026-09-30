@@ -29,3 +29,37 @@ generic. A completed road-four-way capture now replays all current assertions
 successfully without contacting the game. Eight runner guard tests still pass.
 Older captures without smoothMode cannot establish the new activation predicate;
 use their historical runner for historical evidence rather than assuming readiness.
+
+
+## Split/interior/slip batch complete
+
+Every case began with its preserved hash-verified baseline and fresh entity IDs.
+Every Apply had a unique verified checkpoint. No expectation/tolerance was loosened.
+
+| Case | Strict result | Maximum fixed-node drift (mm) |
+|---|---|---:|
+| road-four-way-branch | PASS | 0.000 |
+| highway-on-ramp | PASS | 0.000 |
+| highway-off-ramp | PASS | 0.000 |
+| rail-one-split | FAIL | 3.008 |
+| rail-two-splits | PASS | 0.000 |
+| rail-two-splits-half | PASS | 0.000 |
+| rail-two-splits-zero | PASS | 0.000 |
+| road-two-splits | PASS | 0.000 |
+| rail-interior-merge | FAIL | 5.174 |
+| road-interior-junction | PASS | 0.000 |
+| highway-two-interior-merges | PASS | 0.000 |
+| slip-lane | PASS | 0.000 |
+
+Both strict failures reproduce previously captured native center-alignment drift.
+All completed cases retained directed connection identities and matched captured
+preview/permanent curves. No vehicle traversal or human visual approval is inferred.
+The ordinary rail merge is running once more as the final baseline case.
+
+Recommended next decisions: review these two independently shippable changesets;
+prioritize a generic MCP payload envelope and developer examples before promising
+arbitrary schema compatibility. For NetworkTools, keep known millimetric drift
+visible and decide its practical policy separately; next feature semantics for
+junction-as-split and directional smoothing need maintainer input. Release/Burst,
+non-merging crossings and traversal remain separate coverage gaps. No broad
+refactoring or new geometry semantics were introduced in this sprint.

@@ -78,3 +78,25 @@ Post-Apply now requires three matching permanent observations with no observed
 Updated/Created owners. This is stability evidence, not a native completion fence.
 The newer baseline's road-four-way-branch also passed on the milestone deployment;
 see the session note for exact coverage and lane-identity limitations.
+
+
+## Generic provider transport and suite orchestration
+
+The current runner uses the bridge's standard-library Python client and discovers
+`networktools` through the generic provider catalog. It requires `active` and
+`smoothMode` before issuing selection commands. Both process and city identities
+are checked before publication. Intents and responses are retained; uncertain
+mutations are never automatically resubmitted.
+
+`run-provider-suite.py --run --save-root <Saves> --output <new-folder>
+--case toy-highway-jank.json:road-four-way-branch` wraps checkpointed graceful
+reloads and existing assertions. Repeat --case for more fixtures. It never
+force-kills the game. An incomplete case aborts; a completed assertion failure is
+recorded and the next case starts from its baseline. The tool is for explicitly
+authorized toy sessions, not arbitrary player saves.
+
+`live-mcp-smoke.py` is a consumer-owned read-only check using the bridge adapter's
+Python environment. It verifies actual stdio discovery/state, not Apply or routing.
+Current generic captures are supported by replay-regression.py. Historical captures
+without smoothMode require their historical runner to reproduce historical checks;
+they cannot prove the new explicit mode-readiness predicate.

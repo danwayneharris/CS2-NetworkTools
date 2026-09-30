@@ -1,0 +1,3787 @@
+{
+  "protocol": 1,
+  "id": "1f2f3095793448928838a4143772c5ab",
+  "session": "f8a97a9ffb854256858612029b5021cb",
+  "citySession": "98d52c59f7bf46a8b57fcc9ea907c375",
+  "utc": "2026-09-30T09:11:57.5638158Z",
+  "result": {
+    "schemaVersion": 2,
+    "scope": "permanent",
+    "snapshotId": "7622675931ac4544be80662883775c10",
+    "citySession": "98d52c59f7bf46a8b57fcc9ea907c375",
+    "capturedUtc": "2026-09-30T09:11:57.5678685Z",
+    "simulationFrame": 6541503,
+    "junction": {
+      "index": 350932,
+      "version": 1
+    },
+    "incidentEdges": [
+      {
+        "index": 354790,
+        "version": 1
+      },
+      {
+        "index": 354788,
+        "version": 1
+      }
+    ],
+    "owners": [
+      {
+        "index": 350932,
+        "version": 1,
+        "live": true,
+        "prefab": {
+          "index": 16115,
+          "version": 1,
+          "netGeometryData": {
+            "mergeLayers": "TrainTrack",
+            "flags": "BlockZone, Directional, SmoothElevation, FlattenTerrain, ClipTerrain, ExclusiveGround, InvertCompositionHandedness",
+            "defaultWidth": 12.0
+          }
+        },
+        "updated": false,
+        "created": false,
+        "position": {
+          "x": -12.1533508,
+          "y": 617.6969,
+          "z": -2000.90637
+        },
+        "curve": null,
+        "subLanes": [
+          {
+            "entity": {
+              "index": 52223,
+              "version": 1
+            },
+            "pathMethods": "Pedestrian"
+          },
+          {
+            "entity": {
+              "index": 52224,
+              "version": 1
+            },
+            "pathMethods": "Pedestrian"
+          },
+          {
+            "entity": {
+              "index": 328069,
+              "version": 1
+            },
+            "pathMethods": "Track"
+          },
+          {
+            "entity": {
+              "index": 328075,
+              "version": 1
+            },
+            "pathMethods": "Track"
+          },
+          {
+            "entity": {
+              "index": 355179,
+              "version": 1
+            },
+            "pathMethods": "Pedestrian"
+          }
+        ]
+      },
+      {
+        "index": 354790,
+        "version": 1,
+        "live": true,
+        "prefab": {
+          "index": 16115,
+          "version": 1,
+          "netGeometryData": {
+            "mergeLayers": "TrainTrack",
+            "flags": "BlockZone, Directional, SmoothElevation, FlattenTerrain, ClipTerrain, ExclusiveGround, InvertCompositionHandedness",
+            "defaultWidth": 12.0
+          }
+        },
+        "edgeGeometry": {
+          "start": {
+            "left": [
+              {
+                "x": -57.9148026,
+                "y": 617.696838,
+                "z": -1932.02917
+              },
+              {
+                "x": -49.6660233,
+                "y": 617.696838,
+                "z": -1939.78247
+              },
+              {
+                "x": -42.1906128,
+                "y": 617.6969,
+                "z": -1947.99072
+              },
+              {
+                "x": -35.39154,
+                "y": 617.69696,
+                "z": -1956.43909
+              }
+            ],
+            "right": [
+              {
+                "x": -70.94105,
+                "y": 617.69696,
+                "z": -1936.39343
+              },
+              {
+                "x": -61.217205,
+                "y": 617.69696,
+                "z": -1944.978
+              },
+              {
+                "x": -52.5320053,
+                "y": 617.69696,
+                "z": -1954.28088
+              },
+              {
+                "x": -44.7399521,
+                "y": 617.69696,
+                "z": -1963.96277
+              }
+            ],
+            "length": [
+              33.2401466,
+              38.0794373
+            ]
+          },
+          "end": {
+            "left": [
+              {
+                "x": -35.39153,
+                "y": 617.69696,
+                "z": -1956.43909
+              },
+              {
+                "x": -27.0596161,
+                "y": 617.69696,
+                "z": -1966.79175
+              },
+              {
+                "x": -19.4983616,
+                "y": 617.6969,
+                "z": -1977.77759
+              },
+              {
+                "x": -12.3757238,
+                "y": 617.6969,
+                "z": -1989.09973
+              }
+            ],
+            "right": [
+              {
+                "x": -44.7399635,
+                "y": 617.69696,
+                "z": -1963.96277
+              },
+              {
+                "x": -36.78492,
+                "y": 617.69696,
+                "z": -1973.84717
+              },
+              {
+                "x": -29.4820213,
+                "y": 617.6969,
+                "z": -1984.44592
+              },
+              {
+                "x": -22.5337162,
+                "y": 617.6969,
+                "z": -1995.48926
+              }
+            ],
+            "length": [
+              39.97803,
+              38.58375
+            ]
+          }
+        },
+        "composition": {
+          "edge": {
+            "index": 50963,
+            "version": 3,
+            "width": 12.0,
+            "state": "ExclusiveGround, HasSurface, SeparatedCarriageways, HasPedestrianLanes, HasForwardTrackLanes, HasBackwardTrackLanes, BlockZone, LowerToTerrain",
+            "flags": {
+              "general": "Edge",
+              "left": "0",
+              "right": "0"
+            },
+            "lanes": [
+              {
+                "bufferIndex": 0,
+                "index": 0,
+                "group": 0,
+                "carriageway": 0,
+                "position": {
+                  "x": -5.0,
+                  "y": -0.2,
+                  "z": 0.0
+                },
+                "flags": "Invert, Pedestrian, Twoway, LeftLimit, RightLimit",
+                "prefab": {
+                  "index": 50085,
+                  "version": 1,
+                  "netLaneFlags": "Pedestrian, Twoway"
+                }
+              },
+              {
+                "bufferIndex": 1,
+                "index": 1,
+                "group": 1,
+                "carriageway": 0,
+                "position": {
+                  "x": -2.0,
+                  "y": 0.0,
+                  "z": 0.0
+                },
+                "flags": "Invert, Track, LeftLimit, RightLimit, HasAuxiliary",
+                "prefab": {
+                  "index": 50089,
+                  "version": 1,
+                  "trackLaneData": {
+                    "maxCurviness": 0.0314159244,
+                    "trackTypes": "Train",
+                    "fallbackPrefab": {
+                      "index": 0,
+                      "version": 0
+                    }
+                  },
+                  "netLaneFlags": "Track, HasAuxiliary"
+                }
+              },
+              {
+                "bufferIndex": 2,
+                "index": 2,
+                "group": 2,
+                "carriageway": 0,
+                "position": {
+                  "x": 2.0,
+                  "y": 0.0,
+                  "z": 0.0
+                },
+                "flags": "Track, LeftLimit, RightLimit, HasAuxiliary",
+                "prefab": {
+                  "index": 50089,
+                  "version": 1,
+                  "trackLaneData": {
+                    "maxCurviness": 0.0314159244,
+                    "trackTypes": "Train",
+                    "fallbackPrefab": {
+                      "index": 0,
+                      "version": 0
+                    }
+                  },
+                  "netLaneFlags": "Track, HasAuxiliary"
+                }
+              },
+              {
+                "bufferIndex": 3,
+                "index": 3,
+                "group": 3,
+                "carriageway": 0,
+                "position": {
+                  "x": 5.0,
+                  "y": -0.2,
+                  "z": 0.0
+                },
+                "flags": "Pedestrian, Twoway, LeftLimit, RightLimit",
+                "prefab": {
+                  "index": 50085,
+                  "version": 1,
+                  "netLaneFlags": "Pedestrian, Twoway"
+                }
+              }
+            ]
+          },
+          "startNode": {
+            "index": 50967,
+            "version": 3,
+            "width": 12.0,
+            "state": "ExclusiveGround, HasSurface, BlockZone, LowerToTerrain",
+            "flags": {
+              "general": "Node, Invert, Intersection",
+              "left": "0",
+              "right": "0"
+            }
+          },
+          "endNode": {
+            "index": 50966,
+            "version": 3,
+            "width": 12.0,
+            "state": "ExclusiveGround, HasSurface, BlockZone, LowerToTerrain",
+            "flags": {
+              "general": "Node",
+              "left": "0",
+              "right": "0"
+            }
+          }
+        },
+        "updated": false,
+        "created": false,
+        "startNode": {
+          "index": 350935,
+          "version": 1,
+          "live": true,
+          "position": {
+            "x": -74.8598557,
+            "y": 617.6969,
+            "z": -1925.09143
+          }
+        },
+        "endNode": {
+          "index": 350932,
+          "version": 1,
+          "live": true,
+          "position": {
+            "x": -12.1533508,
+            "y": 617.6969,
+            "z": -2000.90637
+          }
+        },
+        "curve": [
+          {
+            "x": -75.1505356,
+            "y": 617.6969,
+            "z": -1925.03625
+          },
+          {
+            "x": -48.0215,
+            "y": 617.6971,
+            "z": -1946.61853
+          },
+          {
+            "x": -29.3538551,
+            "y": 617.6968,
+            "z": -1972.39111
+          },
+          {
+            "x": -12.1533508,
+            "y": 617.6969,
+            "z": -2000.90637
+          }
+        ],
+        "subLanes": [
+          {
+            "entity": {
+              "index": 50997,
+              "version": 1
+            },
+            "pathMethods": "Pedestrian"
+          },
+          {
+            "entity": {
+              "index": 50998,
+              "version": 1
+            },
+            "pathMethods": "Pedestrian"
+          },
+          {
+            "entity": {
+              "index": 52360,
+              "version": 1
+            },
+            "pathMethods": "Track"
+          },
+          {
+            "entity": {
+              "index": 52361,
+              "version": 1
+            },
+            "pathMethods": "Track"
+          },
+          {
+            "entity": {
+              "index": 328199,
+              "version": 1
+            },
+            "pathMethods": "0"
+          },
+          {
+            "entity": {
+              "index": 328200,
+              "version": 1
+            },
+            "pathMethods": "0"
+          },
+          {
+            "entity": {
+              "index": 328203,
+              "version": 1
+            },
+            "pathMethods": "0"
+          },
+          {
+            "entity": {
+              "index": 328204,
+              "version": 1
+            },
+            "pathMethods": "0"
+          },
+          {
+            "entity": {
+              "index": 356319,
+              "version": 1
+            },
+            "pathMethods": "0"
+          },
+          {
+            "entity": {
+              "index": 356320,
+              "version": 1
+            },
+            "pathMethods": "0"
+          },
+          {
+            "entity": {
+              "index": 356321,
+              "version": 1
+            },
+            "pathMethods": "0"
+          },
+          {
+            "entity": {
+              "index": 356322,
+              "version": 1
+            },
+            "pathMethods": "0"
+          },
+          {
+            "entity": {
+              "index": 51999,
+              "version": 1
+            },
+            "pathMethods": "0"
+          },
+          {
+            "entity": {
+              "index": 52000,
+              "version": 1
+            },
+            "pathMethods": "0"
+          },
+          {
+            "entity": {
+              "index": 52001,
+              "version": 1
+            },
+            "pathMethods": "0"
+          },
+          {
+            "entity": {
+              "index": 52002,
+              "version": 1
+            },
+            "pathMethods": "0"
+          },
+          {
+            "entity": {
+              "index": 52003,
+              "version": 1
+            },
+            "pathMethods": "0"
+          },
+          {
+            "entity": {
+              "index": 52004,
+              "version": 1
+            },
+            "pathMethods": "0"
+          },
+          {
+            "entity": {
+              "index": 52005,
+              "version": 1
+            },
+            "pathMethods": "0"
+          },
+          {
+            "entity": {
+              "index": 52006,
+              "version": 1
+            },
+            "pathMethods": "0"
+          },
+          {
+            "entity": {
+              "index": 52007,
+              "version": 1
+            },
+            "pathMethods": "0"
+          }
+        ]
+      },
+      {
+        "index": 354788,
+        "version": 1,
+        "live": true,
+        "prefab": {
+          "index": 16115,
+          "version": 1,
+          "netGeometryData": {
+            "mergeLayers": "TrainTrack",
+            "flags": "BlockZone, Directional, SmoothElevation, FlattenTerrain, ClipTerrain, ExclusiveGround, InvertCompositionHandedness",
+            "defaultWidth": 12.0
+          }
+        },
+        "edgeGeometry": {
+          "start": {
+            "left": [
+              {
+                "x": -2.520123,
+                "y": 617.696838,
+                "z": -2007.91833
+              },
+              {
+                "x": 0.227008641,
+                "y": 617.696838,
+                "z": -2014.46191
+              },
+              {
+                "x": 2.74371338,
+                "y": 617.6969,
+                "z": -2021.0835
+              },
+              {
+                "x": 5.00861263,
+                "y": 617.6969,
+                "z": -2027.778
+              }
+            ],
+            "right": [
+              {
+                "x": -13.5846224,
+                "y": 617.696838,
+                "z": -2012.56348
+              },
+              {
+                "x": -10.9434433,
+                "y": 617.696838,
+                "z": -2018.85449
+              },
+              {
+                "x": -8.528371,
+                "y": 617.6969,
+                "z": -2025.20984
+              },
+              {
+                "x": -6.35843372,
+                "y": 617.6969,
+                "z": -2031.62366
+              }
+            ],
+            "length": [
+              21.243269,
+              20.3883171
+            ]
+          },
+          "end": {
+            "left": [
+              {
+                "x": 5.00861931,
+                "y": 617.6969,
+                "z": -2027.778
+              },
+              {
+                "x": 7.231989,
+                "y": 617.6969,
+                "z": -2034.34961
+              },
+              {
+                "x": 9.20296,
+                "y": 617.6969,
+                "z": -2040.96375
+              },
+              {
+                "x": 10.89643,
+                "y": 617.6969,
+                "z": -2047.6095
+              }
+            ],
+            "right": [
+              {
+                "x": -6.3584404,
+                "y": 617.6969,
+                "z": -2031.62366
+              },
+              {
+                "x": -4.22831869,
+                "y": 617.6969,
+                "z": -2037.9198
+              },
+              {
+                "x": -2.34576583,
+                "y": 617.6969,
+                "z": -2044.23975
+              },
+              {
+                "x": -0.7320268,
+                "y": 617.6969,
+                "z": -2050.57251
+              }
+            ],
+            "length": [
+              20.6921616,
+              19.7713547
+            ]
+          }
+        },
+        "composition": {
+          "edge": {
+            "index": 50963,
+            "version": 3,
+            "width": 12.0,
+            "state": "ExclusiveGround, HasSurface, SeparatedCarriageways, HasPedestrianLanes, HasForwardTrackLanes, HasBackwardTrackLanes, BlockZone, LowerToTerrain",
+            "flags": {
+              "general": "Edge",
+              "left": "0",
+              "right": "0"
+            },
+            "lanes": [
+              {
+                "bufferIndex": 0,
+                "index": 0,
+                "group": 0,
+                "carriageway": 0,
+                "position": {
+                  "x": -5.0,
+                  "y": -0.2,
+                  "z": 0.0
+                },
+                "flags": "Invert, Pedestrian, Twoway, LeftLimit, RightLimit",
+                "prefab": {
+                  "index": 50085,
+                  "version": 1,
+                  "netLaneFlags": "Pedestrian, Twoway"
+                }
+              },
+              {
+                "bufferIndex": 1,
+                "index": 1,
+                "group": 1,
+                "carriageway": 0,
+                "position": {
+                  "x": -2.0,
+                  "y": 0.0,
+                  "z": 0.0
+                },
+                "flags": "Invert, Track, LeftLimit, RightLimit, HasAuxiliary",
+                "prefab": {
+                  "index": 50089,
+                  "version": 1,
+                  "trackLaneData": {
+                    "maxCurviness": 0.0314159244,
+                    "trackTypes": "Train",
+                    "fallbackPrefab": {
+                      "index": 0,
+                      "version": 0
+                    }
+                  },
+                  "netLaneFlags": "Track, HasAuxiliary"
+                }
+              },
+              {
+                "bufferIndex": 2,
+                "index": 2,
+                "group": 2,
+                "carriageway": 0,
+                "position": {
+                  "x": 2.0,
+                  "y": 0.0,
+                  "z": 0.0
+                },
+                "flags": "Track, LeftLimit, RightLimit, HasAuxiliary",
+                "prefab": {
+                  "index": 50089,
+                  "version": 1,
+                  "trackLaneData": {
+                    "maxCurviness": 0.0314159244,
+                    "trackTypes": "Train",
+                    "fallbackPrefab": {
+                      "index": 0,
+                      "version": 0
+                    }
+                  },
+                  "netLaneFlags": "Track, HasAuxiliary"
+                }
+              },
+              {
+                "bufferIndex": 3,
+                "index": 3,
+                "group": 3,
+                "carriageway": 0,
+                "position": {
+                  "x": 5.0,
+                  "y": -0.2,
+                  "z": 0.0
+                },
+                "flags": "Pedestrian, Twoway, LeftLimit, RightLimit",
+                "prefab": {
+                  "index": 50085,
+                  "version": 1,
+                  "netLaneFlags": "Pedestrian, Twoway"
+                }
+              }
+            ]
+          },
+          "startNode": {
+            "index": 50964,
+            "version": 3,
+            "width": 12.0,
+            "state": "ExclusiveGround, HasSurface, BlockZone, LowerToTerrain",
+            "flags": {
+              "general": "Node, Invert",
+              "left": "0",
+              "right": "0"
+            }
+          },
+          "endNode": {
+            "index": 50966,
+            "version": 3,
+            "width": 12.0,
+            "state": "ExclusiveGround, HasSurface, BlockZone, LowerToTerrain",
+            "flags": {
+              "general": "Node",
+              "left": "0",
+              "right": "0"
+            }
+          }
+        },
+        "updated": false,
+        "created": false,
+        "startNode": {
+          "index": 350932,
+          "version": 1,
+          "live": true,
+          "position": {
+            "x": -12.1533508,
+            "y": 617.6969,
+            "z": -2000.90637
+          }
+        },
+        "endNode": {
+          "index": 350926,
+          "version": 1,
+          "live": true,
+          "position": {
+            "x": 7.404898,
+            "y": 617.6969,
+            "z": -2059.07764
+          }
+        },
+        "curve": [
+          {
+            "x": -12.1533508,
+            "y": 617.6969,
+            "z": -2000.90637
+          },
+          {
+            "x": -3.50907946,
+            "y": 617.6971,
+            "z": -2019.74609
+          },
+          {
+            "x": 3.26951838,
+            "y": 617.6968,
+            "z": -2039.39478
+          },
+          {
+            "x": 7.404898,
+            "y": 617.6969,
+            "z": -2059.07764
+          }
+        ],
+        "subLanes": [
+          {
+            "entity": {
+              "index": 51004,
+              "version": 1
+            },
+            "pathMethods": "Pedestrian"
+          },
+          {
+            "entity": {
+              "index": 51007,
+              "version": 1
+            },
+            "pathMethods": "Pedestrian"
+          },
+          {
+            "entity": {
+              "index": 52352,
+              "version": 1
+            },
+            "pathMethods": "Track"
+          },
+          {
+            "entity": {
+              "index": 52353,
+              "version": 1
+            },
+            "pathMethods": "Track"
+          },
+          {
+            "entity": {
+              "index": 328201,
+              "version": 1
+            },
+            "pathMethods": "0"
+          },
+          {
+            "entity": {
+              "index": 328202,
+              "version": 1
+            },
+            "pathMethods": "0"
+          },
+          {
+            "entity": {
+              "index": 356323,
+              "version": 1
+            },
+            "pathMethods": "0"
+          },
+          {
+            "entity": {
+              "index": 356324,
+              "version": 1
+            },
+            "pathMethods": "0"
+          },
+          {
+            "entity": {
+              "index": 52009,
+              "version": 1
+            },
+            "pathMethods": "0"
+          },
+          {
+            "entity": {
+              "index": 52010,
+              "version": 1
+            },
+            "pathMethods": "0"
+          },
+          {
+            "entity": {
+              "index": 52011,
+              "version": 1
+            },
+            "pathMethods": "0"
+          },
+          {
+            "entity": {
+              "index": 52012,
+              "version": 1
+            },
+            "pathMethods": "0"
+          },
+          {
+            "entity": {
+              "index": 52013,
+              "version": 1
+            },
+            "pathMethods": "0"
+          },
+          {
+            "entity": {
+              "index": 52014,
+              "version": 1
+            },
+            "pathMethods": "0"
+          },
+          {
+            "entity": {
+              "index": 52015,
+              "version": 1
+            },
+            "pathMethods": "0"
+          },
+          {
+            "entity": {
+              "index": 52016,
+              "version": 1
+            },
+            "pathMethods": "0"
+          }
+        ]
+      }
+    ],
+    "lanes": [
+      {
+        "index": 52223,
+        "version": 1,
+        "live": true,
+        "updated": false,
+        "created": false,
+        "prefab": {
+          "index": 50085,
+          "version": 1,
+          "netLaneFlags": "Pedestrian, Twoway"
+        },
+        "secondary": false,
+        "master": false,
+        "slave": false,
+        "start": {
+          "equalityId": 0,
+          "ownerIndex": 354788,
+          "laneIndex": 0,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "middle": {
+          "equalityId": 1,
+          "ownerIndex": 350932,
+          "laneIndex": 512,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "end": {
+          "equalityId": 2,
+          "ownerIndex": 354790,
+          "laneIndex": 1024,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "curve": [
+          {
+            "x": -3.44216537,
+            "y": 617.4968,
+            "z": -2008.30542
+          },
+          {
+            "x": -6.16668034,
+            "y": 617.4968,
+            "z": -2001.816
+          },
+          {
+            "x": -9.474499,
+            "y": 617.4969,
+            "z": -1995.58948
+          },
+          {
+            "x": -13.2222233,
+            "y": 617.4969,
+            "z": -1989.6322
+          }
+        ],
+        "owner": {
+          "index": 350932,
+          "version": 1
+        }
+      },
+      {
+        "index": 52224,
+        "version": 1,
+        "live": true,
+        "updated": false,
+        "created": false,
+        "prefab": {
+          "index": 50085,
+          "version": 1,
+          "netLaneFlags": "Pedestrian, Twoway"
+        },
+        "secondary": false,
+        "master": false,
+        "slave": false,
+        "start": {
+          "equalityId": 3,
+          "ownerIndex": 354790,
+          "laneIndex": 1027,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "middle": {
+          "equalityId": 4,
+          "ownerIndex": 350932,
+          "laneIndex": 513,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "end": {
+          "equalityId": 5,
+          "ownerIndex": 354788,
+          "laneIndex": 3,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "curve": [
+          {
+            "x": -21.6872177,
+            "y": 617.4969,
+            "z": -1994.95679
+          },
+          {
+            "x": -18.2304459,
+            "y": 617.4969,
+            "z": -2000.451
+          },
+          {
+            "x": -15.1754723,
+            "y": 617.4968,
+            "z": -2006.19128
+          },
+          {
+            "x": -12.6625805,
+            "y": 617.4968,
+            "z": -2012.17639
+          }
+        ],
+        "owner": {
+          "index": 350932,
+          "version": 1
+        }
+      },
+      {
+        "index": 328069,
+        "version": 1,
+        "live": true,
+        "updated": false,
+        "created": false,
+        "prefab": {
+          "index": 50089,
+          "version": 1,
+          "trackLaneData": {
+            "maxCurviness": 0.0314159244,
+            "trackTypes": "Train",
+            "fallbackPrefab": {
+              "index": 0,
+              "version": 0
+            }
+          },
+          "netLaneFlags": "Track, HasAuxiliary"
+        },
+        "secondary": false,
+        "master": false,
+        "slave": false,
+        "start": {
+          "equalityId": 6,
+          "ownerIndex": 354788,
+          "laneIndex": 1,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "middle": {
+          "equalityId": 7,
+          "ownerIndex": 350932,
+          "laneIndex": 256,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "end": {
+          "equalityId": 8,
+          "ownerIndex": 354790,
+          "laneIndex": 1025,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "curve": [
+          {
+            "x": -6.20828962,
+            "y": 617.696838,
+            "z": -2009.46667
+          },
+          {
+            "x": -8.869282,
+            "y": 617.696838,
+            "z": -2003.12854
+          },
+          {
+            "x": -12.101285,
+            "y": 617.6969,
+            "z": -1997.048
+          },
+          {
+            "x": -15.7617207,
+            "y": 617.6969,
+            "z": -1991.22961
+          }
+        ],
+        "owner": {
+          "index": 350932,
+          "version": 1
+        },
+        "track": {
+          "flags": "Exclusive, CrossingTraffic",
+          "speedLimit": 88.88889,
+          "curviness": 0.00861832,
+          "accessRestriction": {
+            "index": 0,
+            "version": 0
+          }
+        }
+      },
+      {
+        "index": 328075,
+        "version": 1,
+        "live": true,
+        "updated": false,
+        "created": false,
+        "prefab": {
+          "index": 50089,
+          "version": 1,
+          "trackLaneData": {
+            "maxCurviness": 0.0314159244,
+            "trackTypes": "Train",
+            "fallbackPrefab": {
+              "index": 0,
+              "version": 0
+            }
+          },
+          "netLaneFlags": "Track, HasAuxiliary"
+        },
+        "secondary": false,
+        "master": false,
+        "slave": false,
+        "start": {
+          "equalityId": 9,
+          "ownerIndex": 354790,
+          "laneIndex": 1026,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "middle": {
+          "equalityId": 10,
+          "ownerIndex": 350932,
+          "laneIndex": 0,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "end": {
+          "equalityId": 11,
+          "ownerIndex": 354788,
+          "laneIndex": 2,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "curve": [
+          {
+            "x": -19.1477184,
+            "y": 617.6969,
+            "z": -1993.35938
+          },
+          {
+            "x": -15.6036243,
+            "y": 617.6969,
+            "z": -1998.99268
+          },
+          {
+            "x": -12.47286,
+            "y": 617.696838,
+            "z": -2004.87866
+          },
+          {
+            "x": -9.896456,
+            "y": 617.696838,
+            "z": -2011.01514
+          }
+        ],
+        "owner": {
+          "index": 350932,
+          "version": 1
+        },
+        "track": {
+          "flags": "Exclusive, CrossingTraffic",
+          "speedLimit": 88.88889,
+          "curviness": 0.0089226,
+          "accessRestriction": {
+            "index": 0,
+            "version": 0
+          }
+        }
+      },
+      {
+        "index": 355179,
+        "version": 1,
+        "live": true,
+        "updated": false,
+        "created": false,
+        "prefab": {
+          "index": 17451,
+          "version": 1,
+          "netLaneFlags": "Pedestrian, Twoway, TrackFlow"
+        },
+        "secondary": false,
+        "master": false,
+        "slave": false,
+        "start": {
+          "equalityId": 12,
+          "ownerIndex": 350932,
+          "laneIndex": 512,
+          "curvePosition": 0.499984741,
+          "secondary": false
+        },
+        "middle": {
+          "equalityId": 13,
+          "ownerIndex": 350932,
+          "laneIndex": 514,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "end": {
+          "equalityId": 14,
+          "ownerIndex": 350932,
+          "laneIndex": 513,
+          "curvePosition": 0.499984741,
+          "secondary": false
+        },
+        "curve": [
+          {
+            "x": -8.83397,
+            "y": 617.4969,
+            "z": -1999.234
+          },
+          {
+            "x": -11.1999569,
+            "y": 617.4969,
+            "z": -2000.46423
+          },
+          {
+            "x": -13.5659447,
+            "y": 617.4969,
+            "z": -2001.69446
+          },
+          {
+            "x": -15.9319315,
+            "y": 617.4969,
+            "z": -2002.92468
+          }
+        ],
+        "owner": {
+          "index": 350932,
+          "version": 1
+        }
+      },
+      {
+        "index": 50997,
+        "version": 1,
+        "live": true,
+        "updated": false,
+        "created": false,
+        "prefab": {
+          "index": 50085,
+          "version": 1,
+          "netLaneFlags": "Pedestrian, Twoway"
+        },
+        "secondary": false,
+        "master": false,
+        "slave": false,
+        "edgeLane": {
+          "edgeDelta": [
+            1.0,
+            0.0
+          ],
+          "connectedStartCount": 0,
+          "connectedEndCount": 0
+        },
+        "start": {
+          "equalityId": 2,
+          "ownerIndex": 354790,
+          "laneIndex": 1024,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "middle": {
+          "equalityId": 15,
+          "ownerIndex": 354790,
+          "laneIndex": 512,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "end": {
+          "equalityId": 16,
+          "ownerIndex": 354790,
+          "laneIndex": 0,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "curve": [
+          {
+            "x": -13.2222233,
+            "y": 617.4969,
+            "z": -1989.6322
+          },
+          {
+            "x": -26.2255249,
+            "y": 617.496765,
+            "z": -1968.96228
+          },
+          {
+            "x": -40.53547,
+            "y": 617.4967,
+            "z": -1949.65479
+          },
+          {
+            "x": -59.0003242,
+            "y": 617.4968,
+            "z": -1932.39282
+          }
+        ],
+        "owner": {
+          "index": 354790,
+          "version": 1
+        }
+      },
+      {
+        "index": 50998,
+        "version": 1,
+        "live": true,
+        "updated": false,
+        "created": false,
+        "prefab": {
+          "index": 50085,
+          "version": 1,
+          "netLaneFlags": "Pedestrian, Twoway"
+        },
+        "secondary": false,
+        "master": false,
+        "slave": false,
+        "edgeLane": {
+          "edgeDelta": [
+            0.0,
+            1.0
+          ],
+          "connectedStartCount": 0,
+          "connectedEndCount": 0
+        },
+        "start": {
+          "equalityId": 17,
+          "ownerIndex": 354790,
+          "laneIndex": 3,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "middle": {
+          "equalityId": 18,
+          "ownerIndex": 354790,
+          "laneIndex": 515,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "end": {
+          "equalityId": 3,
+          "ownerIndex": 354790,
+          "laneIndex": 1027,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "curve": [
+          {
+            "x": -69.85553,
+            "y": 617.496948,
+            "z": -1936.02979
+          },
+          {
+            "x": -50.3122864,
+            "y": 617.497,
+            "z": -1953.37048
+          },
+          {
+            "x": -35.3731956,
+            "y": 617.496948,
+            "z": -1973.20471
+          },
+          {
+            "x": -21.6872177,
+            "y": 617.4969,
+            "z": -1994.95679
+          }
+        ],
+        "owner": {
+          "index": 354790,
+          "version": 1
+        }
+      },
+      {
+        "index": 52360,
+        "version": 1,
+        "live": true,
+        "updated": false,
+        "created": false,
+        "prefab": {
+          "index": 50089,
+          "version": 1,
+          "trackLaneData": {
+            "maxCurviness": 0.0314159244,
+            "trackTypes": "Train",
+            "fallbackPrefab": {
+              "index": 0,
+              "version": 0
+            }
+          },
+          "netLaneFlags": "Track, HasAuxiliary"
+        },
+        "secondary": false,
+        "master": false,
+        "slave": false,
+        "edgeLane": {
+          "edgeDelta": [
+            1.0,
+            0.0
+          ],
+          "connectedStartCount": 1,
+          "connectedEndCount": 1
+        },
+        "start": {
+          "equalityId": 8,
+          "ownerIndex": 354790,
+          "laneIndex": 1025,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "middle": {
+          "equalityId": 19,
+          "ownerIndex": 354790,
+          "laneIndex": 513,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "end": {
+          "equalityId": 20,
+          "ownerIndex": 354790,
+          "laneIndex": 1,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "curve": [
+          {
+            "x": -15.7617207,
+            "y": 617.6969,
+            "z": -1991.22961
+          },
+          {
+            "x": -28.9698257,
+            "y": 617.696838,
+            "z": -1970.235
+          },
+          {
+            "x": -43.4685135,
+            "y": 617.696838,
+            "z": -1950.76953
+          },
+          {
+            "x": -62.2568855,
+            "y": 617.6969,
+            "z": -1933.48389
+          }
+        ],
+        "owner": {
+          "index": 354790,
+          "version": 1
+        },
+        "track": {
+          "flags": "Invert, Exclusive, AllowMiddle",
+          "speedLimit": 88.88889,
+          "curviness": 0.00446818955,
+          "accessRestriction": {
+            "index": 0,
+            "version": 0
+          }
+        }
+      },
+      {
+        "index": 52361,
+        "version": 1,
+        "live": true,
+        "updated": false,
+        "created": false,
+        "prefab": {
+          "index": 50089,
+          "version": 1,
+          "trackLaneData": {
+            "maxCurviness": 0.0314159244,
+            "trackTypes": "Train",
+            "fallbackPrefab": {
+              "index": 0,
+              "version": 0
+            }
+          },
+          "netLaneFlags": "Track, HasAuxiliary"
+        },
+        "secondary": false,
+        "master": false,
+        "slave": false,
+        "edgeLane": {
+          "edgeDelta": [
+            0.0,
+            1.0
+          ],
+          "connectedStartCount": 1,
+          "connectedEndCount": 1
+        },
+        "start": {
+          "equalityId": 21,
+          "ownerIndex": 354790,
+          "laneIndex": 2,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "middle": {
+          "equalityId": 22,
+          "ownerIndex": 354790,
+          "laneIndex": 514,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "end": {
+          "equalityId": 9,
+          "ownerIndex": 354790,
+          "laneIndex": 1026,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "curve": [
+          {
+            "x": -66.59897,
+            "y": 617.6969,
+            "z": -1934.93872
+          },
+          {
+            "x": -47.3792419,
+            "y": 617.6969,
+            "z": -1952.25574
+          },
+          {
+            "x": -32.6288948,
+            "y": 617.6969,
+            "z": -1971.932
+          },
+          {
+            "x": -19.1477184,
+            "y": 617.6969,
+            "z": -1993.35938
+          }
+        ],
+        "owner": {
+          "index": 354790,
+          "version": 1
+        },
+        "track": {
+          "flags": "Exclusive, AllowMiddle",
+          "speedLimit": 88.88889,
+          "curviness": 0.004586336,
+          "accessRestriction": {
+            "index": 0,
+            "version": 0
+          }
+        }
+      },
+      {
+        "index": 328199,
+        "version": 1,
+        "live": true,
+        "updated": false,
+        "created": false,
+        "prefab": {
+          "index": 16119,
+          "version": 1,
+          "netLaneFlags": "Utility"
+        },
+        "secondary": false,
+        "master": false,
+        "slave": false,
+        "edgeLane": {
+          "edgeDelta": [
+            0.0,
+            0.5882251
+          ],
+          "connectedStartCount": 0,
+          "connectedEndCount": 0
+        },
+        "start": {
+          "equalityId": 23,
+          "ownerIndex": 354790,
+          "laneIndex": 2561,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "middle": {
+          "equalityId": 24,
+          "ownerIndex": 354790,
+          "laneIndex": 2817,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "end": {
+          "equalityId": 25,
+          "ownerIndex": 354790,
+          "laneIndex": 3073,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "curve": [
+          {
+            "x": -61.46531,
+            "y": 624.7988,
+            "z": -1934.269
+          },
+          {
+            "x": -52.3993721,
+            "y": 624.149,
+            "z": -1944.32373
+          },
+          {
+            "x": -43.3334351,
+            "y": 624.149048,
+            "z": -1954.3783
+          },
+          {
+            "x": -34.267498,
+            "y": 624.7989,
+            "z": -1964.433
+          }
+        ],
+        "owner": {
+          "index": 354790,
+          "version": 1
+        }
+      },
+      {
+        "index": 328200,
+        "version": 1,
+        "live": true,
+        "updated": false,
+        "created": false,
+        "prefab": {
+          "index": 16119,
+          "version": 1,
+          "netLaneFlags": "Utility"
+        },
+        "secondary": false,
+        "master": false,
+        "slave": false,
+        "edgeLane": {
+          "edgeDelta": [
+            0.5882251,
+            1.0
+          ],
+          "connectedStartCount": 0,
+          "connectedEndCount": 0
+        },
+        "start": {
+          "equalityId": 26,
+          "ownerIndex": 354790,
+          "laneIndex": 3074,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "middle": {
+          "equalityId": 27,
+          "ownerIndex": 354790,
+          "laneIndex": 3330,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "end": {
+          "equalityId": 28,
+          "ownerIndex": 354790,
+          "laneIndex": 3586,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "curve": [
+          {
+            "x": -37.37182,
+            "y": 624.7989,
+            "z": -1966.80408
+          },
+          {
+            "x": -29.62133,
+            "y": 624.1243,
+            "z": -1978.52661
+          },
+          {
+            "x": -21.870842,
+            "y": 624.1243,
+            "z": -1990.249
+          },
+          {
+            "x": -14.1203537,
+            "y": 624.7989,
+            "z": -2001.97156
+          }
+        ],
+        "owner": {
+          "index": 354790,
+          "version": 1
+        }
+      },
+      {
+        "index": 328203,
+        "version": 1,
+        "live": true,
+        "updated": false,
+        "created": false,
+        "prefab": {
+          "index": 16119,
+          "version": 1,
+          "netLaneFlags": "Utility"
+        },
+        "secondary": false,
+        "master": false,
+        "slave": false,
+        "edgeLane": {
+          "edgeDelta": [
+            0.5882251,
+            1.0
+          ],
+          "connectedStartCount": 0,
+          "connectedEndCount": 0
+        },
+        "start": {
+          "equalityId": 25,
+          "ownerIndex": 354790,
+          "laneIndex": 3073,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "middle": {
+          "equalityId": 29,
+          "ownerIndex": 354790,
+          "laneIndex": 3329,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "end": {
+          "equalityId": 30,
+          "ownerIndex": 354790,
+          "laneIndex": 3585,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "curve": [
+          {
+            "x": -34.267498,
+            "y": 624.7989,
+            "z": -1964.433
+          },
+          {
+            "x": -26.3936272,
+            "y": 624.1133,
+            "z": -1976.35083
+          },
+          {
+            "x": -18.5197563,
+            "y": 624.1133,
+            "z": -1988.26855
+          },
+          {
+            "x": -10.6458874,
+            "y": 624.7989,
+            "z": -2000.1864
+          }
+        ],
+        "owner": {
+          "index": 354790,
+          "version": 1
+        }
+      },
+      {
+        "index": 328204,
+        "version": 1,
+        "live": true,
+        "updated": false,
+        "created": false,
+        "prefab": {
+          "index": 16119,
+          "version": 1,
+          "netLaneFlags": "Utility"
+        },
+        "secondary": false,
+        "master": false,
+        "slave": false,
+        "edgeLane": {
+          "edgeDelta": [
+            0.0,
+            0.5882251
+          ],
+          "connectedStartCount": 0,
+          "connectedEndCount": 0
+        },
+        "start": {
+          "equalityId": 31,
+          "ownerIndex": 354790,
+          "laneIndex": 2562,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "middle": {
+          "equalityId": 32,
+          "ownerIndex": 354790,
+          "laneIndex": 2818,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "end": {
+          "equalityId": 26,
+          "ownerIndex": 354790,
+          "laneIndex": 3074,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "curve": [
+          {
+            "x": -67.40577,
+            "y": 624.79895,
+            "z": -1934.13989
+          },
+          {
+            "x": -57.39445,
+            "y": 624.089,
+            "z": -1945.028
+          },
+          {
+            "x": -47.3831329,
+            "y": 624.0889,
+            "z": -1955.916
+          },
+          {
+            "x": -37.37182,
+            "y": 624.7989,
+            "z": -1966.80408
+          }
+        ],
+        "owner": {
+          "index": 354790,
+          "version": 1
+        }
+      },
+      {
+        "index": 356319,
+        "version": 1,
+        "live": true,
+        "updated": false,
+        "created": false,
+        "prefab": {
+          "index": 16118,
+          "version": 1,
+          "netLaneFlags": "Utility"
+        },
+        "secondary": false,
+        "master": false,
+        "slave": false,
+        "edgeLane": {
+          "edgeDelta": [
+            0.0,
+            0.5882251
+          ],
+          "connectedStartCount": 0,
+          "connectedEndCount": 0
+        },
+        "start": {
+          "equalityId": 33,
+          "ownerIndex": 354790,
+          "laneIndex": 1281,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "middle": {
+          "equalityId": 34,
+          "ownerIndex": 354790,
+          "laneIndex": 1537,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "end": {
+          "equalityId": 35,
+          "ownerIndex": 354790,
+          "laneIndex": 1793,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "curve": [
+          {
+            "x": -61.46531,
+            "y": 623.6818,
+            "z": -1934.269
+          },
+          {
+            "x": -52.3993721,
+            "y": 623.6277,
+            "z": -1944.32373
+          },
+          {
+            "x": -43.3334351,
+            "y": 623.627747,
+            "z": -1954.3783
+          },
+          {
+            "x": -34.267498,
+            "y": 623.6819,
+            "z": -1964.433
+          }
+        ],
+        "owner": {
+          "index": 354790,
+          "version": 1
+        }
+      },
+      {
+        "index": 356320,
+        "version": 1,
+        "live": true,
+        "updated": false,
+        "created": false,
+        "prefab": {
+          "index": 16118,
+          "version": 1,
+          "netLaneFlags": "Utility"
+        },
+        "secondary": false,
+        "master": false,
+        "slave": false,
+        "edgeLane": {
+          "edgeDelta": [
+            0.5882251,
+            1.0
+          ],
+          "connectedStartCount": 0,
+          "connectedEndCount": 0
+        },
+        "start": {
+          "equalityId": 35,
+          "ownerIndex": 354790,
+          "laneIndex": 1793,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "middle": {
+          "equalityId": 36,
+          "ownerIndex": 354790,
+          "laneIndex": 2049,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "end": {
+          "equalityId": 37,
+          "ownerIndex": 354790,
+          "laneIndex": 2305,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "curve": [
+          {
+            "x": -34.267498,
+            "y": 623.6819,
+            "z": -1964.433
+          },
+          {
+            "x": -26.3936272,
+            "y": 623.624756,
+            "z": -1976.35083
+          },
+          {
+            "x": -18.5197563,
+            "y": 623.624756,
+            "z": -1988.26855
+          },
+          {
+            "x": -10.6458874,
+            "y": 623.6819,
+            "z": -2000.1864
+          }
+        ],
+        "owner": {
+          "index": 354790,
+          "version": 1
+        }
+      },
+      {
+        "index": 356321,
+        "version": 1,
+        "live": true,
+        "updated": false,
+        "created": false,
+        "prefab": {
+          "index": 16118,
+          "version": 1,
+          "netLaneFlags": "Utility"
+        },
+        "secondary": false,
+        "master": false,
+        "slave": false,
+        "edgeLane": {
+          "edgeDelta": [
+            0.0,
+            0.5882251
+          ],
+          "connectedStartCount": 0,
+          "connectedEndCount": 0
+        },
+        "start": {
+          "equalityId": 38,
+          "ownerIndex": 354790,
+          "laneIndex": 1282,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "middle": {
+          "equalityId": 39,
+          "ownerIndex": 354790,
+          "laneIndex": 1538,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "end": {
+          "equalityId": 40,
+          "ownerIndex": 354790,
+          "laneIndex": 1794,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "curve": [
+          {
+            "x": -67.40577,
+            "y": 623.681946,
+            "z": -1934.13989
+          },
+          {
+            "x": -57.39445,
+            "y": 623.6228,
+            "z": -1945.028
+          },
+          {
+            "x": -47.3831329,
+            "y": 623.622742,
+            "z": -1955.916
+          },
+          {
+            "x": -37.37182,
+            "y": 623.6819,
+            "z": -1966.80408
+          }
+        ],
+        "owner": {
+          "index": 354790,
+          "version": 1
+        }
+      },
+      {
+        "index": 356322,
+        "version": 1,
+        "live": true,
+        "updated": false,
+        "created": false,
+        "prefab": {
+          "index": 16118,
+          "version": 1,
+          "netLaneFlags": "Utility"
+        },
+        "secondary": false,
+        "master": false,
+        "slave": false,
+        "edgeLane": {
+          "edgeDelta": [
+            0.5882251,
+            1.0
+          ],
+          "connectedStartCount": 0,
+          "connectedEndCount": 0
+        },
+        "start": {
+          "equalityId": 40,
+          "ownerIndex": 354790,
+          "laneIndex": 1794,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "middle": {
+          "equalityId": 41,
+          "ownerIndex": 354790,
+          "laneIndex": 2050,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "end": {
+          "equalityId": 42,
+          "ownerIndex": 354790,
+          "laneIndex": 2306,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "curve": [
+          {
+            "x": -37.37182,
+            "y": 623.6819,
+            "z": -1966.80408
+          },
+          {
+            "x": -29.62133,
+            "y": 623.6257,
+            "z": -1978.52661
+          },
+          {
+            "x": -21.870842,
+            "y": 623.6257,
+            "z": -1990.249
+          },
+          {
+            "x": -14.1203537,
+            "y": 623.6819,
+            "z": -2001.97156
+          }
+        ],
+        "owner": {
+          "index": 354790,
+          "version": 1
+        }
+      },
+      {
+        "index": 51999,
+        "version": 1,
+        "live": true,
+        "updated": false,
+        "created": false,
+        "prefab": {
+          "index": 16120,
+          "version": 1,
+          "netLaneFlags": "Secondary, Utility"
+        },
+        "secondary": true,
+        "master": false,
+        "slave": false,
+        "start": {
+          "equalityId": 43,
+          "ownerIndex": 354790,
+          "laneIndex": 6,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "middle": {
+          "equalityId": 44,
+          "ownerIndex": 354790,
+          "laneIndex": 7,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "end": {
+          "equalityId": 45,
+          "ownerIndex": 354790,
+          "laneIndex": 8,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "curve": [
+          {
+            "x": -29.6213264,
+            "y": 623.644348,
+            "z": -1978.52625
+          },
+          {
+            "x": -29.6213264,
+            "y": 623.8793,
+            "z": -1978.52625
+          },
+          {
+            "x": -29.6213264,
+            "y": 624.114136,
+            "z": -1978.52625
+          },
+          {
+            "x": -29.6213264,
+            "y": 624.34906,
+            "z": -1978.52625
+          }
+        ],
+        "owner": {
+          "index": 354790,
+          "version": 1
+        }
+      },
+      {
+        "index": 52000,
+        "version": 1,
+        "live": true,
+        "updated": false,
+        "created": false,
+        "prefab": {
+          "index": 16120,
+          "version": 1,
+          "netLaneFlags": "Secondary, Utility"
+        },
+        "secondary": true,
+        "master": false,
+        "slave": false,
+        "start": {
+          "equalityId": 46,
+          "ownerIndex": 354790,
+          "laneIndex": 9,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "middle": {
+          "equalityId": 47,
+          "ownerIndex": 354790,
+          "laneIndex": 10,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "end": {
+          "equalityId": 48,
+          "ownerIndex": 354790,
+          "laneIndex": 11,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "curve": [
+          {
+            "x": -21.870842,
+            "y": 623.6444,
+            "z": -1990.249
+          },
+          {
+            "x": -21.870842,
+            "y": 623.879333,
+            "z": -1990.249
+          },
+          {
+            "x": -21.870842,
+            "y": 624.114258,
+            "z": -1990.249
+          },
+          {
+            "x": -21.870842,
+            "y": 624.3492,
+            "z": -1990.249
+          }
+        ],
+        "owner": {
+          "index": 354790,
+          "version": 1
+        }
+      },
+      {
+        "index": 52001,
+        "version": 1,
+        "live": true,
+        "updated": false,
+        "created": false,
+        "prefab": {
+          "index": 16120,
+          "version": 1,
+          "netLaneFlags": "Secondary, Utility"
+        },
+        "secondary": true,
+        "master": false,
+        "slave": false,
+        "start": {
+          "equalityId": 49,
+          "ownerIndex": 354790,
+          "laneIndex": 0,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "middle": {
+          "equalityId": 50,
+          "ownerIndex": 354790,
+          "laneIndex": 1,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "end": {
+          "equalityId": 51,
+          "ownerIndex": 354790,
+          "laneIndex": 2,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "curve": [
+          {
+            "x": -52.39937,
+            "y": 623.6456,
+            "z": -1944.32361
+          },
+          {
+            "x": -52.39937,
+            "y": 623.8856,
+            "z": -1944.32361
+          },
+          {
+            "x": -52.39937,
+            "y": 624.125549,
+            "z": -1944.32361
+          },
+          {
+            "x": -52.39937,
+            "y": 624.36554,
+            "z": -1944.32361
+          }
+        ],
+        "owner": {
+          "index": 354790,
+          "version": 1
+        }
+      },
+      {
+        "index": 52002,
+        "version": 1,
+        "live": true,
+        "updated": false,
+        "created": false,
+        "prefab": {
+          "index": 16120,
+          "version": 1,
+          "netLaneFlags": "Secondary, Utility"
+        },
+        "secondary": true,
+        "master": false,
+        "slave": false,
+        "start": {
+          "equalityId": 52,
+          "ownerIndex": 354790,
+          "laneIndex": 3,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "middle": {
+          "equalityId": 53,
+          "ownerIndex": 354790,
+          "laneIndex": 4,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "end": {
+          "equalityId": 54,
+          "ownerIndex": 354790,
+          "laneIndex": 5,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "curve": [
+          {
+            "x": -43.3334351,
+            "y": 623.645752,
+            "z": -1954.37817
+          },
+          {
+            "x": -43.3334351,
+            "y": 623.8857,
+            "z": -1954.37817
+          },
+          {
+            "x": -43.3334351,
+            "y": 624.1257,
+            "z": -1954.37817
+          },
+          {
+            "x": -43.3334351,
+            "y": 624.3656,
+            "z": -1954.37817
+          }
+        ],
+        "owner": {
+          "index": 354790,
+          "version": 1
+        }
+      },
+      {
+        "index": 52003,
+        "version": 1,
+        "live": true,
+        "updated": false,
+        "created": false,
+        "prefab": {
+          "index": 16120,
+          "version": 1,
+          "netLaneFlags": "Secondary, Utility"
+        },
+        "secondary": true,
+        "master": false,
+        "slave": false,
+        "start": {
+          "equalityId": 55,
+          "ownerIndex": 354790,
+          "laneIndex": 12,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "middle": {
+          "equalityId": 56,
+          "ownerIndex": 354790,
+          "laneIndex": 13,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "end": {
+          "equalityId": 57,
+          "ownerIndex": 354790,
+          "laneIndex": 14,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "curve": [
+          {
+            "x": -26.3936253,
+            "y": 623.6437,
+            "z": -1976.35046
+          },
+          {
+            "x": -26.3936253,
+            "y": 623.876343,
+            "z": -1976.35046
+          },
+          {
+            "x": -26.3936253,
+            "y": 624.1091,
+            "z": -1976.35046
+          },
+          {
+            "x": -26.3936253,
+            "y": 624.341736,
+            "z": -1976.35046
+          }
+        ],
+        "owner": {
+          "index": 354790,
+          "version": 1
+        }
+      },
+      {
+        "index": 52004,
+        "version": 1,
+        "live": true,
+        "updated": false,
+        "created": false,
+        "prefab": {
+          "index": 16120,
+          "version": 1,
+          "netLaneFlags": "Secondary, Utility"
+        },
+        "secondary": true,
+        "master": false,
+        "slave": false,
+        "start": {
+          "equalityId": 58,
+          "ownerIndex": 354790,
+          "laneIndex": 15,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "middle": {
+          "equalityId": 59,
+          "ownerIndex": 354790,
+          "laneIndex": 16,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "end": {
+          "equalityId": 60,
+          "ownerIndex": 354790,
+          "laneIndex": 17,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "curve": [
+          {
+            "x": -18.5197544,
+            "y": 623.6438,
+            "z": -1988.26855
+          },
+          {
+            "x": -18.5197544,
+            "y": 623.876465,
+            "z": -1988.26855
+          },
+          {
+            "x": -18.5197544,
+            "y": 624.109131,
+            "z": -1988.26855
+          },
+          {
+            "x": -18.5197544,
+            "y": 624.3418,
+            "z": -1988.26855
+          }
+        ],
+        "owner": {
+          "index": 354790,
+          "version": 1
+        }
+      },
+      {
+        "index": 52005,
+        "version": 1,
+        "live": true,
+        "updated": false,
+        "created": false,
+        "prefab": {
+          "index": 16120,
+          "version": 1,
+          "netLaneFlags": "Secondary, Utility"
+        },
+        "secondary": true,
+        "master": false,
+        "slave": false,
+        "start": {
+          "equalityId": 61,
+          "ownerIndex": 354790,
+          "laneIndex": 18,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "middle": {
+          "equalityId": 62,
+          "ownerIndex": 354790,
+          "laneIndex": 19,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "end": {
+          "equalityId": 63,
+          "ownerIndex": 354790,
+          "laneIndex": 20,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "curve": [
+          {
+            "x": -59.89728,
+            "y": 623.6487,
+            "z": -1942.30591
+          },
+          {
+            "x": -59.89728,
+            "y": 623.899,
+            "z": -1942.30591
+          },
+          {
+            "x": -59.89728,
+            "y": 624.149353,
+            "z": -1942.30591
+          },
+          {
+            "x": -59.89728,
+            "y": 624.399658,
+            "z": -1942.30591
+          }
+        ],
+        "owner": {
+          "index": 354790,
+          "version": 1
+        }
+      },
+      {
+        "index": 52006,
+        "version": 1,
+        "live": true,
+        "updated": false,
+        "created": false,
+        "prefab": {
+          "index": 16120,
+          "version": 1,
+          "netLaneFlags": "Secondary, Utility"
+        },
+        "secondary": true,
+        "master": false,
+        "slave": false,
+        "start": {
+          "equalityId": 64,
+          "ownerIndex": 354790,
+          "laneIndex": 21,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "middle": {
+          "equalityId": 65,
+          "ownerIndex": 354790,
+          "laneIndex": 22,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "end": {
+          "equalityId": 66,
+          "ownerIndex": 354790,
+          "laneIndex": 23,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "curve": [
+          {
+            "x": -52.3887939,
+            "y": 623.6376,
+            "z": -1950.47192
+          },
+          {
+            "x": -52.3887939,
+            "y": 623.8472,
+            "z": -1950.47192
+          },
+          {
+            "x": -52.3887939,
+            "y": 624.0568,
+            "z": -1950.47192
+          },
+          {
+            "x": -52.3887939,
+            "y": 624.2665,
+            "z": -1950.47192
+          }
+        ],
+        "owner": {
+          "index": 354790,
+          "version": 1
+        }
+      },
+      {
+        "index": 52007,
+        "version": 1,
+        "live": true,
+        "updated": false,
+        "created": false,
+        "prefab": {
+          "index": 16120,
+          "version": 1,
+          "netLaneFlags": "Secondary, Utility"
+        },
+        "secondary": true,
+        "master": false,
+        "slave": false,
+        "start": {
+          "equalityId": 67,
+          "ownerIndex": 354790,
+          "laneIndex": 24,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "middle": {
+          "equalityId": 68,
+          "ownerIndex": 354790,
+          "laneIndex": 25,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "end": {
+          "equalityId": 69,
+          "ownerIndex": 354790,
+          "laneIndex": 26,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "curve": [
+          {
+            "x": -44.8803062,
+            "y": 623.6486,
+            "z": -1958.63806
+          },
+          {
+            "x": -44.8803062,
+            "y": 623.8989,
+            "z": -1958.63806
+          },
+          {
+            "x": -44.8803062,
+            "y": 624.149231,
+            "z": -1958.63806
+          },
+          {
+            "x": -44.8803062,
+            "y": 624.399536,
+            "z": -1958.63806
+          }
+        ],
+        "owner": {
+          "index": 354790,
+          "version": 1
+        }
+      },
+      {
+        "index": 51004,
+        "version": 1,
+        "live": true,
+        "updated": false,
+        "created": false,
+        "prefab": {
+          "index": 50085,
+          "version": 1,
+          "netLaneFlags": "Pedestrian, Twoway"
+        },
+        "secondary": false,
+        "master": false,
+        "slave": false,
+        "edgeLane": {
+          "edgeDelta": [
+            1.0,
+            0.0
+          ],
+          "connectedStartCount": 0,
+          "connectedEndCount": 0
+        },
+        "start": {
+          "equalityId": 70,
+          "ownerIndex": 354788,
+          "laneIndex": 1024,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "middle": {
+          "equalityId": 71,
+          "ownerIndex": 354788,
+          "laneIndex": 512,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "end": {
+          "equalityId": 0,
+          "ownerIndex": 354788,
+          "laneIndex": 0,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "curve": [
+          {
+            "x": 9.927392,
+            "y": 617.4969,
+            "z": -2047.85645
+          },
+          {
+            "x": 6.52222,
+            "y": 617.4969,
+            "z": -2034.49341
+          },
+          {
+            "x": 1.98420954,
+            "y": 617.4968,
+            "z": -2021.23083
+          },
+          {
+            "x": -3.44216466,
+            "y": 617.4968,
+            "z": -2008.30542
+          }
+        ],
+        "owner": {
+          "index": 354788,
+          "version": 1
+        }
+      },
+      {
+        "index": 51007,
+        "version": 1,
+        "live": true,
+        "updated": false,
+        "created": false,
+        "prefab": {
+          "index": 50085,
+          "version": 1,
+          "netLaneFlags": "Pedestrian, Twoway"
+        },
+        "secondary": false,
+        "master": false,
+        "slave": false,
+        "edgeLane": {
+          "edgeDelta": [
+            0.0,
+            1.0
+          ],
+          "connectedStartCount": 0,
+          "connectedEndCount": 0
+        },
+        "start": {
+          "equalityId": 5,
+          "ownerIndex": 354788,
+          "laneIndex": 3,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "middle": {
+          "equalityId": 72,
+          "ownerIndex": 354788,
+          "laneIndex": 515,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "end": {
+          "equalityId": 73,
+          "ownerIndex": 354788,
+          "laneIndex": 1027,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "curve": [
+          {
+            "x": -12.6625805,
+            "y": 617.4968,
+            "z": -2012.17639
+          },
+          {
+            "x": -7.41118336,
+            "y": 617.4968,
+            "z": -2024.68469
+          },
+          {
+            "x": -3.0340395,
+            "y": 617.4969,
+            "z": -2037.48914
+          },
+          {
+            "x": 0.237011909,
+            "y": 617.4969,
+            "z": -2050.32568
+          }
+        ],
+        "owner": {
+          "index": 354788,
+          "version": 1
+        }
+      },
+      {
+        "index": 52352,
+        "version": 1,
+        "live": true,
+        "updated": false,
+        "created": false,
+        "prefab": {
+          "index": 50089,
+          "version": 1,
+          "trackLaneData": {
+            "maxCurviness": 0.0314159244,
+            "trackTypes": "Train",
+            "fallbackPrefab": {
+              "index": 0,
+              "version": 0
+            }
+          },
+          "netLaneFlags": "Track, HasAuxiliary"
+        },
+        "secondary": false,
+        "master": false,
+        "slave": false,
+        "edgeLane": {
+          "edgeDelta": [
+            1.0,
+            0.0
+          ],
+          "connectedStartCount": 1,
+          "connectedEndCount": 1
+        },
+        "start": {
+          "equalityId": 74,
+          "ownerIndex": 354788,
+          "laneIndex": 1025,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "middle": {
+          "equalityId": 75,
+          "ownerIndex": 354788,
+          "laneIndex": 513,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "end": {
+          "equalityId": 6,
+          "ownerIndex": 354788,
+          "laneIndex": 1,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "curve": [
+          {
+            "x": 7.020278,
+            "y": 617.6969,
+            "z": -2048.59717
+          },
+          {
+            "x": 3.65534234,
+            "y": 617.6969,
+            "z": -2035.39209
+          },
+          {
+            "x": -0.8344083,
+            "y": 617.696838,
+            "z": -2022.267
+          },
+          {
+            "x": -6.208289,
+            "y": 617.696838,
+            "z": -2009.46667
+          }
+        ],
+        "owner": {
+          "index": 354788,
+          "version": 1
+        },
+        "track": {
+          "flags": "Invert, Exclusive, AllowMiddle",
+          "speedLimit": 88.88889,
+          "curviness": 0.00386748253,
+          "accessRestriction": {
+            "index": 0,
+            "version": 0
+          }
+        }
+      },
+      {
+        "index": 52353,
+        "version": 1,
+        "live": true,
+        "updated": false,
+        "created": false,
+        "prefab": {
+          "index": 50089,
+          "version": 1,
+          "trackLaneData": {
+            "maxCurviness": 0.0314159244,
+            "trackTypes": "Train",
+            "fallbackPrefab": {
+              "index": 0,
+              "version": 0
+            }
+          },
+          "netLaneFlags": "Track, HasAuxiliary"
+        },
+        "secondary": false,
+        "master": false,
+        "slave": false,
+        "edgeLane": {
+          "edgeDelta": [
+            0.0,
+            1.0
+          ],
+          "connectedStartCount": 1,
+          "connectedEndCount": 1
+        },
+        "start": {
+          "equalityId": 11,
+          "ownerIndex": 354788,
+          "laneIndex": 2,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "middle": {
+          "equalityId": 76,
+          "ownerIndex": 354788,
+          "laneIndex": 514,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "end": {
+          "equalityId": 77,
+          "ownerIndex": 354788,
+          "laneIndex": 1026,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "curve": [
+          {
+            "x": -9.896456,
+            "y": 617.696838,
+            "z": -2011.01514
+          },
+          {
+            "x": -4.592566,
+            "y": 617.696838,
+            "z": -2023.64856
+          },
+          {
+            "x": -0.167161942,
+            "y": 617.6969,
+            "z": -2036.59045
+          },
+          {
+            "x": 3.144125,
+            "y": 617.6969,
+            "z": -2049.585
+          }
+        ],
+        "owner": {
+          "index": 354788,
+          "version": 1
+        },
+        "track": {
+          "flags": "Exclusive, AllowMiddle",
+          "speedLimit": 88.88889,
+          "curviness": 0.00392889744,
+          "accessRestriction": {
+            "index": 0,
+            "version": 0
+          }
+        }
+      },
+      {
+        "index": 328201,
+        "version": 1,
+        "live": true,
+        "updated": false,
+        "created": false,
+        "prefab": {
+          "index": 16119,
+          "version": 1,
+          "netLaneFlags": "Utility"
+        },
+        "secondary": false,
+        "master": false,
+        "slave": false,
+        "edgeLane": {
+          "edgeDelta": [
+            0.0,
+            1.0
+          ],
+          "connectedStartCount": 0,
+          "connectedEndCount": 0
+        },
+        "start": {
+          "equalityId": 78,
+          "ownerIndex": 354788,
+          "laneIndex": 2049,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "middle": {
+          "equalityId": 79,
+          "ownerIndex": 354788,
+          "laneIndex": 2305,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "end": {
+          "equalityId": 80,
+          "ownerIndex": 354788,
+          "laneIndex": 2561,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "curve": [
+          {
+            "x": -10.6458874,
+            "y": 624.7989,
+            "z": -2000.1864
+          },
+          {
+            "x": -4.08339357,
+            "y": 623.808655,
+            "z": -2019.74438
+          },
+          {
+            "x": 2.47910023,
+            "y": 623.8086,
+            "z": -2039.30237
+          },
+          {
+            "x": 9.041594,
+            "y": 624.7988,
+            "z": -2058.86035
+          }
+        ],
+        "owner": {
+          "index": 354788,
+          "version": 1
+        }
+      },
+      {
+        "index": 328202,
+        "version": 1,
+        "live": true,
+        "updated": false,
+        "created": false,
+        "prefab": {
+          "index": 16119,
+          "version": 1,
+          "netLaneFlags": "Utility"
+        },
+        "secondary": false,
+        "master": false,
+        "slave": false,
+        "edgeLane": {
+          "edgeDelta": [
+            0.0,
+            1.0
+          ],
+          "connectedStartCount": 0,
+          "connectedEndCount": 0
+        },
+        "start": {
+          "equalityId": 81,
+          "ownerIndex": 354788,
+          "laneIndex": 2050,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "middle": {
+          "equalityId": 82,
+          "ownerIndex": 354788,
+          "laneIndex": 2306,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "end": {
+          "equalityId": 83,
+          "ownerIndex": 354788,
+          "laneIndex": 2562,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "curve": [
+          {
+            "x": -14.1203537,
+            "y": 624.7989,
+            "z": -2001.97156
+          },
+          {
+            "x": -7.68828964,
+            "y": 623.8293,
+            "z": -2021.12085
+          },
+          {
+            "x": -1.25622559,
+            "y": 623.8292,
+            "z": -2040.27014
+          },
+          {
+            "x": 5.175838,
+            "y": 624.7988,
+            "z": -2059.41943
+          }
+        ],
+        "owner": {
+          "index": 354788,
+          "version": 1
+        }
+      },
+      {
+        "index": 356323,
+        "version": 1,
+        "live": true,
+        "updated": false,
+        "created": false,
+        "prefab": {
+          "index": 16118,
+          "version": 1,
+          "netLaneFlags": "Utility"
+        },
+        "secondary": false,
+        "master": false,
+        "slave": false,
+        "edgeLane": {
+          "edgeDelta": [
+            0.0,
+            1.0
+          ],
+          "connectedStartCount": 0,
+          "connectedEndCount": 0
+        },
+        "start": {
+          "equalityId": 84,
+          "ownerIndex": 354788,
+          "laneIndex": 1281,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "middle": {
+          "equalityId": 85,
+          "ownerIndex": 354788,
+          "laneIndex": 1537,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "end": {
+          "equalityId": 86,
+          "ownerIndex": 354788,
+          "laneIndex": 1793,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "curve": [
+          {
+            "x": -10.6458874,
+            "y": 623.6819,
+            "z": -2000.1864
+          },
+          {
+            "x": -4.08339357,
+            "y": 623.599365,
+            "z": -2019.74438
+          },
+          {
+            "x": 2.47910023,
+            "y": 623.5993,
+            "z": -2039.30237
+          },
+          {
+            "x": 9.041594,
+            "y": 623.6818,
+            "z": -2058.86035
+          }
+        ],
+        "owner": {
+          "index": 354788,
+          "version": 1
+        }
+      },
+      {
+        "index": 356324,
+        "version": 1,
+        "live": true,
+        "updated": false,
+        "created": false,
+        "prefab": {
+          "index": 16118,
+          "version": 1,
+          "netLaneFlags": "Utility"
+        },
+        "secondary": false,
+        "master": false,
+        "slave": false,
+        "edgeLane": {
+          "edgeDelta": [
+            0.0,
+            1.0
+          ],
+          "connectedStartCount": 0,
+          "connectedEndCount": 0
+        },
+        "start": {
+          "equalityId": 87,
+          "ownerIndex": 354788,
+          "laneIndex": 1282,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "middle": {
+          "equalityId": 88,
+          "ownerIndex": 354788,
+          "laneIndex": 1538,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "end": {
+          "equalityId": 89,
+          "ownerIndex": 354788,
+          "laneIndex": 1794,
+          "curvePosition": 0.0,
+          "secondary": false
+        },
+        "curve": [
+          {
+            "x": -14.1203537,
+            "y": 623.6819,
+            "z": -2001.97156
+          },
+          {
+            "x": -7.68828964,
+            "y": 623.6011,
+            "z": -2021.12085
+          },
+          {
+            "x": -1.25622559,
+            "y": 623.601,
+            "z": -2040.27014
+          },
+          {
+            "x": 5.175838,
+            "y": 623.6818,
+            "z": -2059.41943
+          }
+        ],
+        "owner": {
+          "index": 354788,
+          "version": 1
+        }
+      },
+      {
+        "index": 52009,
+        "version": 1,
+        "live": true,
+        "updated": false,
+        "created": false,
+        "prefab": {
+          "index": 16120,
+          "version": 1,
+          "netLaneFlags": "Secondary, Utility"
+        },
+        "secondary": true,
+        "master": false,
+        "slave": false,
+        "start": {
+          "equalityId": 90,
+          "ownerIndex": 354788,
+          "laneIndex": 0,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "middle": {
+          "equalityId": 91,
+          "ownerIndex": 354788,
+          "laneIndex": 1,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "end": {
+          "equalityId": 92,
+          "ownerIndex": 354788,
+          "laneIndex": 2,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "curve": [
+          {
+            "x": -6.708391,
+            "y": 623.6423,
+            "z": -2011.92126
+          },
+          {
+            "x": -6.708391,
+            "y": 623.8694,
+            "z": -2011.92126
+          },
+          {
+            "x": -6.708391,
+            "y": 624.0965,
+            "z": -2011.92126
+          },
+          {
+            "x": -6.708391,
+            "y": 624.3236,
+            "z": -2011.92126
+          }
+        ],
+        "owner": {
+          "index": 354788,
+          "version": 1
+        }
+      },
+      {
+        "index": 52010,
+        "version": 1,
+        "live": true,
+        "updated": false,
+        "created": false,
+        "prefab": {
+          "index": 16120,
+          "version": 1,
+          "netLaneFlags": "Secondary, Utility"
+        },
+        "secondary": true,
+        "master": false,
+        "slave": false,
+        "start": {
+          "equalityId": 93,
+          "ownerIndex": 354788,
+          "laneIndex": 3,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "middle": {
+          "equalityId": 94,
+          "ownerIndex": 354788,
+          "laneIndex": 4,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "end": {
+          "equalityId": 95,
+          "ownerIndex": 354788,
+          "laneIndex": 5,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "curve": [
+          {
+            "x": -2.770895,
+            "y": 623.6225,
+            "z": -2023.65613
+          },
+          {
+            "x": -2.770895,
+            "y": 623.777,
+            "z": -2023.65613
+          },
+          {
+            "x": -2.770895,
+            "y": 623.931458,
+            "z": -2023.65613
+          },
+          {
+            "x": -2.770895,
+            "y": 624.085938,
+            "z": -2023.65613
+          }
+        ],
+        "owner": {
+          "index": 354788,
+          "version": 1
+        }
+      },
+      {
+        "index": 52011,
+        "version": 1,
+        "live": true,
+        "updated": false,
+        "created": false,
+        "prefab": {
+          "index": 16120,
+          "version": 1,
+          "netLaneFlags": "Secondary, Utility"
+        },
+        "secondary": true,
+        "master": false,
+        "slave": false,
+        "start": {
+          "equalityId": 96,
+          "ownerIndex": 354788,
+          "laneIndex": 6,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "middle": {
+          "equalityId": 97,
+          "ownerIndex": 354788,
+          "laneIndex": 7,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "end": {
+          "equalityId": 98,
+          "ownerIndex": 354788,
+          "laneIndex": 8,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "curve": [
+          {
+            "x": 1.16660178,
+            "y": 623.6224,
+            "z": -2035.39063
+          },
+          {
+            "x": 1.16660178,
+            "y": 623.776855,
+            "z": -2035.39063
+          },
+          {
+            "x": 1.16660178,
+            "y": 623.931335,
+            "z": -2035.39063
+          },
+          {
+            "x": 1.16660178,
+            "y": 624.0858,
+            "z": -2035.39063
+          }
+        ],
+        "owner": {
+          "index": 354788,
+          "version": 1
+        }
+      },
+      {
+        "index": 52012,
+        "version": 1,
+        "live": true,
+        "updated": false,
+        "created": false,
+        "prefab": {
+          "index": 16120,
+          "version": 1,
+          "netLaneFlags": "Secondary, Utility"
+        },
+        "secondary": true,
+        "master": false,
+        "slave": false,
+        "start": {
+          "equalityId": 99,
+          "ownerIndex": 354788,
+          "laneIndex": 9,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "middle": {
+          "equalityId": 100,
+          "ownerIndex": 354788,
+          "laneIndex": 10,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "end": {
+          "equalityId": 101,
+          "ownerIndex": 354788,
+          "laneIndex": 11,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "curve": [
+          {
+            "x": 5.104098,
+            "y": 623.6422,
+            "z": -2047.12561
+          },
+          {
+            "x": 5.104098,
+            "y": 623.8693,
+            "z": -2047.12561
+          },
+          {
+            "x": 5.104098,
+            "y": 624.0964,
+            "z": -2047.12561
+          },
+          {
+            "x": 5.104098,
+            "y": 624.3235,
+            "z": -2047.12561
+          }
+        ],
+        "owner": {
+          "index": 354788,
+          "version": 1
+        }
+      },
+      {
+        "index": 52013,
+        "version": 1,
+        "live": true,
+        "updated": false,
+        "created": false,
+        "prefab": {
+          "index": 16120,
+          "version": 1,
+          "netLaneFlags": "Secondary, Utility"
+        },
+        "secondary": true,
+        "master": false,
+        "slave": false,
+        "start": {
+          "equalityId": 102,
+          "ownerIndex": 354788,
+          "laneIndex": 12,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "middle": {
+          "equalityId": 103,
+          "ownerIndex": 354788,
+          "laneIndex": 13,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "end": {
+          "equalityId": 104,
+          "ownerIndex": 354788,
+          "laneIndex": 14,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "curve": [
+          {
+            "x": -10.261116,
+            "y": 623.6431,
+            "z": -2013.4613
+          },
+          {
+            "x": -10.261116,
+            "y": 623.8733,
+            "z": -2013.4613
+          },
+          {
+            "x": -10.261116,
+            "y": 624.1034,
+            "z": -2013.4613
+          },
+          {
+            "x": -10.261116,
+            "y": 624.333557,
+            "z": -2013.4613
+          }
+        ],
+        "owner": {
+          "index": 354788,
+          "version": 1
+        }
+      },
+      {
+        "index": 52014,
+        "version": 1,
+        "live": true,
+        "updated": false,
+        "created": false,
+        "prefab": {
+          "index": 16120,
+          "version": 1,
+          "netLaneFlags": "Secondary, Utility"
+        },
+        "secondary": true,
+        "master": false,
+        "slave": false,
+        "start": {
+          "equalityId": 105,
+          "ownerIndex": 354788,
+          "laneIndex": 15,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "middle": {
+          "equalityId": 106,
+          "ownerIndex": 354788,
+          "laneIndex": 16,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "end": {
+          "equalityId": 107,
+          "ownerIndex": 354788,
+          "laneIndex": 17,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "curve": [
+          {
+            "x": -6.4018774,
+            "y": 623.6238,
+            "z": -2024.95081
+          },
+          {
+            "x": -6.4018774,
+            "y": 623.7828,
+            "z": -2024.95081
+          },
+          {
+            "x": -6.4018774,
+            "y": 623.9418,
+            "z": -2024.95081
+          },
+          {
+            "x": -6.4018774,
+            "y": 624.100769,
+            "z": -2024.95081
+          }
+        ],
+        "owner": {
+          "index": 354788,
+          "version": 1
+        }
+      },
+      {
+        "index": 52015,
+        "version": 1,
+        "live": true,
+        "updated": false,
+        "created": false,
+        "prefab": {
+          "index": 16120,
+          "version": 1,
+          "netLaneFlags": "Secondary, Utility"
+        },
+        "secondary": true,
+        "master": false,
+        "slave": false,
+        "start": {
+          "equalityId": 108,
+          "ownerIndex": 354788,
+          "laneIndex": 18,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "middle": {
+          "equalityId": 109,
+          "ownerIndex": 354788,
+          "laneIndex": 19,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "end": {
+          "equalityId": 110,
+          "ownerIndex": 354788,
+          "laneIndex": 20,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "curve": [
+          {
+            "x": -2.5426383,
+            "y": 623.6236,
+            "z": -2036.44006
+          },
+          {
+            "x": -2.5426383,
+            "y": 623.782654,
+            "z": -2036.44006
+          },
+          {
+            "x": -2.5426383,
+            "y": 623.94165,
+            "z": -2036.44006
+          },
+          {
+            "x": -2.5426383,
+            "y": 624.1007,
+            "z": -2036.44006
+          }
+        ],
+        "owner": {
+          "index": 354788,
+          "version": 1
+        }
+      },
+      {
+        "index": 52016,
+        "version": 1,
+        "live": true,
+        "updated": false,
+        "created": false,
+        "prefab": {
+          "index": 16120,
+          "version": 1,
+          "netLaneFlags": "Secondary, Utility"
+        },
+        "secondary": true,
+        "master": false,
+        "slave": false,
+        "start": {
+          "equalityId": 111,
+          "ownerIndex": 354788,
+          "laneIndex": 21,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "middle": {
+          "equalityId": 112,
+          "ownerIndex": 354788,
+          "laneIndex": 22,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "end": {
+          "equalityId": 113,
+          "ownerIndex": 354788,
+          "laneIndex": 23,
+          "curvePosition": 0.0,
+          "secondary": true
+        },
+        "curve": [
+          {
+            "x": 1.3166,
+            "y": 623.643066,
+            "z": -2047.92993
+          },
+          {
+            "x": 1.3166,
+            "y": 623.873169,
+            "z": -2047.92993
+          },
+          {
+            "x": 1.3166,
+            "y": 624.103333,
+            "z": -2047.92993
+          },
+          {
+            "x": 1.3166,
+            "y": 624.333435,
+            "z": -2047.92993
+          }
+        ],
+        "owner": {
+          "index": 354788,
+          "version": 1
+        }
+      }
+    ],
+    "complete": true,
+    "errors": [],
+    "meaning": "Native local lane data, not proof of vehicle routing or completed rebuild. Matching equalityId values mean PathNode.Equals within this snapshot only. Owner indices lack entity versions."
+  },
+  "ok": true
+}

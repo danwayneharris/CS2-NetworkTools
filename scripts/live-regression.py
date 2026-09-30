@@ -81,7 +81,7 @@ class Runner:
         self.sequence = 0
         self.city_session = None
 
-    def call(self, command, args=None):
+    def route_provider(self, command, args=None):
         if command.startswith('nt_'):
             action = {'nt_get_state': 'state', 'nt_activate': 'activate', 'nt_clear': 'clear',
                       'nt_select': 'select', 'nt_strength': 'strength', 'nt_split': 'split', 'nt_apply': 'apply'}[command]
@@ -96,7 +96,10 @@ class Runner:
             args = {'provider': 'networktools', 'revision': self.provider_revision,
                     'command': action, 'args': args or {}}
             command = 'invoke_provider'
+        return command, args
 
+    def call(self, command, args=None):
+        command, args = self.route_provider(command, args)
         self.sequence += 1
         prefix = self.output / f'{self.sequence:03d}-{command}'
         prefix.with_suffix('.request.json').write_text(json.dumps(args or {}, indent=2))

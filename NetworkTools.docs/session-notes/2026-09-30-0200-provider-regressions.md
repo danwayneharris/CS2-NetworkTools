@@ -19,3 +19,13 @@ The split/interior suite is in progress. One-split rail reproduced 3.008 mm fixe
 junction-center drift, with directed connections and exact preview/Apply curves
 preserved; it remains a strict failure. Two-split rail passed. No geometry fix or
 tolerance change is being bundled into the transport sprint.
+
+## Offline replay migration
+
+Review found replay-regression.py still expected the removed flat nt_* transport,
+so it could not consume new generic-provider captures. Factored the consumer-owned
+routing into a shared method and used it for replay when the recorded envelope is
+generic. A completed road-four-way capture now replays all current assertions
+successfully without contacting the game. Eight runner guard tests still pass.
+Older captures without smoothMode cannot establish the new activation predicate;
+use their historical runner for historical evidence rather than assuming readiness.

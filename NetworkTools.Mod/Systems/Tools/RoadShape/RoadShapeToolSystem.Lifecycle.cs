@@ -104,6 +104,12 @@ namespace NetworkTools.Systems.Tools.RoadShape {
         protected override void OnStartRunning() {
             InvalidatePreviewObservation();
             base.OnStartRunning();
+#if IS_DEBUG
+            if (m_AutomationActivatePending) {
+                m_AutomationActivatePending = false;
+                Template.Value = ShapeTransformTemplate.CurveSmooth;
+            }
+#endif
 
             // Reset internal state
             m_LastHitPosition = default;

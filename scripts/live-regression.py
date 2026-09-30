@@ -208,7 +208,7 @@ class Runner:
             if z.testzip() is not None or not any(n.endswith('.SaveGameMetadata.cid') for n in z.namelist()):
                 raise RuntimeError('Checkpoint ZIP verification failed')
         self.call('nt_activate')
-        self.poll('nt_get_state', lambda s: s['active'])
+        self.poll('nt_get_state', lambda s: s['active'] and s.get('smoothMode', False))
         self.control('nt_clear')
         self.control('nt_strength', value=case.get('strengths', [0.5,0.8])[0])
         self.control('nt_select', start=start, end=end)

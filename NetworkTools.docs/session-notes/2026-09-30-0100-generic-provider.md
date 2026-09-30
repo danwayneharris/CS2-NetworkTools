@@ -39,3 +39,41 @@ verification. Live provider deployment and testing remain outstanding.
 Tooling policy: Python owns reusable transport/test orchestration. Keep PowerShell
 for Windows bootstrap and thin build/deployment entry points where it avoids a
 Python prerequisite. Do not maintain parallel implementations of regression logic.
+
+
+## Live deployment, failure and repair
+
+Full Debug build (postprocessor and UI included) passed. Initial bootstrap could
+not find Git on PATH; reused the existing cmder Git installation via process PATH.
+Reviewed and discarded only npm-generated optional-platform lockfile churn in this
+isolated worktree. The original NetworkTools worktree's user edits are untouched.
+
+Generic discovery found the provider and seven commands in the paused toy city.
+The first rail regression checkpointed successfully, then stopped before selection
+or Apply: active=true was insufficient because Smooth Curve mode was overwritten.
+Source: AutomationCommand set Template before OnStartRunning; the base lifecycle
+then called RestoreParameters. Added a pending activation flag consumed after base
+startup restoration, plus explicit smoothMode state and runner readiness checking.
+No geometry algorithm changed. The failed capture is retained.
+
+The first graceful restart failed reading session.json due to file sharing;
+the checkpoint had completed and the game was responsive. Fixed the narrow
+PowerShell lifecycle read to share read/write/delete, retry boundedly, and reject
+stale heartbeat. A subsequent unique checkpoint and graceful close succeeded.
+No force kill was used. Rebuilt/deployed and visibly relaunched the hash-verified
+original toy baseline; fresh process activation then succeeded.
+
+Successful capture: captures/provider-rail-merge-fixed-20260930/report.json.
+Strengths 0.5 and 0.8, checkpoint before mutations, fresh entity resolution,
+preview polling and permanent Apply inspection all passed. Three changed edges;
+three watched nodes retained directed connection identities (4/2/2), exact
+preview/permanent curve agreement, and no fixed-node drifts. Topology and elevation
+checks passed. Eight offline runner tests pass. Offline guards: high confidence for
+covered cases; native preview and permanent result: verified for this fixture only;
+vehicle traversal and human visual approval: not newly verified.
+
+Game left paused on baseline 'bridge test - rail smoothing breaks merge junction
+highway jank roads', with unsaved rail smoothing test changes after the preserved
+checkpoint CitiesIIAgentBridge-regression-rail-merge-20260930-084943-9e84f0c0.
+Original baseline save was never overwritten. The bridge's final capability-field
+cleanup was compiled but not deployed during this live session.

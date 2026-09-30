@@ -12,6 +12,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
     public partial class NT_RoadShapeToolSystem {
         private string m_AutomationSession;
         private int m_AutomationVerifiedSubmission;
+        private bool m_AutomationActivatePending;
 
         internal JObject AutomationState() {
             m_AutomationSession ??= Guid.NewGuid().ToString("N");
@@ -21,7 +22,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                 && m_AutomationVerifiedSubmission == m_SmoothTraceId && m_SmoothTraceId > 0;
             return new JObject {
                 ["apiVersion"] = 1, ["session"] = m_AutomationSession,
-                ["active"] = active, ["phase"] = Phase.ToString(),
+                ["active"] = active, ["smoothMode"] = Template.Value == ShapeTransformTemplate.CurveSmooth, ["phase"] = Phase.ToString(),
                 ["revision"] = m_PreviewInputRevision, ["submission"] = m_SmoothTraceId,
                 ["strength"] = SmoothingFactor.Value, ["previewReady"] = ready,
                 ["splitChoices"] = JArray.Parse(SplitChoicesJson()),
@@ -35,8 +36,11 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             if (action == "state") return AutomationState();
             if (action == "activate") {
                 if (Phase == OperationPhase.Applying) throw new InvalidOperationException("apply_in_progress");
+                // OnStartRunning restores persisted parameters. Apply the requested
+                // mode afterwards, or immediately if the tool is already running.
+                m_AutomationActivatePending = !(m_ToolSystem.activeTool == this && Enabled);
                 RequestEnable();
-                Template.Value = ShapeTransformTemplate.CurveSmooth;
+                if (!m_AutomationActivatePending) Template.Value = ShapeTransformTemplate.CurveSmooth;
                 return new JObject { ["accepted"] = true, ["state"] = AutomationState() };
             }
             var state = AutomationState();

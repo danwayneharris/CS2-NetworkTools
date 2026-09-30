@@ -46,3 +46,26 @@ main or alter protections to circumvent the rejection.
 No working-tree edits were discarded; no build, deployment or game action occurred.
 GitHub historical PR merge metadata will continue referencing the archived original
 commits even if the candidate histories are later published.
+
+## Completion after ruleset update
+
+Dan updated the repository rulesets. Publication rechecked both remote tips, exact
+tree equality and remote backup tags before explicit expected-SHA force-with-lease
+pushes. Both succeeded:
+
+- NetworkTools main: 9b1e61a790ca988cd2a91bc76b04e989c2c730b8
+- Bridge main: 11bd0e5a65756bde61978ab3bf3231e63683e4b8
+
+Local main refs equal origin/main and track the respective fork. Independent
+post-publication verification passed for all 14 checkpoint trees, single-parent
+commits, and full PR titles/descriptions including nested bridge PR 3. The first
+message comparison falsely failed because its verifier read UTF-8 JSON with the
+Windows default encoding; explicitly reading UTF-8 fixed the comparison. Published
+commit messages were correct and required no further rewrite.
+
+Upstream history and remote archive tags remain intact. Historical GitHub PR
+metadata retains the archived original merge IDs. Current development checkouts
+were not switched or rebased; user package-lock edits and Python cache remain
+untouched. Start future development from the new main rather than merging an old
+development branch into it. The user can re-enable Block force pushes in both
+repos. No protections were changed by the agent; no deployment/game actions ran.

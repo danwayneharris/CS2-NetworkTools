@@ -96,6 +96,7 @@ export const EMPTY_NET_PREFAB_DATA: NetPrefabData = {
 export type DistanceUnits = "Meters" | "Units";
 
 export const GAME_BINDINGS = {
+    SPLIT_CHOICES: new TwoWayBinding<string>("SPLIT_CHOICES", "[]"),
     UI_DATA: new TwoWayBinding<ToolUIData[]>("UI_DATA", []),
     SELECTED_ENTITIES: new TwoWayBinding<ToolSelectionData[]>("SELECTED_ENTITIES", []),
     SELECTED_PREFAB: new TwoWayBinding<string>("SELECTED_PREFAB", ""),
@@ -116,6 +117,9 @@ export const GAME_BINDINGS = {
 };
 
 export const GAME_TRIGGERS = {
+    SET_SPLIT_NODE: (index: number, version: number, enabled: boolean) => {
+        trigger(mod.id, "TRIGGER:SET_SPLIT_NODE", index, version, enabled);
+    },
     SELECT_TOOL: (tool: string) => {
         trigger(mod.id, "TRIGGER:SELECT_TOOL", tool);
     },

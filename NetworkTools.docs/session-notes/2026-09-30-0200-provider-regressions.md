@@ -63,3 +63,28 @@ visible and decide its practical policy separately; next feature semantics for
 junction-as-split and directional smoothing need maintainer input. Release/Burst,
 non-merging crossings and traversal remain separate coverage gaps. No broad
 refactoring or new geometry semantics were introduced in this sprint.
+
+## Final verification and handoff
+
+Ordinary rail merge also passed. Sprint total: 13 live cases, 11 strict passes and
+2 documented drift failures. All 13 completed preview/Apply and independent directed
+connection checks; the two failures remain failures, not waived exceptions.
+Final real MCP stdio discovery/state passed with the hardened external adapter.
+
+Game left paused, session 8609acff91e64baeb456b07bcbb6fbc9, on the primary highway-jank
+toy baseline after rail smoothing. Final changes were saved and package-verified as
+CitiesIIAgentBridge-provider-sprint-complete-20260930-091728-3cb2d913.cok.
+No unsaved test changes were made after that checkpoint. Both primary and slip
+baseline hashes still match their fixtures. No real city was loaded, no baseline
+was overwritten, no simulation interval was run and no force kill was used.
+
+Confidence: offline transport/recovery guards have direct executable coverage;
+live preview and permanent results have captured coverage for the 13 named cases;
+geometry outside these fixtures, Release/Burst execution, physical traversal and
+fresh human visual review are not established. Replaying the road capture offline
+passed. No new geometry feature or altered tolerance was introduced.
+
+Local branches only; no pushes, PRs, merges or configuration changes. The original
+NetworkTools worktree was not edited. The bridge's previously compiled capability
+metadata cleanup remains undeployed; this sprint's changes affect external Python,
+tests and documentation, not the running native provider implementation.

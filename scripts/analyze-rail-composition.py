@@ -15,7 +15,13 @@ def analyze(path):
     if not packet.get('ok'):
         raise ValueError('Failed snapshot request')
     snapshot = packet['result']
+    if 'topologyResolution' in snapshot:
+        if snapshot['topologyResolution']['status'] != 'resolved' or 'connectedSnapshot' not in snapshot:
+            raise ValueError('Missing or ambiguous connected preview junction')
+        snapshot = snapshot['connectedSnapshot']
     points = connect_positions(snapshot)
+    if len({p['edge']['index'] for p in points}) < 2:
+        raise ValueError('Requires at least two connected track arms; empty observation is not evidence')
     # Native grouping is unnecessary only for this restricted one-lane-per-direction case.
     for edge in {p['edge']['index'] for p in points}:
         for role in ('source', 'target'):

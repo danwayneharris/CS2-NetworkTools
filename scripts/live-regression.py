@@ -83,6 +83,21 @@ class Runner:
         self.city_session = None
 
     def call(self, command, args=None):
+        if command.startswith('nt_'):
+            action = {'nt_get_state': 'state', 'nt_activate': 'activate', 'nt_clear': 'clear',
+                      'nt_select': 'select', 'nt_strength': 'strength', 'nt_split': 'split', 'nt_apply': 'apply'}[command]
+            if not getattr(self, 'provider_revision', None):
+                catalog = self.call('list_providers')
+                if not catalog.get('complete'):
+                    raise RuntimeError('Provider discovery incomplete: ' + str(catalog.get('errors')))
+                matches = [p for p in catalog['providers'] if p['id'] == 'networktools']
+                if len(matches) != 1:
+                    raise RuntimeError('NetworkTools provider unavailable')
+                self.provider_revision = matches[0]['revision']
+            args = {'provider': 'networktools', 'revision': self.provider_revision,
+                    'command': action, 'args': args or {}}
+            command = 'invoke_provider'
+
         self.sequence += 1
         packet = subprocess.run(['powershell.exe', '-NoProfile', '-File',
             str(self.bridge / 'bridge.ps1'), '-Command', command,

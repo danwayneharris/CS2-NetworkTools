@@ -18,11 +18,17 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             var curves = new NativeArray<PlanarCubic>(edges.Length, Allocator.Temp);
             var output = new NativeArray<PlanarCubic>(edges.Length, Allocator.Temp);
             var stations = new NativeArray<double>(nodes.Length, Allocator.Temp);
+            var splits = new NativeArray<byte>(nodes.Length, Allocator.Temp);
+            var workNodes = new NativeArray<Point>(nodes.Length, Allocator.Temp);
+            var workCurves = new NativeArray<PlanarCubic>(edges.Length, Allocator.Temp);
+            var hasSplits = false;
             var valid = true;
             for (var i = 0; i < nodes.Length; i++) {
                 var p = nodes[i].OriginalPosition;
                 if (valid && !math.all(math.isfinite(p))) valid = PlanarPathTarget.Fail(SmoothFailure.NonFiniteNode, i, out failure, out failureIndex);
                 input[i] = new Point(p.x, p.z, nodes[i].SmoothPinned);
+                splits[i] = nodes[i].SmoothSplit ? (byte)1 : (byte)0;
+                hasSplits |= nodes[i].SmoothSplit;
                 for (var j = 0; j < i; j++) {
                     if (valid && nodes[j].Entity == nodes[i].Entity) valid = PlanarPathTarget.Fail(SmoothFailure.RepeatedNode, i, out failure, out failureIndex);
                 }
@@ -35,9 +41,13 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                     ? new PlanarCubic(Horizontal(c.a), Horizontal(c.b), Horizontal(c.c), Horizontal(c.d))
                     : new PlanarCubic(Horizontal(c.d), Horizontal(c.c), Horizontal(c.b), Horizontal(c.a));
             }
-            valid = valid && PlanarPathTarget.Fit((Point*)input.GetUnsafeReadOnlyPtr(),
+            valid = valid && (hasSplits ? PlanarSplitTarget.Fit((Point*)input.GetUnsafeReadOnlyPtr(),
+                (PlanarCubic*)curves.GetUnsafeReadOnlyPtr(), (byte*)splits.GetUnsafeReadOnlyPtr(), nodes.Length, strength,
+                (Point*)fitted.GetUnsafePtr(), (PlanarCubic*)output.GetUnsafePtr(),
+                (Point*)workNodes.GetUnsafePtr(), (PlanarCubic*)workCurves.GetUnsafePtr(), (double*)stations.GetUnsafePtr(),
+                out failure, out failureIndex, startRotation, endRotation) : PlanarPathTarget.Fit((Point*)input.GetUnsafeReadOnlyPtr(),
                 (PlanarCubic*)curves.GetUnsafeReadOnlyPtr(), nodes.Length, strength,
-                (Point*)fitted.GetUnsafePtr(), (PlanarCubic*)output.GetUnsafePtr(), (double*)stations.GetUnsafePtr(), out failure, out failureIndex, startRotation, endRotation);
+                (Point*)fitted.GetUnsafePtr(), (PlanarCubic*)output.GetUnsafePtr(), (double*)stations.GetUnsafePtr(), out failure, out failureIndex, startRotation, endRotation));
             // Validate float conversion before publishing any results.
             for (var i = 0; valid && i < nodes.Length; i++) {
                 valid &= math.all(math.isfinite(WithHorizontal(nodes[i].OriginalPosition, fitted[i])));
@@ -50,7 +60,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                     && math.all(math.isfinite(WithHorizontal(float3.zero, c.D)));
             }
             if (!valid && failure == SmoothFailure.None) failure = SmoothFailure.FloatOverflow;
-            if (valid && strength > 0) {
+            if (valid && (strength > 0 || hasSplits)) {
                 for (var i = 0; i < edges.Length; i++) {
                     var edge = edges[i]; var c = edge.Bezier; var target = output[i];
                     c.a = WithHorizontal(c.a, edge.IsForward ? target.A : target.D);
@@ -67,6 +77,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                 }
             }
             stations.Dispose(); output.Dispose(); curves.Dispose(); fitted.Dispose(); input.Dispose();
+            splits.Dispose(); workNodes.Dispose(); workCurves.Dispose();
             return valid;
         }
     }

@@ -1,0 +1,38 @@
+{
+  "case": "rail-two-splits",
+  "checkpoint": "CitiesIIAgentBridge-regression-rail-two-splits-20260929-084724-e9988fd0",
+  "changedEdges": [
+    [
+      354783,
+      1
+    ],
+    [
+      354792,
+      1
+    ],
+    [
+      355422,
+      1
+    ]
+  ],
+  "junctions": [
+    {
+      "connections": 4,
+      "rawConnectorPairsChanged": false,
+      "maxCurveError": 0.0
+    },
+    {
+      "connections": 2,
+      "rawConnectorPairsChanged": true,
+      "maxCurveError": 0.0
+    },
+    {
+      "connections": 2,
+      "rawConnectorPairsChanged": true,
+      "maxCurveError": 0.0
+    }
+  ],
+  "fixedNodeDrifts": [],
+  "limits": "Local snapshot checks; not vehicle traversal or visual approval.",
+  "passed": true
+}

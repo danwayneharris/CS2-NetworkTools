@@ -31,6 +31,7 @@
             SnapshotSplitNodes();
 #if IS_DEBUG
             ConfigureJunctionSearch(ref config);
+            ConfigureInteriorJunctions(ref config);
 #endif
             // The result is consumed by the UI only after this job completes.
             m_LastShapeJob.Complete();

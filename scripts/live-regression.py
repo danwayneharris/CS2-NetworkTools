@@ -10,7 +10,6 @@ import json
 import math
 import os
 from pathlib import Path
-import subprocess
 import time
 import importlib.util
 
@@ -99,19 +98,28 @@ class Runner:
             command = 'invoke_provider'
 
         self.sequence += 1
-        packet = subprocess.run(['powershell.exe', '-NoProfile', '-File',
-            str(self.bridge / 'bridge.ps1'), '-Command', command,
-            '-ArgsJson', json.dumps(args or {}, separators=(',', ':'))],
-            capture_output=True, text=True, timeout=55)
         prefix = self.output / f'{self.sequence:03d}-{command}'
         prefix.with_suffix('.request.json').write_text(json.dumps(args or {}, indent=2))
-        prefix.with_suffix('.txt').write_text(packet.stdout + packet.stderr)
-        if packet.returncode:
-            raise RuntimeError('Bridge failure; inspect original request, never blindly retry: ' + str(prefix))
-        response = json.loads(packet.stdout)
+        if not hasattr(self, 'client'):
+            client_path = self.bridge / 'adapter' / 'bridge_client.py'
+            spec = importlib.util.spec_from_file_location('cities_bridge_client', client_path)
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            self.client = module.Client(Path(os.environ['LOCALAPPDATA']) / 'CitiesIIAgentBridge',
+                                        self.output / 'intents')
+            self.transport_session = self.client.status()
+        # Pin both process and city before publication, including callers which
+        # supplied an expected city_session before their first request.
+        if self.city_session is not None and self.transport_session['citySession'] != self.city_session:
+            raise RuntimeError('City changed before regression request')
+        try:
+            response = self.client.call(command, args or {}, expected=self.transport_session)
+        except Exception as error:
+            prefix.with_suffix('.error.json').write_text(json.dumps({
+                'error': str(error), 'requestId': self.client.last_request,
+                'retryPolicy': 'Inspect original intent; never blindly retry a mutation.'}, indent=2))
+            raise
         prefix.with_suffix('.json').write_text(json.dumps(response, indent=2))
-        if not packet.stderr:
-            prefix.with_suffix('.txt').unlink()  # JSON retained; avoid duplicate successful captures.
         if self.city_session is None:
             self.city_session = response['citySession']
         if response['citySession'] != self.city_session:

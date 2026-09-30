@@ -3,6 +3,7 @@ import copy
 import importlib.util
 from pathlib import Path
 import unittest
+import tempfile
 
 spec = importlib.util.spec_from_file_location('runner', Path(__file__).with_name('live-regression.py'))
 runner = importlib.util.module_from_spec(spec)
@@ -56,5 +57,37 @@ class FixtureTests(unittest.TestCase):
         snapshot['owners'][0]['updated']=False
         edges[0]['curve'][1]['z']=0.01
         self.assertNotEqual(original,runner.permanent_signature([snapshot],self.nodes,edges))
+
+class TransportTests(unittest.TestCase):
+    def test_session_is_pinned_and_error_retains_request_id(self):
+        class FakeClient:
+            last_request = 'original-intent'
+            def call(self, command, args, *, expected):
+                self.expected = expected
+                raise RuntimeError('stale_session')
+        with tempfile.TemporaryDirectory() as folder:
+            r = runner.Runner.__new__(runner.Runner)
+            r.output = Path(folder)
+            r.sequence = 0
+            r.city_session = 'city-a'
+            r.transport_session = dict(session='process-a', citySession='city-a')
+            r.client = FakeClient()
+            with self.assertRaisesRegex(RuntimeError, 'stale_session'):
+                r.call('save_checkpoint', {'label': 'test'})
+            self.assertEqual(r.client.expected, r.transport_session)
+            import json
+            evidence = json.loads((r.output / '001-save_checkpoint.error.json').read_text())
+            self.assertEqual(evidence['requestId'], 'original-intent')
+
+    def test_requested_city_mismatch_never_calls_transport(self):
+        with tempfile.TemporaryDirectory() as folder:
+            r = runner.Runner.__new__(runner.Runner)
+            r.output = Path(folder)
+            r.sequence = 0
+            r.city_session = 'expected-city'
+            r.transport_session = dict(session='process-a', citySession='other-city')
+            r.client = object()  # No call method: reaching transport would fail.
+            with self.assertRaisesRegex(RuntimeError, 'City changed before'):
+                r.call('save_checkpoint')
 
 if __name__=='__main__': unittest.main()

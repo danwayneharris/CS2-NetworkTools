@@ -20,3 +20,22 @@ guards, mutation policy and discovery. Bridge compiles to non-deploying output a
 missing NuGet assets; explicit restore resolved it and Compile now passes. Six
 runner tests pass. Existing mailbox test run hit its net10 target with only SDK8
 installed; investigate an override before changing project policy. No live tests.
+
+## Persistent regression transport follow-up
+
+The live regression runner now imports the bridge's generic Python client instead
+of starting PowerShell for every query. NetworkTools command mapping stays in
+this repository. Both bridge process and city session are pinned before submission;
+caller-provided city expectations are checked before the first command as well.
+Failed requests retain the original intent ID and immutable packet for inspection,
+with no automatic mutation retry. Captured response JSON remains compatible with
+existing analysis; optional PowerShell journal events are not emitted by this path.
+
+Verification: eight offline runner tests pass, including presend city mismatch and
+request-ID retention on transport failure. Bridge adapter tests and actual stdio
+smoke pass separately. This is transport verification, not native preview/Apply
+verification. Live provider deployment and testing remain outstanding.
+
+Tooling policy: Python owns reusable transport/test orchestration. Keep PowerShell
+for Windows bootstrap and thin build/deployment entry points where it avoids a
+Python prerequisite. Do not maintain parallel implementations of regression logic.

@@ -77,3 +77,9 @@ highway jank roads', with unsaved rail smoothing test changes after the preserve
 checkpoint CitiesIIAgentBridge-regression-rail-merge-20260930-084943-9e84f0c0.
 Original baseline save was never overwritten. The bridge's final capability-field
 cleanup was compiled but not deployed during this live session.
+
+Final read-only check confirmed city session 9525cf0c9e75408493fa9349ef17c0cb,
+selectedSpeed=0, population=0 and controls enabled. Capture: provider-final-state-20260930.
+Next proposed sprint: harden generic provider/MCP lifecycle and failure recovery,
+then run existing rail/road/highway/slip/split/interior fixtures through the new
+boundary. Keep new geometry semantics and vehicle traversal outside this milestone.

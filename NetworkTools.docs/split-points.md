@@ -38,8 +38,8 @@ search rotations affect only the outer selection boundaries.
 UI and bridge mutations. Each change invalidates the preview. Job scheduling
 waits for the previous job before copying split flags to node-state inputs.
 
-The bridge `nt_split` request carries current tool session/revision, a live node
-identity and an enabled flag. `nt_get_state.splitChoices` supplies eligible
+The provider `split` command (through `invoke_provider`) carries current tool session/revision, a live node
+identity and an enabled flag. the provider `state.splitChoices` supplies eligible
 candidates. Apply still requires the current verified submission.
 
 ## Verification so far

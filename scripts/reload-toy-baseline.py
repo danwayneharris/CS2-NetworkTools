@@ -58,7 +58,16 @@ def main():
 $ErrorActionPreference='Stop'
 $mailbox=Join-Path $env:LOCALAPPDATA 'CitiesIIAgentBridge'
 if(Test-Path -LiteralPath (Join-Path $mailbox 'STOP')){throw 'STOP is present'}
-$session=Get-Content -LiteralPath (Join-Path $mailbox 'session.json') -Raw | ConvertFrom-Json
+$session=$null
+for($attempt=0;$attempt -lt 10;$attempt++) {
+    try {
+        $stream=[IO.FileStream]::new((Join-Path $mailbox 'session.json'),[IO.FileMode]::Open,[IO.FileAccess]::Read,([IO.FileShare]::ReadWrite -bor [IO.FileShare]::Delete))
+        $reader=[IO.StreamReader]::new($stream)
+        try {$session=$reader.ReadToEnd() | ConvertFrom-Json} finally {$reader.Dispose()}
+        break
+    } catch {if($attempt -eq 9){throw}; Start-Sleep -Milliseconds 50}
+}
+if(([DateTime]::UtcNow-[DateTime]::Parse($session.heartbeatUtc).ToUniversalTime()).TotalSeconds -gt 10){throw 'Stale heartbeat'}
 if($session.citySession -ne $env:NT_EXPECTED_CITY_SESSION){throw 'City changed before shutdown'}
 $games=@(Get-Process Cities2 -ErrorAction SilentlyContinue)
 if($games.Count -ne 1 -or $games[0].Id -ne $session.pid){throw 'Game process mismatch'}

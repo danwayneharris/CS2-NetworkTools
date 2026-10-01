@@ -1,0 +1,123 @@
+[
+  {
+    "fixture": "toy-highway-jank.json",
+    "case": "road-four-way-branch",
+    "exitCode": 0,
+    "report": {
+      "case": "road-four-way-branch",
+      "checkpoint": "CitiesIIAgentBridge-regression-road-four-way-branch-20260930-090230-291ce20f",
+      "changedEdges": [
+        [
+          351588,
+          1
+        ],
+        [
+          355244,
+          1
+        ],
+        [
+          355247,
+          1
+        ]
+      ],
+      "junctions": [
+        {
+          "connections": 4,
+          "rawConnectorPairsChanged": false,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 16,
+          "rawConnectorPairsChanged": false,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 4,
+          "rawConnectorPairsChanged": false,
+          "maxCurveError": 0.0
+        }
+      ],
+      "fixedNodeDrifts": [],
+      "limits": "Local snapshot checks; not vehicle traversal or visual approval.",
+      "passed": true
+    }
+  },
+  {
+    "fixture": "toy-highway-jank.json",
+    "case": "highway-on-ramp",
+    "exitCode": 0,
+    "report": {
+      "case": "highway-on-ramp",
+      "checkpoint": "CitiesIIAgentBridge-regression-highway-on-ramp-20260930-090332-3fc41a37",
+      "changedEdges": [
+        [
+          355855,
+          1
+        ],
+        [
+          355856,
+          1
+        ]
+      ],
+      "junctions": [
+        {
+          "connections": 1,
+          "rawConnectorPairsChanged": false,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 1,
+          "rawConnectorPairsChanged": false,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 5,
+          "rawConnectorPairsChanged": false,
+          "maxCurveError": 0.0
+        }
+      ],
+      "fixedNodeDrifts": [],
+      "limits": "Local snapshot checks; not vehicle traversal or visual approval.",
+      "passed": true
+    }
+  },
+  {
+    "fixture": "toy-highway-jank.json",
+    "case": "highway-off-ramp",
+    "exitCode": 0,
+    "report": {
+      "case": "highway-off-ramp",
+      "checkpoint": "CitiesIIAgentBridge-regression-highway-off-ramp-20260930-090433-0a06ca80",
+      "changedEdges": [
+        [
+          355853,
+          1
+        ],
+        [
+          355858,
+          1
+        ]
+      ],
+      "junctions": [
+        {
+          "connections": 1,
+          "rawConnectorPairsChanged": false,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 5,
+          "rawConnectorPairsChanged": false,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 1,
+          "rawConnectorPairsChanged": false,
+          "maxCurveError": 0.0
+        }
+      ],
+      "fixedNodeDrifts": [],
+      "limits": "Local snapshot checks; not vehicle traversal or visual approval.",
+      "passed": true
+    }
+  }
+]

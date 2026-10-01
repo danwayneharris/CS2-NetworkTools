@@ -10,7 +10,10 @@ split points. Release retains the previous interior-junction rejection.
 `PlanarJunctionTarget` delegates section fitting to `PlanarSplitTarget`, then
 restores the original junction attachment positions and adjusts incident handles.
 The current native search uses unit handle length and common planar rotations of
-both selected branches: 0, +1, -1, ... +15, -15 degrees. This preserves their
+both selected branches. A cold search tries 0, +1, -1, ... +15, -15 degrees.
+For unchanged original component copies, ordered node identities and split flags,
+it tries the last native-accepted angle first, then the remaining cold candidates
+without duplicates. This warm start is only a candidate hint, never cached approval. This preserves their
 relative angle while permitting their angles to an unselected branch to change.
 It does not reduce the requested smoothing strength. The pure fitter also exposes
 a separately tested 0.5?1.5 handle-length multiplier, currently unused by the search.
@@ -28,7 +31,10 @@ temporary junction. Three fresh matching observations are required for acceptanc
 Apply rechecks the original connection set and latest accepted submission.
 
 Only a resolved connection mismatch advances the bounded candidate search, after
-120 observations. Missing or ambiguous data rejects rather than guessing. A retry
+three identical complete observations across all interior junctions, including
+temporary node identities. Missing, ambiguous or stale observations reset that
+streak. Missing/ambiguous data retains a 120-observation rejection timeout rather
+than triggering a guessed repair. A retry
 is latched until a new correlated submission arrives. The native check uses a
 restricted connector representation; roundabouts and unsupported lane ownership
 remain rejected. The independent regression runner additionally checks physical
@@ -72,3 +78,27 @@ The highway path through both the on-merge and off-merge also passed preview at
 and unchanged physical lane mappings. Fixed-node, topology, elevation, unselected
 curve and preview/Apply checks passed. Three selected edges changed; the constrained
 single edge between the junctions remained unchanged.
+
+## Responsiveness checkpoint (September 30)
+
+The previously slow full-strength alternate rail branch is now a fixture in
+`scripts/fixtures/toy-interior-full-strength.json`. Run
+`scripts/benchmark-interior-preview.py` with that fixture, `--save-root`, a new
+`--output` and explicit `--run` for checkpointed preview-only measurements.
+The script verifies the baseline and directed lane connection sets, leaves permanent
+geometry unchanged, and never Applies. Native elapsed logs exclude mailbox latency.
+
+One live run measured 1336 ms for the initial 23-retry search, then 33-50 ms for
+five warm slider changes (0.8, 0.5, 1.0, 0.99, 1.0). All six previews preserved
+the original four rail-merge connections. A separate full-strength Apply retained
+the directed connections and matched preview curves exactly; topology, elevations
+and unselected edge curves passed. The strict result remains FAIL because a fixed
+node moved 0.02988 m against the existing 0.001 m tolerance. No tolerance was loosened.
+
+The initial search still exposes trial geometry and is perceptible. This change
+is not predictive fitting or atomic publication of only validated preview geometry.
+Warm starts favor a stable previously successful angle over re-minimizing angular
+change at each strength; the accepted angle can consequently depend on slider
+history. Native validation still runs at every revision. Visual approval, vehicle
+traversal and broad native road/highway regression of this latency change remain
+unverified. See [the experiment record](session-notes/2026-09-30-2200-interior-preview-latency.md).

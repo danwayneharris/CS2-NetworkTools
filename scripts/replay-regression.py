@@ -4,6 +4,7 @@ Strict command/argument ordering prevents accidentally replaying a different tes
 Local checkpoint packages are still read and verified by the underlying runner.
 """
 import argparse
+from collections import deque
 import importlib.util
 import json
 from pathlib import Path
@@ -15,11 +16,13 @@ regression=importlib.util.module_from_spec(spec);spec.loader.exec_module(regress
 class Replay(regression.Runner):
     def __init__(self,capture,output):
         super().__init__('.',output)
-        self.responses=iter(sorted(p for p in Path(capture).glob('[0-9]*-*.json')
+        self.responses=deque(sorted(p for p in Path(capture).glob('[0-9]*-*.json')
                                    if not p.name.endswith('.request.json')))
 
     def call(self,command,args=None):
-        path=next(self.responses)
+        if command.startswith('nt_') and not self.responses[0].stem.split('-',1)[1].startswith('nt_'):
+            command,args=self.route_provider(command,args)
+        path=self.responses.popleft()
         expected=path.stem.split('-',1)[1]
         recorded=json.loads(path.with_suffix('.request.json').read_text())
         if command!=expected or (args or {})!=recorded:

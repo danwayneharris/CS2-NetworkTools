@@ -1,6 +1,7 @@
 #if IS_DEBUG
 namespace NetworkTools.Systems.Tools.RoadShape {
     using System.Collections.Generic;
+    using NetworkTools.Geometry;
     using Game.Common;
     using Game.Net;
     using Game.Tools;
@@ -21,18 +22,26 @@ namespace NetworkTools.Systems.Tools.RoadShape {
         private int m_InteriorWaitFrames;
         private bool m_InteriorFailed;
         private bool m_InteriorAccepted;
-        private int m_InteriorAttempt;
+        private readonly JunctionCandidateSearch m_InteriorSearch = new();
+        private readonly StableSetObservation<(Entity, byte, PathNode, PathNode)> m_InteriorMismatch = new();
+        private readonly System.Diagnostics.Stopwatch m_InteriorElapsed = new();
+        private int m_InteriorAttempt => m_InteriorSearch.Attempt;
         private bool m_InteriorRetryPending;
         private double InteriorHandleScale => 1;
-        private double InteriorRotation => m_InteriorAttempt == 0 ? 0
-            : ((m_InteriorAttempt + 1) / 2) * (m_InteriorAttempt % 2 == 1 ? 1 : -1) * System.Math.PI / 180;
+        private double InteriorRotation => m_InteriorSearch.Degrees * System.Math.PI / 180;
 
         private void ConfigureInteriorJunctions(ref ShapeJobConfig config) {
             if (config.Template != ShapeTransformTemplate.CurveSmooth) return;
             if (m_InteriorRevision != m_PreviewInputRevision) {
                 m_InteriorRevision = m_PreviewInputRevision;
                 m_InteriorJunctions.Clear();
-                m_InteriorAttempt = 0;
+                var key = CaptureOriginalProbeInputs();
+                if (key != null) foreach (var node in m_NodeStates) {
+                    key.Add(node.Entity); key.Add(node.SmoothSplit); key.Add(node.SmoothPinned);
+                }
+                m_InteriorSearch.Reset(key, SmoothingFactor.Value == 0);
+                m_InteriorMismatch.Reset();
+                m_InteriorElapsed.Restart();
                 m_InteriorRetryPending = false;
                 m_InteriorFailed = false;
                 m_InteriorAccepted = false;
@@ -108,13 +117,14 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             if (m_InteriorFailed || m_InteriorRevision != m_PreviewInputRevision || m_InteriorJunctions.Count == 0) return;
             if (m_InteriorSubmission != submission) {
                 m_InteriorSubmission = submission;
+                m_InteriorMismatch.Reset();
                 m_InteriorRetryPending = false;
                 m_InteriorStableFrames = 0;
                 m_InteriorWaitFrames = 0;
                 m_InteriorAccepted = false;
             }
             if (m_InteriorRetryPending) return;
-            if (!fresh) { m_InteriorAccepted = false; m_InteriorStableFrames = 0; return; }
+            if (!fresh) { m_InteriorMismatch.Reset(); m_InteriorAccepted = false; m_InteriorStableFrames = 0; return; }
             if (!InteriorBaselineMatches()) { RejectInterior("baseline connections changed"); return; }
             var maps = new Dictionary<Entity, Entity>();
             var needed = new HashSet<Entity>();
@@ -133,6 +143,8 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                 }
             }
             if (maps.Count != needed.Count) { WaitInterior(); return; }
+            var observed = new HashSet<(Entity, byte, PathNode, PathNode)>();
+            var connectionMismatch = false;
             foreach (var junction in m_InteriorJunctions) {
                 HashSet<Entity> shared = null;
                 var owners = new Dictionary<int, Entity>();
@@ -158,27 +170,43 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                 if (!EntityManager.HasComponent<Temp>(candidate)) { WaitInterior(); return; }
                 var actual = ReadInteriorConnections(candidate, owners);
                 if (actual == null) { WaitInterior(); return; }
-                if (!junction.Required.SetEquals(actual)) { WaitInterior(true); return; }
+                // Include the temporary identity even for an empty set. A rebuilt node
+                // or changing connector set must restart the stability streak.
+                observed.Add((candidate, (byte)0, default, default));
+                foreach (var connection in actual) observed.Add((candidate, connection.Item1, connection.Item2, connection.Item3));
+                if (!junction.Required.SetEquals(actual)) connectionMismatch = true;
             }
+            if (connectionMismatch) {
+                m_InteriorAccepted = false; m_InteriorStableFrames = 0;
+                if (m_InteriorMismatch.Observe(observed)) AdvanceInteriorCandidate();
+                return;
+            }
+            m_InteriorMismatch.Reset();
+            m_InteriorWaitFrames = 0;
             if (++m_InteriorStableFrames >= 3) {
-                if (!m_InteriorAccepted) UnityEngine.Debug.Log($"[NetworkTools.InteriorJunction] accepted submission={submission} junctions={m_InteriorJunctions.Count} attempt={m_InteriorAttempt} handleScale={InteriorHandleScale} rotationDegrees={InteriorRotation * 180 / System.Math.PI}");
+                if (!m_InteriorAccepted) m_InteriorSearch.RememberAccepted();
+                if (!m_InteriorAccepted) UnityEngine.Debug.Log($"[NetworkTools.InteriorJunction] accepted submission={submission} junctions={m_InteriorJunctions.Count} attempt={m_InteriorAttempt} elapsedMs={m_InteriorElapsed.ElapsedMilliseconds} warmStart={m_InteriorSearch.WarmStart} handleScale={InteriorHandleScale} rotationDegrees={InteriorRotation * 180 / System.Math.PI}");
                 m_InteriorAccepted = true;
             }
         }
 
-        private void WaitInterior(bool connectionMismatch = false) {
+        private void WaitInterior() {
+            m_InteriorMismatch.Reset();
             m_InteriorAccepted = false; m_InteriorStableFrames = 0;
             if (++m_InteriorWaitFrames < 120) return;
-            // Only a resolved native connection mismatch can explore geometry.
-            // Missing or ambiguous observations must never trigger a guessed repair.
-            if (!connectionMismatch) { RejectInterior("missing or ambiguous native connections"); return; }
-            if (m_InteriorAttempt >= 30 || SmoothingFactor.Value == 0) {
+            // Missing/ambiguous data is not evidence that a different angle helps.
+            RejectInterior("missing or ambiguous native connections");
+        }
+
+        private void AdvanceInteriorCandidate() {
+            // Called only for three identical, fully resolved mismatching snapshots
+            // after the native modification barriers and input/curve correlation.
+            if (!m_InteriorSearch.Advance()) {
                 RejectInterior("no connection-preserving common rotation within +/-15 degrees"); return;
             }
-            ++m_InteriorAttempt;
             m_InteriorRetryPending = true;
             m_UpdateNeeded = true; // Same input revision, new correlated submission.
-            UnityEngine.Debug.Log($"[NetworkTools.InteriorJunction] retry attempt={m_InteriorAttempt} handleScale={InteriorHandleScale} rotationDegrees={InteriorRotation * 180 / System.Math.PI}");
+            UnityEngine.Debug.Log($"[NetworkTools.InteriorJunction] retry attempt={m_InteriorAttempt} elapsedMs={m_InteriorElapsed.ElapsedMilliseconds} warmStart={m_InteriorSearch.WarmStart} handleScale={InteriorHandleScale} rotationDegrees={InteriorRotation * 180 / System.Math.PI}");
         }
         private void RejectInterior(string reason) {
             m_InteriorFailed = true; m_InteriorAccepted = false;

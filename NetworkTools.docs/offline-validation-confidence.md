@@ -55,3 +55,16 @@ that the separate high-rail center drift cannot accumulate under repeated Apply.
   This establishes physical connectivity, not vehicle route availability.
 - Human visual and vehicle validation: pending for this build. Editor toolbar and
   mixed-prefab Parallel behavior are compiled/UI-type-checked, not native-tested.
+
+## October 1 offset-profile sprint: current acceptance and persistence
+
+The later user-authorized geometric tolerance is 5 cm. Earlier sections recording
+23.5183 mm as a failure describe the prior policy, not a current failed case.
+Functional connection/topology requirements remain independent of this tolerance.
+
+The offset-aware Constant Slope candidate passed offline math and native preview/Apply
+audits across the terrain matrix. Its final full-ramp checkpoint survived reload with
+exact geometry and normalized directed/physical lane mappings at all 37 shared nodes.
+These establish stronger numerical/integration/persistence confidence; they do not
+establish visual terrain quality, vehicle traversal or Release/Burst compatibility.
+See [review handoff](terrain-profile-review.md) for exact checkpoints and limitations.

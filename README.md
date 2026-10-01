@@ -51,3 +51,5 @@ The development diagnostics use our locally extended **Cities II Agent Bridge**;
 ordinary Network Tools use and builds do not require that mod. Follow
 [local bridge setup and checks](BOOTSTRAP.md#junction-development-dependencies).
 That guide also covers the `cs2-modding@csmodding` coding-agent plugin. Our bridge extension is maintained in [our fork](https://github.com/danwayneharris/cities2-agent-bridge-ndc), with further development reviewed through PRs there. Consult its current command documentation for supported diagnostics and controls.
+
+Latest experimental terrain/profile build: [visual-review handoff](NetworkTools.docs/terrain-profile-review.md).

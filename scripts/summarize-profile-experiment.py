@@ -11,6 +11,13 @@ def grade(c,t):
     distance=math.hypot(d[0],d[2])
     return 100*d[1]/distance if distance>1e-8 else None
 
+def grade_rate(c,t):
+    # d(dy/ds)/ds, expressed as percentage points per horizontal meter.
+    d=[3*((1-t)**2*(c[1][k]-c[0][k])+2*(1-t)*t*(c[2][k]-c[1][k])+t*t*(c[3][k]-c[2][k])) for k in ('x','y','z')]
+    dd=[6*((1-t)*(c[2][k]-2*c[1][k]+c[0][k])+t*(c[3][k]-2*c[2][k]+c[1][k])) for k in ('x','y','z')]
+    h2=d[0]*d[0]+d[2]*d[2]
+    return 100*(dd[1]/h2-d[1]*(d[0]*dd[0]+d[2]*dd[2])/(h2*h2)) if h2>1e-16 else None
+
 def oriented_edges(edges,path):
     byid={id(e):e for e in edges};selected=[byid[id(e)] for e in path['edges']]
     if len(selected)<2:raise ValueError('At least two path edges required for orientation')
@@ -30,8 +37,12 @@ def summarize(edges):
     rows=m['metrics'](edges)
     for i,(row,e) in enumerate(zip(rows,edges)):
         row['startGrade']=grade(e['curve'],0);row['endGrade']=grade(e['curve'],1)
+        row['startGradeRate']=grade_rate(e['curve'],0);row['endGradeRate']=grade_rate(e['curve'],1)
+        rates=[grade_rate(e['curve'],j/100) for j in range(101)]
+        row['sampledMaxAbsGradeRate']=max(abs(x) for x in rates if x is not None)
         if i:
             row['joinGradeJump']=row['startGrade']-rows[i-1]['endGrade']
+            row['joinGradeRateJump']=row['startGradeRate']-rows[i-1]['endGradeRate']
             row['joinHeightGap']=e['curve'][0]['y']-edges[i-1]['curve'][-1]['y']
     return rows
 

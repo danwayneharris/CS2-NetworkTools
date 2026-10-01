@@ -15,3 +15,12 @@ why the original global DeployDir argument was ineffective.
 Read the final aggregate summary and Release build log. Aggregate revision probes
 reported missing Git, now explicitly noted as a provenance limitation. This task
 only updated docs; it ran no build/game operations and makes no new live claims.
+
+## Successor pointers
+
+Added short October 1 status banners to geometry, freshness, lifecycle, UI-control,
+saved-priorities and debugging-plugin pages. The original analyses remain intact;
+banners identify implemented successors and distinguish provider reachability from
+UI behavior and native completion proof. Corrected stale ?current? headings for
+the single-target fit and September 28 freshness proposal. No runtime claims or
+additional native-result rows were introduced.

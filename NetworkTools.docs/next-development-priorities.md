@@ -1,3 +1,10 @@
+**Historical plan; successor status October 1:** the generic-provider separation
+and Python/MCP work have since been implemented in their respective products.
+The saved response below is not the current task list. Use [audit disposition](audit-disposition.md)
+for this correctness sprint, [provider contract](automation-provider.md) for the
+integration boundary, and [Smooth Curve plan](smooth-curve-plan.md) for remaining
+product decisions. Broad bridge roadmap work remains independently prioritized.
+
 ﻿# Next development priorities
 
 Saved 2026-09-30 at Dan's request. The first section preserves the previous planning

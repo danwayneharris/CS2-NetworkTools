@@ -1,3 +1,13 @@
+# Debugging-plugin recommendation (historical)
+
+**Status update October 1:** the installation/connection investigation has moved
+to the bridge's setup documentation; the original ?add now? and machine-state
+statements below are historical. Consult [bootstrap guidance](../BOOTSTRAP.md)
+and the bridge's current instructions before changing an installation. Connection
+or type-discovery success does not establish UI interaction or geometry behavior.
+The suggested UI-plus-bridge comparison remains useful future test work; see
+[audit disposition](audit-disposition.md). Do not reinstall from this old recommendation.
+
 ﻿**Yes—Gameface first, Unity Devtools as a second step.** They fill gaps in our current workflow.
 
 | Tool | Value for us | Recommendation |

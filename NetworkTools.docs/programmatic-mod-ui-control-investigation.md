@@ -1,3 +1,12 @@
+**Historical investigation; successor status October 1:** NetworkTools now owns
+its optional typed automation provider; the bridge hosts a generic provider
+protocol rather than NetworkTools-specific bindings. See [provider contract](automation-provider.md),
+[current architecture](system-architecture.md) and [audit disposition](audit-disposition.md).
+This resolves the need for a proposed NT-specific bridge adapter. It does not mean
+arbitrary third-party mod UI controls are automatically supported, or that backend
+provider tests exercise actual React/Gameface controls. Preserve the binding
+research below as background rather than a pending migration plan.
+
 ﻿# Programmatic control of code-mod UI through the agent bridge
 
 Research date: 2026-09-28. Documentation only; no live commands, UI attachment, builds, process changes, settings changes or mod edits.

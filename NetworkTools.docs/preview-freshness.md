@@ -1,12 +1,22 @@
 # Preview freshness: observation versus acceptance
 
+**Status update (October 1 audit sprint):** this page preserves the September 28
+investigation. Revisions/submission identities, original-input comparisons and
+post-barrier native observations are now implemented; the audit sprint ties the
+cached fit inputs to that same baseline and shares applicable Apply checks.
+Supported Debug junctions are no longer universally rejected. Read the
+[current architecture](system-architecture.md#audit-sprint-ownership-and-apply-checks-october-1-verification-in-progress)
+and [audit disposition](audit-disposition.md) before treating proposals below as
+unfinished work. The remaining warning stands: repeated observations, a frame
+count, or a matching entity ID do not establish a universal native completion fence.
+
 The live 0.5 and 0.8 captures resolve the same temporary junction `54484:25`
 in the same city session, despite a 4.74 m change in an incident curve's controls.
 Entity identity is not a preview revision. Both captures contain four directed
 rail connectors; the user-applied 0.8 result matches preview exactly at serialized
 precision. Evidence: session notes `2026-09-28-0747.md` and its captures.
 
-## Current implementation
+## Implementation at the September 28 checkpoint
 
 `RoadShapeToolSystem.JobMethods.cs`, `SchedulePathTransformJob`, waits for the
 previous shape job and resets the fit result before scheduling another job.
@@ -19,7 +29,7 @@ transformation. It does not promote the captured temporary entities. Any future
 native-connectivity verdict must therefore be checked again at execution time,
 against the same original network inputs and settings used for Apply.
 
-## Proposed contract, not implemented runtime behavior
+## Proposed contract at that checkpoint
 
 1. Give each tool activation a session identity and each relevant input change a
    monotonically increasing revision. Invalidate immediately on selection,

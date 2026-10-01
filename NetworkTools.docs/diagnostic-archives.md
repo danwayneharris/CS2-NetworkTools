@@ -73,3 +73,27 @@ also remain on disk but are ignored.
 
 These older files already exist in main's history. This commit cleans the checkout;
 it does not shrink historical Git objects. No main history rewrite is performed.
+
+## Deferred housekeeping: remove archived captures from Git history
+
+The maintainer wants to revisit a history rewrite to reclaim the raw-capture bloat
+already present in historical commits. This is explicitly non-urgent; the current
+cleanup removes files from the tracked tree but does not purge historical objects.
+No history rewrite is authorized by this reminder alone.
+
+When prioritizing this work:
+
+- Measure reachable historical capture blobs and actual clone size first.
+- Reverify the diagnostic release ZIPs and checksums; retain an independent offline
+  repository backup before rewriting. Do not rely solely on the refs being rewritten.
+- Inventory branches, tags, archived sprint refs and open PR dependencies. Keeping
+  old history reachable under archive refs in the same repository can retain the
+  very objects we intend to remove; decide which archives should live outside Git.
+- Scope filtering to archived raw captures while preserving source, session notes,
+  curated reports and test inputs. Dry-run in an isolated clone and compare final
+  trees and offline test results before updating any shared refs.
+- Coordinate force updates, branch protection, stale clones/worktrees and changed
+  commit links. GitHub PR refs/server retention may affect when space is reclaimed;
+  verify actual results rather than assuming a force-push immediately shrinks storage.
+
+Keep this separate from terrain, slope and gameplay development priorities.

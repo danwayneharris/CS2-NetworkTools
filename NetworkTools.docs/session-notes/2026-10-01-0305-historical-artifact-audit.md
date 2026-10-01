@@ -29,3 +29,8 @@ instead of thousands of subprocesses; full archive creation/verification passed.
 See [archive index](../diagnostic-archives.md). Earlier raw files already in main
 remain in its historical objects; reclaiming those would require separate explicit
 history-rewrite work, which was not done here.
+
+The maintainer requested a non-urgent follow-up to reclaim historical Git bloat.
+Recorded a deferred history-rewrite checklist in diagnostic-archives.md, including
+independent backups, archive verification, ref inventory, dry-run validation and
+coordination. No history rewrite or force-push performed.

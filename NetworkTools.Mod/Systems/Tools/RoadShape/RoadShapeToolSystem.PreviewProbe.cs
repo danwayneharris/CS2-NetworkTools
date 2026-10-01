@@ -33,7 +33,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
         }
 
         internal void ObservePreviewAfterRebuild() {
-            if (!Enabled || Phase != OperationPhase.Ready || Template.Value != ShapeTransformTemplate.CurveSmooth) {
+            if (!Enabled || Phase != OperationPhase.Ready || (Template.Value != ShapeTransformTemplate.CurveSmooth && !AutomationSlope)) {
                 m_LastProbeMessage = null;
                 return;
             }
@@ -92,6 +92,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
     public partial class NT_PreviewProbeSystem : GameSystemBase {
         protected override void OnUpdate() {
             World.GetExistingSystemManaged<NT_RoadShapeToolSystem>()?.ObservePreviewAfterRebuild();
+            World.GetExistingSystemManaged<NetworkTools.Systems.Tools.Connect.NT_ConnectToolSystem>()?.ObserveAutomationPreview();
         }
     }
 }

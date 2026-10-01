@@ -23,7 +23,34 @@ namespace CitiesBridge {
                     ["description"] = "Smooth Curve " + action + ". Requires a loaded paused city. Changes require local controls. Apply acceptance is not completion; verify permanent geometry independently.",
                     ["inputSchema"] = Obj(props, required.ToArray()), ["outputSchema"] = new JObject { ["type"] = "object" } });
             }
-            return new JObject { ["protocol"] = 1, ["id"] = "networktools", ["version"] = "1.0.0",
+            foreach (var tool in new[] { "slope", "connect" }) {
+                foreach (var action in new[] { "state", "activate", "clear", "select", "configure", "apply" }) {
+                    var props = new JObject();
+                    var required = new System.Collections.Generic.List<string>();
+                    void Add(string key, JObject schema) { props[key] = schema; required.Add(key); }
+                    JObject Number(double min, double max) => new JObject { ["type"] = "number", ["minimum"] = min, ["maximum"] = max };
+                    if (action != "state" && action != "activate") {
+                        Add("session", new JObject { ["type"] = "string" }); Add("revision", Integer());
+                    }
+                    if (action == "select") { Add("start", Node()); Add("end", Node()); }
+                    if (action == "apply") Add("submission", Integer());
+                    if (action == "configure" && tool == "slope") {
+                        Add("mode", new JObject { ["type"] = "string", ["enum"] = new JArray("linear", "ease", "arch") });
+                        Add("easeIn", Number(0,.5)); Add("easeOut", Number(0,.5));
+                        Add("archHeight", Number(-80,80)); Add("archPosition", Number(.1,.9));
+                        Add("smoothStart", new JObject { ["type"] = "boolean" }); Add("smoothEnd", new JObject { ["type"] = "boolean" });
+                    }
+                    if (action == "configure" && tool == "connect") {
+                        JObject Point() => new JObject { ["type"] = "array", ["minItems"] = 3, ["maxItems"] = 3,
+                            ["items"] = Number(-100000,100000) };
+                        Add("startControl", Point()); Add("endControl", Point());
+                    }
+                    commands.Add(new JObject { ["name"] = tool + "_" + action, ["readOnly"] = action == "state",
+                        ["description"] = tool + " " + action + ". Paused city and local controls required. Connect initially supports SimpleCurve between matching dead ends. Apply requires current observed preview; independently inspect permanent results.",
+                        ["inputSchema"] = Obj(props, required.ToArray()), ["outputSchema"] = new JObject { ["type"] = "object" } });
+                }
+            }
+            return new JObject { ["protocol"] = 1, ["id"] = "networktools", ["version"] = "1.1.0",
                 ["commands"] = commands }.ToString(Newtonsoft.Json.Formatting.None);
         }
         public static string InvokeV1(string command, string argumentsJson, string contextJson) {

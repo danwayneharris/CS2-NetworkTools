@@ -1,4 +1,4 @@
-﻿namespace NetworkTools.Systems.Tools.RoadShape {
+namespace NetworkTools.Systems.Tools.RoadShape {
     using Colossal.Entities;
 
     using Game.Common;
@@ -37,8 +37,7 @@
             m_LastShapeJob.Complete();
 #if IS_DEBUG
             m_SubmittedPreviewRevision = m_PreviewInputRevision;
-            m_SubmittedOriginalInputs = config.Template == ShapeTransformTemplate.CurveSmooth
-                && outputMode == ToolOutputMode.Preview ? CaptureOriginalProbeInputs() : null;
+            m_SubmittedOriginalInputs = outputMode == ToolOutputMode.Preview ? CaptureOriginalProbeInputs() : null;
 #endif
             m_SmoothResult.Value = 0;
             m_Log.Debug($"SchedulePathTransformJob: Template={config.Template}, EaseIn={config.EaseInLength:F3}, EaseOut={config.EaseOutLength:F3}");

@@ -107,7 +107,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
 #if IS_DEBUG
             if (m_AutomationActivatePending) {
                 m_AutomationActivatePending = false;
-                Template.Value = ShapeTransformTemplate.CurveSmooth;
+                Template.Value = m_AutomationRequestedTemplate;
             }
 #endif
 

@@ -1,4 +1,4 @@
-﻿namespace NetworkTools.Systems.Tools.RoadShape {
+namespace NetworkTools.Systems.Tools.RoadShape {
     using Colossal.Mathematics;
     using Game.Common;
     using Game.Net;
@@ -98,6 +98,10 @@
                         break;
                 }
 
+#if IS_DEBUG
+                if (Config.Template != ShapeTransformTemplate.CurveSmooth)
+                    CapturePreviewProbe(SmoothTraceId, OutputMode, true, edges);
+#endif
                 // 3. Write slope metadata to edge entities (preview only — Apply resets the tool
                 //    immediately, so ECB additions would outlive the tool session).
                 if (OutputMode == ToolOutputMode.Preview) {

@@ -8,13 +8,75 @@ m=runpy.run_path(str(Path(__file__).with_name('live-regression.py')))
 TOLERANCE=m['GEOMETRY_TOLERANCE_METERS']
 verified=runpy.run_path(str(Path(__file__).with_name('reload-toy-baseline.py')))['verified_package']
 def connect_preview_error(state, new_edges):
- curves=[v for v in state['previewObservation'] if isinstance(v,dict) and all(k in v for k in ('a','b','c','d'))]
- if not curves or not new_edges:raise ValueError('Missing native preview/permanent curves')
- errors=[]
- for edge in new_edges:
-  points=[m['position'](p) for p in edge['curve']]
-  errors.append(min(min(max(math.dist(p,c[k]) for p,k in zip(points,order)) for order in ('abcd','dcba')) for c in curves))
- return max(errors)
+ """Minimum worst control-point error over a bijection, allowing edge reversal.
+
+ A nearest-neighbor comparison can reuse one preview edge and silently omit another.
+ Thresholded bipartite matching covers every preview and permanent edge exactly once.
+ """
+ curves=[];original=None
+ # ReadControlPreview emits entity, Temp, Edge, cubic, prefab, then lane IDs.
+ # Existing-edge preview rows are checked separately by preservation assertions.
+ for value in state['previewObservation']:
+  if not isinstance(value,dict):continue
+  if 'm_Original' in value:
+   if original is not None:raise ValueError('Preview Temp without cubic')
+   original=value['m_Original']
+   if not isinstance(original,dict) or not all(k in original for k in ('Index','Version')):raise ValueError('Missing preview original identity')
+  if any(k in value for k in ('a','b','c','d')):
+   if original is None:raise ValueError('Preview cubic without Temp identity')
+   if original['Index']==0 and original['Version']==0:curves.append(value)
+   original=None
+ if original is not None:raise ValueError('Preview Temp without cubic')
+ if not curves or len(curves)!=len(new_edges):raise ValueError('Preview/permanent curve count mismatch')
+ ids=[m['identity'](edge) for edge in new_edges]
+ if len(set(ids))!=len(ids):raise ValueError('Duplicate permanent edge identity')
+ def points(curve):
+  if len(curve)!=4:raise ValueError('Expected four cubic controls')
+  values=[m['position'](p) if isinstance(p,dict) else p for p in curve]
+  if any(len(p)!=3 or any(not math.isfinite(v) for v in p) for p in values):raise ValueError('Invalid cubic control')
+  return values
+ previews=[points([c[k] for k in 'abcd']) for c in curves]
+ actual=[points(edge['curve']) for edge in new_edges]
+ errors=[[min(max(math.dist(p,q) for p,q in zip(edge,order)) for order in (curve,list(reversed(curve)))) for curve in previews] for edge in actual]
+ def matches(limit):
+  owners={}
+  def assign(i,seen):
+   for j,error in enumerate(errors[i]):
+    if error>limit or j in seen:continue
+    seen.add(j)
+    if j not in owners or assign(owners[j],seen):
+     owners[j]=i;return True
+   return False
+  return all(assign(i,set()) for i in range(len(actual)))
+ limits=sorted(set(v for row in errors for v in row));low,high=0,len(limits)-1
+ while low<high:
+  mid=(low+high)//2
+  if matches(limits[mid]):high=mid
+  else:low=mid+1
+ return limits[low]
+
+
+def connect_preservation(ns, es, an, ae):
+ """Connect adds entities; all existing identities, topology and geometry survive."""
+ def unique(rows):
+  result={m['identity'](row):row for row in rows}
+  if len(result)!=len(rows):raise ValueError('Duplicate network entity identity')
+  return result
+ oldnodes,newnodes=unique(ns),unique(an);old,new=unique(es),unique(ae)
+ def close(a,b):
+  distance=math.dist(m['position'](a),m['position'](b))
+  return math.isfinite(distance) and distance<=TOLERANCE
+ edges=all(key in new and all(e[k]==new[key][k] for k in ('prefab','startNode','endNode')) and len(e['curve'])==len(new[key]['curve'])==4 and all(close(p,q) for p,q in zip(e['curve'],new[key]['curve'])) for key,e in old.items())
+ nodes=all(key in newnodes and close(n['position'],newnodes[key]['position']) for key,n in oldnodes.items())
+ return {'unchangedExistingEdges':edges,'unchangedExistingNodes':nodes}
+
+
+def assert_connect_report(report):
+ flags=('connected','prefabInherited','unchangedExistingEdges','unchangedExistingNodes')
+ error=report['previewApplyMaxError']
+ if any(report.get(k) is not True for k in flags) or not report['newEdges'] or not math.isfinite(error) or error>TOLERANCE:
+  raise AssertionError('Connect preservation or preview/permanent verification failed')
+
 
 def preview_curves_to_rows(curves):
  return [{'edge':key,'curve':curve} for key,curve in curves.items()]
@@ -99,11 +161,11 @@ def main():
   if len(source)!=1:raise AssertionError('Expected one source edge')
   report['expectedPrefab']=source[0]['prefab']
   report['prefabInherited']=all(e['prefab']==source[0]['prefab'] for key,e in new.items() if key not in old)
-  report['unchangedExistingEdges']=all(key in new and all(e[k]==new[key][k] for k in ('curve','prefab','startNode','endNode')) for key,e in old.items())
+  report.update(connect_preservation(ns,es,an,ae))
   report['connected']=trace['connected'];report['newEdges']=[key for key in new if key not in old]
   report['previewApplyMaxError']=connect_preview_error(final,[new[key] for key in report['newEdges']])
  (r.output/'report.json').write_text(json.dumps(report,indent=2));print(json.dumps(report,indent=2))
  if a.stage=='slope' and (not report['sameTopology'] or report['previewApplyMaxError']>TOLERANCE or report['incidentPreviewApplyMaxError']>TOLERANCE or report['nodeHorizontalMaxError']>TOLERANCE or report['fixedEndpointMaxError']>TOLERANCE or not report['directedConnectionsPreserved'] or not report['physicalLaneMappingPreserved']):raise AssertionError('Slope verification failed')
- if a.stage=='connect' and (not report['connected'] or not report['prefabInherited'] or not report['newEdges'] or report['previewApplyMaxError']>TOLERANCE):raise AssertionError('Connect permanent topology failed')
+ if a.stage=='connect':assert_connect_report(report)
 if __name__=='__main__':main()
 

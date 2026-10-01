@@ -44,7 +44,32 @@ Python verification then checks every contained file. Extract separately to avoi
 overwriting working captures. No game or save is needed to inspect this evidence.
 
 For future archives, `scripts/archive-diagnostic-captures.py --base <base> --ref
-<source> --output <new.zip>` packages newly added committed captures. It never
+<source> --output <new.zip>` packages newly added committed captures. Use `--all-tracked` to include every tracked capture at the source revision. It never
 removes files. Untracked future runs under artifacts need their own explicit
 packaging step; this helper does not silently include them. Verify uploads before
 any cleanup. Squash-merge the cleaned PR to keep raw capture commits out of main.
+
+## Historical capture audit ? 2026-10-01
+
+The same [diagnostic release](https://github.com/danwayneharris/CS2-NetworkTools/releases/tag/diagnostics-terrain-pr12-20261001)
+also contains `historical-captures-20261001.zip` (8,069,466 bytes).
+SHA-256: `13023e9856ee130d829a3fbf840ed790ecdf6d6cd5d2003685c5f8f3caf1d1d6`.
+Its manifest covers all 5,485 tracked captures at source commit
+`77782cc736e13278c5d19db5961a6e85a2bbcf0d`. It includes the 41 curated terrain
+captures; use the first archive for that sprint's complete raw runs.
+
+This follow-up removes 5,371 older raw files from tracking while retaining 114
+captures: direct regression inputs plus reports and the previous terrain curation.
+See [the retention list](../scripts/fixtures/retained-diagnostic-captures.json) for
+all retained paths and the 36 inputs used directly by Python tests. Inputs stay at
+their existing paths; test behavior is unchanged. Curated explanatory plots,
+geometry fixtures, scripts, session notes, assets, UI type definitions and package
+lockfiles remain source-controlled. No vendored dependency or submodule was changed.
+
+Historical session notes can refer to files now in this ZIP. Extract to a separate
+directory; their paths are relative to the archive root. Both archives retain
+failures and intermediate attempts, not just passing results. Local original files
+also remain on disk but are ignored.
+
+These older files already exist in main's history. This commit cleans the checkout;
+it does not shrink historical Git objects. No main history rewrite is performed.

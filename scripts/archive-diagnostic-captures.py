@@ -1,4 +1,4 @@
-"""Archive newly added capture files at a Git revision, retaining per-file hashes.
+"""Archive committed capture files at a Git revision, retaining per-file hashes.
 
 Run from the repository root. No files are removed or Git refs changed.
 """
@@ -30,6 +30,7 @@ def main():
     parser.add_argument('--base', default='origin/main')
     parser.add_argument('--ref', default='HEAD')
     parser.add_argument('--output', type=Path)
+    parser.add_argument('--all-tracked', action='store_true', help='Include all captures at the source revision, not just additions')
     parser.add_argument('--verify', type=Path)
     args = parser.parse_args()
     if args.verify:
@@ -43,18 +44,29 @@ def main():
     revision = git('rev-parse', args.ref).decode().strip()
     base = git('rev-parse', args.base).decode().strip()
     prefix = 'NetworkTools.docs/session-notes/captures/'
-    names = git('diff', '--diff-filter=A', '--name-only', '-z', f'{base}...{revision}').decode().split('\0')
+    names = (git('ls-tree', '-r', '--name-only', '-z', revision) if args.all_tracked else
+             git('diff', '--diff-filter=A', '--name-only', '-z', f'{base}...{revision}')).decode().split('\0')
     names = sorted(name for name in names if name.startswith(prefix))
     if not names:
         raise ValueError('No newly added captures at selected revision')
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    manifest = {'sourceCommit': revision, 'baseCommit': base, 'files': []}
-    with zipfile.ZipFile(args.output, 'x', compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
+    manifest = {'sourceCommit': revision, 'baseCommit': base, 'scope': 'all-tracked' if args.all_tracked else 'new-additions', 'files': []}
+    with subprocess.Popen([args.git, 'cat-file', '--batch'], stdin=subprocess.PIPE, stdout=subprocess.PIPE) as batch, \
+            zipfile.ZipFile(args.output, 'x', compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
         for name in names:
-            data = git('show', f'{revision}:{name}')
+            batch.stdin.write(f'{revision}:{name}\n'.encode())
+            batch.stdin.flush()
+            header = batch.stdout.readline().split()
+            if len(header) != 3 or header[1] != b'blob':
+                raise ValueError('Not a Git blob: ' + name)
+            size = int(header[2])
+            data = batch.stdout.read(size)
+            if len(data) != size or batch.stdout.read(1) != b'\n':
+                raise ValueError('Incomplete Git blob: ' + name)
             archive.writestr(name, data)
             manifest['files'].append({'path': name, 'bytes': len(data), 'sha256': hashlib.sha256(data).hexdigest()})
         archive.writestr('manifest.json', json.dumps(manifest, indent=2) + '\n')
+        batch.stdin.close()
     verify(args.output)
     digest = hashlib.sha256(args.output.read_bytes()).hexdigest()
     args.output.with_suffix('.zip.sha256').write_text(f'{digest}  {args.output.name}\n', encoding='utf-8')

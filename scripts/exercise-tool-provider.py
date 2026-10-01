@@ -19,9 +19,9 @@ def preview_curves_to_rows(curves):
  return [{'edge':key,'curve':curve} for key,curve in curves.items()]
 
 def main():
- p=argparse.ArgumentParser();p.add_argument('--bridge',default='../cities2-agent-bridge-ndc');p.add_argument('--slope-mode',choices=['linear','ease','arch'],default='ease');p.add_argument('--smooth-start',action='store_true');p.add_argument('--smooth-end',action='store_true');p.add_argument('--reverse',action='store_true');p.add_argument('--output',required=True);p.add_argument('--save-root',required=True);p.add_argument('--run',action='store_true');p.add_argument('--stage',choices=['curve','slope','connect'],required=True);p.add_argument('--expected-fingerprint');p.add_argument('--case',default='highway-ramp-out');p.add_argument('--connect-kind',choices=['road','rail'],default='road');a=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('--fixture',default=str(Path(__file__).parent/'fixtures/toy-terrain-v11.json'));p.add_argument('--bridge',default='../cities2-agent-bridge-ndc');p.add_argument('--slope-mode',choices=['linear','ease','arch'],default='ease');p.add_argument('--smooth-start',action='store_true');p.add_argument('--smooth-end',action='store_true');p.add_argument('--reverse',action='store_true');p.add_argument('--output',required=True);p.add_argument('--save-root',required=True);p.add_argument('--run',action='store_true');p.add_argument('--stage',choices=['curve','slope','connect'],required=True);p.add_argument('--expected-fingerprint');p.add_argument('--case',default='highway-ramp-out');p.add_argument('--connect-kind',choices=['road','rail'],default='road');a=p.parse_args()
  if not a.run:p.error('Explicit --run required')
- f=json.loads((Path(__file__).parent/'fixtures/toy-terrain-v11.json').read_text());case=next(c for c in f['cases'] if c['name']==a.case);r=m['Runner'](a.bridge,a.output)
+ f=json.loads(Path(a.fixture).read_text());case=next(c for c in f['cases'] if c['name']==a.case);r=m['Runner'](a.bridge,a.output)
  city=r.call('get_city_state')
  if city['selectedSpeed']!=0 or city['population']!=0 or not city['controlEnabled']:raise ValueError('Paused controlled toy required')
  verified(a.save_root,f['baseline'],f['baselineSha256'])

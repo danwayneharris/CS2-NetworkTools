@@ -52,6 +52,11 @@ namespace NetworkTools.Systems.Tools.RoadShape {
 
                 // Lookups needed for output and intersection adjustments
                 CurrentPathNodes = m_CurrentPathNodes,
+                SurfaceGeometryLookup = SystemAPI.GetComponentLookup<EdgeGeometry>(true),
+                SurfaceNodeGeometryLookup = SystemAPI.GetComponentLookup<NodeGeometry>(true),
+                SurfacePrefabGeometryLookup = SystemAPI.GetComponentLookup<NetGeometryData>(true),
+                SurfaceCompositionLookup = SystemAPI.GetComponentLookup<Composition>(true),
+                SurfaceCompositionDataLookup = SystemAPI.GetComponentLookup<NetCompositionData>(true),
                 NodeLookup = SystemAPI.GetComponentLookup<Node>(true),
                 CurveLookup = SystemAPI.GetComponentLookup<Curve>(true),
                 EdgeLookup = SystemAPI.GetComponentLookup<Edge>(true),

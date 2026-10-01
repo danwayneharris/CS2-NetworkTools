@@ -23,6 +23,7 @@ internal static class Program {
         if (args.Length == 2 && args[0] == "--trace-log") { TraceReplay.Run(args[1]); return; }
         TargetReplay.Run(args);
         VerticalProfileTests.Run();
+        SurfaceResponseTests.Run();
         NativeProfileReplayTests.Run();
         FailureTests.Run();
         JunctionSearchTests.Run();

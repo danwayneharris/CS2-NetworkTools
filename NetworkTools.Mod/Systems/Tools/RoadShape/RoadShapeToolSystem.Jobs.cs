@@ -30,6 +30,11 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             [ReadOnly] public required ComponentLookup<Upgraded>         UpgradedLookup;
             [ReadOnly] public required ComponentLookup<Aggregated>       AggregatedLookup;
             [ReadOnly] public required ComponentLookup<Elevation>        ElevationLookup;
+            [ReadOnly] public ComponentLookup<EdgeGeometry> SurfaceGeometryLookup;
+            [ReadOnly] public ComponentLookup<NodeGeometry> SurfaceNodeGeometryLookup;
+            [ReadOnly] public ComponentLookup<NetGeometryData> SurfacePrefabGeometryLookup;
+            [ReadOnly] public ComponentLookup<Composition> SurfaceCompositionLookup;
+            [ReadOnly] public ComponentLookup<NetCompositionData> SurfaceCompositionDataLookup;
             public required            ToolOutputMode                    OutputMode;
             public required            EntityCommandBuffer               ECB;
             public NativeReference<int> SmoothResult;
@@ -42,6 +47,12 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             ///     Minimum height delta (in meters) to consider for intersection adjustments.
             /// </summary>
             private const float HeightDeltaThreshold = 0.001f;
+#if IS_DEBUG
+            [BurstDiscard]
+            private static void TraceSurfaceFit(bool applied) {
+                UnityEngine.Debug.Log("[NetworkTools SurfaceProfile] Correction applied=" + applied);
+            }
+#endif
 
             /// <summary>
             ///     Minimum XZ delta squared (in meters²) to consider for intersection adjustments.
@@ -68,6 +79,14 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                 switch (Config.Template) {
                     case ShapeTransformTemplate.SlopeLinear:
                         var linearValid = SlopeLinearProfileTransform.Execute(ref edges, ref nodes, in Context, in Config);
+                        if (linearValid) {
+                            var surfaceFit = SlopeSurfaceProfileTransform.TryExecute(ref edges, ref nodes, in Config, in ConnectedEdgeLookup,
+                                in SurfaceGeometryLookup, in SurfaceNodeGeometryLookup, in PrefabRefLookup,
+                                in SurfacePrefabGeometryLookup, in SurfaceCompositionLookup, in SurfaceCompositionDataLookup);
+#if IS_DEBUG
+                            TraceSurfaceFit(surfaceFit);
+#endif
+                        }
                         SmoothResult.Value = linearValid ? 1 : -1;
                         if (!linearValid) {
 #if IS_DEBUG

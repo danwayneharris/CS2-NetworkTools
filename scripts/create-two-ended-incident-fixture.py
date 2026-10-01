@@ -9,7 +9,7 @@ H=Path(__file__).resolve().parent
 m=runpy.run_path(str(H/'live-regression.py'))
 verified=runpy.run_path(str(H/'reload-toy-baseline.py'))['verified_package']
 def main():
- p=argparse.ArgumentParser(description=__doc__);p.add_argument('--bridge',required=True);p.add_argument('--save-root',required=True);p.add_argument('--output',required=True);p.add_argument('--run',action='store_true');a=p.parse_args()
+ p=argparse.ArgumentParser(description=__doc__);p.add_argument('--bridge',required=True);p.add_argument('--save-root',required=True);p.add_argument('--output',required=True);p.add_argument('--run',action='store_true');p.add_argument('--straight',action='store_true');a=p.parse_args()
  if not a.run:p.error('Explicit --run required')
  f=json.loads((H/'fixtures/toy-terrain-v11.json').read_text());r=m['Runner'](a.bridge,a.output)
  city=r.call('get_city_state');assert city['selectedSpeed']==0 and city['population']==0 and city['controlEnabled']
@@ -25,6 +25,7 @@ def main():
  prefab=next(x for x in prefabs['prefabs'] if x['name']=='Medium Road');assert not prefab['locked'] and prefab['bridgePlacementSupported']
  endpoints=[dict(byid[m['identity'](n)]['position'],**n) for n in ends]
  args={'prefabIndex':prefab['index'],'prefabVersion':prefab['version'],'start':endpoints[0],'end':endpoints[1],'control':{'x':-3870,'y':610,'z':-1885},'maxCost':50000}
+ if a.straight:args.pop('control')
  op=r.call('build_road',args);result=r.poll('get_operation',lambda x:x['status'] in ('complete','failed','interrupted'),{'id':op['id']});(r.output/'build-result.json').write_text(json.dumps(result,indent=2))
  if result['status']!='complete':raise RuntimeError('Native build failed/uncertain; inspect before retry')
  _,after,ae=r.settled_permanent(ends,f['region']);old={m['identity'](e) for e in edges};new=[e for e in ae if m['identity'](e) not in old]

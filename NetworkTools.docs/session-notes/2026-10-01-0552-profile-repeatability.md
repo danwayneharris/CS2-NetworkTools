@@ -73,3 +73,50 @@ A proposed chained regression batch was rejected by automatic review because it
 would carry state across cases. Nothing ran; use the existing per-case baseline
 reload runner instead. An earlier review-service usage-limit failure prevented a
 checkpoint attempt; after the user's continuation, the same authorized action ran.
+
+
+## Final verification and handoff
+
+Committed implementation: 1a0c952. Final Debug build completed compilation,
+postprocessing, UI and deployment (32 existing warnings, zero errors). Deployed DLL
+matches build output SHA256 469A64C4C86571AD904B9AFD59E4C4712A9B57A08BD3CA912102BB192F4763D1.
+Release C# compilation passed without deployment; full Release/Burst is unqualified.
+Geometry suite, convergence tests and three repeat-audit tests passed.
+
+Fresh-baseline regressions passed for hill road, rail-high branch and highway mainline.
+Rail and mainline intentionally move interior junction heights; their unselected
+incident endpoints/handles follow the existing Slope translation policy. Independent
+audits confirmed those expected translations and preserved directed lane movements.
+Do not conflate that behavior with the terminal off-ramp correction, which preserves
+all unselected authored curves. The hill check preceded the final submission-ID guard;
+rail, mainline and reloaded-ramp checks used the final deployed build.
+
+After loading the settled review checkpoint, final-build reversed Apply left the
+entire region fingerprint exactly unchanged. Another graceful reload preserved exact
+region geometry and normalized directed connections plus physical lane mappings at
+all 37 shared nodes. Compact results:
+[surface-profile-verification-20261001.json](surface-profile-verification-20261001.json).
+Raw captures remain ignored under artifacts/surface-*, not added to the PR.
+
+Read-only generated-surface capture after the final reload reports a sampled first-edge
+lane peak of 17.69% magnitude (earlier captured pieces reached 27-32.5%). The shared
+node-height prediction is about 617.975 m. This supports retained improvement, not
+perfect constant grade, complete mesh verification or vehicle traversal.
+
+Human confidence: Dan confirmed the earlier corrected candidate was MUCH better and
+its small discontinuity gone. Final settling changed the candidate slightly; a quick
+visual check of the final checkpoint remains useful. Exact fixed-point behavior is
+not promised for every junction; eligibility remains deliberately narrow. A lost
+correction during a preview sequence now blocks Apply instead of falling back.
+
+Game left paused on CitiesIIAgentBridge-review-surface-profile-settled-20261001-130556-32145a5a.
+Final city session: 65dfb793e5a04bdc9f3bffdffcb8fb3b. Final fingerprint:
+ddd31890adfa9fbe7cb861d45eb67938c9610c893a4ed677e059e41fc313e150.
+No geometry mutations after the final reload. Recovery checkpoint before it:
+CitiesIIAgentBridge-regression-before-reload-20261001-131711-64f482b4.cok.
+Original baseline saves and the original NetworkTools worktree were preserved.
+
+The requested sub-agent design review is saved in
+[combined smoothing options](../combined-smoothing-options.md). It recommends one
+shared geometry pipeline behind Smooth-existing and Connect-new actions, beginning
+with a coordinated Curve+Slope mode. No combined-tool code was added to this PR.

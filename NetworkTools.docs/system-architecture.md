@@ -389,6 +389,38 @@ still overrides that behavior. Parallel inherits each source edge's prefab;
 Connect uses its first selected node's prefab. Other non-nullable pickers prefer
 the last network selected in the game, then a prioritized road fallback.
 
+### Experimental native surface profile correction (October 1)
+
+In Debug builds, Constant Slope additionally tries `SlopeSurfaceProfileTransform`
+after the ordinary offset-aware fit. It is restricted to supported ground
+SmoothElevation paths with one terminal junction, a dead end, degree-two interior
+nodes, zero node offsets/flatness, no boundary easing and a sufficiently long native
+junction cut. Unsupported initial cases retain the ordinary fit. This extension is
+not enabled in Release, whose ordinary Constant Slope fit remains available.
+
+The correction predicts a junction reference height from the ordinary profile and
+incident authored curves (`SurfaceJunctionHeightModel`), then fits three bounded
+vertical adjustments with `SurfaceProfileResponseFit`. It preserves the fixed
+outer nodes, topology and authored XZ; it does not edit unselected incident curves.
+Generated junction surfaces can still change. Perfect constant generated grade and
+terrain/obstacle routing are not promised.
+
+Generated cut positions also depend on slope, so fitting against the previous
+permanent surface alone was not idempotent. `RoadShapeToolSystem.SurfacePreview`
+feeds fresh native preview boundary values back into the same immutable authored
+baseline. It requires unambiguous original-to-temp mappings, repeated stable
+geometry observations, and two consecutive candidate changes within 5 cm. It caps
+work at six candidates and 20 seconds, rejects disappearance of a previously
+available correction, and gates Apply on the current verified submission. Apply
+reuses that candidate's reference values; temporary entity identities are not
+retained. Native-array/hash-map lifetime is fenced by the existing shape job.
+
+This is bounded numerical settling, not an exact mathematical fixed-point proof.
+Native verification and remaining limitations are recorded in the
+[surface-repeatability note](session-notes/2026-10-01-0552-profile-repeatability.md).
+Future combined Curve/Slope behavior is a separate
+[design proposal](combined-smoothing-options.md), not current functionality.
+
 ### RoadShape preview topology (October 1)
 
 Curve and Slope now disable vanilla node reduction while their shared RoadShape

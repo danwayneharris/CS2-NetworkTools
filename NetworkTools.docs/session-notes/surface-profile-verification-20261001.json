@@ -1,0 +1,570 @@
+{
+  "scope": "Restricted Debug surface-aware correction; ordinary profile smoke regressions. No mesh or vehicle claim.",
+  "deployedDebugDllSha256": "469A64C4C86571AD904B9AFD59E4C4712A9B57A08BD3CA912102BB192F4763D1",
+  "toleranceMeters": 0.05,
+  "cases": [
+    {
+      "case": "surface-preview-first",
+      "report": {
+        "geometryToleranceMeters": 0.05,
+        "stage": "slope",
+        "checkpoint": "CitiesIIAgentBridge-provider-slope-20261001-130051-f8d1bb83",
+        "beforeFingerprint": "ae11597e37fef69e37c717c9b1104d860ee6db4214f2be76ef8e40f5fb7fb1e7",
+        "afterFingerprint": "08fbb55d57961a0d9c37334231346494032c6dc6df604172238261d803537c47",
+        "staleRevisionRejected": true,
+        "nodeCount": [
+          48,
+          48
+        ],
+        "edgeCount": [
+          44,
+          44
+        ],
+        "parameters": {
+          "slopeMode": "linear",
+          "smoothStart": false,
+          "smoothEnd": false,
+          "reverse": false
+        },
+        "limits": "No visual/vehicle or rendered-surface validation.",
+        "sameTopology": true,
+        "previewApplyMaxError": 0.0,
+        "changedUnselectedEdges": [],
+        "directedConnectionsPreserved": true,
+        "physicalLaneMappingPreserved": true,
+        "incidentPreviewApplyMaxError": 0.0,
+        "nodeHorizontalMaxError": 0.0,
+        "fixedEndpointMaxError": 0.0
+      }
+    },
+    {
+      "case": "surface-preview-repeat",
+      "report": {
+        "geometryToleranceMeters": 0.05,
+        "stage": "slope",
+        "checkpoint": "CitiesIIAgentBridge-provider-slope-20261001-130209-f38bb827",
+        "beforeFingerprint": "08fbb55d57961a0d9c37334231346494032c6dc6df604172238261d803537c47",
+        "afterFingerprint": "ddd31890adfa9fbe7cb861d45eb67938c9610c893a4ed677e059e41fc313e150",
+        "staleRevisionRejected": true,
+        "nodeCount": [
+          48,
+          48
+        ],
+        "edgeCount": [
+          44,
+          44
+        ],
+        "parameters": {
+          "slopeMode": "linear",
+          "smoothStart": false,
+          "smoothEnd": false,
+          "reverse": true
+        },
+        "limits": "No visual/vehicle or rendered-surface validation.",
+        "sameTopology": true,
+        "previewApplyMaxError": 0.0,
+        "changedUnselectedEdges": [],
+        "directedConnectionsPreserved": true,
+        "physicalLaneMappingPreserved": true,
+        "incidentPreviewApplyMaxError": 0.0,
+        "nodeHorizontalMaxError": 0.0,
+        "fixedEndpointMaxError": 0.0
+      },
+      "repeatAudit": {
+        "toleranceMeters": 0.05,
+        "maxControlDisplacement": 0.0011549999999260763,
+        "maxNodeDisplacement": 0.00014300000009370706,
+        "sameTopology": true,
+        "idempotentWithinTolerance": true,
+        "limits": "Permanent authored geometry only. Directed lanes, generated surfaces and visual quality need separate checks."
+      }
+    },
+    {
+      "case": "surface-preview-repeat-forward",
+      "report": {
+        "geometryToleranceMeters": 0.05,
+        "stage": "slope",
+        "checkpoint": "CitiesIIAgentBridge-provider-slope-20261001-130314-8a5f9a18",
+        "beforeFingerprint": "ddd31890adfa9fbe7cb861d45eb67938c9610c893a4ed677e059e41fc313e150",
+        "afterFingerprint": "ddd31890adfa9fbe7cb861d45eb67938c9610c893a4ed677e059e41fc313e150",
+        "staleRevisionRejected": true,
+        "nodeCount": [
+          48,
+          48
+        ],
+        "edgeCount": [
+          44,
+          44
+        ],
+        "parameters": {
+          "slopeMode": "linear",
+          "smoothStart": false,
+          "smoothEnd": false,
+          "reverse": false
+        },
+        "limits": "No visual/vehicle or rendered-surface validation.",
+        "sameTopology": true,
+        "previewApplyMaxError": 0.0,
+        "changedUnselectedEdges": [],
+        "directedConnectionsPreserved": true,
+        "physicalLaneMappingPreserved": true,
+        "incidentPreviewApplyMaxError": 0.0,
+        "nodeHorizontalMaxError": 0.0,
+        "fixedEndpointMaxError": 0.0
+      },
+      "repeatAudit": {
+        "toleranceMeters": 0.05,
+        "maxControlDisplacement": 0.0,
+        "maxNodeDisplacement": 0.0,
+        "sameTopology": true,
+        "idempotentWithinTolerance": true,
+        "limits": "Permanent authored geometry only. Directed lanes, generated surfaces and visual quality need separate checks."
+      }
+    },
+    {
+      "case": "surface-final-reloaded-repeat",
+      "report": {
+        "geometryToleranceMeters": 0.05,
+        "stage": "slope",
+        "checkpoint": "CitiesIIAgentBridge-provider-slope-20261001-131545-49e6bfea",
+        "beforeFingerprint": "ddd31890adfa9fbe7cb861d45eb67938c9610c893a4ed677e059e41fc313e150",
+        "afterFingerprint": "ddd31890adfa9fbe7cb861d45eb67938c9610c893a4ed677e059e41fc313e150",
+        "staleRevisionRejected": true,
+        "nodeCount": [
+          48,
+          48
+        ],
+        "edgeCount": [
+          44,
+          44
+        ],
+        "parameters": {
+          "slopeMode": "linear",
+          "smoothStart": false,
+          "smoothEnd": false,
+          "reverse": true
+        },
+        "limits": "No visual/vehicle or rendered-surface validation.",
+        "sameTopology": true,
+        "previewApplyMaxError": 0.0,
+        "changedUnselectedEdges": [],
+        "directedConnectionsPreserved": true,
+        "physicalLaneMappingPreserved": true,
+        "incidentPreviewApplyMaxError": 0.0,
+        "nodeHorizontalMaxError": 0.0,
+        "fixedEndpointMaxError": 0.0
+      },
+      "repeatAudit": {
+        "toleranceMeters": 0.05,
+        "maxControlDisplacement": 0.0,
+        "maxNodeDisplacement": 0.0,
+        "sameTopology": true,
+        "idempotentWithinTolerance": true,
+        "limits": "Permanent authored geometry only. Directed lanes, generated surfaces and visual quality need separate checks."
+      }
+    },
+    {
+      "case": "hill-road",
+      "fromFreshBaseline": true,
+      "report": {
+        "geometryToleranceMeters": 0.05,
+        "stage": "slope",
+        "checkpoint": "CitiesIIAgentBridge-provider-slope-20261001-130757-b8382c28",
+        "beforeFingerprint": "59664b4dd4e4bd1cd8eaf11aea0018978ac8352a466fe5b747f1578655296136",
+        "afterFingerprint": "5a5e7db1b903c4c855a7f4b2ee8a0ab1c0fd89cce0bfdf06dfc59a12f1855e34",
+        "staleRevisionRejected": true,
+        "nodeCount": [
+          48,
+          48
+        ],
+        "edgeCount": [
+          44,
+          44
+        ],
+        "parameters": {
+          "slopeMode": "linear",
+          "smoothStart": false,
+          "smoothEnd": false,
+          "reverse": false
+        },
+        "limits": "No visual/vehicle or rendered-surface validation.",
+        "sameTopology": true,
+        "previewApplyMaxError": 0.0,
+        "changedUnselectedEdges": [],
+        "directedConnectionsPreserved": true,
+        "physicalLaneMappingPreserved": true,
+        "incidentPreviewApplyMaxError": 0.0,
+        "nodeHorizontalMaxError": 0.0,
+        "fixedEndpointMaxError": 0.0
+      },
+      "incidentAudit": {
+        "geometryToleranceMeters": 0.05,
+        "directedConnections": [
+          {
+            "node": [
+              58018,
+              1
+            ],
+            "missing": [],
+            "added": [],
+            "preserved": true,
+            "count": 4
+          },
+          {
+            "node": [
+              58020,
+              1
+            ],
+            "missing": [],
+            "added": [],
+            "preserved": true,
+            "count": 4
+          },
+          {
+            "node": [
+              58021,
+              1
+            ],
+            "missing": [],
+            "added": [],
+            "preserved": true,
+            "count": 4
+          },
+          {
+            "node": [
+              58024,
+              1
+            ],
+            "missing": [],
+            "added": [],
+            "preserved": true,
+            "count": 4
+          },
+          {
+            "node": [
+              58025,
+              1
+            ],
+            "missing": [],
+            "added": [],
+            "preserved": true,
+            "count": 4
+          },
+          {
+            "node": [
+              58026,
+              1
+            ],
+            "missing": [],
+            "added": [],
+            "preserved": true,
+            "count": 4
+          },
+          {
+            "node": [
+              58029,
+              1
+            ],
+            "missing": [],
+            "added": [],
+            "preserved": true,
+            "count": 4
+          },
+          {
+            "node": [
+              58030,
+              1
+            ],
+            "missing": [],
+            "added": [],
+            "preserved": true,
+            "count": 4
+          }
+        ],
+        "unselectedEdgeTranslations": [],
+        "nodeXZWithinTolerance": true,
+        "maxNodeHorizontalDrift": 0.0,
+        "limits": "Slope changes node heights by design; native junction mesh and vehicle traversal need visual/live traffic checks.",
+        "boundarySmoothing": [
+          {
+            "end": "start",
+            "enabled": false,
+            "eligible": false
+          },
+          {
+            "end": "end",
+            "enabled": false,
+            "eligible": false
+          }
+        ]
+      }
+    },
+    {
+      "case": "rail-high-branch",
+      "fromFreshBaseline": true,
+      "report": {
+        "geometryToleranceMeters": 0.05,
+        "stage": "slope",
+        "checkpoint": "CitiesIIAgentBridge-provider-slope-20261001-131049-09df4c64",
+        "beforeFingerprint": "59664b4dd4e4bd1cd8eaf11aea0018978ac8352a466fe5b747f1578655296136",
+        "afterFingerprint": "8d75745681c45a122cb078caa40f6d94d8a1a336fdaf7f14b585828ad8a6987a",
+        "staleRevisionRejected": true,
+        "nodeCount": [
+          48,
+          48
+        ],
+        "edgeCount": [
+          44,
+          44
+        ],
+        "parameters": {
+          "slopeMode": "linear",
+          "smoothStart": false,
+          "smoothEnd": false,
+          "reverse": false
+        },
+        "limits": "No visual/vehicle or rendered-surface validation.",
+        "sameTopology": true,
+        "previewApplyMaxError": 0.0,
+        "changedUnselectedEdges": [
+          [
+            334202,
+            1
+          ]
+        ],
+        "directedConnectionsPreserved": true,
+        "physicalLaneMappingPreserved": true,
+        "incidentPreviewApplyMaxError": 0.0,
+        "nodeHorizontalMaxError": 0.0,
+        "fixedEndpointMaxError": 0.0
+      },
+      "incidentAudit": {
+        "geometryToleranceMeters": 0.05,
+        "directedConnections": [
+          {
+            "node": [
+              52117,
+              1
+            ],
+            "missing": [],
+            "added": [],
+            "preserved": true,
+            "count": 4
+          },
+          {
+            "node": [
+              52118,
+              1
+            ],
+            "missing": [],
+            "added": [],
+            "preserved": true,
+            "count": 2
+          },
+          {
+            "node": [
+              52120,
+              1
+            ],
+            "missing": [],
+            "added": [],
+            "preserved": true,
+            "count": 2
+          },
+          {
+            "node": [
+              52125,
+              1
+            ],
+            "missing": [],
+            "added": [],
+            "preserved": true,
+            "count": 2
+          },
+          {
+            "node": [
+              52129,
+              1
+            ],
+            "missing": [],
+            "added": [],
+            "preserved": true,
+            "count": 2
+          }
+        ],
+        "unselectedEdgeTranslations": [
+          {
+            "edge": [
+              334202,
+              1
+            ],
+            "startDelta": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "endDelta": [
+              0.0,
+              -2.0367639999999483,
+              0.0
+            ],
+            "maxTranslationError": 3.6000000022795575e-05
+          }
+        ],
+        "nodeXZWithinTolerance": true,
+        "maxNodeHorizontalDrift": 0.0,
+        "limits": "Slope changes node heights by design; native junction mesh and vehicle traversal need visual/live traffic checks.",
+        "boundarySmoothing": [
+          {
+            "end": "start",
+            "enabled": false,
+            "eligible": false
+          },
+          {
+            "end": "end",
+            "enabled": false,
+            "eligible": false
+          }
+        ]
+      }
+    },
+    {
+      "case": "highway-mainline",
+      "fromFreshBaseline": true,
+      "report": {
+        "geometryToleranceMeters": 0.05,
+        "stage": "slope",
+        "checkpoint": "CitiesIIAgentBridge-provider-slope-20261001-131253-81318c8e",
+        "beforeFingerprint": "59664b4dd4e4bd1cd8eaf11aea0018978ac8352a466fe5b747f1578655296136",
+        "afterFingerprint": "864da85616ed61d8e79c7f6e16b748a56228025e7e6131330ce8e41b412aac0f",
+        "staleRevisionRejected": true,
+        "nodeCount": [
+          48,
+          48
+        ],
+        "edgeCount": [
+          44,
+          44
+        ],
+        "parameters": {
+          "slopeMode": "linear",
+          "smoothStart": false,
+          "smoothEnd": false,
+          "reverse": false
+        },
+        "limits": "No visual/vehicle or rendered-surface validation.",
+        "sameTopology": true,
+        "previewApplyMaxError": 0.0,
+        "changedUnselectedEdges": [
+          [
+            334277,
+            1
+          ],
+          [
+            334769,
+            1
+          ]
+        ],
+        "directedConnectionsPreserved": true,
+        "physicalLaneMappingPreserved": true,
+        "incidentPreviewApplyMaxError": 0.0,
+        "nodeHorizontalMaxError": 0.0,
+        "fixedEndpointMaxError": 0.0
+      },
+      "incidentAudit": {
+        "geometryToleranceMeters": 0.05,
+        "directedConnections": [
+          {
+            "node": [
+              334897,
+              1
+            ],
+            "missing": [],
+            "added": [],
+            "preserved": true,
+            "count": 9
+          },
+          {
+            "node": [
+              334873,
+              1
+            ],
+            "missing": [],
+            "added": [],
+            "preserved": true,
+            "count": 9
+          },
+          {
+            "node": [
+              334884,
+              1
+            ],
+            "missing": [],
+            "added": [],
+            "preserved": true,
+            "count": 7
+          }
+        ],
+        "unselectedEdgeTranslations": [
+          {
+            "edge": [
+              334277,
+              1
+            ],
+            "startDelta": [
+              0.0,
+              1.6843639999999596,
+              0.0
+            ],
+            "endDelta": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "maxTranslationError": 3.600000013648241e-05
+          },
+          {
+            "edge": [
+              334769,
+              1
+            ],
+            "startDelta": [
+              0.0,
+              -3.820799999999963,
+              0.0
+            ],
+            "endDelta": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "maxTranslationError": 0.0
+          }
+        ],
+        "nodeXZWithinTolerance": true,
+        "maxNodeHorizontalDrift": 0.0,
+        "limits": "Slope changes node heights by design; native junction mesh and vehicle traversal need visual/live traffic checks.",
+        "boundarySmoothing": [
+          {
+            "end": "start",
+            "enabled": false,
+            "eligible": false
+          },
+          {
+            "end": "end",
+            "enabled": false,
+            "eligible": false
+          }
+        ]
+      }
+    }
+  ],
+  "persistence": {
+    "sameRegionFingerprint": true,
+    "directedAndPhysicalLaneMappingMatches": true,
+    "sharedNodesCompared": 37,
+    "fingerprint": "ddd31890adfa9fbe7cb861d45eb67938c9610c893a4ed677e059e41fc313e150",
+    "checkpoint": "CitiesIIAgentBridge-review-surface-profile-settled-20261001-130556-32145a5a",
+    "noGeometryMutationsAfterFinalReload": true
+  }
+}

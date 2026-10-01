@@ -164,3 +164,29 @@ No production fitter, native limiter or deployed mod changed. Next prototype a
 surface-aware feasibility check using the cut boundary span and junction-imposed
 heights, then test whether selected geometry alone can meet the desired profile.
 Do not silently move unselected highway geometry or disable native height guards.
+
+
+## Surface-aware correction and repeatability
+
+The subsequent Debug experiment now fits the selected ramp against a restricted
+native surface model. Dan visually confirmed that the first corrected candidate
+removed the small discontinuity and looked much better. That does not establish
+perfect grade or a universal terrain fix. Its first repeated Apply drifted 1.1683 m;
+replacing the previous surface height with a source-derived reference reduced that
+drift but exposed both slope-dependent cut positions and a floating-point stationary
+state incorrectly treated as failure.
+
+The current correction handles stationary float heights and settles cut references
+through bounded native previews before enabling Apply. Initial live verification
+from the pre-correction save took four candidates; the reversed repeated Apply
+changed controls 1.155 mm and nodes 0.143 mm, and the next forward repeat changed
+no region geometry. Authored preview/Apply geometry, topology, directed/physical
+lane mappings, fixed endpoints and unselected authored curves passed their checks.
+No geometry tolerance was enlarged. Detailed evidence and follow-up verification:
+[repeatability session](session-notes/2026-10-01-0552-profile-repeatability.md).
+
+Perfectly constant generated grade is explicitly a low-priority future refinement.
+A stable useful improvement takes priority, but the earlier fallback/oscillation
+risk could not be dismissed as an acceptable centimetre-scale residual. Generated
+surfaces, human visual quality, traffic and authored geometry remain distinct
+validation categories.

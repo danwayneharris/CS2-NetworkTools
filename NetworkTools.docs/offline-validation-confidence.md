@@ -68,3 +68,28 @@ exact geometry and normalized directed/physical lane mappings at all 37 shared n
 These establish stronger numerical/integration/persistence confidence; they do not
 establish visual terrain quality, vehicle traversal or Release/Burst compatibility.
 See [review handoff](terrain-profile-review.md) for exact checkpoints and limitations.
+
+
+## Surface-aware ramp experiment
+
+Offline response-fit and convergence-state tests pass. They establish bounded
+numerical behavior, rejection of invalid fits, and the policy for failed/oscillating
+preview candidates; they do not model all native cut locations or surface heights.
+Native evidence was essential: it exposed 1.17 m repeat drift, a smaller cut-position
+feedback, and a stationary-float rejection that the initial offline tests missed.
+
+The revised Debug correction settles against fresh native boundaries before Apply.
+From the captured review baseline it used four candidates; reversed repeat moved
+controls 1.155 mm and nodes 0.143 mm, then forward repeat was exactly unchanged.
+This raises confidence for this particular supported off-ramp, not every junction.
+Dan's favorable visual verdict applies to the first corrected candidate; the final
+settled candidate still merits a quick visual confirmation. Vehicle traversal and
+full Release/Burst remain unverified. Details and persistence checks are in the
+[repeatability record](session-notes/2026-10-01-0552-profile-repeatability.md).
+
+Final-build persistence follow-up: the settled checkpoint reloaded with exact geometry;
+reversed Apply was unchanged, and a second reload preserved normalized directed and
+physical lane mappings at all 37 shared nodes. This is native persistence evidence,
+not vehicle traversal. Release C# compilation passed; Burst/postprocessing remains
+unqualified. Final settled lane sampling still reports about 17.69% peak grade, so
+"perfect constant slope" would be an incorrect claim.

@@ -61,3 +61,12 @@ not keep moving the network) takes priority over exact constant grade. Investiga
 and fix that feedback; retain the visual improvement. Small geometric residuals
 through 5 cm are accepted. Pursuing perfectly constant generated slopes is a
 much-lower-priority future refinement, not a reason to delay a stable useful tool.
+
+
+Update: the current Debug native-preview loop resolves the observed repeated-Apply
+feedback before Apply. It keeps the 5 cm threshold, requires two small consecutive
+candidate changes, and fails closed on a lost correction or bounded-search failure.
+See the [verification record](session-notes/2026-10-01-0552-profile-repeatability.md).
+A combined Smooth tool and Connect reuse are proposed separately in
+[combined smoothing options](combined-smoothing-options.md); no new UI policy has
+been chosen or implemented during this fix.

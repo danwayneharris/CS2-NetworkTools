@@ -2,6 +2,53 @@
 
 October 1, 2026. Experimental Debug build; not release qualification.
 
+## Current surface-aware candidate
+
+Constant Slope first performs the offset-aware vertical fit described below. Debug
+builds additionally try a restricted native surface correction on supported ground
+ramps. The captured off-ramp's junction raises its generated surface and shortens
+the usable edge span; an authored constant-grade cubic alone does not produce a
+constant-grade road surface there. The correction improves that profile without
+moving the highway's authored geometry.
+
+Dan visually confirmed that the first corrected candidate looked MUCH better and
+the small discontinuity disappeared. Subsequent repeatability work preserved that
+approximate objective and removed a fallback/feedback problem. Final preview settling
+uses up to six candidates, stable native observations, and two consecutive candidate
+changes within 5 cm. Apply uses the accepted reference. This is Debug-only; Release
+retains the ordinary offset-aware Constant Slope fit.
+
+Current review checkpoint:
+`CitiesIIAgentBridge-review-surface-profile-settled-20261001-130556-32145a5a`.
+Untouched source baseline: `bridge test - terrain and elevation v1.1`.
+The separate first visually approved checkpoint is
+`CitiesIIAgentBridge-review-surface-profile-first-20261001-122611-790afd05`.
+
+The first native settling sequence used four candidates. Reversed repeat changed
+controls by 1.155 mm and nodes by 0.143 mm; the next forward Apply left the entire
+region geometry unchanged. Topology, directed/physical lane mappings, fixed endpoints,
+authored XZ, unselected authored curves and authored preview/Apply agreement passed
+for the off-ramp. These do not establish final mesh equivalence or vehicle traversal.
+See the [repeatability record](session-notes/2026-10-01-0552-profile-repeatability.md)
+for final-build checks and persistence results. On that final build, reversed Apply
+after reload was exactly unchanged; another reload preserved geometry and normalized
+directed/physical lane mappings at all 37 shared nodes. The game was left paused on
+the settled checkpoint above, with no geometry changes after the final reload.
+Full Debug deployment and Release C# compilation passed; full Release/Burst was not
+run. Fresh-baseline hill-road, rail and highway-mainline smoke checks also passed.
+
+Inspect the same five-edge ramp from junction X=-2573.077, Z=-1939.879 to dead end
+X=-2392.361, Z=-2025.778, particularly its first bend and highway join. Confirm the
+latest settled result retains the visual improvement. Perfect constant generated
+grade is explicitly deferred. Terrain avoidance, bridges/tunnels, generalized ramp
+support, traffic testing and full Release/Burst qualification remain open.
+
+## Earlier offset-only checkpoint (historical)
+
+The following evidence describes the earlier offset-only implementation, before
+the additional surface-aware correction. Its exact idempotence and persistence
+results must not be substituted for verification of the newer correction.
+
 ## What changed
 
 Constant Slope now fits node heights and vertical Bezier controls together, accounting

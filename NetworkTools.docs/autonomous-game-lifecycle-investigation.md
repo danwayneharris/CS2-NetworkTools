@@ -1,13 +1,13 @@
 **Historical investigation; successor status October 1:** checkpointed toy-save
 launch/reload workflows now exist in [the live regression runbook](live-regression-runner.md)
 and `scripts/reload-toy-baseline.py`, using the independently maintained bridge.
-The blanket ?not yet verified? statements below describe September 28, not current
+The blanket `not yet verified` statements below describe September 28, not current
 capabilities. Exact save-package identity, durable checkpoint verification and
 bounded readiness checks remain necessary; accepting a save request alone is not
 proof of recoverability. Derive current loaded state instead of relying on old
 session facts. See [audit disposition](audit-disposition.md) for remaining coverage.
 
-﻿# Autonomous CS2 launch, load, and save: source investigation
+ï»¿# Autonomous CS2 launch, load, and save: source investigation
 
 Date: 2026-09-28. Target: installed Windows Steam CS2 1.6.2f1 (767.21d1) [6300.26419], Unity 2022.3.71f1 (c9bf13b0b844).
 

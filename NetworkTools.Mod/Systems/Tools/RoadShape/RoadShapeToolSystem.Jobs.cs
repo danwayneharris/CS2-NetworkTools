@@ -67,8 +67,15 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                 // 2. Execute transformation (context = path geometry, config = user settings)
                 switch (Config.Template) {
                     case ShapeTransformTemplate.SlopeLinear:
-                        var linearTransform = new SlopeLinearTransform();
-                        TransformPipeline.Execute(ref linearTransform, ref edges, ref nodes, in Context, in Config);
+                        var linearValid = SlopeLinearProfileTransform.Execute(ref edges, ref nodes, in Context, in Config);
+                        SmoothResult.Value = linearValid ? 1 : -1;
+                        if (!linearValid) {
+#if IS_DEBUG
+                            CapturePreviewProbe(SmoothTraceId, OutputMode, false, edges);
+#endif
+                            edges.Dispose(); nodes.Dispose();
+                            return;
+                        }
                         break;
                     case ShapeTransformTemplate.SlopeEaseInOut:
                         var easeInOutTransform = new SlopeEaseInOutTransform();
@@ -101,8 +108,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                 // Slope must submit the same endpoint/node relationship to Preview and Apply.
                 // The pipeline averages interior node displacements; fit each incident curve
                 // to that common height without changing its fitted endpoint grade.
-                if (Config.Template == ShapeTransformTemplate.SlopeLinear
-                    || Config.Template == ShapeTransformTemplate.SlopeEaseInOut
+                if (Config.Template == ShapeTransformTemplate.SlopeEaseInOut
                     || Config.Template == ShapeTransformTemplate.SlopeArch) {
                     for (var i = 0; i < edges.Length; i++) {
                         var edge = edges[i];

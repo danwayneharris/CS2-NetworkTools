@@ -41,3 +41,12 @@ terrain modified by network placement versus terrain sampled without that networ
 verify the game's actual sampling/deformation layers before assuming a particular
 model. The measured centerline grade discontinuity does not rule out an additional
 terrain/rendered-surface effect. See [observation and setup notes](session-notes/2026-10-01-terrain-observation-plugins.md).
+
+## Active experiment: horizontal-distance Constant Slope
+
+The terrain-profile sprint integrates an offset-aware fit for Constant Slope only.
+See [model and offline limits](session-notes/2026-10-01-0330-offset-profile-research.md)
+and [integration checkpoint](session-notes/2026-10-01-0331-constant-slope-integration.md).
+Native validation is still pending at this checkpoint. Ease/Arch and coordinated
+Curve/Slope remain separate work; this is not terrain-following behavior.
+

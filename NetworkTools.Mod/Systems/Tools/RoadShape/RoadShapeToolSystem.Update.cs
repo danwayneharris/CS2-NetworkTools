@@ -1,4 +1,4 @@
-﻿namespace NetworkTools.Systems.Tools.RoadShape {
+namespace NetworkTools.Systems.Tools.RoadShape {
     using Game.Common;
     using Game.Notifications;
     using Game.Net;
@@ -111,14 +111,14 @@
 
         /// <inheritdoc />
         public bool CanApply => Phase == OperationPhase.Ready && Template.Value != ShapeTransformTemplate.Preserve
-            && (Template.Value != ShapeTransformTemplate.CurveSmooth || SmoothPreviewResult == 1);
+            && ((Template.Value != ShapeTransformTemplate.CurveSmooth && Template.Value != ShapeTransformTemplate.SlopeLinear) || SmoothPreviewResult == 1);
 
         private int SmoothPreviewResult {
             get {
                 if (m_UpdateNeeded || !m_PathDataValid || !m_LastShapeJob.IsCompleted) { return 0; }
                 m_LastShapeJob.Complete();
 #if IS_DEBUG
-                if (!JunctionSearchAllowsApply()) { return 0; }
+                if (Template.Value == ShapeTransformTemplate.CurveSmooth && !JunctionSearchAllowsApply()) { return 0; }
 #endif
                 return m_SmoothResult.IsCreated ? m_SmoothResult.Value : 0;
             }

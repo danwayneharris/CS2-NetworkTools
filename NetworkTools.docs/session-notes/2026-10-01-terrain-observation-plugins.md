@@ -1,4 +1,4 @@
-# 2026-10-01 — Terrain interaction observation and sibling plugins
+# 2026-10-01 ï¿½ Terrain interaction observation and sibling plugins
 
 ## User observation to retain
 
@@ -44,3 +44,8 @@ Remaining runtime setup:
 
 No game restart, game binary modification, runtime installation or live debugger
 attachment was performed. No claim that either MCP server is operational yet.
+
+Runtime setup and live debugger verification subsequently completed. Per the user's
+clarification, the general setup guide/helpers and detailed session note belong in
+the sibling bridge repo (docs/DEBUGGING-PLUGINS.md), on dan/debug-plugin-setup.
+BOOTSTRAP.md now links there; this repository retains the terrain observation.

@@ -1,0 +1,368 @@
+{
+  "protocol": 1,
+  "id": "3926f4fac6264e209e651310055d4c05",
+  "session": "3b83c9eb91564ad7bb24bd0ca51ad093",
+  "citySession": "fb0966ce3e40492baf88cc560f9c392f",
+  "utc": "2026-10-01T09:13:59.5314403Z",
+  "result": {
+    "original": {
+      "index": 334946,
+      "version": 9
+    },
+    "matches": [],
+    "status": "missing",
+    "validationReady": false,
+    "meaning": "Observation only: no tool revision association or completed-rebuild guarantee. Never use to authorize Apply.",
+    "relatedPreviewEdges": {
+      "expectedOriginalEdges": [
+        {
+          "index": 334845,
+          "version": 9
+        }
+      ],
+      "edges": [
+        {
+          "index": 51615,
+          "version": 43,
+          "temp": {
+            "original": {
+              "index": 334845,
+              "version": 9
+            },
+            "flags": "Parent"
+          },
+          "startNode": {
+            "index": 51465,
+            "version": 29,
+            "live": true,
+            "position": {
+              "x": -2412.29419,
+              "y": 603.859558,
+              "z": -2013.27283
+            }
+          },
+          "endNode": {
+            "index": 51466,
+            "version": 29,
+            "live": true,
+            "position": {
+              "x": -2392.36084,
+              "y": 602.321167,
+              "z": -2025.77844
+            }
+          },
+          "startTemp": {
+            "original": {
+              "index": 0,
+              "version": 0
+            },
+            "flags": "Create"
+          },
+          "endTemp": {
+            "original": {
+              "index": 0,
+              "version": 0
+            },
+            "flags": "Create"
+          },
+          "matchesOriginalEdge": true,
+          "startMatchesJunction": false,
+          "endMatchesJunction": false,
+          "curve": [
+            {
+              "x": -2412.29419,
+              "y": 603.859558,
+              "z": -2013.27283
+            },
+            {
+              "x": -2405.612,
+              "y": 603.3468,
+              "z": -2017.66565
+            },
+            {
+              "x": -2398.969,
+              "y": 602.8339,
+              "z": -2021.88
+            },
+            {
+              "x": -2392.36084,
+              "y": 602.321167,
+              "z": -2025.77844
+            }
+          ],
+          "updated": false,
+          "prefab": {
+            "index": 16071,
+            "version": 1,
+            "netGeometryData": {
+              "mergeLayers": "Road, TramTrack, PublicTransportRoad",
+              "flags": "SupportRoundabout, BlockZone, Directional, SmoothElevation, FlipTrafficHandedness, Asymmetric, FlattenTerrain, ClipTerrain, ExclusiveGround, InvertCompositionHandedness",
+              "defaultWidth": 8.0
+            }
+          },
+          "edgeGeometry": {
+            "start": {
+              "left": [
+                {
+                  "x": -2410.097,
+                  "y": 603.859558,
+                  "z": -2009.93042
+                },
+                {
+                  "x": -2406.77173,
+                  "y": 603.6044,
+                  "z": -2012.11609
+                },
+                {
+                  "x": -2403.46533,
+                  "y": 603.344666,
+                  "z": -2014.25232
+                },
+                {
+                  "x": -2400.169,
+                  "y": 603.090332,
+                  "z": -2016.32593
+                }
+              ],
+              "right": [
+                {
+                  "x": -2414.49146,
+                  "y": 603.859558,
+                  "z": -2016.61523
+                },
+                {
+                  "x": -2411.13135,
+                  "y": 603.601563,
+                  "z": -2018.82385
+                },
+                {
+                  "x": -2407.78,
+                  "y": 603.348938,
+                  "z": -2020.98926
+                },
+                {
+                  "x": -2404.42871,
+                  "y": 603.090332,
+                  "z": -2023.09741
+                }
+              ],
+              "length": [
+                11.8348484,
+                11.9947472
+              ]
+            },
+            "end": {
+              "left": [
+                {
+                  "x": -2400.1687,
+                  "y": 603.090332,
+                  "z": -2016.32593
+                },
+                {
+                  "x": -2396.87329,
+                  "y": 602.8361,
+                  "z": -2018.39893
+                },
+                {
+                  "x": -2393.5957,
+                  "y": 602.5747,
+                  "z": -2020.40613
+                },
+                {
+                  "x": -2390.32837,
+                  "y": 602.321167,
+                  "z": -2022.33325
+                }
+              ],
+              "right": [
+                {
+                  "x": -2404.429,
+                  "y": 603.090332,
+                  "z": -2023.09741
+                },
+                {
+                  "x": -2401.079,
+                  "y": 602.831848,
+                  "z": -2025.20471
+                },
+                {
+                  "x": -2397.73633,
+                  "y": 602.580566,
+                  "z": -2027.25183
+                },
+                {
+                  "x": -2394.39331,
+                  "y": 602.321167,
+                  "z": -2029.22363
+                }
+              ],
+              "length": [
+                11.5551186,
+                11.7832851
+              ]
+            }
+          },
+          "composition": {
+            "edge": {
+              "index": 51006,
+              "version": 3,
+              "width": 8.0,
+              "state": "ExclusiveGround, HasSurface, HasForwardRoadLanes, SeparatedCarriageways, HasPedestrianLanes, Asymmetric, BlockZone, LowerToTerrain",
+              "flags": {
+                "general": "Edge, Pavement",
+                "left": "0",
+                "right": "0"
+              },
+              "lanes": [
+                {
+                  "bufferIndex": 0,
+                  "index": 0,
+                  "group": 0,
+                  "carriageway": 0,
+                  "position": {
+                    "x": -3.0,
+                    "y": -0.2,
+                    "z": 0.0
+                  },
+                  "flags": "Invert, Pedestrian, Twoway, LeftLimit, RightLimit, TrackFlow",
+                  "prefab": {
+                    "index": 50037,
+                    "version": 1,
+                    "netLaneFlags": "Pedestrian, Twoway, TrackFlow"
+                  }
+                },
+                {
+                  "bufferIndex": 1,
+                  "index": 1,
+                  "group": 1,
+                  "carriageway": 0,
+                  "position": {
+                    "x": -2.0,
+                    "y": -0.2,
+                    "z": 0.0
+                  },
+                  "flags": "Parking, Virtual, LeftLimit, RightLimit, ParkingLeft, TrackFlow",
+                  "prefab": {
+                    "index": 50036,
+                    "version": 1,
+                    "netLaneFlags": "Parking, Virtual, TrackFlow"
+                  }
+                },
+                {
+                  "bufferIndex": 2,
+                  "index": 2,
+                  "group": 2,
+                  "carriageway": 0,
+                  "position": {
+                    "x": 0.0,
+                    "y": -0.2,
+                    "z": 0.0
+                  },
+                  "flags": "Road, LeftLimit, RightLimit, TrackFlow",
+                  "prefab": {
+                    "index": 40490,
+                    "version": 1,
+                    "netLaneFlags": "Road, TrackFlow"
+                  }
+                },
+                {
+                  "bufferIndex": 3,
+                  "index": 3,
+                  "group": 3,
+                  "carriageway": 0,
+                  "position": {
+                    "x": 2.0,
+                    "y": -0.2,
+                    "z": 0.0
+                  },
+                  "flags": "Parking, Virtual, LeftLimit, RightLimit, ParkingRight, TrackFlow",
+                  "prefab": {
+                    "index": 50036,
+                    "version": 1,
+                    "netLaneFlags": "Parking, Virtual, TrackFlow"
+                  }
+                },
+                {
+                  "bufferIndex": 4,
+                  "index": 4,
+                  "group": 4,
+                  "carriageway": 0,
+                  "position": {
+                    "x": 3.0,
+                    "y": -0.2,
+                    "z": 0.0
+                  },
+                  "flags": "Pedestrian, Twoway, LeftLimit, RightLimit, TrackFlow",
+                  "prefab": {
+                    "index": 50037,
+                    "version": 1,
+                    "netLaneFlags": "Pedestrian, Twoway, TrackFlow"
+                  }
+                }
+              ]
+            },
+            "startNode": {
+              "index": 51017,
+              "version": 3,
+              "width": 8.0,
+              "state": "ExclusiveGround, HasSurface, BlockZone, LowerToTerrain",
+              "flags": {
+                "general": "Node, Invert, Pavement",
+                "left": "0",
+                "right": "0"
+              }
+            },
+            "endNode": {
+              "index": 51022,
+              "version": 3,
+              "width": 8.0,
+              "state": "ExclusiveGround, HasSurface, BlockZone, LowerToTerrain",
+              "flags": {
+                "general": "Node, DeadEnd, Pavement",
+                "left": "0",
+                "right": "0"
+              }
+            }
+          },
+          "subLanes": [
+            {
+              "index": 52240,
+              "version": 59
+            },
+            {
+              "index": 52244,
+              "version": 55
+            },
+            {
+              "index": 52241,
+              "version": 59
+            },
+            {
+              "index": 52243,
+              "version": 55
+            },
+            {
+              "index": 52242,
+              "version": 55
+            },
+            {
+              "index": 57111,
+              "version": 25
+            },
+            {
+              "index": 57182,
+              "version": 25
+            }
+          ]
+        }
+      ],
+      "complete": true,
+      "errors": []
+    },
+    "topologyResolution": {
+      "status": "unsupported",
+      "candidates": []
+    }
+  },
+  "ok": true
+}

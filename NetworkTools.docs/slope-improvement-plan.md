@@ -22,3 +22,13 @@ but deepens the first off-ramp segment's interior grade dip. See
 [offline comparison](session-notes/2026-10-01-0215-slope-counterfactual.md).
 Do not characterize that example as entirely pre-existing. Decide whether to accept
 this limited tradeoff temporarily or address it before the broader sprint.
+
+## Operation order and 3D continuity
+
+The slope-first then curve-preview capture shows an existing Curve-only limitation:
+keeping node and control-point heights while changing horizontal handle lengths
+can break grade continuity. One ramp join went from matching -6.41% grades to
+-8.21% versus -6.51%, with zero Y changes and exact native/requested curve agreement.
+This is not established as a terrain reconstruction error. Preserve node elevations
+as required, but investigate fitting vertical handles to compatible grades when
+combining tools. See [the captured evidence](session-notes/2026-10-01-0230-slope-first-preview.md).

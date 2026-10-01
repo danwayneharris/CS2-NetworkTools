@@ -5,7 +5,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="../NetworkTools.docs/session-notes/captures/offset-profile-native.json" Link="offset-profile-native.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Fixtures/offset-profile-native.json" Link="offset-profile-native.json" CopyToOutputDirectory="PreserveNewest" />
     <Compile Include="../NetworkTools.Mod/Geometry/VerticalLinearProfile.cs" Link="VerticalLinearProfile.cs" />
     <Compile Include="../NetworkTools.Mod/Geometry/JunctionCandidateSearch.cs" Link="JunctionCandidateSearch.cs" />
     <Compile Include="../NetworkTools.Mod/Geometry/OriginalInputComparison.cs" Link="OriginalInputComparison.cs" />

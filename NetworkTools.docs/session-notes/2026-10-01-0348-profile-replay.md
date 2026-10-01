@@ -35,3 +35,4 @@ visual terrain quality or vehicle traversal.
 Raw evidence: ignored `artifacts/profile-offramp-only` and
 `artifacts/profile-slope-curve-ramp`. The focused fixture and plot/replay scripts are
 tracked; raw requests/polling files are not. Other terrain cases are running next.
+`git add` correctly refused the ignored captures directory. The compact numeric fixture was moved to `NetworkTools.Geometry.Tests/Fixtures/` and explicitly copied into test output; raw-capture exclusions remain intact.

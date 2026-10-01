@@ -1,9 +1,0 @@
-Traceback (most recent call last):
-  File "C:\Users\danwa\dev\cs2-mods\nt-history-review\scripts\terrain-regression.py", line 69, in <module>
-    if __name__=='__main__':main()
-                            ~~~~^^
-  File "C:\Users\danwa\dev\cs2-mods\nt-history-review\scripts\terrain-regression.py", line 59, in main
-    result=r.execute(f,case,a.save_root)
-  File "C:\Users\danwa\dev\cs2-mods\nt-history-review\scripts\live-regression.py", line 311, in execute
-    raise AssertionError('Fixed or unselected node moved; other checks completed, inspect report.json')
-AssertionError: Fixed or unselected node moved; other checks completed, inspect report.json

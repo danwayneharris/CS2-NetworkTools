@@ -1,4 +1,4 @@
-# Curve and Slope save comparison — October 1, 2026, 00:25
+# Curve and Slope save comparison â€” October 1, 2026, 00:25
 
 Dan supplied curve-smoothed and slope-smoothed toy saves, with mixed operation
 orders. Inspect both as observed outcomes, not controlled sequential experiments.
@@ -58,3 +58,7 @@ runtime code or deployment changed in this session.
 Terrain respect remains a future explicit policy. Flattening the crest/dip is
 consistent with equal endpoint heights and an unconstrained vertical profile;
 terrain-following and clearance require separate checks and design decisions.
+
+Raw capture files referenced above are available in the
+[diagnostic archive](../diagnostic-archives.md); compact summaries and replay inputs
+remain tracked locally.

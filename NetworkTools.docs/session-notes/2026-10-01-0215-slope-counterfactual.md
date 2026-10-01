@@ -1,4 +1,4 @@
-# 2026-10-01 0215 — Offline Constant Slope counterfactual
+# 2026-10-01 0215 â€” Offline Constant Slope counterfactual
 
 Replayed the last captured Curve Apply output as Constant Slope input. The endpoints
 are a three-edge junction and a dead end, so neither qualifies for the optional
@@ -40,3 +40,7 @@ Offline confidence is high for reproducing this captured profile and isolating t
 alignment contribution, lower for historical native geometry, and absent for an
 old-vs-new visual comparison or vehicle traversal. The user's tolerance for existing
 Slope weaknesses does not mean this newly identified contribution is already accepted.
+
+Raw capture files referenced above are available in the
+[diagnostic archive](../diagnostic-archives.md); compact summaries and replay inputs
+remain tracked locally.

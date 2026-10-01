@@ -42,3 +42,6 @@ CORRECTION: The subsequent labeled screenshot located the new terrain cases west
 of this queried area. This note describes the OLD test networks; its coverage-gap
 conclusion does not apply to the new first batch. See 2026-09-30-2354-terrain-v11-correct-area.md.
 
+Raw capture files referenced above are available in the
+[diagnostic archive](../diagnostic-archives.md); compact summaries and replay inputs
+remain tracked locally.

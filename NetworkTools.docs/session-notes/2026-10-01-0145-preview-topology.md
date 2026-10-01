@@ -1,4 +1,4 @@
-# 2026-10-01 0145 — Preserve RoadShape preview topology
+# 2026-10-01 0145 â€” Preserve RoadShape preview topology
 
 The rail rejection comes from native NodeReductionSystem combining an unselected
 incident edge with its neighbor. Apply directly edits existing curves and does not
@@ -45,7 +45,7 @@ No existing save was overwritten.
   translation residual 0.000021 m. This is existing Slope behavior, not a new allowance
   for Curve Smooth outside-selection movement. Stale Apply revision was rejected.
 
-Native interior validation logged 32–50 ms for the recorded later acceptance
+Native interior validation logged 32â€“50 ms for the recorded later acceptance
 observations; these are internal validation timings, not measured mouse-to-screen
 latency. Rail and highway no longer emitted their former reduction-related rejection.
 The highway success is consistent with the same root cause but the old highway
@@ -63,3 +63,7 @@ and off-ramp Slope. Saved those results to
 `CitiesIIAgentBridge-preview-topology-verified-20261001-084945-4e6972c4.cok`.
 No subsequent network mutations. Original pre-test checkpoint remains available
 for visual comparison. No bridge repository changes, push or PR.
+
+Raw capture files referenced above are available in the
+[diagnostic archive](../diagnostic-archives.md); compact summaries and replay inputs
+remain tracked locally.

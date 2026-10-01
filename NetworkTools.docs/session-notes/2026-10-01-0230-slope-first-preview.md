@@ -1,4 +1,4 @@
-# 2026-10-01 0230 — Slope first, then Curve preview
+# 2026-10-01 0230 â€” Slope first, then Curve preview
 
 User reports Slope-first looked good, then the Curve Smooth preview introduced a
 visible kink, suspected to be terrain-related. Captured live state read-only:
@@ -38,3 +38,7 @@ approved most Curve-then-Slope toy results, with the off-ramp exception.
 
 Evidence: captures/slope-first-curve-preview and captures/slope-first-grade-comparison.
 No production changes this turn. Game left paused with user's original preview.
+
+Raw capture files referenced above are available in the
+[diagnostic archive](../diagnostic-archives.md); compact summaries and replay inputs
+remain tracked locally.

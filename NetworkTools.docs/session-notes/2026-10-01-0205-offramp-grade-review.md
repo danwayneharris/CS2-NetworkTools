@@ -1,4 +1,4 @@
-# 2026-10-01 0205 — Applied Constant Slope off-ramp review
+# 2026-10-01 0205 â€” Applied Constant Slope off-ramp review
 
 User visually approved Curve then Slope across the four toy networks, with some
 remaining vertical unevenness. Highway off-ramp after Constant Slope is the exception.
@@ -51,3 +51,7 @@ Evidence: captures/offramp-constant-slope-review, captures/offramp-grade-audit.
 No claim of vehicle traversal, visual approval of this specific ramp, or root-cause
 isolation from this read-only audit. User's other toy-network visual approval is
 recorded above separately from automated verification.
+
+Raw capture files referenced above are available in the
+[diagnostic archive](../diagnostic-archives.md); compact summaries and replay inputs
+remain tracked locally.

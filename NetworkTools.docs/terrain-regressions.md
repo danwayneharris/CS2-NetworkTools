@@ -94,3 +94,6 @@ this as an option for discussion after defining which error it controls. It has
 not been implemented and did not alter any assertion in this pass. In particular,
 it must not silently permit lost connections or conflate native center alignment
 with movement of authored pins or elevations.
+
+See [diagnostic archives](diagnostic-archives.md) for full raw runs, checksums and
+recovery instructions. Curated summaries and offline replay inputs stay in Git.

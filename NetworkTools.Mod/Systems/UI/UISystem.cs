@@ -175,7 +175,10 @@
 
         private void RegisterParameterBinding(ParameterBase param) {
             if (param is FloatParameter fp) {
-                var b = CreateBinding(fp.Key, fp.Value, v => fp.Value = v);
+                ValueBindingHelper<float> b = null;
+                b = CreateBinding(fp.Key, fp.Value, v => {
+                    if (!fp.TrySetValue(v, ChangeOrigin.Code)) b.Value = fp.Value;
+                });
                 fp.OnChanged += _ => b.Value = fp.Value;
             } else if (param is IntParameter ip) {
                 var b = CreateBinding(ip.Key, ip.Value, v => ip.Value = v);

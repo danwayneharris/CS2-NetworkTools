@@ -22,7 +22,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
         // Exact typed component copies, scoped to this tool instance/world.
         // Not a complete fingerprint of every prefab or lane-generation input.
         private List<object> CaptureOriginalProbeInputs() {
-            if (!m_PathDataValid || m_NodeStates.Length > 128) { return null; }
+            if (!m_PathDataValid || m_NodeStates.Length > 128 || !CurrentPathCanBeGathered()) { return null; }
             var values = new List<object>();
             var edges = new HashSet<Entity>();
             for (var i = 0; i < m_NodeStates.Length; i++) {

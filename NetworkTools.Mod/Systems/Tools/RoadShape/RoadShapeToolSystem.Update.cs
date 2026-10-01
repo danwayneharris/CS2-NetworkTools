@@ -146,7 +146,9 @@ namespace NetworkTools.Systems.Tools.RoadShape {
         }
 
         public string ApplyRestrictionKey => UnsupportedReleaseJunction
-            ? "NetworkTools.UI.Curve.ReleaseJunctionUnsupported" : "";
+            ? "NetworkTools.UI.Curve.ReleaseJunctionUnsupported"
+            : Phase == OperationPhase.Ready && !m_PathDataValid
+                ? "NetworkTools.UI.Shape.SelectionUnavailable" : "";
 
         private int SmoothPreviewResult {
             get {

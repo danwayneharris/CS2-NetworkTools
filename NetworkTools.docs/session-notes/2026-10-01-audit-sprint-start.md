@@ -27,3 +27,9 @@ F01: Release rejects Curve Smooth candidates containing degree > 2 nodes, includ
 
 Read-only live preflight matched the existing settled toy snapshot exactly: fingerprint ddd31890adfa9fbe7cb861d45eb67938c9610c893a4ed677e059e41fc313e150 and all 37 shared-node normalized lane mappings. Game remains paused, citySession 65dfb793e5a04bdc9f3bffdffcb8fb3b; no game mutations yet.
 
+
+## Independent review and integrated offline run
+
+Review caught deleted selected endpoints reaching direct lookup during regather. Explicit selected-node/edge liveness, component presence, ordered adjacency and both incident-buffer memberships now reject before gathering, preventing missing-edge zero states from acquiring a fresh baseline. Snapshot bounds remain a deliberate supported envelope for this iteration; broader selection support is deferred. The shared panel explains invalid/oversized selection. The first UI text edit script stopped on an exact-match assertion after removing the curve-only hint; this follow-up completes the shared-panel hint. No deployment occurred between those edits.
+
+All seven offline stages passed before the final preflight/UI edits: geometry, path search, parameters, codegen, production slope/incident tests, original-input comparison, and Python. Debug compile and production slope tests also pass after preflight. The UI float callback restores rejected optimistic values without emitting a parameter change. Native UI and final integrated tests remain pending.

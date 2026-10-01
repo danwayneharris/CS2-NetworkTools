@@ -30,3 +30,12 @@ Optional trace/captured-replay modes, Release/Burst, native preview/Apply, vehic
 traversal and human visuals remain explicitly not run by this command. Existing
 Python runner is reused rather than duplicated. Mathematical analytical tolerances
 are not replaced with the live 5 cm geometric-displacement policy.
+
+## Integration follow-up
+
+Added required standalone parameter and codegen suites after their agents provided
+entry points and completion markers. The original-input marker now accepts its
+positive reported count (parent expanded 11 to 16 checks) rather than hardcoding
+an obsolete count. All seven required stages still reject zero/absent execution
+evidence. Six orchestration unit tests passed again; no production builds run by
+this subtask.

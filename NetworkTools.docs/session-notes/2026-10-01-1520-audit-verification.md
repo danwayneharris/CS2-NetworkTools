@@ -49,3 +49,7 @@ Ordinary UI selection/Apply and rejected-input display were not exercised by pro
 Game left paused on `CitiesIIAgentBridge-review-surface-profile-settled-20261001-130556-32145a5a.cok`, city session `f8e6ac95ac7245699eecf35603657ac4`. Exact region geometry and normalized directed/physical lane mappings at all 37 shared nodes match the prior milestone after reload. No unsaved network edits followed this reload.
 
 The passing Connect result was saved before leaving it as `CitiesIIAgentBridge-regression-before-reload-20261001-221943-30be23b5.cok`. All earlier case checkpoints are in the compact JSON. Original baseline saves were never overwritten. The deployed build is the Debug DLL hash above; no source changes followed its build.
+
+## Publication
+
+Draft [PR #14](https://github.com/danwayneharris/CS2-NetworkTools/pull/14) is stacked on open PR #13 (`dan/terrain-profile-sprint`). Base head was rechecked unchanged before creation. No merge or history rewrite was performed. Final handoff rechecked the same paused toy city session. Remaining native/manual checks above are the reason for draft status.

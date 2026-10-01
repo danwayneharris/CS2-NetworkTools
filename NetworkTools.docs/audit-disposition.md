@@ -1,10 +1,11 @@
-# Audit disposition ? October 1 correctness sprint
+# Audit disposition - October 1 correctness sprint
 
 Working disposition, not a completed verification report. Baseline is terrain/profile
 PR #13, `ee9c3bc`; the two source audits inspected older/different revisions. This
 sprint uses `dan/audit-correctness-sprint`. Source and later evidence take precedence
-over historical descriptions. Final build/native results and PR identity will be
-added after integration; no live qualification of new fixes is claimed here.
+over historical descriptions. Build/offline results are recorded below; final native
+results and PR identity remain to be added. No live qualification of new fixes is
+claimed by this build-only update.
 
 Read the [test/documentation audit](test-coverage-audit-2026-10-01-nt-f3998ae6-bridge-e7979207.md)
 first, then the [architecture audit](architecture-code-review-2026-10-01-main-ed3ab81-upstream-7d1f3d0.md).
@@ -15,7 +16,7 @@ than treating every historical TODO as mandatory implementation.
 
 | Finding | Disposition at this checkpoint | Evidence / bounded action |
 | --- | --- | --- |
-| F01 Release junction envelope | In progress; native/Release qualification pending | `RoadShapeToolSystem.Update.cs` restricts Release CurveSmooth degree>2 nodes, including endpoints, because required native junction validators are Debug-only. Surface correction stays Debug-only. Do not equate Release C# compilation with Burst/native execution. |
+| F01 Release junction envelope | Implemented; full Release/Burst build passed, native Release verification pending | `RoadShapeToolSystem.Update.cs` restricts Release CurveSmooth degree>2 nodes, including endpoints, because required native junction validators are Debug-only. Surface correction stays Debug-only. Full Release compile/postprocessing and Windows Burst compilation of 22 methods passed; native Release execution remains unverified. |
 | F02 transform-input freshness | In progress; live verification pending | `PathData.cs` captures a baseline with cached transform data; `JobMethods.cs` compares originals before fit and copies that baseline into submission. Changed preview inputs refresh; changed Apply inputs reject. No universal native completion fence is claimed. |
 | F03 two-ended side-edge edits | Implemented; offline verification only so far | `bc164e6` composes both endpoint deltas into one affected-edge result for preview and Apply. Regression covers distinct two-ended deltas/reversed storage; live topology case remains necessary. |
 | F04 arrival-dependent search | Implemented; offline verification | `1ef0440`: production-source graph tests cover incoming-edge-dependent cost, ties and exhaustive small graphs. Unity native-container execution and real-city performance are separate. |
@@ -27,11 +28,11 @@ than treating every historical TODO as mandatory implementation.
 | F10 preserve Node fields | Implemented; offline verification only so far | `bc164e6` changes position while retaining original rotation/other fields. Audit proved a field write problem, not universal visible corruption; native reconstruction effects still need observation. |
 | F11 history-dependent candidate choice | Intentionally retained; disagree that canonicalization is automatically required | `JunctionCandidateSearch`, `JunctionSearchTests` and `interior-junctions.md` already document/test warm start as a hint, with revalidation. A canonical minimum-rotation objective changes product behavior and requires Dan's judgment. |
 | F12 observer performance/status | Deferred broad consolidation; instrumentation retained | Work/allocation pattern is established, timing cost is not. Keep dependency completion and native observations. Measure gather/job/native wait/observer work separately before changing ownership, caching or synchronization. |
-| F13 generator diagnostics | Implemented; standalone offline verification | `286080d` rejects unsupported/empty/duplicate metadata with source diagnostics and tests configuration-specific declarations, current Debug/Release output and malformed fixtures. The generator remains small; full mod/UI integration is pending. |
-| F14 build/test entry points | Implemented focused offline entry point; stage separation partial | `e1fce2f` adds `run-offline-tests.py` and standalone `bootstrap -OfflineTest`; six fake-child tests and PowerShell parse passed; `100e44f` adds the parameter/codegen stages. Aggregate execution pending. Existing package/deploy coupling remains; no new package-only command is implied. |
+| F13 generator diagnostics | Implemented; standalone offline verification | `286080d` rejects unsupported/empty/duplicate metadata with source diagnostics and tests configuration-specific declarations, current Debug/Release output and malformed fixtures. The generator remains small; full Debug compile/postprocessing/UI/deployment and full Release build passed. UI behavior/native Release execution are not established by these builds. |
+| F14 build/test entry points | Implemented focused offline entry point; stage separation partial | `e1fce2f` adds `run-offline-tests.py` and standalone `bootstrap -OfflineTest`; six fake-child tests and PowerShell parse passed; `100e44f` adds the parameter/codegen stages. Final aggregate passed 7/7 suites. Existing package/deploy coupling remains: a Release staging attempt copied the DLL to the real local deployment while staging UI, so no isolated package-only command is verified. |
 | F15 presentation/source organization | Partly reconciled docs; cosmetic refactors deferred | Preserve personal fork tone and local marker. Split localization remains a useful follow-up. Protocol relocation, Point renaming and wholesale formatting are not correctness prerequisites. Diagnostic self-check removal requires equivalent evidence first. |
 
-?Implemented? means code and the stated offline evidence exist, not release-ready.
+`Implemented` means code and the stated offline evidence exist, not release-ready.
 Session notes retain failed attempts and test boundaries. No finding is closed by
 merely compiling a project or recording an assertion without enforcing it.
 
@@ -42,7 +43,7 @@ merely compiling a project or recording an assertion without enforcing it.
 | Compatible checkout/API pair and actual offline entry point | Generic provider migration already exists on this baseline; retain independent bridge/consumer protocol compatibility. New aggregate replaces guessing from the empty legacy NUnit project, while legacy `-Test` still deploys and now warns. |
 | Connect preservation and unique coverage | Addressed by F06; final native results pending. |
 | Slope incident-edge and lane assertions | Baseline profile runner already has stronger incident-translation checks than the old audited smoke path. Keep translation-permitted semantics; F03 extends correct two-ended composition. New live matrix pending. |
-| Debug versus Release coverage | F01 restricts unsupported junction behavior; full Release/Burst qualification remains separate, never inferred from old logs. |
+| Debug versus Release coverage | F01 restricts unsupported junction behavior. Current full Debug build/deploy and full Release/Burst compilation passed; Release native execution remains unverified. |
 | Historical strict node-center drift | Preserve historical failures/measurements. Dan's current live position/displacement tolerance is 5 cm; no millimeter-only blocker is revived. Topology, lane identity/connectivity, stale evidence and accumulating material drift remain strict. |
 | Vehicle traversal and non-merging rail crossings | Deferred: native lane sets do not prove actual routing/access or traffic movement. Need a verified crossing fixture and bounded traversal oracle/human review. |
 | Lifecycle races, rapid edits, city changes | Focused original-input/revision regressions support F02/F09. Exhaustive native ECS disposal/race stress is not established and remains follow-up. |
@@ -91,8 +92,37 @@ capture can be gated independently; required safety validation cannot be gated o
 with them. Record deliberate removal and verify consumers before replacing probes.
 No native-container lifetime fence is removed for cosmetic simplification.
 
-Pending final integration: aggregate execution, Debug build/native cases, Release
-stage outcomes, ordinary UI/manual review, final deployed identity and game state.
+Pending final integration: native cases, ordinary UI/manual review, Release native
+execution, final deployed identity and game state.
 Dan's visual checklist will be added after the actual candidate is known. Broader
 bridge, traversal, asset compatibility, terrain routing and generalized combined
 tool work remain outside this sprint.
+
+
+## Build/offline checkpoint (October 1; native tests tracked separately)
+
+- Final offline aggregate: **7/7 suites passed**, recorded in local ignored
+  `artifacts/audit-offline-final/summary.json`: geometry, path selection, parameters,
+  generator, compiled-production Slope, original-input comparison, and Python.
+  Its Git revision/working-tree probes recorded a missing-executable error because
+  Git was absent from that process PATH; this metadata limitation does not change
+  the recorded suite results. Final provenance must use the separately checked
+  source revision rather than inventing one in that historical summary.
+- Full Debug compilation, postprocessing, UI build and local deployment passed
+  (`artifacts/audit/debug-deploy.log`).
+- Full Release build passed, including Windows Burst compilation of one library
+  containing **22 methods** (`artifacts/audit/release-package.log`). Native execution
+  of that Release build is **not verified**. Surface correction remains Debug-only.
+- The attempted isolated Release staging was **not isolated**: SDK deployment
+  copied the native DLL to the real local `Mods/NetworkTools` directory, while the
+  process-scoped UI environment staged CSS/JavaScript under the artifacts directory.
+  The game was closed. A subsequent full normal Debug deployment restored a
+  consistent DLL/UI installation before further testing. This is a failed packaging
+  experiment, not evidence of a package-only workflow.
+
+Source inspection explains the split configuration: SDK `Mod.props` reads
+User-scoped paths, and webpack reads process `CSII_USERDATAPATH`. However, a genuine
+global `DeployDir` override was honored in a later property-only evaluation, so
+the failed build's argument propagation is not conclusively explained. Do not
+claim changing process environment alone isolates deployment. A future package
+helper needs an explicit destination assertion before the SDK deletion/copy step.

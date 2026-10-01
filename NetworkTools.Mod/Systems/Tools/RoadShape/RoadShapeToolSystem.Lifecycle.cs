@@ -71,6 +71,10 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             RenderHandles            = true;
             DisableVanillaValidation = true;
 
+            // Apply edits existing edges; it never combines adjacent segments. Keep
+            // the native preview on the same topology, including unselected branches.
+            DisableVanillaNodeReduction = true;
+
             // Template change additionally applies presets and reinitializes
             Template.OnChanged += _ => {
                 ApplyTemplatePreset(Template.Value);

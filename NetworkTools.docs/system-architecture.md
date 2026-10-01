@@ -374,3 +374,15 @@ Connect and Parallel now default to **Same as selected**. An explicit asset choi
 still overrides that behavior. Parallel inherits each source edge's prefab;
 Connect uses its first selected node's prefab. Other non-nullable pickers prefer
 the last network selected in the game, then a prioritized road fallback.
+
+### RoadShape preview topology (October 1)
+
+Curve and Slope now disable vanilla node reduction while their shared RoadShape
+system is active, using the existing BaseToolSystem lifecycle switch. Apply edits
+existing edges directly; it never combines them. Native preview reduction had
+combined an unselected rail branch with its neighbor, leaving lane owners that no
+longer corresponded to the original incident edges and correctly blocking Apply.
+Preserving the same segmentation fixes that preview/Apply discrepancy while keeping
+geometry, freshness and directed-connection validation intact. The base lifecycle
+re-enables node reduction when the tool stops. The captured rail and highway cases
+passed strict permanent-result checks; see [the experiment and its limits](session-notes/2026-10-01-0145-preview-topology.md).

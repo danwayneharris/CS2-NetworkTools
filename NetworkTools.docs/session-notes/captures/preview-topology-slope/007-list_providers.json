@@ -1,0 +1,654 @@
+{
+  "protocol": 1,
+  "id": "8b5b5ae5647a43e78e75ed46531fefc4",
+  "session": "3b83c9eb91564ad7bb24bd0ca51ad093",
+  "citySession": "a5fae5bc608b485398d9ba453e25d324",
+  "utc": "2026-10-01T08:49:01.4124000Z",
+  "result": {
+    "protocol": 1,
+    "providers": [
+      {
+        "protocol": 1,
+        "id": "networktools",
+        "version": "1.1.0",
+        "commands": [
+          {
+            "name": "state",
+            "readOnly": true,
+            "description": "Smooth Curve state. Requires a loaded paused city. Changes require local controls. Apply acceptance is not completion; verify permanent geometry independently.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            },
+            "outputSchema": {
+              "type": "object"
+            }
+          },
+          {
+            "name": "activate",
+            "readOnly": false,
+            "description": "Smooth Curve activate. Requires a loaded paused city. Changes require local controls. Apply acceptance is not completion; verify permanent geometry independently.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            },
+            "outputSchema": {
+              "type": "object"
+            }
+          },
+          {
+            "name": "clear",
+            "readOnly": false,
+            "description": "Smooth Curve clear. Requires a loaded paused city. Changes require local controls. Apply acceptance is not completion; verify permanent geometry independently.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "session": {
+                  "type": "string"
+                },
+                "revision": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "session",
+                "revision"
+              ],
+              "additionalProperties": false
+            },
+            "outputSchema": {
+              "type": "object"
+            }
+          },
+          {
+            "name": "select",
+            "readOnly": false,
+            "description": "Smooth Curve select. Requires a loaded paused city. Changes require local controls. Apply acceptance is not completion; verify permanent geometry independently.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "session": {
+                  "type": "string"
+                },
+                "revision": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "start": {
+                  "type": "object",
+                  "properties": {
+                    "index": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "version": {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "index",
+                    "version"
+                  ],
+                  "additionalProperties": false
+                },
+                "end": {
+                  "type": "object",
+                  "properties": {
+                    "index": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "version": {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "index",
+                    "version"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "session",
+                "revision",
+                "start",
+                "end"
+              ],
+              "additionalProperties": false
+            },
+            "outputSchema": {
+              "type": "object"
+            }
+          },
+          {
+            "name": "strength",
+            "readOnly": false,
+            "description": "Smooth Curve strength. Requires a loaded paused city. Changes require local controls. Apply acceptance is not completion; verify permanent geometry independently.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "session": {
+                  "type": "string"
+                },
+                "revision": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "value": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              },
+              "required": [
+                "session",
+                "revision",
+                "value"
+              ],
+              "additionalProperties": false
+            },
+            "outputSchema": {
+              "type": "object"
+            }
+          },
+          {
+            "name": "split",
+            "readOnly": false,
+            "description": "Smooth Curve split. Requires a loaded paused city. Changes require local controls. Apply acceptance is not completion; verify permanent geometry independently.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "session": {
+                  "type": "string"
+                },
+                "revision": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "node": {
+                  "type": "object",
+                  "properties": {
+                    "index": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "version": {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "index",
+                    "version"
+                  ],
+                  "additionalProperties": false
+                },
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "session",
+                "revision",
+                "node",
+                "enabled"
+              ],
+              "additionalProperties": false
+            },
+            "outputSchema": {
+              "type": "object"
+            }
+          },
+          {
+            "name": "apply",
+            "readOnly": false,
+            "description": "Smooth Curve apply. Requires a loaded paused city. Changes require local controls. Apply acceptance is not completion; verify permanent geometry independently.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "session": {
+                  "type": "string"
+                },
+                "revision": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "submission": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "session",
+                "revision",
+                "submission"
+              ],
+              "additionalProperties": false
+            },
+            "outputSchema": {
+              "type": "object"
+            }
+          },
+          {
+            "name": "slope_state",
+            "readOnly": true,
+            "description": "slope state. Paused city and local controls required. Connect initially supports SimpleCurve between matching dead ends. Apply requires current observed preview; independently inspect permanent results.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            },
+            "outputSchema": {
+              "type": "object"
+            }
+          },
+          {
+            "name": "slope_activate",
+            "readOnly": false,
+            "description": "slope activate. Paused city and local controls required. Connect initially supports SimpleCurve between matching dead ends. Apply requires current observed preview; independently inspect permanent results.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            },
+            "outputSchema": {
+              "type": "object"
+            }
+          },
+          {
+            "name": "slope_clear",
+            "readOnly": false,
+            "description": "slope clear. Paused city and local controls required. Connect initially supports SimpleCurve between matching dead ends. Apply requires current observed preview; independently inspect permanent results.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "session": {
+                  "type": "string"
+                },
+                "revision": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "session",
+                "revision"
+              ],
+              "additionalProperties": false
+            },
+            "outputSchema": {
+              "type": "object"
+            }
+          },
+          {
+            "name": "slope_select",
+            "readOnly": false,
+            "description": "slope select. Paused city and local controls required. Connect initially supports SimpleCurve between matching dead ends. Apply requires current observed preview; independently inspect permanent results.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "session": {
+                  "type": "string"
+                },
+                "revision": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "start": {
+                  "type": "object",
+                  "properties": {
+                    "index": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "version": {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "index",
+                    "version"
+                  ],
+                  "additionalProperties": false
+                },
+                "end": {
+                  "type": "object",
+                  "properties": {
+                    "index": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "version": {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "index",
+                    "version"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "session",
+                "revision",
+                "start",
+                "end"
+              ],
+              "additionalProperties": false
+            },
+            "outputSchema": {
+              "type": "object"
+            }
+          },
+          {
+            "name": "slope_configure",
+            "readOnly": false,
+            "description": "slope configure. Paused city and local controls required. Connect initially supports SimpleCurve between matching dead ends. Apply requires current observed preview; independently inspect permanent results.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "session": {
+                  "type": "string"
+                },
+                "revision": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "mode": {
+                  "type": "string",
+                  "enum": [
+                    "linear",
+                    "ease",
+                    "arch"
+                  ]
+                },
+                "easeIn": {
+                  "type": "number",
+                  "minimum": 0.0,
+                  "maximum": 0.5
+                },
+                "easeOut": {
+                  "type": "number",
+                  "minimum": 0.0,
+                  "maximum": 0.5
+                },
+                "archHeight": {
+                  "type": "number",
+                  "minimum": -80.0,
+                  "maximum": 80.0
+                },
+                "archPosition": {
+                  "type": "number",
+                  "minimum": 0.1,
+                  "maximum": 0.9
+                },
+                "smoothStart": {
+                  "type": "boolean"
+                },
+                "smoothEnd": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "session",
+                "revision",
+                "mode",
+                "easeIn",
+                "easeOut",
+                "archHeight",
+                "archPosition",
+                "smoothStart",
+                "smoothEnd"
+              ],
+              "additionalProperties": false
+            },
+            "outputSchema": {
+              "type": "object"
+            }
+          },
+          {
+            "name": "slope_apply",
+            "readOnly": false,
+            "description": "slope apply. Paused city and local controls required. Connect initially supports SimpleCurve between matching dead ends. Apply requires current observed preview; independently inspect permanent results.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "session": {
+                  "type": "string"
+                },
+                "revision": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "submission": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "session",
+                "revision",
+                "submission"
+              ],
+              "additionalProperties": false
+            },
+            "outputSchema": {
+              "type": "object"
+            }
+          },
+          {
+            "name": "connect_state",
+            "readOnly": true,
+            "description": "connect state. Paused city and local controls required. Connect initially supports SimpleCurve between matching dead ends. Apply requires current observed preview; independently inspect permanent results.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            },
+            "outputSchema": {
+              "type": "object"
+            }
+          },
+          {
+            "name": "connect_activate",
+            "readOnly": false,
+            "description": "connect activate. Paused city and local controls required. Connect initially supports SimpleCurve between matching dead ends. Apply requires current observed preview; independently inspect permanent results.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            },
+            "outputSchema": {
+              "type": "object"
+            }
+          },
+          {
+            "name": "connect_clear",
+            "readOnly": false,
+            "description": "connect clear. Paused city and local controls required. Connect initially supports SimpleCurve between matching dead ends. Apply requires current observed preview; independently inspect permanent results.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "session": {
+                  "type": "string"
+                },
+                "revision": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "session",
+                "revision"
+              ],
+              "additionalProperties": false
+            },
+            "outputSchema": {
+              "type": "object"
+            }
+          },
+          {
+            "name": "connect_select",
+            "readOnly": false,
+            "description": "connect select. Paused city and local controls required. Connect initially supports SimpleCurve between matching dead ends. Apply requires current observed preview; independently inspect permanent results.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "session": {
+                  "type": "string"
+                },
+                "revision": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "start": {
+                  "type": "object",
+                  "properties": {
+                    "index": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "version": {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "index",
+                    "version"
+                  ],
+                  "additionalProperties": false
+                },
+                "end": {
+                  "type": "object",
+                  "properties": {
+                    "index": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "version": {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "index",
+                    "version"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "session",
+                "revision",
+                "start",
+                "end"
+              ],
+              "additionalProperties": false
+            },
+            "outputSchema": {
+              "type": "object"
+            }
+          },
+          {
+            "name": "connect_configure",
+            "readOnly": false,
+            "description": "connect configure. Paused city and local controls required. Connect initially supports SimpleCurve between matching dead ends. Apply requires current observed preview; independently inspect permanent results.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "session": {
+                  "type": "string"
+                },
+                "revision": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "startControl": {
+                  "type": "array",
+                  "minItems": 3,
+                  "maxItems": 3,
+                  "items": {
+                    "type": "number",
+                    "minimum": -100000.0,
+                    "maximum": 100000.0
+                  }
+                },
+                "endControl": {
+                  "type": "array",
+                  "minItems": 3,
+                  "maxItems": 3,
+                  "items": {
+                    "type": "number",
+                    "minimum": -100000.0,
+                    "maximum": 100000.0
+                  }
+                }
+              },
+              "required": [
+                "session",
+                "revision",
+                "startControl",
+                "endControl"
+              ],
+              "additionalProperties": false
+            },
+            "outputSchema": {
+              "type": "object"
+            }
+          },
+          {
+            "name": "connect_apply",
+            "readOnly": false,
+            "description": "connect apply. Paused city and local controls required. Connect initially supports SimpleCurve between matching dead ends. Apply requires current observed preview; independently inspect permanent results.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "session": {
+                  "type": "string"
+                },
+                "revision": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "submission": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "session",
+                "revision",
+                "submission"
+              ],
+              "additionalProperties": false
+            },
+            "outputSchema": {
+              "type": "object"
+            }
+          }
+        ],
+        "revision": "70035e3d141b345de245012333bff02ca153cae438f9f957fbf612c34cb5a3fd",
+        "availability": "discovered_not_runtime_verified"
+      }
+    ],
+    "complete": true,
+    "errors": []
+  },
+  "ok": true
+}

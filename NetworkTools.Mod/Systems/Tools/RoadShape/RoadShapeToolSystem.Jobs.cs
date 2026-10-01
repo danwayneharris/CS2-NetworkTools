@@ -40,6 +40,8 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             public NativeReference<int> SmoothResult;
 #if IS_DEBUG
             public int SmoothTraceId;
+            [ReadOnly] public NativeParallelHashMap<Entity, EdgeGeometry> SurfaceReferences;
+            public NativeReference<int> SurfaceCorrected;
             [ReadOnly] public NativeList<Entity> SmoothSelectedNodes;
 #endif
 
@@ -79,14 +81,16 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                 switch (Config.Template) {
                     case ShapeTransformTemplate.SlopeLinear:
                         var linearValid = SlopeLinearProfileTransform.Execute(ref edges, ref nodes, in Context, in Config);
+#if IS_DEBUG
                         if (linearValid) {
                             var surfaceFit = SlopeSurfaceProfileTransform.TryExecute(ref edges, ref nodes, in Config, in ConnectedEdgeLookup,
                                 in SurfaceGeometryLookup, in SurfaceNodeGeometryLookup, in PrefabRefLookup,
-                                in SurfacePrefabGeometryLookup, in SurfaceCompositionLookup, in SurfaceCompositionDataLookup);
-#if IS_DEBUG
+                                in SurfacePrefabGeometryLookup, in SurfaceCompositionLookup, in SurfaceCompositionDataLookup,
+                                in CurveLookup, in EdgeLookup, in NodeLookup, in SurfaceReferences);
+                            SurfaceCorrected.Value = surfaceFit ? 1 : 0;
                             TraceSurfaceFit(surfaceFit);
-#endif
                         }
+#endif
                         SmoothResult.Value = linearValid ? 1 : -1;
                         if (!linearValid) {
 #if IS_DEBUG

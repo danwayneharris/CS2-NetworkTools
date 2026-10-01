@@ -24,6 +24,7 @@ internal static class Program {
         TargetReplay.Run(args);
         VerticalProfileTests.Run();
         SurfaceResponseTests.Run();
+        SurfacePreviewTests.Run();
         NativeProfileReplayTests.Run();
         FailureTests.Run();
         JunctionSearchTests.Run();

@@ -32,6 +32,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
 #if IS_DEBUG
             ConfigureJunctionSearch(ref config);
             ConfigureInteriorJunctions(ref config);
+            ConfigureSurfacePreview();
 #endif
             // The result is consumed by the UI only after this job completes.
             m_LastShapeJob.Complete();
@@ -71,6 +72,8 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                 SmoothResult = m_SmoothResult,
 #if IS_DEBUG
                 SmoothTraceId = ++m_SmoothTraceId,
+                SurfaceReferences = m_SurfaceReferences,
+                SurfaceCorrected = m_SurfaceCorrected,
                 SmoothSelectedNodes = m_SelectedNodes,
 #endif
             }.Schedule(inputDeps);

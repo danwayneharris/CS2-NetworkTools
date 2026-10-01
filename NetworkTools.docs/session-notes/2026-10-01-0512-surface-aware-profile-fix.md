@@ -70,3 +70,35 @@ The npm-generated lockfile rewrite was inspected and backed up under artifacts
 before restoration. Root dependency declarations were unchanged. An initial
 unprotected restoration was blocked by automatic review; the preserved, verified
 cleanup subsequently succeeded. No original-worktree edits were touched.
+
+
+## Repeat feedback and second candidate
+
+Reverse-order repeated Apply preserved topology, lane mappings and preview/Apply
+agreement, but moved an interior node another 1.1683 m. This is a failed idempotence
+check. First visually approved result is saved as
+CitiesIIAgentBridge-review-surface-profile-first-20261001-122611-790afd05.cok.
+The later repeat was also checkpointed before graceful shutdown:
+CitiesIIAgentBridge-regression-before-reload-20261001-123014-7628d513.cok.
+
+Second candidate models all incident SmoothElevation curves' weighted node height
+and permanent same-layer flattening before evaluating the surface target. A bounded
+six-iteration numerical residual solve includes that feedback. Original horizontal
+cut locations remain an observed approximation, guarded by an XZ agreement check.
+This targets repeatability; Dan explicitly deprioritized mathematically perfect
+constant slope after confirming the first candidate removed visible jank.
+Second full Debug deployment passed. DLL SHA256:
+1E4E13B80B8D8924CC5EC1D945B84839C10FE0A16AFE80C954BF68BCDE84A047.
+
+
+The second (full-feedback residual) candidate declined the ramp and retained the
+ordinary fit: geometry fingerprint was unchanged and debug reported correction
+False. This is not a successful stability result. Following Dan's clarification,
+stop requiring a perfect self-consistent native grade. Third candidate instead
+uses the source-derived junction height of the ordinary profile plus unchanged
+incident authored curves as a STABLE REFERENCE, rather than the last generated
+surface height. It preserves the approximate first-candidate objective while
+removing the previous-Apply feedback source. Native final grade remains an observed
+output, not claimed equal to that reference target. In-game repeat verification
+is still required. A private generic NativeArray evaluator probe was rejected at
+parse time; no memory was allocated or game geometry modified by that probe.

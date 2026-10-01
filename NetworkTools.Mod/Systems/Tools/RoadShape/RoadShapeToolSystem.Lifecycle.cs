@@ -88,10 +88,18 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             m_NodeStates = new NativeList<NodeState>(33, Allocator.Persistent);
             m_SmoothResult = new NativeReference<int>(Allocator.Persistent);
             m_PathDataValid = false;
+#if IS_DEBUG
+            m_SurfaceReferences = new NativeParallelHashMap<Entity, EdgeGeometry>(512, Allocator.Persistent);
+            m_SurfaceCorrected = new NativeReference<int>(Allocator.Persistent);
+#endif
         }
 
         protected override void OnDestroy() {
             m_LastShapeJob.Complete();
+            #if IS_DEBUG
+            if (m_SurfaceReferences.IsCreated) { m_SurfaceReferences.Dispose(); }
+            if (m_SurfaceCorrected.IsCreated) { m_SurfaceCorrected.Dispose(); }
+#endif
             if (m_SmoothResult.IsCreated) { m_SmoothResult.Dispose(); }
             // Dispose cached path data
             if (m_EdgeStates.IsCreated) {

@@ -9,7 +9,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
     using Point = NetworkTools.Geometry.PlanarFairing.Point;
 
     /// <summary>
-    /// Experimental fixed-surface-anchor fit for a ground ramp whose junction consumes
+    /// Experimental stable-reference surface fit for a ground ramp whose junction consumes
     /// the first native half-curve. Unsupported/poorly fitted cases retain the regular fit.
     /// No terrain feedback, topology changes or edits to unselected incident edges.
     /// </summary>
@@ -28,7 +28,9 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             in ShapeJobConfig config, in BufferLookup<ConnectedEdge> connections,
             in ComponentLookup<EdgeGeometry> geometry, in ComponentLookup<NodeGeometry> nodeGeometry,
             in ComponentLookup<PrefabRef> prefabs, in ComponentLookup<NetGeometryData> netGeometry,
-            in ComponentLookup<Composition> compositions, in ComponentLookup<NetCompositionData> compositionData) {
+            in ComponentLookup<Composition> compositions, in ComponentLookup<NetCompositionData> compositionData,
+            in ComponentLookup<Curve> curveLookup, in ComponentLookup<Edge> edgeLookup, in ComponentLookup<Node> nodeLookup,
+            in NativeParallelHashMap<Entity, EdgeGeometry> references) {
             var count = edges.Length;
             if (count < 2 || count > 64 || config.SmoothStart || config.SmoothEnd) { return false; }
             var reverse = connections.HasBuffer(nodes[count].Entity) && connections[nodes[count].Entity].Length >= 3;
@@ -52,12 +54,41 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             }
             var firstEdge = edges[reverse ? count - 1 : 0];
             if (!geometry.TryGetComponent(firstEdge.EdgeEntity, out var original)) { return false; }
+            if (references.TryGetValue(firstEdge.EdgeEntity, out var referenced)) { original = referenced; }
             var forward = firstEdge.IsForward != reverse;
             var firstLeft = forward ? original.m_Start.m_Left : MathUtils.Invert(original.m_End.m_Right);
             var firstRight = forward ? original.m_Start.m_Right : MathUtils.Invert(original.m_End.m_Left);
             var compFirst = compositions[firstEdge.EdgeEntity];
             var width = compositionData[compFirst.m_Edge].m_Width;
             var slopeLimit = netGeometry[prefabs[firstEdge.EdgeEntity].m_Prefab].m_MaxSlopeSteepness;
+            var incidentEdges = connections[nodes[startIndex].Entity];
+            if (incidentEdges.Length > 8) { return false; }
+            var incidents = new NativeArray<SurfaceJunctionHeightModel.Incident>(incidentEdges.Length, Allocator.Temp);
+            var cursor = 1;
+            var collectValid = true;
+            for (var i = 0; i < incidentEdges.Length && collectValid; i++) {
+                var entity = incidentEdges[i].m_Edge;
+                if (!edgeLookup.TryGetComponent(entity, out var edge) || !curveLookup.TryGetComponent(entity, out var curve)
+                    || !prefabs.TryGetComponent(entity, out var prefab) || !netGeometry.TryGetComponent(prefab.m_Prefab, out var ng)
+                    || (ng.m_Flags & GeometryFlags.SmoothElevation) == 0 || ng.m_MergeLayers == Layer.None
+                    || !geometry.TryGetComponent(entity, out var geom) || !compositions.TryGetComponent(entity, out var comp)
+                    || !compositionData.TryGetComponent(comp.m_Edge, out var cd) || math.abs(cd.m_MiddleOffset) > .001f) { collectValid = false; break; }
+                if (references.TryGetValue(entity, out var referencedIncident)) { geom = referencedIncident; }
+                var outward = edge.m_Start == nodes[startIndex].Entity;
+                var other = outward ? edge.m_End : edge.m_Start;
+                if (!nodeLookup.TryGetComponent(other, out var far) || !nodeGeometry.TryGetComponent(other, out var farGeom)
+                    || math.abs(farGeom.m_Offset) > .001f || farGeom.m_Flatness != 0) { collectValid = false; break; }
+                var selected = entity == firstEdge.EdgeEntity;
+                incidents[selected ? 0 : cursor++] = new SurfaceJunctionHeightModel.Incident {
+                    Curve = outward ? curve.m_Bezier : MathUtils.Invert(curve.m_Bezier),
+                    Start = nodes[startIndex].Position, End = far.m_Position, EndHeight = farGeom.m_Position,
+                    Width = cd.m_Width, MaxSlope = ng.m_MaxSlopeSteepness, Layers = ng.m_MergeLayers,
+                    Left = outward ? geom.m_Start.m_Left.a : geom.m_End.m_Right.d,
+                    Right = outward ? geom.m_Start.m_Right.a : geom.m_End.m_Left.d
+                };
+            }
+            Trace(0, collectValid);
+            if (!collectValid) { incidents.Dispose(); return false; }
             var curves = new NativeArray<Bezier4x3>(count, Allocator.Temp);
             var weights = new NativeArray<float>(count + 1, Allocator.Temp);
             var lengths = new NativeArray<float>(count, Allocator.Temp);
@@ -82,13 +113,19 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             var residual = stackalloc double[16];
             var solution = stackalloc double[3];
             if (valid) { valid = Model(curves, weights, total, startPosition, nextPosition,
-                nodeGeometry[nodes[startIndex].Entity].m_Position, width, firstLeft.a, firstRight.a, float3.zero, baseOutput); }
+                nodeGeometry[nodes[startIndex].Entity].m_Position, width, firstLeft.a, firstRight.a, float3.zero, incidents, true, baseOutput); }
+            Trace(1, valid);
             if (valid) {
                 var endLeft = forward ? original.m_End.m_Left : MathUtils.Invert(original.m_Start.m_Right);
                 var endRight = forward ? original.m_End.m_Right : MathUtils.Invert(original.m_Start.m_Left);
                 valid = SameXZ(baseOutput[0], firstLeft) && SameXZ(baseOutput[1], endLeft)
                     && SameXZ(baseOutput[2], firstRight) && SameXZ(baseOutput[3], endRight);
             }
+            Trace(2, valid);
+            // Stable reference: derive the anchor from the ordinary profile and
+            // unchanged incident authored curves, not the last generated surface.
+            // This avoids feeding the previous Apply's raised surface into the fit.
+            if (valid) { firstLeft.a.y = baseOutput[0].a.y; firstRight.a.y = baseOutput[2].a.y; }
             var target = new NativeArray<Bezier4x3>(4, Allocator.Temp);
             if (valid) {
                 var centerStart = Average(baseOutput[0], baseOutput[2]);
@@ -114,15 +151,16 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                 for (var p = 0; p < 3 && valid; p++) {
                     var delta = new float3(p == 0 ? 1 : 0, p == 1 ? 1 : 0, p == 2 ? 1 : 0);
                     valid = Model(curves, weights, total, startPosition, nextPosition,
-                        nodeGeometry[nodes[startIndex].Entity].m_Position, width, firstLeft.a, firstRight.a, delta, probeOutput);
+                        nodeGeometry[nodes[startIndex].Entity].m_Position, width, firstLeft.a, firstRight.a, delta, incidents, false, probeOutput);
                     for (var row = 0; row < 16; row++) { response[row * 3 + p] = Y(probeOutput[row / 4], row % 4) - Y(baseOutput[row / 4], row % 4); }
                 }
                 if (valid) { valid = SurfaceProfileResponseFit.Fit(response, residual, 16, solution, .05, 20); }
+                Trace(3, valid);
             }
             if (valid) {
                 var delta = new float3((float)solution[0], (float)solution[1], (float)solution[2]);
                 valid = Model(curves, weights, total, startPosition, nextPosition,
-                    nodeGeometry[nodes[startIndex].Entity].m_Position, width, firstLeft.a, firstRight.a, delta, probeOutput);
+                    nodeGeometry[nodes[startIndex].Entity].m_Position, width, firstLeft.a, firstRight.a, delta, incidents, false, probeOutput);
                 for (var row = 0; row < 16 && valid; row++) {
                     valid = math.abs(Y(probeOutput[row / 4], row % 4) - Y(target[row / 4], row % 4)) <= .05f;
                 }
@@ -146,8 +184,15 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                     }
                 }
             }
-            target.Dispose(); probeOutput.Dispose(); baseOutput.Dispose(); lengths.Dispose(); weights.Dispose(); curves.Dispose();
+            incidents.Dispose(); target.Dispose(); probeOutput.Dispose(); baseOutput.Dispose(); lengths.Dispose(); weights.Dispose(); curves.Dispose();
             return valid;
+        }
+
+        [Unity.Burst.BurstDiscard]
+        private static void Trace(int stage, bool valid) {
+#if IS_DEBUG
+            UnityEngine.Debug.Log("[NetworkTools SurfaceProfile] stage=" + stage + " valid=" + valid);
+#endif
         }
 
         private static bool SameXZ(Bezier4x3 a, Bezier4x3 b) =>
@@ -164,12 +209,16 @@ namespace NetworkTools.Systems.Tools.RoadShape {
 
         private static bool Model(NativeArray<Bezier4x3> curves, NativeArray<float> weights, float total,
             float3 nodeStart, float3 nodeEnd, float startHeight, float width, float3 leftAnchor, float3 rightAnchor,
-            float3 delta, NativeArray<Bezier4x3> output) {
+            float3 delta, NativeArray<SurfaceJunctionHeightModel.Incident> incidents, bool predictReference, NativeArray<Bezier4x3> output) {
             var c = Adjust(curves[0], 0, weights, total, delta);
             var next = Adjust(curves[1], 1, weights, total, delta);
             nodeEnd.y += delta.x * weights[1];
             var w0 = 1 / math.distance(c.c.xz, c.d.xz); var w1 = 1 / math.distance(next.a.xz, next.b.xz);
             var endHeight = .5f * (nodeEnd.y + (w0 * c.c.y + w1 * next.b.y) / (w0 + w1));
+            if (predictReference) {
+                if (!SurfaceJunctionHeightModel.Predict(incidents, c, nodeEnd, endHeight, out var predictedLeft, out var predictedRight)) { return false; }
+                leftAnchor.y = predictedLeft; rightAnchor.y = predictedRight;
+            }
             MathUtils.Distance(c.xz, nodeStart.xz, out var u); MathUtils.Distance(c.xz, nodeEnd.xz, out var v);
             u = u < .001f ? 0 : u; v = v > .999f ? 1 : v;
             if (v - u < .02f) { return false; }

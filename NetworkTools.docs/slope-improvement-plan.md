@@ -50,3 +50,14 @@ and [integration checkpoint](session-notes/2026-10-01-0331-constant-slope-integr
 The first forward/reverse native test now passes; see
 [native validation](session-notes/2026-10-01-0338-profile-native-validation.md). Ease/Arch and coordinated
 Curve/Slope remain separate work; this is not terrain-following behavior.
+
+
+## October 1 acceptance priority: stable improvement before perfect grade
+
+Dan visually confirmed the first surface-aware ramp candidate looks MUCH better
+and the small discontinuity is gone. That is valuable evidence, but repeating it
+moved an interior node by another 1.17 m. Idempotence (same operation again should
+not keep moving the network) takes priority over exact constant grade. Investigate
+and fix that feedback; retain the visual improvement. Small geometric residuals
+through 5 cm are accepted. Pursuing perfectly constant generated slopes is a
+much-lower-priority future refinement, not a reason to delay a stable useful tool.

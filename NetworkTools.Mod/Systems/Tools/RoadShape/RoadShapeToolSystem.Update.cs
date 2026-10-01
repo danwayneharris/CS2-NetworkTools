@@ -119,6 +119,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                 m_LastShapeJob.Complete();
 #if IS_DEBUG
                 if (Template.Value == ShapeTransformTemplate.CurveSmooth && !JunctionSearchAllowsApply()) { return 0; }
+                if (Template.Value == ShapeTransformTemplate.SlopeLinear && !SurfacePreviewAllowsApply()) { return 0; }
 #endif
                 return m_SmoothResult.IsCreated ? m_SmoothResult.Value : 0;
             }

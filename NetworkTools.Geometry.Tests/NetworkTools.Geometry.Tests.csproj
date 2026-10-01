@@ -5,6 +5,8 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="../NetworkTools.Mod/Geometry/JunctionCandidateSearch.cs" Link="JunctionCandidateSearch.cs" />
+    <Compile Include="../NetworkTools.Mod/Geometry/OriginalInputComparison.cs" Link="OriginalInputComparison.cs" />
     <Compile Include="../NetworkTools.Mod/Geometry/PlanarFairing.cs" Link="PlanarFairing.cs" />
     <Compile Include="../NetworkTools.Mod/Geometry/PlanarBezier.cs" Link="PlanarBezier.cs" />
     <Compile Include="../NetworkTools.Mod/Geometry/PlanarCubic.cs" Link="PlanarCubic.cs" />

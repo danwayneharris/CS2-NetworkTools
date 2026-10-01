@@ -343,3 +343,13 @@ offline replay commands, bridge review, and limits of the captured evidence.
 - Audit path extraction, cached geometry lifetime, and selection invalidation in detail.
 - Check preview/apply consistency and propagation into game network updates.
 - Inspect actual Anarchy-created networks and the relevant installed game/mod APIs.
+
+### Interior preview search latency (September 30)
+
+Debug interior-junction search now reuses a prior accepted angle as a hint when
+original inputs and ordered selection/split flags match. Every new revision still
+passes native validation. Stable complete mismatches advance after three equal
+observations; missing data retains conservative rejection. The first native search
+remains visible, and warm starts can retain a larger angle than a cold search at
+the same strength. See [interior junctions](interior-junctions.md) for measured
+latency, acceptance details and the outstanding strict node-center drift failure.

@@ -32,3 +32,12 @@ can break grade continuity. One ramp join went from matching -6.41% grades to
 This is not established as a terrain reconstruction error. Preserve node elevations
 as required, but investigate fitting vertical handles to compatible grades when
 combining tools. See [the captured evidence](session-notes/2026-10-01-0230-slope-first-preview.md).
+
+## Terrain-deformation hypothesis to investigate
+
+Moving the ramp away from the steep hillside, through strength changes or another
+pinned node, made the visible jank disappear in the maintainer's test. Investigate
+terrain modified by network placement versus terrain sampled without that network;
+verify the game's actual sampling/deformation layers before assuming a particular
+model. The measured centerline grade discontinuity does not rule out an additional
+terrain/rendered-surface effect. See [observation and setup notes](session-notes/2026-10-01-terrain-observation-plugins.md).

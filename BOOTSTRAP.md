@@ -13,7 +13,11 @@ The script supports Windows PowerShell 5.1 and PowerShell 7.
 # Restore packages, compile, postprocess, and deploy locally (close CS2 first).
 .\scripts\bootstrap.ps1 -Install -Build
 
-# Build and run the existing test project.
+# Run the actual offline suites; no deployment or game access.
+.\scripts\bootstrap.ps1 -OfflineTest
+
+# Legacy path: BUILDS/DEPLOYS, then invokes the legacy test project.
+# This does not execute the actual aggregate above.
 .\scripts\bootstrap.ps1 -Test
 ```
 
@@ -21,6 +25,32 @@ WinGet installations may show a Windows administrator/UAC prompt. The script
 does not publish to Paradox Mods, alter global NuGet sources, or change game code.
 The existing build replaces the local `NetworkTools` development mod directory.
 Back up any manually edited files there before building.
+
+## Verification commands and side effects
+
+| Command | What it does | Game/deployment effect |
+| --- | --- | --- |
+| `bootstrap.ps1` | Inspect prerequisites and refresh this process environment | None |
+| `bootstrap.ps1 -OfflineTest` | Geometry, path-selection, compiled-production Slope, original-input and Python suites; JSON/log summary under `artifacts/offline-tests` | No deployment or game connection; writes local build/test artifacts |
+| `uv run --no-project python scripts/run-offline-tests.py --output artifacts/offline-tests` | Same aggregate directly; needs tools on PATH | Same non-deploying scope |
+| `scripts/test-slope.ps1` | Compile Debug production code using `Compile`, then exercise it with game mathematics assemblies | No postprocessing, UI build or deployment; no ECS world |
+| `bootstrap.ps1 -Build` | Full SDK build, postprocessing, UI and local deployment | Replaces local mod; close CS2 first |
+| `bootstrap.ps1 -Test` | Legacy full build/deployment plus legacy test project | Deploys; does not certify current suites |
+| Live regression scripts | Checkpoint/reload/preview/Apply according to the selected script | May visibly restart and modify toy networks; read [runbook](NetworkTools.docs/live-regression-runner.md) first |
+
+`-OfflineTest` is standalone and Debug-only: do not combine it with `-Build`,
+`-Test`, `-Install`, `-Decompile`, `-CheckBridge`, or Release. It prefers uv and
+otherwise uses Python. Slope needs the installed CS2 toolchain and initialized
+Common submodule; .NET 8 and PowerShell are required. Missing prerequisites are
+blocked results, not passes. Required suites must emit execution evidence; every
+failed/blocked suite makes the aggregate exit nonzero. Optional trace/replay modes,
+native behavior, Release/Burst execution and visual/vehicle review are not implied.
+
+Normal builds still couple packaging and deployment through SDK targets. There
+is no new standalone package-only command in this sprint; do not assume that
+`dotnet build` is safe for an open game. Compile-only verification is a distinct,
+limited stage. Current audit work and configuration limits are tracked in the
+[audit disposition](NetworkTools.docs/audit-disposition.md).
 
 ## Optional: full local game source for investigation
 

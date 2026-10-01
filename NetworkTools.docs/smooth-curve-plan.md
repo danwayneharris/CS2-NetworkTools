@@ -1,13 +1,22 @@
 # Smooth Curve plan
 
-**Current status (Sept 29):** ordinary split points and Debug interior-junction
+**Current audit checkpoint (October 1):** the active horizontal fitter dispatches
+to `PlanarJunctionTarget` for the supported Debug interior-junction path, otherwise
+`PlanarSplitTarget` when ordinary split pins exist, otherwise `PlanarPathTarget`.
+Splits impose hard constraints even at zero strength. See [current architecture](system-architecture.md#10-smooth-curve-current-infrastructure)
+and [audit disposition](audit-disposition.md) for configuration restrictions and
+pending verification. Combined curve/slope behavior, side-bias controls and
+junction-as-split policy remain proposals. This sprint addresses correctness and
+observability, not new routing semantics.
+
+**Historical status (Sept 29):** ordinary split points and Debug interior-junction
 smoothing are implemented and have bounded native preview/Apply evidence. Read
 [split points](split-points.md), [interior junctions](interior-junctions.md), and the
 [sprint report](session-notes/2026-09-29-sprint-report.md) for current limits. Dated
 Sept 26–28 sections below record the earlier design history. Side-bias controls,
 junction-as-split semantics, and combined curve/slope smoothing remain proposals.
 
-**Current checkpoint (Sept 28, 2026):** Debug builds now experiment with native
+**Historical checkpoint (Sept 28, 2026):** Debug builds now experiment with native
 preview candidate search for one three-arm rail junction at a selection endpoint.
 One saved regression passed preview and Apply: a +3 degree boundary correction
 preserved all four directed track connections where the previous fit lost one.
@@ -28,9 +37,9 @@ This document records the scope and open design
 questions. See [system architecture](system-architecture.md#10-smooth-curve-current-infrastructure)
 for the existing integration points.
 
-## Goal
+## Historical first-target goal (September 26)
 
-The current experiment now integrates the boundary-target reconstruction tested
+The experiment at that checkpoint now integrates the boundary-target reconstruction tested
 in the [session notes](session-notes/2026-09-26-1806.md). It replaces the active
 node-fairing policy for simple forward-going selections, rejecting interior
 junctions. Earlier approaches are preserved in the session notes and geometry guide.
@@ -54,9 +63,9 @@ Preserving node elevations alone does not guarantee unchanged grades along segme
 horizontal movement changes distances, and curve control points also affect the
 vertical profile.
 
-## Geometry and integration questions
+## Historical geometry and integration questions (September 26)
 
-The current implementation builds one planar cubic from the selected outer curve
+The implementation at that checkpoint builds one planar cubic from the selected outer curve
 endpoints and their tangent directions. It partitions the target by original node
 chord-length ratios and blends all controls and interior nodes toward it. Endpoint
 nodes stay fixed; positive-strength selections with interior junctions or backward
@@ -112,8 +121,10 @@ actual architecture in the architecture guide and retain unresolved design work 
 See [rail junction rules](rail-junction-rules.md) for the installed game's curviness
 filter and an offline comparison of connected/disconnected merges. Exact eligibility
 replay still needs prefab limits and composition-derived connection geometry.
-Keep junction work local until it is further along. Bridge fork/push is a later
-repository-management task; the bridge remains a development-only tool.
+That checkpoint deferred bridge ownership/publishing; it is no longer an instruction
+to avoid the existing fork. The bridge now has its own repository and generic
+provider protocol; NetworkTools owns its integration. Ordinary gameplay does not
+require the bridge. Consult the current [provider guide](automation-provider.md).
 
 ## Signed length controls and split points (research, September 28)
 

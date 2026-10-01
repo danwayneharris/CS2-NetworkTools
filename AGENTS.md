@@ -28,9 +28,17 @@ Run from the repository root in PowerShell:
 .\scripts\bootstrap.ps1                         # Check prerequisites
 .\scripts\bootstrap.ps1 -Build                  # Debug build and local deployment
 .\scripts\bootstrap.ps1 -Build -Configuration Release
-.\scripts\bootstrap.ps1 -Test                   # Build and invoke existing tests
+.\scripts\bootstrap.ps1 -OfflineTest            # Actual offline suites; no deployment
+.\scripts\bootstrap.ps1 -Test                   # Legacy BUILD/DEPLOY + legacy test project
 ```
 
+- Prefer `-OfflineTest` for the actual geometry/path-selection/Slope/original-input/
+  Python aggregate. It writes build outputs and reports but does not deploy or
+  contact CS2. Slope requires installed game assemblies. The legacy `-Test` path
+  is not a substitute for this coverage. See [audit disposition](NetworkTools.docs/audit-disposition.md).
+- Inspect branch/worktree ownership before edits; use isolated worktrees when the
+  original checkout contains unrelated changes. Stage explicit task-owned paths,
+  especially when agents work concurrently. Never commit another agent's unfinished work.
 - Close CS2 before building. A build replaces the local development mod directory;
   it is not just compilation. Do not terminate the user's game without permission.
 - Run as the Windows user who installed the toolchain. MSBuild reads persistent
@@ -92,9 +100,25 @@ baseline record, not evidence that subsequent changes work.
 - The tool's built-in Anarchy option disables validation. Test geometry explicitly;
   disabled validation does not establish correct curves or external-mod compatibility.
 
+## Evidence and instrumentation
+
+- Treat dated verification as evidence for its recorded revision/configuration,
+  not the current checkout. Read the [audit disposition](NetworkTools.docs/audit-disposition.md)
+  and [confidence guide](NetworkTools.docs/offline-validation-confidence.md) before
+  adopting an old failure or TODO as present work.
+- Geometric position/displacement errors up to 5 cm are currently acceptable.
+  Do not erase historical stricter results or apply this tolerance to topology,
+  lane identity, connectivity, stale evidence, or accumulating drift. Analytical
+  math tests may legitimately use tighter tolerances for their different contracts.
+- Retain useful original/candidate/native captures, preview and Apply identities,
+  timing, rejection reasons, lane observations, replay hooks and provider access.
+  Prefer opt-in/bounded instrumentation over removal. Required correctness checks
+  must remain active when optional logging is disabled. Record deliberate removals
+  and preserve equivalent diagnostic coverage before replacing an instrument.
+
 ## General Operating Philosophy
 
-- At the beginning of each session, create a new .md doc in NetworkTools.docs/session-notes/ that includes the \ date and time in the filename, and for each small incremental change during that session, document what the change was, whether it did or didn't work, or what was learned from testing it. Then commit that change to git along with the updated doc EVEN IF THE CHANGE DIDN'T WORK.  If the change was bad, manually revert (not git revert) and update the doc accordingly.  This is to ensure that all lessons are learned and we have a clear picture of our potentially messy journey.
+- For authorized implementation work (not an explicitly read-only review), at the beginning of each session, create a new .md doc in NetworkTools.docs/session-notes/ that includes the \ date and time in the filename, and for each small incremental change during that session, document what the change was, whether it did or didn't work, or what was learned from testing it. Then commit that change to git along with the updated doc EVEN IF THE CHANGE DIDN'T WORK.  If the change was bad, manually revert (not git revert) and update the doc accordingly.  This is to ensure that all lessons are learned and we have a clear picture of our potentially messy journey.
 
 ## Bridge and agent-plugin setup
 

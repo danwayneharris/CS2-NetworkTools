@@ -4,6 +4,20 @@ Welcome to my fork of Luca's Network Tools! I absolutely love this mod, and I've
 
 # First: Some Docs! Always!!
 
+Audit sprint (October 1): focused correctness and test-runner changes are being
+validated on top of the terrain/profile PR. See the [audit disposition](NetworkTools.docs/audit-disposition.md)
+for implemented, in-progress and deferred findings; it is not a declaration that
+all new behavior has passed in-game. Start offline checks with
+`./scripts/bootstrap.ps1 -OfflineTest` (no deployment).
+
+Current guides: [automation/provider](NetworkTools.docs/automation-provider.md),
+[live regressions](NetworkTools.docs/live-regression-runner.md),
+[terrain/profile review](NetworkTools.docs/terrain-profile-review.md), and
+[verification confidence](NetworkTools.docs/offline-validation-confidence.md).
+The brainstorming roadmap below mixes delivered prototypes and future work:
+simple smoothing and substantial instrumentation exist; combined smoothing and
+terrain/obstacle routing remain future features.
+
 Current experimental checkpoint (October 1, 2026): Smooth Curve, ordinary split
 points and Debug-only interior-junction smoothing have native preview/Apply
 coverage. This branch adds an offset-aware **Constant Slope** profile fit tested on

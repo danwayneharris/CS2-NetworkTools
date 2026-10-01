@@ -7,14 +7,24 @@ f=json.loads(Path(a.fixture).read_text());r=m['Runner'](a.bridge,a.output);city=
 if city['selectedSpeed']!=0 or city['population']!=0:raise RuntimeError('Paused toy required')
 ns,es=r.network(f['region']);points={m['identity'](n):n['position'] for n in ns}
 labels={e['index']:hashlib.sha256(json.dumps([e['prefab'],e['curve'],points[m['identity'](e['startNode'])],points[m['identity'](e['endNode'])]],sort_keys=True).encode()).hexdigest() for e in es}
-connections={}
+if len(set(labels.values()))!=len(labels):raise RuntimeError('Ambiguous geometry labels for persistence comparison')
+connections={};physical={}
 for node in ns:
- if len(node['edges'])<3:continue
+ if len(node['edges'])<2:continue
  s=r.call('get_junction_snapshot',{k:node[k] for k in ('index','version')})
  if not s['complete'] or s['errors']:raise RuntimeError('Incomplete snapshot')
  pairs=sorted((kind,(labels[start[0]],*start[1:]),(labels[end[0]],*end[1:])) for kind,start,end in m['lane_transitions'](s))
- connections[json.dumps(node['position'],sort_keys=True)]=pairs
-result={'fingerprint':m['fingerprint'](ns,es),'junctionConnections':connections}
+ key=json.dumps(node['position'],sort_keys=True)
+ connections[key]=pairs
+ physical[key]={}
+ for index,signature in m['_lane_module'].composition_signature(s).items():
+  semantic=json.loads(signature)
+  for lane in semantic['lanes']:
+   # Prefab entity identities are world-local; retain native flags/limits plus
+   # lane index, lateral position, direction, carriageway and owner prefab name.
+   lane['prefab']={k:v for k,v in lane['prefab'].items() if k not in ('index','version')}
+  physical[key][labels[index]]=semantic
+result={'fingerprint':m['fingerprint'](ns,es),'junctionConnections':connections,'physicalLaneMapping':physical}
 # Normalize tuples before comparing with previously serialized lists.
 result=json.loads(json.dumps(result));(r.output/'comparison.json').write_text(json.dumps(result,indent=2))
 if a.compare:

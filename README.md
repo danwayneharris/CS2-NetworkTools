@@ -4,12 +4,16 @@ Welcome to my fork of Luca's Network Tools! I absolutely love this mod, and I've
 
 # First: Some Docs! Always!!
 
-Current development checkpoint (Sept 29, 2026): ordinary **split-point smoothing**
-and experimental **Debug-only interior-junction smoothing** have captured native
-preview/Apply coverage on toy rail, road, and highway networks. Exact connector-set
-checks guard the interior search. Two rail cases still fail strict fixed-center
-tolerances by roughly 3–5 mm; Release/Burst and vehicle routing remain unverified.
-See [split points](NetworkTools.docs/split-points.md),
+Current experimental checkpoint (October 1, 2026): Smooth Curve, ordinary split
+points and Debug-only interior-junction smoothing have native preview/Apply
+coverage. This branch adds an offset-aware **Constant Slope** profile fit tested on
+the non-flat toy road, rail and highway cases. It improves the captured off-ramp
+grade dip; it is not terrain-following or a claim that rendered terrain artifacts
+are fully resolved. Small geometric discrepancies up to 5 cm are accepted under
+the maintainer's current development policy; connections/topology remain separate
+strict checks. Release/Burst and vehicle traversal are not qualified here.
+See [terrain/profile findings](NetworkTools.docs/terrain-profile-investigation.md),
+[split points](NetworkTools.docs/split-points.md),
 [interior junctions](NetworkTools.docs/interior-junctions.md), and
 [the regression workflow](NetworkTools.docs/live-regression-runner.md).
 

@@ -3,6 +3,7 @@ param(
     [switch]$Install,
     [switch]$Build,
     [switch]$Test,
+    [switch]$OfflineTest,
     [switch]$CheckBridge,
     [switch]$Decompile,
     [string]$DecompilePath,
@@ -51,6 +52,23 @@ function Install-Package {
 Push-Location $repo
 try {
     Refresh-Environment
+    if ($OfflineTest) {
+        if ($Install -or $Build -or $Test -or $Decompile -or $CheckBridge -or $Configuration -ne 'Debug') {
+            throw '-OfflineTest is a standalone, non-deploying Debug suite. Do not combine it with install/build/test/decompile/bridge operations or Release.'
+        }
+        Write-Host 'Running actual offline suites; writes build/test artifacts but does not deploy or contact CS2.'
+        if (Get-Command uv -ErrorAction SilentlyContinue) {
+            Invoke-Checked uv @('run', '--no-project', 'python', 'scripts/run-offline-tests.py')
+        } elseif (Get-Command python -ErrorAction SilentlyContinue) {
+            Invoke-Checked python @('scripts/run-offline-tests.py')
+        } else {
+            throw 'Python is required for -OfflineTest. Install uv or Python, then retry.'
+        }
+        return
+    }
+    if ($Test) {
+        Write-Warning '-Test is the legacy BUILD/DEPLOY plus legacy test-project path. It does not run the actual aggregate suites. Use -OfflineTest for non-deploying verification.'
+    }
     if (-not (Get-Command git -ErrorAction SilentlyContinue)) { Install-Package 'Git.Git' }
     if (-not (Get-Command dotnet -ErrorAction SilentlyContinue)) { Install-Package 'Microsoft.DotNet.SDK.8' }
     if (-not ((& dotnet --list-sdks) -match '^8\.0\.')) { Install-Package 'Microsoft.DotNet.SDK.8' }

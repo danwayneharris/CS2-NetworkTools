@@ -1,5 +1,7 @@
 # Audit sprint verification and review handoff
 
+> Follow-up: [native audit gates](2026-10-01-1537-native-audit-gates.md) now verify two-ended incident edits, stale authored-input rejection, and bounded Release execution. Historical not-run statements below describe the earlier checkpoint; ordinary UI/visual review remains.
+
 Base: open fork PR #13, `dan/terrain-profile-sprint`, `ee9c3bc`. Sprint branch: `dan/audit-correctness-sprint`. Runtime source checkpoint: `77f8c64`; subsequent commits reconcile documentation and fixtures. Original checkout and its user changes were preserved. Bridge source was not changed.
 
 ## Implemented scope

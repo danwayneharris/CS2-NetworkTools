@@ -1,5 +1,7 @@
 # Audit disposition - October 1 correctness sprint
 
+> Follow-up: [native audit gates](session-notes/2026-10-01-1537-native-audit-gates.md) now verify two-ended incident edits, stale authored-input rejection, and bounded Release execution. Historical not-run statements below describe the earlier checkpoint; ordinary UI/visual review remains.
+
 Final bounded sprint disposition; see the separate verification report. Baseline is terrain/profile
 PR #13, `ee9c3bc`; the two source audits inspected older/different revisions. This
 sprint uses `dan/audit-correctness-sprint`. Source and later evidence take precedence

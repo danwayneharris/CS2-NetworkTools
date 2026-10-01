@@ -65,7 +65,7 @@ def main():
         curves=[[[pt[k] for k in ('x','y','z')] for pt in e['curve']] for e in before]
         predicted,heights,g=numerical['fit'](curves,nodes)
         errors=[math.dist(p,[q[k] for k in ('x','y','z')]) for expected,actual in zip(predicted,after) for p,q in zip(expected,actual['curve'])]
-        report['independentOffsetFit']={'nominalGradePercent':100*g,'maxCurveError':max(errors),'passed':max(errors)<=.001}
+        report['independentOffsetFit']={'nominalGradePercent':100*g,'maxCurveError':max(errors),'geometryToleranceMeters':m['m']['GEOMETRY_TOLERANCE_METERS'],'passed':max(errors)<=m['m']['GEOMETRY_TOLERANCE_METERS']}
     (root/'profile-analysis.json').write_text(json.dumps(report,indent=2))
     if a.verify_offset_fit and not report['independentOffsetFit']['passed']:raise AssertionError('Native result differs from independent offline fit')
     print(json.dumps({'capture':str(root),'maxAbsGradeBefore':max(x['sampledMaxAbsGradePercent'] for x in report['authoredBefore']),'maxAbsGradeAfter':max(x['sampledMaxAbsGradePercent'] for x in report['authoredAfter']),'maxJoinGradeJumpAfter':max(abs(x.get('joinGradeJump',0)) for x in report['authoredAfter']),'offlinePrediction':report.get('independentOffsetFit')},indent=2))

@@ -13,10 +13,11 @@ def main():
     p.add_argument('--case',required=True);p.add_argument('--order',choices=['curve','slope','curve-slope','slope-curve'],required=True)
     p.add_argument('--strength',type=float,default=1.0);p.add_argument('--mode',choices=['linear','ease','arch'],default='linear');p.add_argument('--reverse',action='store_true')
     p.add_argument('--smooth-start',action='store_true');p.add_argument('--smooth-end',action='store_true')
-    p.add_argument('--save-root',required=True);p.add_argument('--output',required=True);p.add_argument('--run',action='store_true')
+    p.add_argument('--repeat-slope',type=int,default=1);p.add_argument('--checkpoint-label');p.add_argument('--save-root',required=True);p.add_argument('--output',required=True);p.add_argument('--run',action='store_true')
     a=p.parse_args()
     if not a.run:p.error('Explicit --run required')
     if not 0 <= a.strength <= 1:p.error('Strength must be in [0, 1]')
+    if not 1 <= a.repeat_slope <= 3:p.error('Repeat count must be 1-3')
     root=Path(a.output).resolve();root.mkdir(parents=True,exist_ok=False)
     fixture=json.loads(Path(a.fixture).read_text());case=next(c for c in fixture['cases'] if c['name']==a.case)
     bridge=Path(a.bridge).resolve();client=runpy.run_path(str(bridge/'adapter/bridge_client.py'))['Client'](Path(os.environ['LOCALAPPDATA'])/'CitiesIIAgentBridge',root/'status-intents')
@@ -34,7 +35,7 @@ def main():
         except (OSError,ValueError,RuntimeError):pass
         time.sleep(1)
     else:raise TimeoutError('Baseline startup timeout; no force kill')
-    stages=a.order.split('-');reports=[]
+    stages=[s for s in a.order.split('-') for _ in range(a.repeat_slope if s=='slope' else 1)];reports=[]
     for i,stage in enumerate(stages):
         r=reg['Runner'](bridge,root/('discovery-'+str(i)))
         city=r.call('get_city_state')
@@ -64,4 +65,6 @@ def main():
         reports.append({'stage':stage,'report':json.loads((destination/'report.json').read_text())})
         (root/'summary.json').write_text(json.dumps({'case':a.case,'order':a.order,'stages':reports,'status':'partial' if i<len(stages)-1 else 'complete'},indent=2))
         print(a.case+' '+stage+': verified',flush=True)
+    if a.checkpoint_label:
+        execute('checkpoint-toy.py',['--bridge',str(bridge),'--fixture',a.fixture,'--save-root',a.save_root,'--expected-city-session',current['citySession'],'--output',str(root/'review-checkpoint'),'--label',a.checkpoint_label,'--save'],'review-checkpoint')
 if __name__=='__main__':main()

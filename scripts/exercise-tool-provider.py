@@ -5,6 +5,7 @@ vehicle validation. Stops on uncertain operations; never retries Apply.
 import argparse,json,math,runpy,time,zipfile
 from pathlib import Path
 m=runpy.run_path(str(Path(__file__).with_name('live-regression.py')))
+TOLERANCE=m['GEOMETRY_TOLERANCE_METERS']
 verified=runpy.run_path(str(Path(__file__).with_name('reload-toy-baseline.py')))['verified_package']
 def connect_preview_error(state, new_edges):
  curves=[v for v in state['previewObservation'] if isinstance(v,dict) and all(k in v for k in ('a','b','c','d'))]
@@ -80,7 +81,7 @@ def main():
  if not final['previewReady'] or any(final[k]!=s[k] for k in ('session','revision','submission')):raise RuntimeError('Preview token changed')
  invoke('apply',{k:s[k] for k in ('session','revision','submission')});poll(lambda s:s['phase']=='Idle')
  after,an,ae=r.settled_permanent(watched,f['region']);new={m['identity'](e):e for e in ae};old={m['identity'](e):e for e in es}
- report={'stage':a.stage,'checkpoint':saved['saveName'],'beforeFingerprint':m['fingerprint'](ns,es),'afterFingerprint':m['fingerprint'](an,ae),'staleRevisionRejected':True,'nodeCount':[len(ns),len(an)],'edgeCount':[len(es),len(ae)],'parameters':{'slopeMode':a.slope_mode,'smoothStart':a.smooth_start,'smoothEnd':a.smooth_end,'reverse':a.reverse},'limits':'No visual/vehicle or rendered-surface validation.'}
+ report={'geometryToleranceMeters':TOLERANCE,'stage':a.stage,'checkpoint':saved['saveName'],'beforeFingerprint':m['fingerprint'](ns,es),'afterFingerprint':m['fingerprint'](an,ae),'staleRevisionRejected':True,'nodeCount':[len(ns),len(an)],'edgeCount':[len(es),len(ae)],'parameters':{'slopeMode':a.slope_mode,'smoothStart':a.smooth_start,'smoothEnd':a.smooth_end,'reverse':a.reverse},'limits':'No visual/vehicle or rendered-surface validation.'}
  if a.stage=='slope':
   report['sameTopology']=old.keys()==new.keys() and all(all(e[k]==new[key][k] for k in ('startNode','endNode','prefab')) for key,e in old.items())
   report['previewApplyMaxError']=max(math.dist(m['position'](p),m['position'](q)) for key in chosen for p,q in zip(preview_curves[key],new[key]['curve']))
@@ -102,7 +103,7 @@ def main():
   report['connected']=trace['connected'];report['newEdges']=[key for key in new if key not in old]
   report['previewApplyMaxError']=connect_preview_error(final,[new[key] for key in report['newEdges']])
  (r.output/'report.json').write_text(json.dumps(report,indent=2));print(json.dumps(report,indent=2))
- if a.stage=='slope' and (not report['sameTopology'] or report['previewApplyMaxError']>.001 or report['incidentPreviewApplyMaxError']>.001 or report['nodeHorizontalMaxError']>.001 or report['fixedEndpointMaxError']>.001 or not report['directedConnectionsPreserved'] or not report['physicalLaneMappingPreserved']):raise AssertionError('Slope verification failed')
- if a.stage=='connect' and (not report['connected'] or not report['prefabInherited'] or not report['newEdges'] or report['previewApplyMaxError']>.001):raise AssertionError('Connect permanent topology failed')
+ if a.stage=='slope' and (not report['sameTopology'] or report['previewApplyMaxError']>TOLERANCE or report['incidentPreviewApplyMaxError']>TOLERANCE or report['nodeHorizontalMaxError']>TOLERANCE or report['fixedEndpointMaxError']>TOLERANCE or not report['directedConnectionsPreserved'] or not report['physicalLaneMappingPreserved']):raise AssertionError('Slope verification failed')
+ if a.stage=='connect' and (not report['connected'] or not report['prefabInherited'] or not report['newEdges'] or report['previewApplyMaxError']>TOLERANCE):raise AssertionError('Connect permanent topology failed')
 if __name__=='__main__':main()
 

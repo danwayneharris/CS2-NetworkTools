@@ -13,6 +13,10 @@ from pathlib import Path
 import time
 import importlib.util
 
+# Dan's October 1 acceptance policy: small world-space discrepancies are
+# observations, not failures. This does not relax topology/connection assertions.
+GEOMETRY_TOLERANCE_METERS = 0.05
+
 _lane_spec = importlib.util.spec_from_file_location('lane_connectivity', Path(__file__).with_name('lane-connectivity.py'))
 _lane_module = importlib.util.module_from_spec(_lane_spec)
 _lane_spec.loader.exec_module(_lane_module)
@@ -250,7 +254,7 @@ class Runner:
             raise AssertionError('Topology identities changed')
         fixed_node_drifts = []
         for key, node in old_nodes.items():
-            if abs(node['position']['y'] - new_nodes[key]['position']['y']) > 0.001:
+            if abs(node['position']['y'] - new_nodes[key]['position']['y']) > GEOMETRY_TOLERANCE_METERS:
                 raise AssertionError('Node elevation changed')
             if key not in selected_nodes or len(node['edges']) > 2 or key in {identity(start),identity(end),*(identity(n) for n in split_nodes)}:
                 drift=math.dist(position(node['position']),position(new_nodes[key]['position']))
@@ -260,14 +264,16 @@ class Runner:
             if any(edge[k] != new_edges[key][k] for k in ('startNode','endNode','prefab')):
                 raise AssertionError('Topology or prefab changed')
         changes = [key for key in old_edges if old_edges[key]['curve'] != new_edges[key]['curve']]
-        if not set(changes).issubset(selected_edges):
-            raise AssertionError('Unselected edge geometry changed')
+        outside_error=max((math.dist(position(a),position(b)) for key in changes if key not in selected_edges for a,b in zip(old_edges[key]['curve'],new_edges[key]['curve'])),default=0)
+        if outside_error>GEOMETRY_TOLERANCE_METERS:
+            raise AssertionError('Unselected edge geometry changed beyond accepted tolerance')
         for key in selected_edges:
             if max(math.dist(position(a),position(b)) for a,b in
-                   zip(preview_curves[key],new_edges[key]['curve']))>0.001:
+                   zip(preview_curves[key],new_edges[key]['curve']))>GEOMETRY_TOLERANCE_METERS:
                 raise AssertionError('Selected preview/permanent geometry mismatch')
         report = {'case':case['name'], 'checkpoint':saved['saveName'], 'changedEdges':changes,
                   'junctions':[], 'fixedNodeDrifts':fixed_node_drifts,
+                  'geometryToleranceMeters':GEOMETRY_TOLERANCE_METERS,'unselectedCurveMaxError':outside_error,
                   'limits':'Local snapshot checks; not vehicle traversal or visual approval.'}
         for node in split_nodes:
             incident=[new_edges[identity(e)] for e in path['edges'] if identity(node) in
@@ -279,7 +285,7 @@ class Runner:
             right=outgoing['curve'] if outgoing['startNode']==node else list(reversed(outgoing['curve']))
             p=new_nodes[identity(node)]['position']
             for endpoint in (left[-1],right[0]):
-                if math.hypot(endpoint['x']-p['x'],endpoint['z']-p['z'])>0.001:
+                if math.hypot(endpoint['x']-p['x'],endpoint['z']-p['z'])>GEOMETRY_TOLERANCE_METERS:
                     raise AssertionError('Split curve endpoint is not at pinned node')
             a=(left[3]['x']-left[2]['x'],left[3]['z']-left[2]['z'])
             b=(right[1]['x']-right[0]['x'],right[1]['z']-right[0]['z'])
@@ -301,13 +307,13 @@ class Runner:
                 if owner.get('curve'):
                     curve = actual[identity(owner['temp']['original'])]['curve']
                     errors += [math.dist(position(x),position(y)) for x,y in zip(owner['curve'],curve)]
-            if not errors or max(errors)>0.001:
+            if not errors or max(errors)>GEOMETRY_TOLERANCE_METERS:
                 raise AssertionError('Incident preview/permanent curve mismatch')
             report['junctions'].append({'connections':len(lane_transitions(a)),
                 'rawConnectorPairsChanged':connections(b)!=connections(a), 'maxCurveError':max(errors)})
-        report['passed']=not fixed_node_drifts
+        report['passed']=not any(d['distance']>GEOMETRY_TOLERANCE_METERS for d in fixed_node_drifts)
         (self.output/'report.json').write_text(json.dumps(report, indent=2))
-        if fixed_node_drifts:
+        if not report['passed']:
             raise AssertionError('Fixed or unselected node moved; other checks completed, inspect report.json')
         return report
 

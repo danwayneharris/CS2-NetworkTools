@@ -2,8 +2,8 @@
 import argparse,json,runpy,hashlib
 from pathlib import Path
 m=runpy.run_path(str(Path(__file__).with_name('live-regression.py')))
-p=argparse.ArgumentParser();p.add_argument('--fixture',required=True);p.add_argument('--output',required=True);p.add_argument('--compare');a=p.parse_args()
-f=json.loads(Path(a.fixture).read_text());r=m['Runner']('../cities2-agent-bridge-ndc',a.output);city=r.call('get_city_state')
+p=argparse.ArgumentParser();p.add_argument('--bridge',default='../cities2-agent-bridge-ndc');p.add_argument('--fixture',required=True);p.add_argument('--output',required=True);p.add_argument('--compare');a=p.parse_args()
+f=json.loads(Path(a.fixture).read_text());r=m['Runner'](a.bridge,a.output);city=r.call('get_city_state')
 if city['selectedSpeed']!=0 or city['population']!=0:raise RuntimeError('Paused toy required')
 ns,es=r.network(f['region']);points={m['identity'](n):n['position'] for n in ns}
 labels={e['index']:hashlib.sha256(json.dumps([e['prefab'],e['curve'],points[m['identity'](e['startNode'])],points[m['identity'](e['endNode'])]],sort_keys=True).encode()).hexdigest() for e in es}

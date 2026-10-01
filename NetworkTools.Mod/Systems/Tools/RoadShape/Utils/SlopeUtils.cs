@@ -1,4 +1,4 @@
-﻿namespace NetworkTools.Systems.Tools.RoadShape {
+namespace NetworkTools.Systems.Tools.RoadShape {
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -149,6 +149,25 @@
             edge.Bezier = bezier;
         }
 
+        /// <summary>
+        /// Keep the original endpoint-to-node height offset after a node moves.
+        /// Translate the adjacent handle equally, preserving the fitted endpoint grade.
+        /// Native junction reconstruction otherwise changes the endpoint alone.
+        /// </summary>
+        public static void AlignEndpointHeight(ref EdgeState edge, bool start,
+            float originalNodeHeight, float nodeHeight) {
+            var curve = edge.Bezier;
+            if (start) {
+                var height = nodeHeight + edge.OriginalBezierA.y - originalNodeHeight;
+                curve.b.y += height - curve.a.y;
+                curve.a.y = height;
+            } else {
+                var height = nodeHeight + edge.OriginalBezierD.y - originalNodeHeight;
+                curve.c.y += height - curve.d.y;
+                curve.d.y = height;
+            }
+            edge.Bezier = curve;
+        }
         public static Bezier4x3 ApplyHeightsToBezier(
             in Bezier4x3 bezier,
             float startHeight,

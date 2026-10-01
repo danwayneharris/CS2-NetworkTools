@@ -62,7 +62,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                     if (!SameControl(expected.a, actual.a) || !SameControl(expected.b, actual.b)
                         || !SameControl(expected.c, actual.c) || !SameControl(expected.d, actual.d)) {
                         mismatches++;
-                        mismatchDetails.Add(new { original = original.ToString(), expected, actual });
+                        mismatchDetails.Add(new { original = original.ToString(), expected = new[] { expected.a, expected.b, expected.c, expected.d }, actual = new[] { actual.a, actual.b, actual.c, actual.d } });
                     }
                     if (!EntityManager.HasBuffer<SubLane>(entity)) { missingBuffers++; continue; }
                     var lanes = EntityManager.GetBuffer<SubLane>(entity, true);

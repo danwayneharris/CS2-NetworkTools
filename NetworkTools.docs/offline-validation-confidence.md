@@ -38,3 +38,20 @@ The terrain ramp-out result also survived a saved-checkpoint reload with exact
 region geometry and normalized directed junction connections (three junctions).
 This adds native persistence evidence for that case only; it does not establish
 that the separate high-rail center drift cannot accumulate under repeated Apply.
+
+## October 1 Slope and prefab-default validation
+
+- Offline: 96 assertions against compiled Slope code across four formula terrains,
+  both directions. Strong for the tested handle metric/height-offset invariants;
+  not a native terrain or lane model.
+- Native preview: previously blocked curve-then-ease off-ramp now passes the same
+  1 mm guard. No threshold was relaxed.
+- Permanent Apply: exact captured preview/control-point agreement, unchanged
+  topology and node XZ, and identical directed lane-transition sets at six watched
+  nodes. One side edge translates vertically at the moved junction as designed;
+  that junction descends approximately 9.982 m. Terrain suitability is unverified.
+- Connect: road and rail both inherit the expected prefab, preserve existing edge
+  geometry, reject stale Apply revisions, and produce exact preview/Apply curves.
+  This establishes physical connectivity, not vehicle route availability.
+- Human visual and vehicle validation: pending for this build. Editor toolbar and
+  mixed-prefab Parallel behavior are compiled/UI-type-checked, not native-tested.

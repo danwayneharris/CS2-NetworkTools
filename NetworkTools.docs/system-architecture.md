@@ -353,3 +353,24 @@ observations; missing data retains conservative rejection. The first native sear
 remains visible, and warm starts can retain a larger angle than a cold search at
 the same strength. See [interior junctions](interior-junctions.md) for measured
 latency, acceptance details and the outstanding strict node-center drift failure.
+
+### Slope endpoint fitting (October 1)
+
+Slope's end-handle station is measured backwards from that handle's own endpoint,
+not by distance from the curve start. After fitting the vertical profile and
+averaging interior node displacements, it preserves the original endpoint/node
+height offsets at the new node heights. Adjacent handles translate by the same
+vertical delta, retaining their fitted endpoint grade. Both Preview and Apply
+consume this corrected geometry. Curve Smooth does not use this alignment step.
+
+This resolves the captured off-ramp discrepancy where native reconstruction
+replaced two different requested heights with a common junction height. Slope
+still moves interior junctions and adjusts unselected incident edges at those
+nodes; it does not avoid terrain or guarantee acceptable grades. Directed lane
+connections survived the tested off-ramp operation, but appearance and vehicle
+traversal remain separate checks. See the [session evidence](session-notes/2026-10-01-0820-selected-fixes-slope.md).
+
+Connect and Parallel now default to **Same as selected**. An explicit asset choice
+still overrides that behavior. Parallel inherits each source edge's prefab;
+Connect uses its first selected node's prefab. Other non-nullable pickers prefer
+the last network selected in the game, then a prioritized road fallback.

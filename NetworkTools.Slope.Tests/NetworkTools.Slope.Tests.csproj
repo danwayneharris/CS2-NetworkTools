@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ManagedPath>$([System.Environment]::GetEnvironmentVariable('CSII_MANAGEDPATH', 'EnvironmentVariableTarget.User'))</ManagedPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="NetworkTools"><HintPath>../NetworkTools.Mod/obj/Debug/net48/NetworkTools.dll</HintPath></Reference>
+    <Reference Include="Unity.Mathematics"><HintPath>$(ManagedPath)/Unity.Mathematics.dll</HintPath></Reference>
+    <Reference Include="Colossal.Mathematics"><HintPath>$(ManagedPath)/Colossal.Mathematics.dll</HintPath></Reference>
+    <Reference Include="Unity.Entities"><HintPath>$(ManagedPath)/Unity.Entities.dll</HintPath></Reference>
+    <Reference Include="Unity.Collections"><HintPath>$(ManagedPath)/Unity.Collections.dll</HintPath></Reference>
+    <Reference Include="UnityEngine.CoreModule"><HintPath>$(ManagedPath)/UnityEngine.CoreModule.dll</HintPath></Reference>
+    <Reference Include="Unity.Burst"><HintPath>$(ManagedPath)/Unity.Burst.dll</HintPath></Reference>
+  </ItemGroup>
+</Project>

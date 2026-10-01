@@ -16,7 +16,7 @@ def connect_preview_error(state, new_edges):
  return max(errors)
 
 def main():
- p=argparse.ArgumentParser();p.add_argument('--output',required=True);p.add_argument('--save-root',required=True);p.add_argument('--run',action='store_true');p.add_argument('--stage',choices=['curve','slope','connect'],required=True);p.add_argument('--expected-fingerprint');p.add_argument('--case',default='highway-ramp-out');a=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('--output',required=True);p.add_argument('--save-root',required=True);p.add_argument('--run',action='store_true');p.add_argument('--stage',choices=['curve','slope','connect'],required=True);p.add_argument('--expected-fingerprint');p.add_argument('--case',default='highway-ramp-out');p.add_argument('--connect-kind',choices=['road','rail'],default='road');a=p.parse_args()
  if not a.run:p.error('Explicit --run required')
  f=json.loads((Path(__file__).parent/'fixtures/toy-terrain-v11.json').read_text());case=next(c for c in f['cases'] if c['name']==a.case);r=m['Runner']('../cities2-agent-bridge-ndc',a.output)
  city=r.call('get_city_state')
@@ -47,7 +47,8 @@ def main():
   control('configure',mode='ease',easeIn=.1,easeOut=.1,archHeight=10,archPosition=.5,smoothStart=True,smoothEnd=True)
   start,end=(m['resolve'](ns,case[k]) for k in ('start','end'))
  else:
-  start=m['resolve'](ns,next(c for c in f['cases'] if c['name']=='hill-road')['end']);end=m['resolve'](ns,next(c for c in f['cases'] if c['name']=='crest-dip-road')['start'])
+  first,second,first_key=('hill-road','crest-dip-road','end') if a.connect_kind=='road' else ('rail-high-branch','rail-low-branch','start')
+  start=m['resolve'](ns,next(c for c in f['cases'] if c['name']==first)[first_key]);end=m['resolve'](ns,next(c for c in f['cases'] if c['name']==second)['start'])
  control('select',start=start,end=end);s=poll(lambda s:s['previewReady'])
  # Deliberately invalid old revision must fail before any mutation.
  try:invoke('apply',{'session':s['session'],'revision':s['revision']-1,'submission':s['submission']})
@@ -82,10 +83,15 @@ def main():
   report['changedUnselectedEdges']=[key for key,e in old.items() if key not in chosen and e['curve']!=new[key]['curve']]
  else:
   trace=r.call('trace_network',{'fromIndex':start['index'],'fromVersion':start['version'],'toIndex':end['index'],'toVersion':end['version']})
+  source=[e for e in es if m['identity'](start) in (m['identity'](e['startNode']),m['identity'](e['endNode']))]
+  if len(source)!=1:raise AssertionError('Expected one source edge')
+  report['expectedPrefab']=source[0]['prefab']
+  report['prefabInherited']=all(e['prefab']==source[0]['prefab'] for key,e in new.items() if key not in old)
+  report['unchangedExistingEdges']=all(key in new and all(e[k]==new[key][k] for k in ('curve','prefab','startNode','endNode')) for key,e in old.items())
   report['connected']=trace['connected'];report['newEdges']=[key for key in new if key not in old]
   report['previewApplyMaxError']=connect_preview_error(final,[new[key] for key in report['newEdges']])
  (r.output/'report.json').write_text(json.dumps(report,indent=2));print(json.dumps(report,indent=2))
  if a.stage=='slope' and (not report['sameTopology'] or report['previewApplyMaxError']>.001):raise AssertionError('Slope verification failed')
- if a.stage=='connect' and (not report['connected'] or not report['newEdges'] or report['previewApplyMaxError']>.001):raise AssertionError('Connect permanent topology failed')
+ if a.stage=='connect' and (not report['connected'] or not report['prefabInherited'] or not report['newEdges'] or report['previewApplyMaxError']>.001):raise AssertionError('Connect permanent topology failed')
 if __name__=='__main__':main()
 

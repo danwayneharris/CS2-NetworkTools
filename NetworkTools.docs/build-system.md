@@ -257,3 +257,11 @@ Update this document when imports, reference resolution, generation, deployment,
 or toolchain requirements change. Keep operational commands in `BOOTSTRAP.md` and
 the script; keep runtime behavior in the architecture guide. Record actual successful
 stages rather than inferring build or runtime success from prerequisite checks.
+
+## Offline Slope regression
+
+`./scripts/test-slope.ps1` compiles Debug with the framework overrides using only
+the Compile target (no deployment), then executes NetworkTools.Slope.Tests against
+that exact assembly. It uses installed game mathematics assemblies but creates no
+native ECS world. See [test scope](../NetworkTools.Slope.Tests/README.md). This is
+safe while the game is running; a full bootstrap build still requires closing it.

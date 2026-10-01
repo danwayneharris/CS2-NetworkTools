@@ -1,4 +1,4 @@
-﻿namespace NetworkTools.Systems.Tools.RoadShape {
+namespace NetworkTools.Systems.Tools.RoadShape {
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -114,16 +114,17 @@
         /// Call this after modifying the bezier's XZ positions.
         /// </summary>
         public void CalculateControlPointRatios() {
-            // Calculate bezier control point ratios based on horizontal distance from 'a'
+            // Measure each handle from its own endpoint so physical endpoint grades agree.
             var horizontalA = new float2(Bezier.a.x, Bezier.a.z);
             var horizontalB = new float2(Bezier.b.x, Bezier.b.z);
             var horizontalC = new float2(Bezier.c.x, Bezier.c.z);
+            var horizontalD = new float2(Bezier.d.x, Bezier.d.z);
 
             float bRatio, cRatio;
             if (Length > 0.01f)
             {
                 bRatio = math.clamp(math.distance(horizontalA, horizontalB) / Length, 0f, 1f);
-                cRatio = math.clamp(math.distance(horizontalA, horizontalC) / Length, 0f, 1f);
+                cRatio = 1f - math.clamp(math.distance(horizontalC, horizontalD) / Length, 0f, 1f);
             } else
             {
                 bRatio = 1f / 3f;

@@ -71,6 +71,10 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             RenderHandles            = true;
             DisableVanillaValidation = true;
 
+            // Apply edits existing edges; it never combines adjacent segments. Keep
+            // the native preview on the same topology, including unselected branches.
+            DisableVanillaNodeReduction = true;
+
             // Template change additionally applies presets and reinitializes
             Template.OnChanged += _ => {
                 ApplyTemplatePreset(Template.Value);
@@ -107,7 +111,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
 #if IS_DEBUG
             if (m_AutomationActivatePending) {
                 m_AutomationActivatePending = false;
-                Template.Value = ShapeTransformTemplate.CurveSmooth;
+                Template.Value = m_AutomationRequestedTemplate;
             }
 #endif
 

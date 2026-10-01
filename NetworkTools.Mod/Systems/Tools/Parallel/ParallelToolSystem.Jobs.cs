@@ -1,4 +1,4 @@
-﻿namespace NetworkTools.Systems.Tools.Parallel {
+namespace NetworkTools.Systems.Tools.Parallel {
     using Colossal.Mathematics;
     using Game.Common;
     using Game.Net;
@@ -166,6 +166,12 @@
                     var endRotation   = quaternion.LookRotationSafe(endTangent,   math.up());
                     var offsetLength  = MathUtils.Length(offsetBezier);
 
+                    // Inherit each source edge independently when there is no asset override.
+                    var prefab = NetPrefabEntity;
+                    if (prefab == Entity.Null && NetLanePrefabEntity == Entity.Null) {
+                        prefab = PrefabRefLookup[state.EdgeEntity].m_Prefab;
+                    }
+
                     var elevation = new float2(0f);
 
                     if (Config.VerticalOffset >= 0) {
@@ -182,7 +188,7 @@
                         var reversedStartRotation = quaternion.LookRotationSafe(reversedStartTangent, math.up());
                         var reversedEndRotation   = quaternion.LookRotationSafe(reversedEndTangent,   math.up());
 
-                        OutputPreviewEdge(offsetEndPos,
+                        OutputPreviewEdge(prefab, offsetEndPos,
                                           offsetStartPos,
                                           reversedStartRotation,
                                           reversedEndRotation,
@@ -190,7 +196,7 @@
                                           offsetLength,
                                           elevation);
                     } else {
-                        OutputPreviewEdge(offsetStartPos,
+                        OutputPreviewEdge(prefab, offsetStartPos,
                                           offsetEndPos,
                                           startRotation,
                                           endRotation,
@@ -261,7 +267,7 @@
                 return perpendicular * signedDistance;
             }
 
-            private void OutputPreviewEdge(float3     startNodePosition, float3     endNodePosition,
+            private void OutputPreviewEdge(Entity prefab, float3     startNodePosition, float3     endNodePosition,
                                            quaternion startNodeRotation, quaternion endNodeRotation,
                                            Bezier4x3  existingBezier,    float      existingLength, float2 elevation
             ) {
@@ -281,7 +287,7 @@
                     CourseElevation     = elevation,
                     StartNodeFlags      = nodeFlags,
                     EndNodeFlags        = nodeFlags,
-                    NetPrefabEntity     = NetPrefabEntity,
+                    NetPrefabEntity     = prefab,
                     NetLanePrefabEntity = NetLanePrefabEntity,
                 };
 

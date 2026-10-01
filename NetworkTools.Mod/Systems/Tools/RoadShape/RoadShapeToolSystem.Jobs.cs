@@ -1,4 +1,4 @@
-﻿namespace NetworkTools.Systems.Tools.RoadShape {
+namespace NetworkTools.Systems.Tools.RoadShape {
     using Colossal.Mathematics;
     using Game.Common;
     using Game.Net;
@@ -98,6 +98,25 @@
                         break;
                 }
 
+                // Slope must submit the same endpoint/node relationship to Preview and Apply.
+                // The pipeline averages interior node displacements; fit each incident curve
+                // to that common height without changing its fitted endpoint grade.
+                if (Config.Template == ShapeTransformTemplate.SlopeLinear
+                    || Config.Template == ShapeTransformTemplate.SlopeEaseInOut
+                    || Config.Template == ShapeTransformTemplate.SlopeArch) {
+                    for (var i = 0; i < edges.Length; i++) {
+                        var edge = edges[i];
+                        SlopeUtils.AlignEndpointHeight(ref edge, edge.IsForward,
+                            nodes[i].OriginalPosition.y, nodes[i].Position.y);
+                        SlopeUtils.AlignEndpointHeight(ref edge, !edge.IsForward,
+                            nodes[i + 1].OriginalPosition.y, nodes[i + 1].Position.y);
+                        edges[i] = edge;
+                    }
+                }
+#if IS_DEBUG
+                if (Config.Template != ShapeTransformTemplate.CurveSmooth)
+                    CapturePreviewProbe(SmoothTraceId, OutputMode, true, edges);
+#endif
                 // 3. Write slope metadata to edge entities (preview only — Apply resets the tool
                 //    immediately, so ECB additions would outlive the tool session).
                 if (OutputMode == ToolOutputMode.Preview) {

@@ -172,12 +172,20 @@ namespace NetworkTools.Systems.Tools.Connect {
             m_LastHitPosition = default;
             Phase             = OperationPhase.Idle;
             base.requireNetArrows = true;
+#if IS_DEBUG
+            if (m_ControlActivatePending) {
+                m_ControlActivatePending = false; Mode.Value = ConnectMode.SimpleCurve; NetPrefab.ResetToDefault();
+            }
+#endif
 
             // Initialize selection state (makes all nodes eligible)
             ResetToIdle();
         }
 
         protected override void OnStopRunning() {
+#if IS_DEBUG
+            m_ControlJob.Complete(); m_ControlStableFrames = 0; ++m_ControlRevision;
+#endif
             base.OnStopRunning();
 
             base.requireNetArrows = false;

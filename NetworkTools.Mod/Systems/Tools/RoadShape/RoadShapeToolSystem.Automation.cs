@@ -13,17 +13,24 @@ namespace NetworkTools.Systems.Tools.RoadShape {
         private string m_AutomationSession;
         private int m_AutomationVerifiedSubmission;
         private bool m_AutomationActivatePending;
+        private ShapeTransformTemplate m_AutomationRequestedTemplate = ShapeTransformTemplate.CurveSmooth;
+        private bool AutomationSlope => Template.Value == ShapeTransformTemplate.SlopeLinear
+            || Template.Value == ShapeTransformTemplate.SlopeEaseInOut || Template.Value == ShapeTransformTemplate.SlopeArch;
 
         internal JObject AutomationState() {
             m_AutomationSession ??= Guid.NewGuid().ToString("N");
             var active = m_ToolSystem.activeTool == this && Enabled;
-            var ready = active && Template.Value == ShapeTransformTemplate.CurveSmooth && CanApply
+            var ready = active && (Template.Value == ShapeTransformTemplate.CurveSmooth || AutomationSlope) && CanApply
                 && !m_UpdateNeeded && m_SubmittedPreviewRevision == m_PreviewInputRevision
                 && m_AutomationVerifiedSubmission == m_SmoothTraceId && m_SmoothTraceId > 0;
             return new JObject {
                 ["apiVersion"] = 1, ["session"] = m_AutomationSession,
                 ["active"] = active, ["smoothMode"] = Template.Value == ShapeTransformTemplate.CurveSmooth, ["phase"] = Phase.ToString(),
                 ["revision"] = m_PreviewInputRevision, ["submission"] = m_SmoothTraceId,
+                ["mode"] = Template.Value.ToString(),
+                ["slopeParameters"] = new JObject { ["easeIn"] = EaseInLength.Value, ["easeOut"] = EaseOutLength.Value,
+                    ["archHeight"] = ArchHeight.Value, ["archPosition"] = ArchPosition.Value,
+                    ["smoothStart"] = SmoothStart.Value, ["smoothEnd"] = SmoothEnd.Value },
                 ["strength"] = SmoothingFactor.Value, ["previewReady"] = ready,
                 ["splitChoices"] = JArray.Parse(SplitChoicesJson()),
                 ["start"] = new JObject { ["index"] = StartNode.Index, ["version"] = StartNode.Version },
@@ -33,18 +40,21 @@ namespace NetworkTools.Systems.Tools.RoadShape {
         }
 
         internal JObject AutomationCommand(string action, JObject args) {
+            var slope = action.StartsWith("slope_", StringComparison.Ordinal);
+            if (slope) action = action.Substring(6);
             if (action == "state") return AutomationState();
             if (action == "activate") {
                 if (Phase == OperationPhase.Applying) throw new InvalidOperationException("apply_in_progress");
                 // OnStartRunning restores persisted parameters. Apply the requested
                 // mode afterwards, or immediately if the tool is already running.
+                m_AutomationRequestedTemplate = slope ? ShapeTransformTemplate.SlopeLinear : ShapeTransformTemplate.CurveSmooth;
                 m_AutomationActivatePending = !(m_ToolSystem.activeTool == this && Enabled);
                 RequestEnable();
-                if (!m_AutomationActivatePending) Template.Value = ShapeTransformTemplate.CurveSmooth;
+                if (!m_AutomationActivatePending) { ResetToIdle(); Template.Value = m_AutomationRequestedTemplate; MarkDirty(); }
                 return new JObject { ["accepted"] = true, ["state"] = AutomationState() };
             }
             var state = AutomationState();
-            if (!(bool)state["active"] || Template.Value != ShapeTransformTemplate.CurveSmooth)
+            if (!(bool)state["active"] || (slope ? !AutomationSlope : Template.Value != ShapeTransformTemplate.CurveSmooth))
                 throw new InvalidOperationException("smooth_tool_not_active");
             if ((string)args["session"] != m_AutomationSession
                 || args["revision"]?.Type != JTokenType.Integer
@@ -54,6 +64,10 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             m_LastShapeJob.Complete();
             Dependency.Complete();
             switch (action) {
+                case "configure":
+                    if (!slope) throw new ArgumentException("slope_command_required");
+                    ConfigureAutomationSlope(args);
+                    break;
                 case "split":
                     if (args["enabled"]?.Type != JTokenType.Boolean
                         || !SetSplitNode(AutomationNode(args["node"]), (bool)args["enabled"]))
@@ -102,6 +116,35 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             return AutomationState();
         }
 
+        private void ConfigureAutomationSlope(JObject args) {
+            // Validate the entire request before changing any parameter.
+            var mode = (string)args["mode"];
+            var template = mode switch {
+                "linear" => ShapeTransformTemplate.SlopeLinear,
+                "ease" => ShapeTransformTemplate.SlopeEaseInOut,
+                "arch" => ShapeTransformTemplate.SlopeArch,
+                _ => throw new ArgumentException("unsupported_slope_mode")
+            };
+            float Number(string key, float min, float max) {
+                var token = args[key];
+                if (token == null || (token.Type != JTokenType.Float && token.Type != JTokenType.Integer))
+                    throw new ArgumentException("numeric_parameter_required: " + key);
+                var v = (double)token;
+                if (double.IsNaN(v) || double.IsInfinity(v) || v < min || v > max)
+                    throw new ArgumentException("parameter_out_of_range: " + key);
+                return (float)v;
+            }
+            var easeIn = Number("easeIn", 0, .5f); var easeOut = Number("easeOut", 0, .5f);
+            var height = Number("archHeight", -80, 80); var location = Number("archPosition", .1f, .9f);
+            if (args["smoothStart"]?.Type != JTokenType.Boolean || args["smoothEnd"]?.Type != JTokenType.Boolean)
+                throw new ArgumentException("boolean_parameters_required");
+            Template.Value = template;
+            EaseInLength.Value = easeIn; EaseOutLength.Value = easeOut;
+            ArchHeight.Value = height; ArchPosition.Value = location;
+            SmoothStart.Value = (bool)args["smoothStart"]; SmoothEnd.Value = (bool)args["smoothEnd"];
+            MarkDirty();
+        }
+
         private bool AutomationLive(Entity e) => EntityManager.Exists(e)
             && !EntityManager.HasComponent<Deleted>(e) && !EntityManager.HasComponent<Temp>(e);
         private Entity AutomationNode(JToken token) {
@@ -131,6 +174,11 @@ namespace NetworkTools.Automation {
                 || GameManager.instance.gameMode != GameMode.Game) throw new InvalidOperationException("no_loaded_city");
             if (world.GetExistingSystemManaged<SimulationSystem>().selectedSpeed != 0)
                 throw new InvalidOperationException("pause_before_networktools_control");
+            if (action.StartsWith("connect_", StringComparison.Ordinal)) {
+                var connect = world.GetExistingSystemManaged<NetworkTools.Systems.Tools.Connect.NT_ConnectToolSystem>();
+                if (connect == null) throw new InvalidOperationException("connect_unavailable");
+                return connect.AutomationCommand(action.Substring(8), JObject.Parse(json)).ToString(Newtonsoft.Json.Formatting.None);
+            }
             var tool = world.GetExistingSystemManaged<NT_RoadShapeToolSystem>();
             if (tool == null) throw new InvalidOperationException("networktools_unavailable");
             return tool.AutomationCommand(action, JObject.Parse(json)).ToString(Newtonsoft.Json.Formatting.None);

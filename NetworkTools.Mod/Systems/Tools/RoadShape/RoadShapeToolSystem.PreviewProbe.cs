@@ -33,7 +33,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
         }
 
         internal void ObservePreviewAfterRebuild() {
-            if (!Enabled || Phase != OperationPhase.Ready || Template.Value != ShapeTransformTemplate.CurveSmooth) {
+            if (!Enabled || Phase != OperationPhase.Ready || (Template.Value != ShapeTransformTemplate.CurveSmooth && !AutomationSlope)) {
                 m_LastProbeMessage = null;
                 return;
             }
@@ -44,6 +44,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             if (probe == null || probe.Id != m_SmoothTraceId || probe.Curves.Count == 0) { return; }
             var matches = new Dictionary<Entity, int>();
             var mismatches = 0;
+            var mismatchDetails = new List<object>();
             var tracks = 0;
             var missingBuffers = 0;
             using (var query = EntityManager.CreateEntityQuery(new EntityQueryDesc {
@@ -59,7 +60,10 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                     matches[original] = count + 1;
                     var actual = EntityManager.GetComponentData<Curve>(entity).m_Bezier;
                     if (!SameControl(expected.a, actual.a) || !SameControl(expected.b, actual.b)
-                        || !SameControl(expected.c, actual.c) || !SameControl(expected.d, actual.d)) { mismatches++; }
+                        || !SameControl(expected.c, actual.c) || !SameControl(expected.d, actual.d)) {
+                        mismatches++;
+                        mismatchDetails.Add(new { original = original.ToString(), expected = new[] { expected.a, expected.b, expected.c, expected.d }, actual = new[] { actual.a, actual.b, actual.c, actual.d } });
+                    }
                     if (!EntityManager.HasBuffer<SubLane>(entity)) { missingBuffers++; continue; }
                     var lanes = EntityManager.GetBuffer<SubLane>(entity, true);
                     foreach (var lane in lanes) {
@@ -81,6 +85,8 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             message += $" originalInputs={originalInputs}";
             if (message != m_LastProbeMessage) {
                 UnityEngine.Debug.Log(message);
+                if (mismatchDetails.Count > 0) UnityEngine.Debug.Log("[NetworkTools.PreviewMismatch] "
+                    + Newtonsoft.Json.JsonConvert.SerializeObject(mismatchDetails, new NetworkTools.Automation.VectorJsonConverter()));
                 m_LastProbeMessage = message;
             }
         }
@@ -92,6 +98,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
     public partial class NT_PreviewProbeSystem : GameSystemBase {
         protected override void OnUpdate() {
             World.GetExistingSystemManaged<NT_RoadShapeToolSystem>()?.ObservePreviewAfterRebuild();
+            World.GetExistingSystemManaged<NetworkTools.Systems.Tools.Connect.NT_ConnectToolSystem>()?.ObserveAutomationPreview();
         }
     }
 }

@@ -57,6 +57,9 @@ namespace NetworkTools.Systems.Tools.Connect {
                 netPrefabEntity = prefabRef.m_Prefab;
             }
 
+#if IS_DEBUG
+            if (outputMode == ToolOutputMode.Preview) BeginControlPreview();
+#endif
             var jobHandle = new CreateDefinitionsJob {
                 Mode = Mode.Value,
                 Config = BuildJobConfig(),
@@ -77,6 +80,9 @@ namespace NetworkTools.Systems.Tools.Connect {
                 NetGeometryDataLookup = SystemAPI.GetComponentLookup<NetGeometryData>(true),
                 ECB = m_Barrier.CreateCommandBuffer(),
             }.Schedule(inputDeps);
+#if IS_DEBUG
+            m_ControlJob = jobHandle;
+#endif
             m_Barrier.AddJobHandleForProducer(jobHandle);
 
             return jobHandle;

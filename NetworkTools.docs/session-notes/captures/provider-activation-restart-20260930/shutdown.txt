@@ -1,8 +1,0 @@
-Get-Content : The process cannot access the file 'C:\Users\danwa\AppData\Local\CitiesIIAgentBridge\session.json' 
-because it is being used by another process.
-At line:5 char:10
-+ $session=Get-Content -LiteralPath (Join-Path $mailbox 'session.json') ...
-+          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    + CategoryInfo          : ReadError: (C:\Users\danwa\...ge\session.json:String) [Get-Content], IOException
-    + FullyQualifiedErrorId : GetContentReaderIOError,Microsoft.PowerShell.Commands.GetContentCommand
- 

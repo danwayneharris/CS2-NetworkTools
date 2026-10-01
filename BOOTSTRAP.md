@@ -244,3 +244,10 @@ does not install Unity, the CS2 SDK, the bridge, or a game-debugging patch. The
 marketplace's unity-devtools/coherent-gameface plugins are separate optional tools.
 See [marketplace instructions](https://github.com/CitiesSkylinesModding/agents-plugins#install)
 and [OpenAI marketplace guidance](https://developers.openai.com/plugins/build/plugins).
+
+### Optional live-debugging plugins
+
+See [live-debugging setup](../cities2-agent-bridge-ndc/docs/DEBUGGING-PLUGINS.md) for the
+coherent-gameface and unity-devtools prerequisites, reversible development-player
+patch, and separate server/live-connection verification. These are optional
+developer tools and are not dependencies of the released mod.

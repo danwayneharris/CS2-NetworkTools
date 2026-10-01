@@ -27,7 +27,7 @@ namespace NetworkTools.Systems.Tools.Parallel {
         /// <inheritdoc />
         public override bool SupportsAnarchy => true;
 
-        public NetPrefabParameter          NetPrefab           = new("parallel.netPrefab");
+        public NetPrefabParameter          NetPrefab           = new("parallel.netPrefab", nullable: true);
         public FloatParameter              HorizontalOffset    = new("parallel.horizontalOffset", 20f, -80f, 80f, label: "NetworkTools.UI.Parallel.HorizontalOffset", fractionDigits: 0, numberType: NumberType.Distance);
         public FloatParameter              VerticalOffset      = new("parallel.verticalOffset",   0f,  -80f, 80f, label: "NetworkTools.UI.Parallel.VerticalOffset", fractionDigits: 0, numberType: NumberType.Distance);
         public EnumParameter<ParallelDirection> ReverseDirection = new("parallel.reverseDirection", ParallelDirection.Same, label: "NetworkTools.UI.Parallel.Direction");

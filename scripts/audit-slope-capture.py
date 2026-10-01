@@ -25,7 +25,7 @@ for key in report['changedUnselectedEdges']:
  errors=[math.dist([q[k]-p[k] for k in ('x','y','z')],delta) for p,q,delta in zip(b['curve'],c['curve'],[ds,ds,de,de])]
  assert max(errors)<=TOLERANCE,'Side edge change exceeded endpoint/node translation'
  side.append({'edge':key,'startDelta':ds,'endDelta':de,'maxTranslationError':max(errors)})
-result={'geometryToleranceMeters':TOLERANCE,'directedConnections':lanes,'unselectedEdgeTranslations':side,'nodeXZPreserved':True,'limits':'Slope changes node heights by design; native junction mesh and vehicle traversal need visual/live traffic checks.'}
+result={'geometryToleranceMeters':TOLERANCE,'directedConnections':lanes,'unselectedEdgeTranslations':side,'nodeXZWithinTolerance':True,'maxNodeHorizontalDrift':max(math.hypot(v[0],v[2]) for v in moves.values()),'limits':'Slope changes node heights by design; native junction mesh and vehicle traversal need visual/live traffic checks.'}
 # Verify enabled boundary smoothing against the actual unselected neighbor's
 # tangent, in path-forward orientation. Compare vertical handle displacement in
 # meters, not a permissive grade tolerance on short handles.

@@ -11,11 +11,12 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--bridge',default='../bridge-terrain-profile');p.add_argument('--fixture',default=str(HERE/'fixtures/toy-terrain-v11.json'))
     p.add_argument('--case',required=True);p.add_argument('--order',choices=['slope','curve-slope','slope-curve'],required=True)
-    p.add_argument('--mode',choices=['linear','ease','arch'],default='linear');p.add_argument('--reverse',action='store_true')
+    p.add_argument('--strength',type=float,default=1.0);p.add_argument('--mode',choices=['linear','ease','arch'],default='linear');p.add_argument('--reverse',action='store_true')
     p.add_argument('--smooth-start',action='store_true');p.add_argument('--smooth-end',action='store_true')
     p.add_argument('--save-root',required=True);p.add_argument('--output',required=True);p.add_argument('--run',action='store_true')
     a=p.parse_args()
     if not a.run:p.error('Explicit --run required')
+    if not 0 <= a.strength <= 1:p.error('Strength must be in [0, 1]')
     root=Path(a.output).resolve();root.mkdir(parents=True,exist_ok=False)
     fixture=json.loads(Path(a.fixture).read_text());case=next(c for c in fixture['cases'] if c['name']==a.case)
     bridge=Path(a.bridge).resolve();client=runpy.run_path(str(bridge/'adapter/bridge_client.py'))['Client'](Path(os.environ['LOCALAPPDATA'])/'CitiesIIAgentBridge',root/'status-intents')
@@ -42,7 +43,7 @@ def main():
         if i==0 and fingerprint!=fixture['fingerprint']:raise ValueError('Original baseline geometry mismatch')
         destination=root/(str(i)+'-'+stage)
         if stage=='curve':
-            modified={**fixture,'fingerprint':fingerprint,'cases':[{**case,'strengths':[1.0]}]}
+            modified={**fixture,'fingerprint':fingerprint,'cases':[{**case,'strengths':[a.strength]}]}
             if a.reverse:modified['cases'][0].update(start=case['end'],end=case['start'])
             path=root/('curve-fixture-'+str(i)+'.json');path.write_text(json.dumps(modified,indent=2))
             execute('terrain-regression.py',['--bridge',str(bridge),'--fixture',str(path),'--case',a.case,'--save-root',a.save_root,'--output',str(destination),'--run'],str(i)+'-'+stage)

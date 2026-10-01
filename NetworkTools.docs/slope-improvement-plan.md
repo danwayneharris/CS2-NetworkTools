@@ -47,6 +47,6 @@ terrain/rendered-surface effect. See [observation and setup notes](session-notes
 The terrain-profile sprint integrates an offset-aware fit for Constant Slope only.
 See [model and offline limits](session-notes/2026-10-01-0330-offset-profile-research.md)
 and [integration checkpoint](session-notes/2026-10-01-0331-constant-slope-integration.md).
-Native validation is still pending at this checkpoint. Ease/Arch and coordinated
+The first forward/reverse native test now passes; see
+[native validation](session-notes/2026-10-01-0338-profile-native-validation.md). Ease/Arch and coordinated
 Curve/Slope remain separate work; this is not terrain-following behavior.
-

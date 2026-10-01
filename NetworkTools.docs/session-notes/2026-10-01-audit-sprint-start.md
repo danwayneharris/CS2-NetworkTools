@@ -8,3 +8,9 @@ Original checkout has user lockfile edits, untracked audits and personal files. 
 Initial source inspection confirms F03 (whole-curve writes at two moved incident nodes can compete) and F10 (position replacement defaults Node rotation). F02's transform cache and independently captured submission inputs also remain separate. No new build or game verification yet.
 
 Delegation: test-runner/Connect oracle fixes, path-search state, and read-only remaining findings. Only the parent controls the game and shared build/deployment.
+## Incident-edge composition and node fields
+
+F03/F10: Preview and Apply now gather each unselected incident edge once and compose both endpoint deltas from its original curve. This also removes the old sub-millimeter Preview/Apply translation threshold discrepancy. Node writes copy the original component and change position only. Native reconstruction remains independent and still needs live verification.
+
+Non-deploying Debug compile passed with existing warnings. Compiled production helper tests passed for both-end edits, reversed storage, unchanged opposite end, preserved endpoint tangents and rotation (including unchanged position). Existing eight slope fixtures / 96 assertions also passed. These are not ECS scheduling or native-output tests.
+

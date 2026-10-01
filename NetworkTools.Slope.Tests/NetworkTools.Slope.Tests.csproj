@@ -6,6 +6,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="NetworkTools"><HintPath>../NetworkTools.Mod/obj/Debug/net48/NetworkTools.dll</HintPath></Reference>
+    <Reference Include="Game"><HintPath>$(ManagedPath)/Game.dll</HintPath></Reference>
     <Reference Include="Unity.Mathematics"><HintPath>$(ManagedPath)/Unity.Mathematics.dll</HintPath></Reference>
     <Reference Include="Colossal.Mathematics"><HintPath>$(ManagedPath)/Colossal.Mathematics.dll</HintPath></Reference>
     <Reference Include="Unity.Entities"><HintPath>$(ManagedPath)/Unity.Entities.dll</HintPath></Reference>

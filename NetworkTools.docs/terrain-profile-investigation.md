@@ -99,3 +99,22 @@ The experiment confirms neighboring terrain influence and derived-surface mismat
 it does not yet establish that feeding pristine terrain to the fitter fixes either.
 Next inspect the junction-height derivation and actual lane/surface profile, separating
 that from terrain deformation. No production behavior was changed in this experiment.
+
+## Native junction-height and lane-profile follow-up
+
+The generated car-lane curves confirm the concern beyond the boundary-midpoint
+proxy. The first ramp edge's two lane pieces reach sampled grades of 32.50% and
+27.20% before highway slope, versus 17.50% and 7.86% afterward. These are absolute
+magnitudes, distinct from the roughly 7.15% authored profile and from traffic tests.
+
+A read-only live NodeGeometry check also confirms the source's shared-height stage:
+the restored post-highway junction's derived height is 612.990 m, versus authored
+node height 613.5095 m. Inverse-handle-length weighting of incident handle heights,
+then halfway blending with node height, predicts 612.989985 m. The resulting
+micrometre difference is insignificant. This validates one native stage, not a
+complete inverse model of the generated road surface.
+
+See [source trace and evidence](session-notes/2026-10-01-0446-generated-junction-heights.md).
+The new `scripts/analyze-generated-ramp.py` retains the restricted formula replay
+and lane measurements. Next isolate subsequent junction cutting/flattening and
+middle-height limiting before designing a surface-aware fitting correction.

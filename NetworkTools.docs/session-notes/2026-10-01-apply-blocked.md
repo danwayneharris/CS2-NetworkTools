@@ -38,3 +38,10 @@ no gameplay/source behavior changes and did not clear or Apply the selection.
 
 Screen capture through Computer Use was unavailable (native pipe not found).
 Findings are from live bridge data and Player.log, not a rendered-frame inspection.
+
+## Scope clarification: neighboring geometry
+
+Dan permits considering slight outside-selection adjustments as future behavior,
+with an explicit user-facing allow/disallow/tolerance policy. Recorded in the
+feature plan; deferred from this preview-representation bugfix. Existing geometry
+checks remain in place for now. No code or game state changed.

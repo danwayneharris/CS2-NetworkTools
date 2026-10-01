@@ -203,3 +203,24 @@ when selection order reverses, world-canonical orientation can jump near its sig
 boundary, and screen-relative side changes with the camera. Do not silently choose
 one of these conventions. Junctions/splits would require constrained section fits
 and native validation; neither alternative is integrated yet.
+
+## Deferred: controlled changes outside the selection (2026-10-01)
+
+Dan clarified that preserving outside geometry is a default constraint, not an
+absolute product requirement. Small changes to adjacent, unselected geometry may
+be worthwhile when they improve the player's requested result.
+
+Revisit an explicit player-facing policy: disallow changes, allow bounded changes,
+or configure a tolerance. Decide what the tolerance measures (node displacement,
+curve displacement, tangent/grade change), which neighboring segments it covers,
+and how the preview communicates that expanded affected area. These are open UX
+and geometry questions, not an agreed numeric threshold or implementation.
+
+Permission to adjust geometry does not imply permission to lose intended lane/rail
+connections, add forbidden connections, or change topology. Those constraints need
+independent verification even when small neighboring adjustments are allowed.
+
+Keep this out of the current temporary-edge combining bugfix. That fix must first
+interpret equivalent preview representations correctly under existing preservation
+checks. Do not confuse a temporary entity reorganization with a geometric change,
+or loosen geometry tolerances merely to get past an unresolved mapping failure.

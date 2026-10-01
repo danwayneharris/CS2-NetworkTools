@@ -59,3 +59,43 @@ is explicitly a confounded comparison, not terrain isolation.
 See the sprint session notes and final review checklist for exact builds, operation
 orders, checkpoints and acceptance categories. Terrain following, clearance routing,
 combined pin/elevation policy and vehicle traversal remain separate work.
+
+## Fixed-station neighboring-highway experiment (October 1, 04:43 PDT)
+
+A controlled before/after comparison sampled 525 identical XZ positions across five
+off-ramp edges, at 21 stations per edge and lateral offsets -12, -6, 0, 6, 12 m.
+Three repeated CPU-terrain reads agreed exactly in each state. The pre-highway
+network fingerprint exactly matched the named full-ramp review checkpoint.
+
+Two effects are now measured:
+
+1. The first ramp edge changes through the shared junction: authored controls A/B
+   move down 3.8208 m, with C/D unchanged. Generated boundary controls change by
+   up to 3.6003 m; sampled adjusted terrain by up to 4.788 m.
+2. The next ramp edge retains exactly the same authored and generated boundary
+   controls, yet nearby adjusted terrain changes by up to 3.0514 m. At its center
+   the terrain difference is 0.0409 m, acceptable under the 5 cm policy. Three
+   remaining ramp edges show no sampled terrain or authored/boundary change.
+
+There is also a substantial authored-to-generated mismatch. At t=0.8 on the first
+edge, the midpoint of its generated left/right boundaries is 2.7495 m above the
+original authored curve (horizontal match residual 0.0112 m). After highway Apply,
+the gap is 0.4097 m (horizontal residual 0.00325 m). This boundary midpoint is a
+useful surface proxy, not proof of the final rendered lane/mesh height.
+
+Generated edge boundaries do not cover the whole authored edge in this large merge:
+the early stations have no close horizontal match. The analysis rejects matches
+beyond 0.25 m and does not extrapolate those boundaries through the junction span.
+This matching bound is a diagnostic association rule, not a replacement for the
+user's 5 cm geometric acceptance threshold.
+
+[Layer comparison plot](session-notes/plots/neighbor-highway-terrain-20261001.png)
+shows authored profile, matched boundary midpoint and adjusted terrain. Solid-line
+agreement alone is insufficient validation of player-visible slope. GeometrySystem's
+height-map application and middle-height limiting (source lines 1725-1756) remain
+relevant, but the responsible upstream junction calculation has not yet been isolated.
+
+The experiment confirms neighboring terrain influence and derived-surface mismatch;
+it does not yet establish that feeding pristine terrain to the fitter fixes either.
+Next inspect the junction-height derivation and actual lane/surface profile, separating
+that from terrain deformation. No production behavior was changed in this experiment.

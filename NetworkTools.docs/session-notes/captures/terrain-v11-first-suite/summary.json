@@ -1,0 +1,329 @@
+[
+  {
+    "fixture": "toy-terrain-v11.json",
+    "case": "hill-road",
+    "exitCode": 0,
+    "report": {
+      "case": "hill-road",
+      "checkpoint": "CitiesIIAgentBridge-regression-hill-road-20261001-070028-f2807a8d",
+      "changedEdges": [
+        [
+          51683,
+          1
+        ],
+        [
+          51684,
+          1
+        ],
+        [
+          51685,
+          1
+        ],
+        [
+          51682,
+          1
+        ],
+        [
+          51687,
+          1
+        ],
+        [
+          51688,
+          1
+        ],
+        [
+          51689,
+          1
+        ],
+        [
+          51690,
+          1
+        ],
+        [
+          51691,
+          1
+        ]
+      ],
+      "junctions": [
+        {
+          "connections": 4,
+          "rawConnectorPairsChanged": true,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 4,
+          "rawConnectorPairsChanged": true,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 4,
+          "rawConnectorPairsChanged": true,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 4,
+          "rawConnectorPairsChanged": true,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 4,
+          "rawConnectorPairsChanged": true,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 4,
+          "rawConnectorPairsChanged": true,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 4,
+          "rawConnectorPairsChanged": true,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 4,
+          "rawConnectorPairsChanged": true,
+          "maxCurveError": 0.0
+        }
+      ],
+      "fixedNodeDrifts": [],
+      "limits": "Local snapshot checks; not vehicle traversal or visual approval.",
+      "passed": true
+    }
+  },
+  {
+    "fixture": "toy-terrain-v11.json",
+    "case": "crest-dip-road",
+    "exitCode": 0,
+    "report": {
+      "case": "crest-dip-road",
+      "checkpoint": "CitiesIIAgentBridge-regression-crest-dip-road-20261001-070139-95a754a2",
+      "changedEdges": [
+        [
+          51686,
+          1
+        ],
+        [
+          51674,
+          1
+        ],
+        [
+          51675,
+          1
+        ],
+        [
+          51676,
+          1
+        ],
+        [
+          51677,
+          1
+        ],
+        [
+          51678,
+          1
+        ],
+        [
+          51679,
+          1
+        ],
+        [
+          51680,
+          1
+        ],
+        [
+          51681,
+          1
+        ],
+        [
+          51692,
+          1
+        ],
+        [
+          51693,
+          1
+        ],
+        [
+          335003,
+          1
+        ]
+      ],
+      "junctions": [
+        {
+          "connections": 4,
+          "rawConnectorPairsChanged": true,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 4,
+          "rawConnectorPairsChanged": true,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 4,
+          "rawConnectorPairsChanged": true,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 4,
+          "rawConnectorPairsChanged": true,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 4,
+          "rawConnectorPairsChanged": true,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 4,
+          "rawConnectorPairsChanged": true,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 4,
+          "rawConnectorPairsChanged": false,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 4,
+          "rawConnectorPairsChanged": true,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 4,
+          "rawConnectorPairsChanged": false,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 4,
+          "rawConnectorPairsChanged": true,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 4,
+          "rawConnectorPairsChanged": true,
+          "maxCurveError": 0.0
+        }
+      ],
+      "fixedNodeDrifts": [],
+      "limits": "Local snapshot checks; not vehicle traversal or visual approval.",
+      "passed": true
+    }
+  },
+  {
+    "fixture": "toy-terrain-v11.json",
+    "case": "rail-high-branch",
+    "exitCode": 1,
+    "report": {
+      "case": "rail-high-branch",
+      "checkpoint": "CitiesIIAgentBridge-regression-rail-high-branch-20261001-070252-085ffbb2",
+      "changedEdges": [
+        [
+          334203,
+          1
+        ],
+        [
+          334204,
+          1
+        ],
+        [
+          334205,
+          1
+        ],
+        [
+          334207,
+          1
+        ],
+        [
+          334218,
+          1
+        ],
+        [
+          334220,
+          1
+        ]
+      ],
+      "junctions": [
+        {
+          "connections": 4,
+          "rawConnectorPairsChanged": false,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 2,
+          "rawConnectorPairsChanged": true,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 2,
+          "rawConnectorPairsChanged": true,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 2,
+          "rawConnectorPairsChanged": true,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 2,
+          "rawConnectorPairsChanged": true,
+          "maxCurveError": 0.0
+        }
+      ],
+      "fixedNodeDrifts": [
+        {
+          "node": [
+            52117,
+            1
+          ],
+          "distance": 0.023518301384144496
+        }
+      ],
+      "limits": "Local snapshot checks; not vehicle traversal or visual approval.",
+      "passed": false
+    }
+  },
+  {
+    "fixture": "toy-terrain-v11.json",
+    "case": "highway-mainline",
+    "exitCode": 0,
+    "report": {
+      "case": "highway-mainline",
+      "checkpoint": "CitiesIIAgentBridge-regression-highway-mainline-20261001-070358-8105fd94",
+      "changedEdges": [
+        [
+          334278,
+          1
+        ],
+        [
+          334279,
+          1
+        ],
+        [
+          334785,
+          1
+        ]
+      ],
+      "junctions": [
+        {
+          "connections": 9,
+          "rawConnectorPairsChanged": false,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 9,
+          "rawConnectorPairsChanged": false,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 7,
+          "rawConnectorPairsChanged": false,
+          "maxCurveError": 0.0
+        }
+      ],
+      "fixedNodeDrifts": [],
+      "limits": "Local snapshot checks; not vehicle traversal or visual approval.",
+      "passed": true
+    }
+  }
+]

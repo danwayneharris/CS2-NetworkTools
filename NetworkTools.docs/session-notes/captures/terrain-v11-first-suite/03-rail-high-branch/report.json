@@ -1,0 +1,68 @@
+{
+  "case": "rail-high-branch",
+  "checkpoint": "CitiesIIAgentBridge-regression-rail-high-branch-20261001-070252-085ffbb2",
+  "changedEdges": [
+    [
+      334203,
+      1
+    ],
+    [
+      334204,
+      1
+    ],
+    [
+      334205,
+      1
+    ],
+    [
+      334207,
+      1
+    ],
+    [
+      334218,
+      1
+    ],
+    [
+      334220,
+      1
+    ]
+  ],
+  "junctions": [
+    {
+      "connections": 4,
+      "rawConnectorPairsChanged": false,
+      "maxCurveError": 0.0
+    },
+    {
+      "connections": 2,
+      "rawConnectorPairsChanged": true,
+      "maxCurveError": 0.0
+    },
+    {
+      "connections": 2,
+      "rawConnectorPairsChanged": true,
+      "maxCurveError": 0.0
+    },
+    {
+      "connections": 2,
+      "rawConnectorPairsChanged": true,
+      "maxCurveError": 0.0
+    },
+    {
+      "connections": 2,
+      "rawConnectorPairsChanged": true,
+      "maxCurveError": 0.0
+    }
+  ],
+  "fixedNodeDrifts": [
+    {
+      "node": [
+        52117,
+        1
+      ],
+      "distance": 0.023518301384144496
+    }
+  ],
+  "limits": "Local snapshot checks; not vehicle traversal or visual approval.",
+  "passed": false
+}

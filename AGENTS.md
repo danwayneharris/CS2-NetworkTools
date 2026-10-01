@@ -32,7 +32,7 @@ Run from the repository root in PowerShell:
 .\scripts\bootstrap.ps1 -Test                   # Legacy BUILD/DEPLOY + legacy test project
 ```
 
-- Prefer `-OfflineTest` for the actual geometry/path-selection/Slope/original-input/
+- Prefer `-OfflineTest` for the actual geometry/path-selection/parameter/codegen/Slope/original-input/
   Python aggregate. It writes build outputs and reports but does not deploy or
   contact CS2. Slope requires installed game assemblies. The legacy `-Test` path
   is not a substitute for this coverage. See [audit disposition](NetworkTools.docs/audit-disposition.md).

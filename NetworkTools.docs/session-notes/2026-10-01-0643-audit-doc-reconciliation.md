@@ -21,3 +21,8 @@ input/shared-Apply source before describing those changes.
 Verification: read current source and checked changed-document whitespace with
 Git diff --check (passed). No builds, game operations or new runtime claims. Final
 results/deployed identity/manual checklist are left for parent integration.
+
+Integration follow-up: parameter finite-value guard `dad48b5` and generator
+diagnostics `286080d` are now described as implemented with offline evidence only.
+The command inventory names all seven aggregate stages. UI/native verification
+stays pending; parent owns final results.

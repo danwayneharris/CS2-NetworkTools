@@ -31,7 +31,7 @@ Back up any manually edited files there before building.
 | Command | What it does | Game/deployment effect |
 | --- | --- | --- |
 | `bootstrap.ps1` | Inspect prerequisites and refresh this process environment | None |
-| `bootstrap.ps1 -OfflineTest` | Geometry, path-selection, compiled-production Slope, original-input and Python suites; JSON/log summary under `artifacts/offline-tests` | No deployment or game connection; writes local build/test artifacts |
+| `bootstrap.ps1 -OfflineTest` | Geometry, path-selection, parameters, codegen, compiled-production Slope, original-input and Python suites; JSON/log summary under `artifacts/offline-tests` | No deployment or game connection; writes local build/test artifacts |
 | `uv run --no-project python scripts/run-offline-tests.py --output artifacts/offline-tests` | Same aggregate directly; needs tools on PATH | Same non-deploying scope |
 | `scripts/test-slope.ps1` | Compile Debug production code using `Compile`, then exercise it with game mathematics assemblies | No postprocessing, UI build or deployment; no ECS world |
 | `bootstrap.ps1 -Build` | Full SDK build, postprocessing, UI and local deployment | Replaces local mod; close CS2 first |

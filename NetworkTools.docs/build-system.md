@@ -178,7 +178,7 @@ Close the game before building and preserve any manual edits in that output fold
 
 `bootstrap.ps1 -Test` retains the legacy build/deploy plus legacy project path
 with `--no-build --no-restore`. That project has no current test source and is not
-the aggregate verification gate. `-OfflineTest` runs geometry, path-selection,
+the aggregate verification gate. `-OfflineTest` runs geometry, path-selection, parameters, codegen,
 compiled-production Slope, original-input comparison and Python suites in sequence.
 It records commands, revision/dirty state, tool context, logs and nonzero failures.
 These are offline contracts; no native ECS world or rendered behavior is exercised.

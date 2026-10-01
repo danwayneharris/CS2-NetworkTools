@@ -7,7 +7,7 @@ from pathlib import Path
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--bridge',default='../cities2-agent-bridge-ndc');p.add_argument('--save-root',required=True)
-    p.add_argument('--output',required=True);p.add_argument('--run',action='store_true')
+    p.add_argument('--runner',choices=['live-regression.py','terrain-regression.py'],default='live-regression.py');p.add_argument('--output',required=True);p.add_argument('--run',action='store_true')
     p.add_argument('--case',action='append',required=True,help='fixture.json:case-name')
     a=p.parse_args()
     if not a.run:p.error('Explicit --run required')
@@ -40,7 +40,7 @@ def main():
         if code:raise RuntimeError('Lifecycle failed; inspect '+str(prefix)+'-reload.log')
         ready(state['session'])
         print('Testing '+case,flush=True)
-        code=invoke('live-regression.py',['--fixture',str(fixture),'--case',case,'--run','--save-root',a.save_root,'--bridge',str(bridge),'--output',str(prefix)],Path(str(prefix)+'.log'))
+        code=invoke(a.runner,['--fixture',str(fixture),'--case',case,'--run','--save-root',a.save_root,'--bridge',str(bridge),'--output',str(prefix)],Path(str(prefix)+'.log'))
         report=prefix/'report.json'
         reports.append({'fixture':fixture_name,'case':case,'exitCode':code,'report':json.loads(report.read_text()) if report.exists() else None})
         (root/'summary.json').write_text(json.dumps(reports,indent=2))

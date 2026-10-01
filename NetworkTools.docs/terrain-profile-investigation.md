@@ -118,3 +118,20 @@ See [source trace and evidence](session-notes/2026-10-01-0446-generated-junction
 The new `scripts/analyze-generated-ramp.py` retains the restricted formula replay
 and lane measurements. Next isolate subsequent junction cutting/flattening and
 middle-height limiting before designing a surface-aware fitting correction.
+
+## Middle-height limiter isolated
+
+[The native bounds replay](session-notes/2026-10-01-0455-middle-height-isolation.md)
+reproduces both captured middle heights. Before highway slope, the trimmed boundary
+requires a 20.5-21.4% average grade, exceeding its actual prefab's 20% setting.
+The native middle-height interval becomes inconsistent and collapses to a fixed
+fallback height. After the highway edit, that interval is feasible and captured
+middle heights lie on its contracted lower bound. This explains a decisive
+height-generation stage; it does not yet isolate every upstream anchor adjustment.
+
+The limiter constrains endpoint differences over each half, not maximum cubic
+slope, which explains why generated lane peaks can exceed the prefab setting.
+Do not bypass it as a fix. Fit against feasible generated boundary conditions and
+validate lane profiles; terrain deformation is a separate coupled consideration.
+Reusable replay: `scripts/replay-native-middle-height.py`; analytic checks:
+`scripts/test-native-middle-height.py`.

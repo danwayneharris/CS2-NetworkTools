@@ -10,7 +10,7 @@ reg=runpy.run_path(str(HERE/'live-regression.py'))
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--bridge',default='../bridge-terrain-profile');p.add_argument('--fixture',default=str(HERE/'fixtures/toy-terrain-v11.json'))
-    p.add_argument('--case',required=True);p.add_argument('--order',choices=['slope','curve-slope','slope-curve'],required=True)
+    p.add_argument('--case',required=True);p.add_argument('--order',choices=['curve','slope','curve-slope','slope-curve'],required=True)
     p.add_argument('--strength',type=float,default=1.0);p.add_argument('--mode',choices=['linear','ease','arch'],default='linear');p.add_argument('--reverse',action='store_true')
     p.add_argument('--smooth-start',action='store_true');p.add_argument('--smooth-end',action='store_true')
     p.add_argument('--save-root',required=True);p.add_argument('--output',required=True);p.add_argument('--run',action='store_true')
@@ -38,6 +38,7 @@ def main():
     for i,stage in enumerate(stages):
         r=reg['Runner'](bridge,root/('discovery-'+str(i)))
         city=r.call('get_city_state')
+        if r.city_session!=current['citySession']:raise ValueError('City session changed during sequence')
         if city['population']!=0 or city['selectedSpeed']!=0 or not city['controlEnabled']:raise ValueError('Paused controlled toy required')
         nodes,edges=r.network(fixture['region']);fingerprint=reg['fingerprint'](nodes,edges)
         if i==0 and fingerprint!=fixture['fingerprint']:raise ValueError('Original baseline geometry mismatch')
@@ -56,6 +57,10 @@ def main():
             args=[str(destination)]
             if a.mode=='linear' and not a.smooth_start and not a.smooth_end:args.append('--verify-offset-fit')
             execute('summarize-profile-experiment.py',args,str(i)+'-analysis')
+            comparison=json.loads((destination/'comparison.json').read_text())
+            observer=runpy.run_path(str(HERE/'terrain-regression.py'))
+            sample=observer['observe'](r,fixture['region'],{reg['identity'](e) for e in comparison['path']['edges']})
+            (destination/'terrain-after.json').write_text(json.dumps(sample,indent=2))
         reports.append({'stage':stage,'report':json.loads((destination/'report.json').read_text())})
         (root/'summary.json').write_text(json.dumps({'case':a.case,'order':a.order,'stages':reports,'status':'partial' if i<len(stages)-1 else 'complete'},indent=2))
         print(a.case+' '+stage+': verified',flush=True)

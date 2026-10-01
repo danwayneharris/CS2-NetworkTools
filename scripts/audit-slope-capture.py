@@ -25,4 +25,29 @@ for key in report['changedUnselectedEdges']:
  assert max(errors)<.001,'Side edge change exceeded endpoint/node translation'
  side.append({'edge':key,'startDelta':ds,'endDelta':de,'maxTranslationError':max(errors)})
 result={'directedConnections':lanes,'unselectedEdgeTranslations':side,'nodeXZPreserved':True,'limits':'Slope changes node heights by design; native junction mesh and vehicle traversal need visual/live traffic checks.'}
+# Verify enabled boundary smoothing against the actual unselected neighbor's
+# tangent, in path-forward orientation. Compare vertical handle displacement in
+# meters, not a permissive grade tolerance on short handles.
+if report.get('parameters',{}).get('slopeMode')=='linear':
+ data=json.loads((root/'comparison.json').read_text())
+ util=runpy.run_path(str(Path(__file__).with_name('summarize-profile-experiment.py')))
+ before=util['oriented_edges'](data['beforeEdges'],data['path']);after=util['oriented_edges'](data['afterEdges'],data['path'])
+ chosen={m['identity'](e) for e in before};boundary=[]
+ for start,enabled in ((True,report['parameters']['smoothStart']),(False,report['parameters']['smoothEnd'])):
+  e=before[0 if start else -1];forward=e['pathForward'];node=m['identity'](e['startNode' if forward==start else 'endNode'])
+  others=[e for e in data['beforeEdges'] if m['identity'](e) not in chosen and node in (m['identity'](e['startNode']),m['identity'](e['endNode']))]
+  entry={'end':'start' if start else 'end','enabled':enabled,'eligible':len(others)==1}
+  if enabled and len(others)==1:
+   other=others[0];atstart=m['identity'](other['startNode'])==node;ep=other['curve'][0 if atstart else 3];handle=other['curve'][1 if atstart else 2]
+   horizontal=math.hypot(handle['x']-ep['x'],handle['z']-ep['z'])
+   if horizontal<.001:entry['eligible']=False
+   else:
+    grade=(handle['y']-ep['y'])/horizontal*(-1 if start else 1)
+    c=after[0 if start else -1]['curve'];ep=c[0 if start else 3];handle=c[1 if start else 2]
+    distance=math.hypot(handle['x']-ep['x'],handle['z']-ep['z'])
+    error=abs(handle['y']-ep['y']-grade*distance*(1 if start else -1))
+    entry.update(anchorGrade=grade,verticalHandleError=error)
+    assert error<=.001,'Enabled boundary smoothing does not match its neighbor'
+  boundary.append(entry)
+ result['boundarySmoothing']=boundary
 (root/'independent-audit.json').write_text(json.dumps(result,indent=2));print(json.dumps(result,indent=2))

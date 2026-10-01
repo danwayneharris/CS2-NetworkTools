@@ -1,0 +1,1091 @@
+{
+  "sourceCodeRevision": "77f8c64",
+  "basePR": 13,
+  "baseRevision": "ee9c3bcd7272e5f18f41166e2dad2a4d12744ed6",
+  "configuration": "Debug",
+  "deployedDllSha256": "CB9213E6E829C1A50B70E243CCDCE26070BCFEDBFE168EC661211090F8DACCDA",
+  "policy": {
+    "geometryToleranceMeters": 0.05,
+    "topologyAndDirectedLaneIdentity": "strict",
+    "materialCumulativeDrift": "failure"
+  },
+  "offline": {
+    "startedUtc": "2026-10-01T22:14:31.213716+00:00",
+    "scope": "offline; no deployment, game queries, native execution or live mutation",
+    "python": "3.13.15 (main, Aug 14 2026, 15:36:10) [MSC v.1944 64 bit (AMD64)]",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "revision": {
+      "exitCode": 0,
+      "value": "012a3ee0ae512599978a0f68d04ea303792f4973",
+      "error": ""
+    },
+    "workingTree": {
+      "exitCode": 0,
+      "value": "M NetworkTools.Mod/UI/package-lock.json",
+      "error": ""
+    },
+    "dotnet": {
+      "exitCode": 0,
+      "value": "10.0.401",
+      "error": ""
+    },
+    "policy": "Suites retain their stated mathematical/assertion tolerances; live geometry policy is not applied to offline analytical precision.",
+    "notRun": [
+      "optional trace/captured-replay command modes",
+      "Release/Burst execution",
+      "native preview/Apply",
+      "vehicle traversal",
+      "human visual review"
+    ],
+    "results": [
+      {
+        "suite": "geometry",
+        "command": [
+          "C:\\Program Files\\dotnet\\dotnet.EXE",
+          "run",
+          "--project",
+          "NetworkTools.Geometry.Tests"
+        ],
+        "configuration": "Debug",
+        "status": "passed",
+        "exitCode": 0,
+        "elapsedSeconds": 2.358,
+        "log": "C:\\Users\\danwa\\dev\\cs2-mods\\nt-audit-sprint\\artifacts\\audit-offline-provenance\\geometry.log"
+      },
+      {
+        "suite": "path-selection",
+        "command": [
+          "C:\\Program Files\\dotnet\\dotnet.EXE",
+          "run",
+          "--project",
+          "NetworkTools.PathSelection.Tests"
+        ],
+        "configuration": "Debug",
+        "status": "passed",
+        "exitCode": 0,
+        "elapsedSeconds": 1.265,
+        "log": "C:\\Users\\danwa\\dev\\cs2-mods\\nt-audit-sprint\\artifacts\\audit-offline-provenance\\path-selection.log"
+      },
+      {
+        "suite": "parameters",
+        "command": [
+          "C:\\Program Files\\dotnet\\dotnet.EXE",
+          "run",
+          "--project",
+          "NetworkTools.Parameter.Tests"
+        ],
+        "configuration": "Debug",
+        "status": "passed",
+        "exitCode": 0,
+        "elapsedSeconds": 1.295,
+        "log": "C:\\Users\\danwa\\dev\\cs2-mods\\nt-audit-sprint\\artifacts\\audit-offline-provenance\\parameters.log"
+      },
+      {
+        "suite": "codegen",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.EXE",
+          "-NoProfile",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "scripts/test-codegen.ps1"
+        ],
+        "configuration": "Debug",
+        "status": "passed",
+        "exitCode": 0,
+        "elapsedSeconds": 5.011,
+        "log": "C:\\Users\\danwa\\dev\\cs2-mods\\nt-audit-sprint\\artifacts\\audit-offline-provenance\\codegen.log"
+      },
+      {
+        "suite": "slope-production",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.EXE",
+          "-NoProfile",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "scripts/test-slope.ps1"
+        ],
+        "configuration": "Debug",
+        "status": "passed",
+        "exitCode": 0,
+        "elapsedSeconds": 4.344,
+        "log": "C:\\Users\\danwa\\dev\\cs2-mods\\nt-audit-sprint\\artifacts\\audit-offline-provenance\\slope-production.log"
+      },
+      {
+        "suite": "original-input",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.EXE",
+          "-NoProfile",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "scripts/test-original-input-comparison.ps1"
+        ],
+        "configuration": "Debug",
+        "status": "passed",
+        "exitCode": 0,
+        "elapsedSeconds": 0.283,
+        "log": "C:\\Users\\danwa\\dev\\cs2-mods\\nt-audit-sprint\\artifacts\\audit-offline-provenance\\original-input.log"
+      },
+      {
+        "suite": "python",
+        "command": [
+          "C:\\Users\\danwa\\bin\\scoop\\persist\\uv\\python\\versions\\cpython-3.13-windows-x86_64-none\\python.exe",
+          "scripts/run-offline-python-tests.py",
+          "--output",
+          "C:\\Users\\danwa\\dev\\cs2-mods\\nt-audit-sprint\\artifacts\\audit-offline-provenance\\python.json"
+        ],
+        "configuration": "Debug",
+        "status": "passed",
+        "exitCode": 0,
+        "elapsedSeconds": 1.639,
+        "log": "C:\\Users\\danwa\\dev\\cs2-mods\\nt-audit-sprint\\artifacts\\audit-offline-provenance\\python.log"
+      }
+    ],
+    "status": "passed",
+    "completedUtc": "2026-10-01T22:14:47.627533+00:00"
+  },
+  "nativeMatrix": [
+    {
+      "fixture": "toy-interior-full-strength.json",
+      "case": "rail-interior-full-strength",
+      "status": "passed",
+      "exitCode": 0,
+      "report": {
+        "case": "rail-interior-full-strength",
+        "checkpoint": "CitiesIIAgentBridge-regression-rail-interior-full-strength-20261001-221333-8368320b",
+        "changedEdges": [
+          [
+            354788,
+            1
+          ],
+          [
+            354791,
+            1
+          ],
+          [
+            354793,
+            1
+          ],
+          [
+            355427,
+            1
+          ]
+        ],
+        "junctions": [
+          {
+            "connections": 4,
+            "rawConnectorPairsChanged": false,
+            "maxCurveError": 0.0
+          },
+          {
+            "connections": 2,
+            "rawConnectorPairsChanged": true,
+            "maxCurveError": 0.0
+          },
+          {
+            "connections": 2,
+            "rawConnectorPairsChanged": true,
+            "maxCurveError": 0.0
+          },
+          {
+            "connections": 2,
+            "rawConnectorPairsChanged": false,
+            "maxCurveError": 0.0
+          }
+        ],
+        "fixedNodeDrifts": [
+          {
+            "node": [
+              350938,
+              1
+            ],
+            "distance": 0.02987676856688507
+          }
+        ],
+        "geometryToleranceMeters": 0.05,
+        "unselectedCurveMaxError": 0,
+        "limits": "Local snapshot checks; not vehicle traversal or visual approval.",
+        "passed": true
+      }
+    },
+    {
+      "fixture": "toy-highway-jank-splits.json",
+      "case": "rail-two-splits",
+      "status": "passed",
+      "exitCode": 0,
+      "report": {
+        "case": "rail-two-splits",
+        "checkpoint": "CitiesIIAgentBridge-regression-rail-two-splits-20261001-221449-579bad30",
+        "changedEdges": [
+          [
+            354787,
+            1
+          ],
+          [
+            354796,
+            1
+          ],
+          [
+            355426,
+            1
+          ]
+        ],
+        "junctions": [
+          {
+            "connections": 4,
+            "rawConnectorPairsChanged": false,
+            "maxCurveError": 0.0
+          },
+          {
+            "connections": 2,
+            "rawConnectorPairsChanged": true,
+            "maxCurveError": 0.0
+          },
+          {
+            "connections": 2,
+            "rawConnectorPairsChanged": true,
+            "maxCurveError": 0.0
+          }
+        ],
+        "fixedNodeDrifts": [],
+        "geometryToleranceMeters": 0.05,
+        "unselectedCurveMaxError": 0,
+        "limits": "Local snapshot checks; not vehicle traversal or visual approval.",
+        "passed": true
+      }
+    },
+    {
+      "fixture": "toy-highway-jank-splits.json",
+      "case": "road-four-way-branch",
+      "status": "passed",
+      "exitCode": 0,
+      "report": {
+        "case": "road-four-way-branch",
+        "checkpoint": "CitiesIIAgentBridge-regression-road-four-way-branch-20261001-221603-c521a03e",
+        "changedEdges": [
+          [
+            351591,
+            1
+          ],
+          [
+            355247,
+            1
+          ],
+          [
+            355250,
+            1
+          ]
+        ],
+        "junctions": [
+          {
+            "connections": 4,
+            "rawConnectorPairsChanged": false,
+            "maxCurveError": 0.0
+          },
+          {
+            "connections": 16,
+            "rawConnectorPairsChanged": false,
+            "maxCurveError": 0.0
+          },
+          {
+            "connections": 4,
+            "rawConnectorPairsChanged": false,
+            "maxCurveError": 0.0
+          }
+        ],
+        "fixedNodeDrifts": [],
+        "geometryToleranceMeters": 0.05,
+        "unselectedCurveMaxError": 0,
+        "limits": "Local snapshot checks; not vehicle traversal or visual approval.",
+        "passed": true
+      }
+    },
+    {
+      "fixture": "toy-highway-jank-splits.json",
+      "case": "highway-off-ramp",
+      "status": "passed",
+      "exitCode": 0,
+      "report": {
+        "case": "highway-off-ramp",
+        "checkpoint": "CitiesIIAgentBridge-regression-highway-off-ramp-20261001-221714-88728f01",
+        "changedEdges": [
+          [
+            355856,
+            1
+          ],
+          [
+            355861,
+            1
+          ]
+        ],
+        "junctions": [
+          {
+            "connections": 1,
+            "rawConnectorPairsChanged": false,
+            "maxCurveError": 0.0
+          },
+          {
+            "connections": 5,
+            "rawConnectorPairsChanged": false,
+            "maxCurveError": 0.0
+          },
+          {
+            "connections": 1,
+            "rawConnectorPairsChanged": false,
+            "maxCurveError": 0.0
+          }
+        ],
+        "fixedNodeDrifts": [],
+        "geometryToleranceMeters": 0.05,
+        "unselectedCurveMaxError": 0,
+        "limits": "Local snapshot checks; not vehicle traversal or visual approval.",
+        "passed": true
+      }
+    }
+  ],
+  "exactRampRepeat": {
+    "geometryToleranceMeters": 0.05,
+    "stage": "slope",
+    "checkpoint": "CitiesIIAgentBridge-provider-slope-20261001-221145-1549e885",
+    "beforeFingerprint": "ddd31890adfa9fbe7cb861d45eb67938c9610c893a4ed677e059e41fc313e150",
+    "afterFingerprint": "ddd31890adfa9fbe7cb861d45eb67938c9610c893a4ed677e059e41fc313e150",
+    "staleRevisionRejected": true,
+    "nodeCount": [
+      48,
+      48
+    ],
+    "edgeCount": [
+      44,
+      44
+    ],
+    "parameters": {
+      "slopeMode": "linear",
+      "smoothStart": false,
+      "smoothEnd": false,
+      "reverse": true
+    },
+    "limits": "No visual/vehicle or rendered-surface validation.",
+    "sameTopology": true,
+    "previewApplyMaxError": 0.0,
+    "changedUnselectedEdges": [],
+    "directedConnectionsPreserved": true,
+    "physicalLaneMappingPreserved": true,
+    "incidentPreviewApplyMaxError": 0.0,
+    "nodeHorizontalMaxError": 0.0,
+    "fixedEndpointMaxError": 0.0
+  },
+  "repeatAudit": {
+    "toleranceMeters": 0.05,
+    "maxControlDisplacement": 0.0,
+    "maxNodeDisplacement": 0.0,
+    "sameTopology": true,
+    "idempotentWithinTolerance": true,
+    "limits": "Permanent authored geometry only. Directed lanes, generated surfaces and visual quality need separate checks."
+  },
+  "connectRoad": {
+    "geometryToleranceMeters": 0.05,
+    "stage": "connect",
+    "checkpoint": "CitiesIIAgentBridge-provider-connect-20261001-221858-19b51af1",
+    "beforeFingerprint": "59664b4dd4e4bd1cd8eaf11aea0018978ac8352a466fe5b747f1578655296136",
+    "afterFingerprint": "b704b60723e4714d06789846b10b37501e367b2ec4036424028990247a15e21a",
+    "staleRevisionRejected": true,
+    "nodeCount": [
+      48,
+      49
+    ],
+    "edgeCount": [
+      44,
+      46
+    ],
+    "parameters": {
+      "slopeMode": "ease",
+      "smoothStart": false,
+      "smoothEnd": false,
+      "reverse": false
+    },
+    "limits": "No visual/vehicle or rendered-surface validation.",
+    "expectedPrefab": "Small Road",
+    "prefabInherited": true,
+    "unchangedExistingEdges": true,
+    "unchangedExistingNodes": true,
+    "connected": true,
+    "newEdges": [
+      [
+        51659,
+        3
+      ],
+      [
+        51658,
+        3
+      ]
+    ],
+    "previewApplyMaxError": 0.0
+  },
+  "differentSelectionExperiment": {
+    "report": {
+      "geometryToleranceMeters": 0.05,
+      "stage": "slope",
+      "checkpoint": "CitiesIIAgentBridge-provider-slope-20261001-135658-0077ce38",
+      "beforeFingerprint": "ddd31890adfa9fbe7cb861d45eb67938c9610c893a4ed677e059e41fc313e150",
+      "afterFingerprint": "c56ecd475beeebe4307d89aed00c3aeb60a21df61411cb9d7e315bb30dcb5b15",
+      "staleRevisionRejected": true,
+      "nodeCount": [
+        48,
+        48
+      ],
+      "edgeCount": [
+        44,
+        44
+      ],
+      "parameters": {
+        "slopeMode": "linear",
+        "smoothStart": false,
+        "smoothEnd": false,
+        "reverse": false
+      },
+      "limits": "No visual/vehicle or rendered-surface validation.",
+      "sameTopology": true,
+      "previewApplyMaxError": 0.0,
+      "changedUnselectedEdges": [
+        [
+          51490,
+          1
+        ]
+      ],
+      "directedConnectionsPreserved": true,
+      "physicalLaneMappingPreserved": true,
+      "incidentPreviewApplyMaxError": 0.0,
+      "nodeHorizontalMaxError": 0.0,
+      "fixedEndpointMaxError": 0.0
+    },
+    "repeatAudit": {
+      "toleranceMeters": 0.05,
+      "maxControlDisplacement": 14.234554000000003,
+      "maxNodeDisplacement": 10.104652999999985,
+      "sameTopology": true,
+      "idempotentWithinTolerance": false,
+      "limits": "Permanent authored geometry only. Directed lanes, generated surfaces and visual quality need separate checks."
+    },
+    "interpretation": "Not an identical-operation repeat: highway-ramp-out includes mainline; historical operation was offramp-only."
+  },
+  "finalReload": {
+    "baseline": "CitiesIIAgentBridge-review-surface-profile-settled-20261001-130556-32145a5a.cok",
+    "checkpoint": "CitiesIIAgentBridge-regression-before-reload-20261001-221943-30be23b5.cok",
+    "status": "Launch requested; independently verify loaded city, pause, playset and fixture geometry."
+  },
+  "release": {
+    "build": true,
+    "burstMethods": 22,
+    "nativeExecution": "not-run",
+    "stagingIsolation": "failed; consistent Debug redeployed before game launch"
+  },
+  "notVerified": [
+    "ordinary UI",
+    "adversarial native freshness races",
+    "two-ended unselected-edge native fixture",
+    "Release execution",
+    "vehicle traversal",
+    "human visual review"
+  ],
+  "finalState": {
+    "loadedSave": "CitiesIIAgentBridge-review-surface-profile-settled-20261001-130556-32145a5a.cok",
+    "citySession": "f8e6ac95ac7245699eecf35603657ac4",
+    "paused": true,
+    "unsavedNetworkChanges": false,
+    "fingerprint": "ddd31890adfa9fbe7cb861d45eb67938c9610c893a4ed677e059e41fc313e150",
+    "normalizedSharedNodeMappingsCompared": 37,
+    "comparison": "exact match to previous milestone",
+    "connectResultCheckpoint": "CitiesIIAgentBridge-regression-before-reload-20261001-221943-30be23b5.cok"
+  },
+  "fixtures": {
+    "toy-surface-settled.json": {
+      "baseline": "CitiesIIAgentBridge-review-surface-profile-settled-20261001-130556-32145a5a.cok",
+      "baselineSha256": "43F9C428501B0199B79101E1A051981F5FFE1BDA698D510E18813DB6819A6FEE",
+      "region": {
+        "x": -3180,
+        "z": -1620,
+        "radius": 1000
+      },
+      "fingerprint": "ddd31890adfa9fbe7cb861d45eb67938c9610c893a4ed677e059e41fc313e150",
+      "cases": [
+        {
+          "name": "hill-road",
+          "start": [
+            -4056.953,
+            602.176331,
+            -1903.39368
+          ],
+          "end": [
+            -3616.03613,
+            629.6971,
+            -1677.03259
+          ],
+          "strengths": [
+            0,
+            0.5,
+            1.0
+          ]
+        },
+        {
+          "name": "crest-dip-road",
+          "start": [
+            -3740.21167,
+            629.6971,
+            -1486.88208
+          ],
+          "end": [
+            -3299.5083,
+            629.6971,
+            -1020.96216
+          ],
+          "strengths": [
+            0,
+            0.5,
+            1.0
+          ]
+        },
+        {
+          "name": "rail-high-branch",
+          "start": [
+            -3489.08057,
+            629.6971,
+            -1657.27917
+          ],
+          "end": [
+            -3108.89746,
+            609.2662,
+            -1959.24341
+          ],
+          "strengths": [
+            0,
+            0.5,
+            1.0
+          ]
+        },
+        {
+          "name": "highway-mainline",
+          "start": [
+            -2820.57178,
+            613.559143,
+            -1963.45764
+          ],
+          "end": [
+            -2272.49365,
+            613.454651,
+            -1935.42615
+          ],
+          "strengths": [
+            0,
+            0.5,
+            1.0
+          ]
+        },
+        {
+          "name": "rail-low-branch",
+          "start": [
+            -3552.44653,
+            613.1488,
+            -1843.09558
+          ],
+          "end": [
+            -3108.89746,
+            609.2662,
+            -1959.24341
+          ],
+          "strengths": [
+            0,
+            0.5,
+            1.0
+          ]
+        },
+        {
+          "name": "highway-ramp-in",
+          "start": [
+            -2589.84058,
+            629.4316,
+            -1858.54785
+          ],
+          "end": [
+            -2272.49365,
+            613.454651,
+            -1935.42615
+          ],
+          "strengths": [
+            0,
+            0.5,
+            1.0
+          ]
+        },
+        {
+          "name": "highway-ramp-out",
+          "start": [
+            -2820.57178,
+            613.559143,
+            -1963.45764
+          ],
+          "end": [
+            -2392.36084,
+            602.321167,
+            -2025.77844
+          ],
+          "strengths": [
+            0,
+            0.5,
+            1.0
+          ]
+        },
+        {
+          "name": "offramp-only",
+          "start": [
+            -2573.07715,
+            617.3303,
+            -1939.87915
+          ],
+          "end": [
+            -2392.36084,
+            602.321167,
+            -2025.77844
+          ],
+          "strengths": [
+            0,
+            0.5,
+            1
+          ]
+        },
+        {
+          "name": "hill-inner-boundaries",
+          "start": [
+            -4017.21167,
+            602.088745,
+            -1907.93677
+          ],
+          "end": [
+            -3679.88574,
+            629.6971,
+            -1681.41821
+          ],
+          "strengths": [
+            1
+          ]
+        },
+        {
+          "name": "hill-split",
+          "start": [
+            -4056.953,
+            602.176331,
+            -1903.39368
+          ],
+          "end": [
+            -3616.03613,
+            629.6971,
+            -1677.03259
+          ],
+          "splits": [
+            [
+              -3826.88647,
+              615.6897,
+              -1816.07153
+            ]
+          ],
+          "strengths": [
+            0.5,
+            1
+          ]
+        }
+      ]
+    },
+    "toy-terrain-v11.json": {
+      "baseline": "bridge test - terrain and elevation v1%2E1.cok",
+      "baselineSha256": "6EF6B6E1DF56A8E834EC00313F478F64F47202507A857AEBFC65E87F62220301",
+      "region": {
+        "x": -3180,
+        "z": -1620,
+        "radius": 1000
+      },
+      "fingerprint": "59664b4dd4e4bd1cd8eaf11aea0018978ac8352a466fe5b747f1578655296136",
+      "cases": [
+        {
+          "name": "hill-road",
+          "start": [
+            -4056.953,
+            602.176331,
+            -1903.39368
+          ],
+          "end": [
+            -3616.03613,
+            629.6971,
+            -1677.03259
+          ],
+          "strengths": [
+            0,
+            0.5,
+            1.0
+          ]
+        },
+        {
+          "name": "crest-dip-road",
+          "start": [
+            -3740.21167,
+            629.6971,
+            -1486.88208
+          ],
+          "end": [
+            -3299.5083,
+            629.6971,
+            -1020.96216
+          ],
+          "strengths": [
+            0,
+            0.5,
+            1.0
+          ]
+        },
+        {
+          "name": "rail-high-branch",
+          "start": [
+            -3489.08057,
+            629.6971,
+            -1657.27917
+          ],
+          "end": [
+            -3108.89746,
+            609.2662,
+            -1959.24341
+          ],
+          "strengths": [
+            0,
+            0.5,
+            1.0
+          ]
+        },
+        {
+          "name": "highway-mainline",
+          "start": [
+            -2820.57178,
+            613.559143,
+            -1963.45764
+          ],
+          "end": [
+            -2272.49365,
+            613.454651,
+            -1935.42615
+          ],
+          "strengths": [
+            0,
+            0.5,
+            1.0
+          ]
+        },
+        {
+          "name": "rail-low-branch",
+          "start": [
+            -3552.44653,
+            613.1488,
+            -1843.09558
+          ],
+          "end": [
+            -3108.89746,
+            609.2662,
+            -1959.24341
+          ],
+          "strengths": [
+            0,
+            0.5,
+            1.0
+          ]
+        },
+        {
+          "name": "highway-ramp-in",
+          "start": [
+            -2589.84058,
+            629.4316,
+            -1858.54785
+          ],
+          "end": [
+            -2272.49365,
+            613.454651,
+            -1935.42615
+          ],
+          "strengths": [
+            0,
+            0.5,
+            1.0
+          ]
+        },
+        {
+          "name": "highway-ramp-out",
+          "start": [
+            -2820.57178,
+            613.559143,
+            -1963.45764
+          ],
+          "end": [
+            -2392.36084,
+            602.321167,
+            -2025.77844
+          ],
+          "strengths": [
+            0,
+            0.5,
+            1.0
+          ]
+        }
+      ]
+    },
+    "toy-interior-full-strength.json": {
+      "region": {
+        "x": -59,
+        "z": -1937,
+        "radius": 1000
+      },
+      "cases": [
+        {
+          "name": "rail-interior-full-strength",
+          "start": [
+            2.2343998,
+            617.6969,
+            -2124.63965
+          ],
+          "end": [
+            -166.258133,
+            617.6969,
+            -1917.60229
+          ],
+          "strengths": [
+            1.0,
+            0.8,
+            0.5,
+            1.0
+          ]
+        }
+      ],
+      "fingerprint": "1428d59037029ef60d2bac92fd35c7bda4acc7309cc2b15421cb09e0fe3833e2",
+      "baseline": "bridge test - rail smoothing breaks merge junction highway jank roads.cok",
+      "baselineSha256": "9FACD1C0E8765BC06974DFED252E96E07D377A073E830BEFD3FB75AC3733C2BC"
+    },
+    "toy-highway-jank-splits.json": {
+      "region": {
+        "x": -59,
+        "z": -1937,
+        "radius": 1000
+      },
+      "cases": [
+        {
+          "name": "rail-merge",
+          "start": [
+            272.15332,
+            617.6969,
+            -1867.94
+          ],
+          "end": [
+            -74.86412,
+            617.6969,
+            -1925.09436
+          ],
+          "strengths": [
+            0.5,
+            0.8
+          ]
+        },
+        {
+          "name": "road-four-way-branch",
+          "start": [
+            -112.394943,
+            617.6969,
+            -1645.71765
+          ],
+          "end": [
+            70.1547546,
+            617.6969,
+            -1535.734
+          ],
+          "strengths": [
+            0.5,
+            0.8
+          ]
+        },
+        {
+          "name": "highway-on-ramp",
+          "start": [
+            -610.9107,
+            617.6969,
+            -1727.31738
+          ],
+          "end": [
+            -551.684753,
+            617.6969,
+            -1671.079
+          ],
+          "strengths": [
+            0.5,
+            0.8
+          ]
+        },
+        {
+          "name": "highway-off-ramp",
+          "start": [
+            -364.874878,
+            617.6969,
+            -1740.1355
+          ],
+          "end": [
+            -407.227051,
+            617.6969,
+            -1684.83508
+          ],
+          "strengths": [
+            0.5,
+            0.8
+          ]
+        },
+        {
+          "name": "rail-one-split",
+          "start": [
+            272.15332,
+            617.6969,
+            -1867.94
+          ],
+          "end": [
+            -74.86412,
+            617.6969,
+            -1925.09436
+          ],
+          "strengths": [
+            0,
+            0.5,
+            1
+          ],
+          "splits": [
+            [
+              128.3217,
+              617.6969,
+              -1860.97791
+            ]
+          ]
+        },
+        {
+          "name": "rail-two-splits",
+          "start": [
+            272.15332,
+            617.6969,
+            -1867.94
+          ],
+          "end": [
+            -74.86412,
+            617.6969,
+            -1925.09436
+          ],
+          "strengths": [
+            0,
+            0.5,
+            1
+          ],
+          "splits": [
+            [
+              128.3217,
+              617.6969,
+              -1860.97791
+            ],
+            [
+              -6.788162,
+              617.6969,
+              -1930.615
+            ]
+          ]
+        },
+        {
+          "name": "rail-two-splits-half",
+          "start": [
+            272.15332,
+            617.6969,
+            -1867.94
+          ],
+          "end": [
+            -74.86412,
+            617.6969,
+            -1925.09436
+          ],
+          "strengths": [
+            0,
+            0.5
+          ],
+          "splits": [
+            [
+              128.3217,
+              617.6969,
+              -1860.97791
+            ],
+            [
+              -6.788162,
+              617.6969,
+              -1930.615
+            ]
+          ]
+        },
+        {
+          "name": "rail-two-splits-zero",
+          "start": [
+            272.15332,
+            617.6969,
+            -1867.94
+          ],
+          "end": [
+            -74.86412,
+            617.6969,
+            -1925.09436
+          ],
+          "strengths": [
+            0
+          ],
+          "splits": [
+            [
+              128.3217,
+              617.6969,
+              -1860.97791
+            ],
+            [
+              -6.788162,
+              617.6969,
+              -1930.615
+            ]
+          ]
+        },
+        {
+          "name": "road-two-splits",
+          "start": [
+            -112.394943,
+            617.6969,
+            -1645.71765
+          ],
+          "end": [
+            70.1547546,
+            617.6969,
+            -1535.734
+          ],
+          "strengths": [
+            0,
+            0.5,
+            1
+          ],
+          "splits": [
+            [
+              -11.9009285,
+              617.6969,
+              -1618.94165
+            ],
+            [
+              11.22435,
+              617.6969,
+              -1550.75647
+            ]
+          ]
+        }
+      ],
+      "fingerprint": "1428d59037029ef60d2bac92fd35c7bda4acc7309cc2b15421cb09e0fe3833e2",
+      "baseline": "bridge test - rail smoothing breaks merge junction highway jank roads.cok",
+      "baselineSha256": "9FACD1C0E8765BC06974DFED252E96E07D377A073E830BEFD3FB75AC3733C2BC"
+    }
+  }
+}

@@ -93,7 +93,8 @@ user's 5 cm geometric acceptance threshold.
 shows authored profile, matched boundary midpoint and adjusted terrain. Solid-line
 agreement alone is insufficient validation of player-visible slope. GeometrySystem's
 height-map application and middle-height limiting (source lines 1725-1756) remain
-relevant, but the responsible upstream junction calculation has not yet been isolated.
+relevant. The subsequent flattening replay below now isolates the upstream
+endpoint adjustment for this captured case.
 
 The experiment confirms neighboring terrain influence and derived-surface mismatch;
 it does not yet establish that feeding pristine terrain to the fitter fixes either.
@@ -135,3 +136,31 @@ Do not bypass it as a fix. Fit against feasible generated boundary conditions an
 validate lane profiles; terrain deformation is a separate coupled consideration.
 Reusable replay: `scripts/replay-native-middle-height.py`; analytic checks:
 `scripts/test-native-middle-height.py`.
+
+
+## Junction flattening isolated (October 1, 05:05 PDT)
+
+The upstream missing stage is now reproduced for the pre-highway permanent
+junction: `FlattenNodeGeometryJob` raises the ramp boundary starts by about
+**3.594 m**, lowers the outgoing highway boundary starts by about **2.963 m**,
+and leaves the incoming highway effectively unchanged. A restricted mathematical
+replay predicts all six captured boundary heights within 0.00004 m. These residuals
+are insignificant under the established 0.05 m tolerance, not a tighter acceptance
+requirement.
+
+This stage compares incident boundary pairs in matching merge layers, limits their
+height difference using horizontal separation and both prefab slope limits, and
+redistributes excess toward the shared derived node height. It couples the ramp
+surface to the highway surface even when the ramp's authored profile is straight.
+The resulting high ramp start and roughly 26 m of usable edge make the downstream
+middle-height interval infeasible, as measured above. Generated lanes inherit the
+steep profile. Adjusted terrain demonstrably changes too, but is not needed to
+explain this particular profile distortion; final visual mesh jank remains a
+separate verification question.
+
+See [experiment, assumptions and reproduction](session-notes/2026-10-01-0505-junction-flattening-isolation.md).
+The checked-in fixture retains compact numerical evidence without bulk captures.
+No production fitter, native limiter or deployed mod changed. Next prototype a
+surface-aware feasibility check using the cut boundary span and junction-imposed
+heights, then test whether selected geometry alone can meet the desired profile.
+Do not silently move unselected highway geometry or disable native height guards.

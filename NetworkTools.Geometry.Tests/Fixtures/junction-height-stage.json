@@ -1,0 +1,61 @@
+{
+  "nodeHeight": 616.6248047483668,
+  "edges": [
+    {
+      "label": "57041",
+      "left": {
+        "x": -2515.95557,
+        "y": 619.8087,
+        "z": -1946.03625
+      },
+      "right": {
+        "x": -2520.37622,
+        "y": 619.735,
+        "z": -1933.8667
+      },
+      "expected": [
+        616.8455,
+        616.7718
+      ],
+      "maxSlope": 0.2
+    },
+    {
+      "label": "57022",
+      "left": {
+        "x": -2519.59839,
+        "y": 612.8525,
+        "z": -1954.08936
+      },
+      "right": {
+        "x": -2516.84766,
+        "y": 612.8344,
+        "z": -1946.57593
+      },
+      "expected": [
+        616.446533,
+        616.428467
+      ],
+      "maxSlope": 0.2
+    },
+    {
+      "label": "59232",
+      "left": {
+        "x": -2585.55347,
+        "y": 615.73517,
+        "z": -1937.50293
+      },
+      "right": {
+        "x": -2578.94019,
+        "y": 615.7352,
+        "z": -1952.07214
+      },
+      "expected": [
+        615.7352,
+        615.7352
+      ],
+      "maxSlope": 0.2
+    }
+  ],
+  "tolerance": 0.05,
+  "provenance": "Game 1.6.2f1 saved ramp before highway slope; pure native Cut/Divide/OffsetCurve replay with captured final XZ targets. Endpoint flags SmoothElevation; width/middle offset and slope limits source/live checked. Expected heights are captured permanent EdgeGeometry. World entity labels historical only."
+}

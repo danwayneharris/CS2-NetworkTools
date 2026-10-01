@@ -100,3 +100,10 @@ Python environment. It verifies actual stdio discovery/state, not Apply or routi
 Current generic captures are supported by replay-regression.py. Historical captures
 without smoothMode require their historical runner to reproduce historical checks;
 they cannot prove the new explicit mode-readiness predicate.
+
+## Non-flat terrain fixtures
+
+Use `--runner terrain-regression.py` for optional before/after grade, horizontal
+length and terrain-offset diagnostics while retaining strict assertions. See
+[terrain regressions](terrain-regressions.md) for the v1.1 fixture, seven native
+results and remaining coverage limits.

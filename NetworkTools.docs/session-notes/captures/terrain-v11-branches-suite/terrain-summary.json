@@ -1,0 +1,68 @@
+[
+  {
+    "case": "01-rail-low-branch",
+    "strictPassed": true,
+    "error": null,
+    "fixedNodeDrifts": [],
+    "before": {
+      "horizontalLengthM": 488.6164731719302,
+      "sampledMaxGradePercent": 47.12042798415365,
+      "sampledCenterlineTerrainOffsetM": [
+        -3.0027999999999793,
+        1.2976639999999406
+      ]
+    },
+    "after": {
+      "horizontalLengthM": 481.82629134109027,
+      "sampledMaxGradePercent": 46.07476914701197,
+      "sampledCenterlineTerrainOffsetM": [
+        -2.907860000000028,
+        1.2852169999999887
+      ]
+    }
+  },
+  {
+    "case": "02-highway-ramp-in",
+    "strictPassed": true,
+    "error": null,
+    "fixedNodeDrifts": [],
+    "before": {
+      "horizontalLengthM": 352.93900954465596,
+      "sampledMaxGradePercent": 21.46160870105267,
+      "sampledCenterlineTerrainOffsetM": [
+        -1.2510640000000421,
+        1.0803000000000793
+      ]
+    },
+    "after": {
+      "horizontalLengthM": 345.0251096185477,
+      "sampledMaxGradePercent": 22.26668896564814,
+      "sampledCenterlineTerrainOffsetM": [
+        -1.313763999999992,
+        1.110300000000052
+      ]
+    }
+  },
+  {
+    "case": "03-highway-ramp-out",
+    "strictPassed": true,
+    "error": null,
+    "fixedNodeDrifts": [],
+    "before": {
+      "horizontalLengthM": 494.61739635625173,
+      "sampledMaxGradePercent": 31.089690508591147,
+      "sampledCenterlineTerrainOffsetM": [
+        -3.0631109999999353,
+        0.6390999999999849
+      ]
+    },
+    "after": {
+      "horizontalLengthM": 466.44815429244426,
+      "sampledMaxGradePercent": 37.13910404623099,
+      "sampledCenterlineTerrainOffsetM": [
+        -12.801100781250057,
+        0.6357000000000426
+      ]
+    }
+  }
+]

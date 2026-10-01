@@ -63,6 +63,20 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                     return;
                 }
 
+#if !IS_DEBUG
+                // Guard the candidate path too: unsupported Release selections must
+                // not display an apparently valid unchecked smoothing proposal.
+                if (Config.Template == ShapeTransformTemplate.CurveSmooth) {
+                    foreach (var state in NodeStates) {
+                        if (!ConnectedEdgeLookup.TryGetBuffer(state.Entity, out var incident)
+                            || incident.Length > 2) {
+                            SmoothResult.Value = -1;
+                            return;
+                        }
+                    }
+                }
+#endif
+
                 // 1. Copy cached data to mutable arrays for transform pipeline
                 var edges = new NativeArray<EdgeState>(EdgeStates.Length, Allocator.Temp);
                 for (var i = 0; i < EdgeStates.Length; i++) {

@@ -120,13 +120,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             if (NetworkTools.Geometry.OriginalInputComparison.CandidateStatus(m_PreviewInputRevision, m_SubmittedPreviewRevision,
                 m_CachedOriginalInputs, m_SubmittedOriginalInputs, CaptureOriginalProbeInputs()) != "matches") return false;
 #if !IS_DEBUG
-            // Release does not ship the native junction validator/search yet.
-            if (Template.Value == ShapeTransformTemplate.CurveSmooth) {
-                foreach (var state in m_NodeStates) {
-                    if (!EntityManager.HasBuffer<ConnectedEdge>(state.Entity)
-                        || EntityManager.GetBuffer<ConnectedEdge>(state.Entity, true).Length > 2) return false;
-                }
-            }
+            if (UnsupportedReleaseJunction) return false;
 #else
             // Same applicable evidence for mouse/UI and provider Apply. Straighten
             // has no native observation contract; do not imply that it does.
@@ -136,6 +130,23 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             return (Template.Value != ShapeTransformTemplate.CurveSmooth && Template.Value != ShapeTransformTemplate.SlopeLinear)
                 || SmoothPreviewResult == 1;
         }
+
+        private bool UnsupportedReleaseJunction {
+            get {
+#if !IS_DEBUG
+                if (Template.Value == ShapeTransformTemplate.CurveSmooth && m_PathDataValid) {
+                    foreach (var state in m_NodeStates) {
+                        if (!EntityManager.HasBuffer<ConnectedEdge>(state.Entity)
+                            || EntityManager.GetBuffer<ConnectedEdge>(state.Entity, true).Length > 2) return true;
+                    }
+                }
+#endif
+                return false;
+            }
+        }
+
+        public string ApplyRestrictionKey => UnsupportedReleaseJunction
+            ? "NetworkTools.UI.Curve.ReleaseJunctionUnsupported" : "";
 
         private int SmoothPreviewResult {
             get {

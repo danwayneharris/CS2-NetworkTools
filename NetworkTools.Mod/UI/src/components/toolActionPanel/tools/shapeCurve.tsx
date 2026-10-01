@@ -11,6 +11,7 @@ type SplitChoice = { index: number; version: number; ordinal: number; distance: 
 
 export const ShapeCurveControls: React.FC = () => {
     const template = useValue(PARAM_BINDINGS.roadShape.template.binding);
+    const restriction = useValue(GAME_BINDINGS.SHAPE_APPLY_REASON.binding);
     const splitJson = useValue(GAME_BINDINGS.SPLIT_CHOICES.binding);
     const splits: SplitChoice[] = React.useMemo(() => JSON.parse(splitJson), [splitJson]);
     const { translate } = useLocalization();
@@ -23,6 +24,7 @@ export const ShapeCurveControls: React.FC = () => {
             {template === ShapeTransformTemplate.CurveSmooth && (
                 <div className={styles.section__content}>
                     <ParameterField paramKey="roadShape.smoothingFactor" />
+                    {restriction && <div>{translate(restriction, "Junction smoothing is unavailable in this build. Select a path without junctions.")}</div>}
                     {splits.length > 0 && <div className={styles.splitChoices}>
                         <div>{translate("NetworkTools.UI.Curve.SplitPoints", "Split points")}</div>
                         <div>{translate("NetworkTools.UI.Curve.SplitExplanation", "Pin a node and align its join at every strength, including zero.")}</div>

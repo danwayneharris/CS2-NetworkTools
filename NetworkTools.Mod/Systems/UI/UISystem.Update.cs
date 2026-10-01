@@ -9,6 +9,8 @@ namespace NetworkTools.Systems.UI {
         protected override void OnUpdate() {
             m_SplitChoicesBinding.Value = m_ToolSystem.activeTool == m_NtRoadShapeToolSystem
                 ? m_NtRoadShapeToolSystem.SplitChoicesJson() : "[]";
+            m_ShapeApplyReasonBinding.Value = m_ToolSystem.activeTool == m_NtRoadShapeToolSystem
+                ? m_NtRoadShapeToolSystem.ApplyRestrictionKey : "";
             // Update tool UI data when the prefab count changes
             var entityCount = m_ToolPrefabQuery.CalculateEntityCount();
             if (entityCount != m_LastToolPrefabCount) {

@@ -1,4 +1,3 @@
-#if IS_DEBUG
 namespace NetworkTools.Systems.Tools.RoadShape {
     using System.Collections.Generic;
     using Game.Common;
@@ -10,9 +9,15 @@ namespace NetworkTools.Systems.Tools.RoadShape {
 
     public partial class NT_RoadShapeToolSystem {
         private List<object> m_SubmittedOriginalInputs;
+        private List<object> m_CachedOriginalInputs;
+        private long m_PreviewInputRevision;
+        private long m_SubmittedPreviewRevision;
+#if IS_DEBUG
         private long m_LastFailureTestRevision = -1;
         private long m_HeldProbeRevision;
         private List<object> m_HeldProbeInputs;
+
+#endif
 
         // Exact typed component copies, scoped to this tool instance/world.
         // Not a complete fingerprint of every prefab or lane-generation input.
@@ -45,6 +50,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                 values.Add(entity); values.Add(edge); values.Add(curve);
                 AddProbeComponent<PrefabRef>(entity, values);
                 AddProbeComponent<Composition>(entity, values);
+                AddProbeComponent<PseudoRandomSeed>(entity, values);
                 AddProbeComponent<Upgraded>(entity, values);
                 AddProbeComponent<Elevation>(entity, values);
                 if (!ReadProbeNode(edge.m_Start, values) || !ReadProbeNode(edge.m_End, values)) { return null; }
@@ -74,6 +80,10 @@ namespace NetworkTools.Systems.Tools.RoadShape {
         private static int CompareProbeEntities(Entity a, Entity b) => a.Index != b.Index
             ? a.Index.CompareTo(b.Index) : a.Version.CompareTo(b.Version);
 
+        private string CachedOriginalStatus() => NetworkTools.Geometry.OriginalInputComparison.Compare(
+            m_CachedOriginalInputs, CaptureOriginalProbeInputs());
+
+#if IS_DEBUG
         private string OriginalProbeStatus() {
             var current = CaptureOriginalProbeInputs();
             var status = NetworkTools.Geometry.OriginalInputComparison.Observe(
@@ -100,6 +110,6 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             }
             return status;
         }
+#endif
     }
 }
-#endif

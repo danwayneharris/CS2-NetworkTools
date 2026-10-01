@@ -110,8 +110,32 @@ namespace NetworkTools.Systems.Tools.RoadShape {
         public int ApplyMinNodeCount => 2;
 
         /// <inheritdoc />
-        public bool CanApply => Phase == OperationPhase.Ready && Template.Value != ShapeTransformTemplate.Preserve
-            && ((Template.Value != ShapeTransformTemplate.CurveSmooth && Template.Value != ShapeTransformTemplate.SlopeLinear) || SmoothPreviewResult == 1);
+        public bool CanApply => Phase == OperationPhase.Ready && CandidateAllowsApply();
+
+        private bool CandidateAllowsApply() {
+            if (Template.Value == ShapeTransformTemplate.Preserve || m_UpdateNeeded || !m_PathDataValid
+                || !m_LastShapeJob.IsCompleted || m_SubmittedPreviewRevision != m_PreviewInputRevision)
+                return false;
+            m_LastShapeJob.Complete();
+            if (NetworkTools.Geometry.OriginalInputComparison.CandidateStatus(m_PreviewInputRevision, m_SubmittedPreviewRevision,
+                m_CachedOriginalInputs, m_SubmittedOriginalInputs, CaptureOriginalProbeInputs()) != "matches") return false;
+#if !IS_DEBUG
+            // Release does not ship the native junction validator/search yet.
+            if (Template.Value == ShapeTransformTemplate.CurveSmooth) {
+                foreach (var state in m_NodeStates) {
+                    if (!EntityManager.HasBuffer<ConnectedEdge>(state.Entity)
+                        || EntityManager.GetBuffer<ConnectedEdge>(state.Entity, true).Length > 2) return false;
+                }
+            }
+#else
+            // Same applicable evidence for mouse/UI and provider Apply. Straighten
+            // has no native observation contract; do not imply that it does.
+            if ((Template.Value == ShapeTransformTemplate.CurveSmooth || AutomationSlope)
+                && (m_AutomationVerifiedSubmission != m_SmoothTraceId || m_SmoothTraceId <= 0)) return false;
+#endif
+            return (Template.Value != ShapeTransformTemplate.CurveSmooth && Template.Value != ShapeTransformTemplate.SlopeLinear)
+                || SmoothPreviewResult == 1;
+        }
 
         private int SmoothPreviewResult {
             get {
@@ -128,12 +152,12 @@ namespace NetworkTools.Systems.Tools.RoadShape {
         /// <summary>
         ///     Requests the tool to apply the current transformation.
         /// </summary>
-        public void RequestApply() {
-            if (!CanApply) {
-                return;
-            }
+        public void RequestApply() => TryRequestApply();
 
+        private bool TryRequestApply() {
+            if (!CanApply) return false;
             Phase = OperationPhase.Applying;
+            return true;
         }
 
         protected override bool GetRaycastResult(out ControlPoint controlPoint) =>

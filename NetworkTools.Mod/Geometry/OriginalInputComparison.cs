@@ -9,6 +9,16 @@ namespace NetworkTools.Geometry {
             if (currentRevision <= 0 || submittedRevision != currentRevision) { return "stale_revision"; }
             return Compare(submitted, current);
         }
+        // The calculation cache, submitted baseline, and present world must all
+        // describe the same values. Matching only submitted/current misses A->B
+        // edits that happened before submission while the fit still used A.
+        public static string CandidateStatus(long revision, long submittedRevision,
+            IReadOnlyList<object> cached, IReadOnlyList<object> submitted, IReadOnlyList<object> current) {
+            if (revision <= 0 || revision != submittedRevision) return "stale_revision";
+            var cacheStatus = Compare(cached, submitted);
+            return cacheStatus == "matches" ? Compare(submitted, current) : cacheStatus;
+        }
+
         public static string Compare(IReadOnlyList<object> submitted, IReadOnlyList<object> current) {
             if (submitted == null || current == null) { return "unavailable"; }
             if (submitted.Count != current.Count) { return "changed"; }

@@ -141,11 +141,8 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             m_UpdateNeeded = true;
         }
 
-        [System.Diagnostics.Conditional("IS_DEBUG")]
         private void InvalidatePreviewObservation() {
-#if IS_DEBUG
             ++m_PreviewInputRevision;
-#endif
         }
 
         /// <summary>

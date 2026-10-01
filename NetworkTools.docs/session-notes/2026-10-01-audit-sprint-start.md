@@ -14,3 +14,9 @@ F03/F10: Preview and Apply now gather each unselected incident edge once and com
 
 Non-deploying Debug compile passed with existing warnings. Compiled production helper tests passed for both-end edits, reversed storage, unchanged opposite end, preserved endpoint tangents and rotation (including unchanged position). Existing eight slope fixtures / 96 assertions also passed. These are not ECS scheduling or native-output tests.
 
+
+## Calculation snapshot and Apply ownership
+
+F02/F09: the original-component capture is now configuration-independent. Path gathering and its comparison baseline occur together after dependency completion. Before a new preview, changed originals trigger regathering instead of certifying an old cache against newer ECS values. Submitted originals are copied from that cache baseline. Shared UI/provider Apply checks require matching cache/submission/current values and parameter revision; execution rechecks after the request before scheduling the permanent job. Provider reports rejection if the shared request is no longer accepted. Debug native observations remain required for Curve Smooth and Slope; Straighten has no claimed native-observation contract. Diagnostic copy-corruption checks and exports are retained.
+
+Existing capture bounds (128 nodes / 512 incident edges / 64 edges per node) now also bound ordinary manual operations rather than allowing unchecked Apply. Prefab values and all generated simulation state are not exhaustively fingerprinted; this is a scoped authored-input guard. Before-submit/during-rebuild/pre-Apply and stale-revision helper checks pass (16 total). Debug and Release C# compile passed; neither establishes native verification. Release endpoint/interior junction smoothing is provisionally gated pending a player-facing explanation and full validation.

@@ -55,6 +55,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
         private void RefreshPathData() {
             InvalidatePreviewObservation();
             m_LastShapeJob.Complete();
+            Dependency.Complete();
             if (m_SelectedNodes.Length < 2 || m_CurrentPathEdges.Length == 0) {
                 m_Log.Debug("RefreshPathData: Insufficient selection, skipping");
                 m_PathDataValid = false;
@@ -101,6 +102,10 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             contextRef.Dispose();
 
             m_PathDataValid = true;
+            // Gather and comparison baseline are captured together on the main thread,
+            // after dependencies complete. Never label a cache from A with inputs B.
+            m_CachedOriginalInputs = CaptureOriginalProbeInputs();
+            m_PathDataValid = m_CachedOriginalInputs != null;
             m_Log.Debug($"RefreshPathData: Gathered {m_EdgeStates.Length} edges, TotalLength={m_ShapeTransformContext.TotalLength:F2}");
 
         }

@@ -108,7 +108,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                         || (int)args["submission"] != m_SmoothTraceId || !(bool)state["previewReady"]
                         || OriginalProbeStatus() != "matches")
                         throw new InvalidOperationException("stale_or_unverified_preview");
-                    RequestApply();
+                    if (!TryRequestApply()) throw new InvalidOperationException("stale_or_unverified_preview");
                     return new JObject { ["accepted"] = true, ["status"] = "apply_requested",
                         ["submission"] = m_SmoothTraceId, ["note"] = "Poll state and independently verify permanent geometry; request acceptance is not completion." };
                 default: throw new ArgumentException("unknown_action");

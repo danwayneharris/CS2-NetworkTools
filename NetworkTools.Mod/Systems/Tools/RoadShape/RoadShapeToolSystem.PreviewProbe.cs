@@ -20,8 +20,6 @@ namespace NetworkTools.Systems.Tools.RoadShape {
         private static readonly object s_ProbeLock = new();
         private static PreviewProbe s_Probe;
         private string m_LastProbeMessage;
-        private long m_PreviewInputRevision;
-        private long m_SubmittedPreviewRevision;
 
         private static void CapturePreviewProbe(int id, ToolOutputMode mode, bool valid,
             NativeArray<EdgeState> edges) {

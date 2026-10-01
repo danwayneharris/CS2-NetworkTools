@@ -15,7 +15,8 @@ static class Program {
         checks++;
     }
     static float Grade(float3 tangent) => tangent.y / math.length(tangent.xz);
-    static void Main() {
+    static void Main(string[] args) {
+        if (args.Length == 4 && args[0] == "--replay") { CapturedSlopeReplay.Run(args[1],args[2],args[3]); return; }
         (string name, Func<float,float,float> height)[] terrains = {
             ("flat", (x,z)=>64f),
             ("hillside", (x,z)=>64f+.08f*x+.03f*z),

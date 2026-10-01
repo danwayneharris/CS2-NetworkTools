@@ -224,3 +224,6 @@ Keep this out of the current temporary-edge combining bugfix. That fix must firs
 interpret equivalent preview representations correctly under existing preservation
 checks. Do not confuse a temporary entity reorganization with a geometric change,
 or loosen geometry tolerances merely to get past an unresolved mapping failure.
+
+Future vertical-profile work is tracked in [the Slope improvement plan](slope-improvement-plan.md),
+including possible geometry-module reuse and the captured endpoint-alignment tradeoff.

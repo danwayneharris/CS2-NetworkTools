@@ -88,7 +88,7 @@ class Runner:
     def route_provider(self, command, args=None):
         if command.startswith('nt_'):
             action = {'nt_get_state': 'state', 'nt_activate': 'activate', 'nt_clear': 'clear',
-                      'nt_select': 'select', 'nt_strength': 'strength', 'nt_split': 'split', 'nt_apply': 'apply'}[command]
+                      'nt_select': 'select', 'nt_strength': 'strength', 'nt_split': 'split', 'nt_combined': 'combined', 'nt_apply': 'apply'}[command]
             if not getattr(self, 'provider_revision', None):
                 catalog = self.call('list_providers')
                 if not catalog.get('complete'):
@@ -175,6 +175,8 @@ class Runner:
         return self.call(command, dict(session=state['session'], revision=state['revision'], **args))
 
     def execute(self, fixture, case, save_root):
+        combined = case.get('combined', False)
+        if not isinstance(combined, bool): raise ValueError('combined must be boolean')
         city = self.call('get_city_state')
         if city['selectedSpeed'] != 0 or city['population'] != 0 or not city['controlEnabled']:
             raise ValueError('Requires paused, control-enabled empty toy city')
@@ -217,6 +219,7 @@ class Runner:
         self.call('nt_activate')
         self.poll('nt_get_state', lambda s: s['active'] and s.get('smoothMode', False))
         self.control('nt_clear')
+        if combined: self.control('nt_combined', enabled=True)
         self.control('nt_strength', value=case.get('strengths', [0.5,0.8])[0])
         self.control('nt_select', start=start, end=end)
         for node in split_nodes:
@@ -254,7 +257,7 @@ class Runner:
             raise AssertionError('Topology identities changed')
         fixed_node_drifts = []
         for key, node in old_nodes.items():
-            if abs(node['position']['y'] - new_nodes[key]['position']['y']) > GEOMETRY_TOLERANCE_METERS:
+            if not combined and abs(node['position']['y'] - new_nodes[key]['position']['y']) > GEOMETRY_TOLERANCE_METERS:
                 raise AssertionError('Node elevation changed')
             if key not in selected_nodes or len(node['edges']) > 2 or key in {identity(start),identity(end),*(identity(n) for n in split_nodes)}:
                 drift=math.dist(position(node['position']),position(new_nodes[key]['position']))
@@ -271,7 +274,7 @@ class Runner:
             if max(math.dist(position(a),position(b)) for a,b in
                    zip(preview_curves[key],new_edges[key]['curve']))>GEOMETRY_TOLERANCE_METERS:
                 raise AssertionError('Selected preview/permanent geometry mismatch')
-        report = {'case':case['name'], 'checkpoint':saved['saveName'], 'changedEdges':changes,
+        report = {'case':case['name'], 'combined':combined, 'checkpoint':saved['saveName'], 'changedEdges':changes,
                   'junctions':[], 'fixedNodeDrifts':fixed_node_drifts,
                   'geometryToleranceMeters':GEOMETRY_TOLERANCE_METERS,'unselectedCurveMaxError':outside_error,
                   'limits':'Local snapshot checks; not vehicle traversal or visual approval.'}
@@ -289,6 +292,11 @@ class Runner:
                     raise AssertionError('Split curve endpoint is not at pinned node')
             a=(left[3]['x']-left[2]['x'],left[3]['z']-left[2]['z'])
             b=(right[1]['x']-right[0]['x'],right[1]['z']-right[0]['z'])
+            if combined:
+                la,lb=math.hypot(*a),math.hypot(*b)
+                if min(la,lb)<1e-8: raise AssertionError('Undefined split vertical grade')
+                ga=(left[3]['y']-left[2]['y'])/la;gb=(right[1]['y']-right[0]['y'])/lb
+                if abs(ga-gb)>1e-5: raise AssertionError('Split vertical grades do not agree')
             lengths=math.hypot(*a)*math.hypot(*b)
             if lengths<1e-8 or (a[0]*b[0]+a[1]*b[1])/lengths<1-1e-6:
                 raise AssertionError('Split planar tangents do not agree')

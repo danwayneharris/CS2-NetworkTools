@@ -167,3 +167,41 @@ Visible launch requested for the original baseline (metadata
 63417f2b0b32c6769118c5d88745fd54), process 25304. Loaded-city readiness and native
 combined verification still pending. Build-owned lockfile churn reviewed separately
 and restored to HEAD; no intended dependency change.
+
+## First combined native preview and Apply
+
+Loaded verified trumpet baseline on PID25304, city session
+4cf6c9b3836a45ff841a81a108171257, paused with controls enabled and provider 1.2.0.
+Initial discovery used the older terrain region; corrected the reusable discovery
+script to use the actual camera region (39 nodes, 40 edges). Captured identity-free
+baseline fingerprint and committed a compact fixture for the three-edge mainline
+section. Raw captures remain ignored under artifacts.
+
+Preview-only test accepted submission2 at strength1 with combinedSlope true.
+The loaded independent slope settings had smoothStart/smoothEnd true, so this
+case exercises existing boundary grade matching, not the restricted surface
+correction. Need expose those settings clearly for combined review and test the
+surface-corrected ramp separately. Preview script now verifies checkpoint ZIP and
+metadata before changing tool selection (the already-created checkpoint was also
+independently checked).
+
+Extended the existing runner with an explicit boolean combined case and provider
+command. Only free selected interior elevations may vary in combined mode; fixed
+XYZ, outside geometry, topology, preview/permanent and directed lane invariants
+remain. Split tests additionally check vertical-grade agreement. Eight existing
+runner guard tests passed. Further counterexamples for new policy remain to add.
+
+`terrain-regression.py` passed the first combined Apply:
+- Exactly three selected edges changed.
+- No fixed-node drift or unselected curve change.
+- Selected and incident preview/permanent maximum curve error: 0m.
+- All watched directed lane transitions and composition identities preserved.
+- Raw connector representation changed at one node, but directed transitions did
+  not; the existing semantic connection oracle distinguishes these.
+
+Evidence: artifacts/combined-trumpet-mainline-apply/report.json plus recorded
+before/preview/after and terrain observations. Checkpoint:
+`CitiesIIAgentBridge-regression-trumpet-mainline-short-20261002-015218-677356d9.cok`.
+Game remains paused on trumpet baseline with UNSAVED mainline combined changes.
+No human visual review or vehicle traversal claim. Repeat/reverse/reload, ramps,
+interior junctions, splits and same-baseline operation-order comparisons remain.

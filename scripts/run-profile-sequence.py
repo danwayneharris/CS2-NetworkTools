@@ -30,7 +30,7 @@ def geometry_displacement(before_nodes,before_edges,after_nodes,after_edges):
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)
-    p.add_argument('--bridge',default='../bridge-terrain-profile');p.add_argument('--fixture',default=str(HERE/'fixtures/toy-terrain-v11.json'))
+    p.add_argument('--use-loaded-baseline',action='store_true',help='Require the already loaded toy to match the fixture; do not restart');p.add_argument('--bridge',default='../bridge-terrain-profile');p.add_argument('--fixture',default=str(HERE/'fixtures/toy-terrain-v11.json'))
     p.add_argument('--case',required=True);p.add_argument('--order',choices=['curve','slope','curve-slope','slope-curve','combined'],required=True)
     p.add_argument('--strength',type=float,default=1.0);p.add_argument('--mode',choices=['linear','ease','arch'],default='linear');p.add_argument('--reverse',action='store_true')
     p.add_argument('--smooth-start',action='store_true');p.add_argument('--smooth-end',action='store_true')
@@ -47,15 +47,19 @@ def main():
         with (root/(name+'.log')).open('w') as log:
             process=subprocess.run([sys.executable,str(HERE/script),*args],stdout=log,stderr=subprocess.STDOUT,timeout=seconds)
         if process.returncode:raise RuntimeError(name+' failed; inspect original results, no automatic retry')
-    execute('reload-toy-baseline.py',['--fixture',a.fixture,'--save-root',a.save_root,'--expected-city-session',state['citySession'],'--bridge',str(bridge),'--output',str(root/'reload')],'reload',110)
-    deadline=time.monotonic()+240
-    while time.monotonic()<deadline:
-        try:
-            current=client.status()
-            if current['session']!=state['session'] and current['gameMode']=='Game' and not current['loading']:break
-        except (OSError,ValueError,RuntimeError):pass
-        time.sleep(1)
-    else:raise TimeoutError('Baseline startup timeout; no force kill')
+    if a.use_loaded_baseline:
+        current=state
+        if current['gameMode']!='Game' or current['loading']:raise ValueError('Loaded baseline not ready')
+    else:
+        execute('reload-toy-baseline.py',['--fixture',a.fixture,'--save-root',a.save_root,'--expected-city-session',state['citySession'],'--bridge',str(bridge),'--output',str(root/'reload')],'reload',110)
+        deadline=time.monotonic()+240
+        while time.monotonic()<deadline:
+            try:
+                current=client.status()
+                if current['session']!=state['session'] and current['gameMode']=='Game' and not current['loading']:break
+            except (OSError,ValueError,RuntimeError):pass
+            time.sleep(1)
+        else:raise TimeoutError('Baseline startup timeout; no force kill')
     stages=[s for s in a.order.split('-') for _ in range(a.repeat_slope if s=='slope' else a.repeat_combined if s=='combined' else 1)];reports=[];first_combined=None
     for i,stage in enumerate(stages):
         r=reg['Runner'](bridge,root/('discovery-'+str(i)))

@@ -361,3 +361,27 @@ Prior paused session checkpointed as
 CitiesIIAgentBridge-regression-before-reload-20261002-022342-b015b182.cok and closed
 gracefully. Visible baseline launch requested, PID 43180; native verification of
 the new build is pending. No repeatability claim from offline success alone.
+
+
+## Stable-station native repeat verification
+
+Three terminal-ramp combined Applies passed native and repeat checks with the new
+build. Relative to the first result: second maximum node/control displacement
+0.000250m; third maximum node displacement 0.000250m and controls 0.0003394m. All
+fixed positions, unselected geometry, directed connections and preview/Apply checks
+passed. The prior multi-meter drift is resolved on this captured case, not claimed
+for every path. Review checkpoint:
+CitiesIIAgentBridge-combined-review-stable-ramp-repeat-20261002-022720-1f9ce20e.cok.
+
+Release Compile-only passed; deployed Debug hash remained
+AF64F86FC7161A26810313FB8B6FCD6EE43EAB606DD9DC08200CA9E6D6C0EF1D afterward.
+This is C# compatibility, not Burst/postprocess/native Release qualification.
+
+Added explicit --use-loaded-baseline to avoid an unnecessary second restart when
+this sprint just launched the exact baseline. It retains fresh city identity,
+paused/control-enabled toy, fixture fingerprint and pre-mutation checkpoint checks.
+
+Prepared a separate compatible-split fixture from the SAVED crest/dip result, with
+zero grades on both sides of the chosen split. It is explicitly a prepared result,
+not mislabeled as unsmoothed. This exercises the supported pin contract; unsmoothed
+terrain paths with conflicting grades must still reject rather than invent policy.

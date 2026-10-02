@@ -28,12 +28,15 @@ static class Program {
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     static object AllocateNative() {
-        using var values = new NativeArray<int>(2, Allocator.Temp);
-        values[0] = 17;
-        return new { value = values[0], length = values.Length };
+        var values = new NativeArray<int>(2, Allocator.Temp);
+        try {
+            values[0] = 17;
+            return new { value = values[0], length = values.Length };
+        } finally { values.Dispose(); }
     }
 
     static int Main(string[] args) {
+        if (args.Length == 3 && args[0] == "--stages") return NativeStages.Run(args[1], args[2]);
         if (args.Length != 1) throw new ArgumentException("Supply a new report path");
         if (File.Exists(args[0])) throw new IOException("Refusing to overwrite evidence");
         var native = typeof(Game.Net.NetUtils).Assembly;
@@ -50,7 +53,7 @@ static class Program {
             gameSha256 = Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(native.Location))), probes = rows };
         var json = JsonSerializer.Serialize(report, new JsonSerializerOptions { WriteIndented = true });
         File.WriteAllText(args[0], json);
-        Console.WriteLine(json);
+        Console.WriteLine($"Assembly feasibility report: {args[0]}");
         // A report is a completed experiment, not a claim every execution tier worked.
         return 0;
     }

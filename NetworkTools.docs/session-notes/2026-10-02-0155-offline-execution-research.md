@@ -32,3 +32,27 @@ First compile failed CS1654 because NativeArray's struct indexer cannot be assig
 through a using-declaration variable. This is a harness compile error, not evidence
 that the native runtime is unavailable. Record this attempt before correcting it.
 The installed SDK selected 10.0.401 for the net8.0 target; no SDK pin added yet.
+
+## Original binary execution seam
+
+Corrected the compile error with an explicit try/finally disposal. The probe runs
+under .NET 8.0.31: original Game.Net.NetUtils.FitCurve executes, native-array allocation
+throws SecurityException (`ECall methods must be packaged into a system module`).
+Private GeometrySystem job metadata remains inspectable. This is concrete evidence
+that a plain .NET host supports value-only calls but not this Unity allocation path.
+
+Added fingerprint-gated direct calls to original private CalculateCutOffset, Cut,
+StraightenMiddleHeights and LimitMiddleHeights methods. Their implementation is not
+copied or translated. These methods read explicit value arguments, not populated
+ECS lookups; the harness does not claim to execute their enclosing jobs.
+
+Standalone build passes with zero warnings/errors. Seven subprocess cases plus
+analytic output assertions pass: four original method calls on flat controls,
+translation response, missing required input, malformed controls, unknown stage,
+wrong game hash and empty input rejection (grouped as seven case invocations).
+Results: artifacts/offline-research/seam-tests-1/summary.json. These are harness
+tests, not native anchor/control/held-out differential qualification.
+
+Next: freeze the retained evidence and build an actual participant/state capture
+contract for initialization/flattening/finishing. Permanent divergence remains
+unexplained; the goal is active. No game queries or mutations yet.

@@ -55,3 +55,29 @@ Dan reports `bridge test - trumpet combined baseline` is saved, loaded and pause
 This is the intended unsmoothed toy baseline; verify its file/hash and live
 identity before first automated mutation. Earlier preservation checkpoint is a
 different, already edited state and must not be used as an unsmoothed baseline.
+
+## Anchored combined vertical stage
+
+Added Debug-only `CombinedLinearProfileTransform`, not yet dispatched by the UI
+or tool job. It builds section inputs from the preceding adapter, anchors outer
+nodes, explicit splits and junction pins, and publishes geometry only after the
+entire fit and float-range checks succeed. Free interior Y may change; fixed XYZ
+must already match authored positions. Original distinct branch grades remain
+at junctions. Ordinary splits require numerically equivalent incoming/outgoing
+grades (1e-6 grade equality, not a position tolerance); an incompatible split
+returns a named conflict rather than inventing a transition policy. Existing
+eligible outer SmoothStart/SmoothEnd policies remain available.
+
+The pointer entry point takes disjoint caller-owned scratch buffers so offline
+tests can invoke compiled production code without Unity native allocation. The
+runtime wrapper owns and disposes temporary NativeArrays. No existing independent
+mode dispatch changed.
+
+First test build failed because the Slope test project did not allow unsafe code;
+enabled that compiler option to exercise the production pointer entry point.
+Rerun passed 15 new transform assertions, 28 input assertions, existing incident
+regressions and 96 Slope assertions. Cases include changed handle lengths,
+compatible split grades, explicit split-conflict rejection, fixed junction branch
+grades, deterministic repeat and no partial publication on failure. This is not
+native game evidence and does not yet cover the full planned combined matrix.
+Output: `artifacts/combined-transform-tests-final.log`. Game remains untouched.

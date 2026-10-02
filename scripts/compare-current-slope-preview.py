@@ -7,9 +7,9 @@ from pathlib import Path
 m=runpy.run_path(str(Path(__file__).with_name('live-regression.py')))
 p=argparse.ArgumentParser(description=__doc__)
 p.add_argument('--bridge',required=True);p.add_argument('--output',required=True)
-p.add_argument('--save-root',required=True);p.add_argument('--apply',action='store_true')
+p.add_argument('--save-root',required=True)
+g=p.add_mutually_exclusive_group(required=True);g.add_argument('--apply',action='store_true');g.add_argument('--capture-only',action='store_true')
 a=p.parse_args()
-if not a.apply:p.error('Explicit --apply required')
 r=m['Runner'](a.bridge,a.output);root=Path(a.output)
 city=r.call('get_city_state')
 if city['population']!=0 or city['selectedSpeed']!=0 or not city['controlEnabled']:raise RuntimeError('Paused controlled toy required')
@@ -55,10 +55,23 @@ for o in owners.values():
   t=i/8;w=((1-t)**3,3*(1-t)**2*t,3*(1-t)*t*t,t**3)
   pos={k:sum(q*v[k] for q,v in zip(w,o['curve'])) for k in ('x','z')}
   for dx,dz in ((0,0),(5,0),(-5,0),(0,5),(0,-5)):points.append({'x':pos['x']+dx,'z':pos['z']+dz})
-terrain_before=r.call('sample_terrain',{'points':points})
+for snap in before:
+ center=next(o['position'] for o in snap['owners'] if m['identity'](o)==m['identity'](snap['junction']))
+ for dx in range(-30,31,3):
+  for dz in range(-30,31,3):points.append({'x':center['x']+dx,'z':center['z']+dz})
+def terrain_capture():
+ samples=[]
+ for i in range(0,len(points),256):
+  response=r.call('sample_terrain',{'points':points[i:i+256]})
+  if len(response['samples'])!=len(points[i:i+256]):raise RuntimeError('Terrain coverage incomplete')
+  samples.extend(response['samples'])
+ return {'samples':samples}
+terrain_before=terrain_capture()
 final=invoke('slope_state')
 if not final['previewReady'] or any(final[k]!=s[k] for k in ('session','revision','submission')):raise RuntimeError('Preview token changed')
 root.joinpath('before.json').write_text(json.dumps({'city':city,'state':s,'path':path,'checkpoint':saved,'snapshots':before,'previews':previews,'terrain':terrain_before,'points':points},indent=2))
+if a.capture_only:
+ print(json.dumps({'output':a.output,'submission':s['submission'],'captureOnly':True}));raise SystemExit(0)
 invoke('slope_apply' if is_slope else 'apply',{k:s[k] for k in ('session','revision','submission')})
 for i in range(40):
  if invoke('slope_state')['phase']=='Idle':break
@@ -68,6 +81,6 @@ else:raise RuntimeError('Apply incomplete; no retry')
 for label,delay in (('immediate',0),('settled',3),('later',5)):
  time.sleep(delay)
  snapshots=[r.call('get_junction_snapshot',n) for n in watched]
- terrain=r.call('sample_terrain',{'points':points})
+ terrain=terrain_capture()
  root.joinpath('after-'+label+'.json').write_text(json.dumps({'snapshots':snapshots,'terrain':terrain},indent=2))
 print(json.dumps({'output':a.output,'checkpoint':saved['saveName'],'appliedSubmission':s['submission'],'paused':r.call('get_city_state')['selectedSpeed']==0}))

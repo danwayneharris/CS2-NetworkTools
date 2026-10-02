@@ -22,11 +22,18 @@ for o in original.values():
  if len(matches)!=1:raise RuntimeError('Baseline incident geometry mismatch or ambiguous edge')
 provider=next(x for x in r.call('list_providers')['providers'] if x['id']=='networktools')
 def call(cmd,args=None):return r.call('invoke_provider',{'provider':'networktools','revision':provider['revision'],'command':cmd,'args':args or {}})
-call('slope_activate');s=call('slope_state')
-mode={'SlopeEaseInOut':'ease','SlopeLinear':'linear','SlopeArch':'arch'}.get(b['state']['mode'])
-if mode is None:raise RuntimeError('Unsupported captured slope mode')
-call('slope_configure',dict(session=s['session'],revision=s['revision'],mode=mode,**b['state']['slopeParameters']))
-s=call('slope_state');call('slope_select',dict(session=s['session'],revision=s['revision'],start=ends[0],end=ends[1]))
+combined=b['state']['mode']=='CurveSmooth' and b['state']['combinedSlope']
+if any(x['selected'] for x in b['state'].get('splitChoices',[])):raise RuntimeError('Split replay not supported')
+if combined:
+ call('activate');s=call('state')
+ call('combined',dict(session=s['session'],revision=s['revision'],enabled=True,smoothStart=b['state']['slopeParameters']['smoothStart'],smoothEnd=b['state']['slopeParameters']['smoothEnd']))
+ s=call('state');call('strength',dict(session=s['session'],revision=s['revision'],value=b['state']['strength']))
+else:
+ mode={'SlopeEaseInOut':'ease','SlopeLinear':'linear','SlopeArch':'arch'}.get(b['state']['mode'])
+ if mode is None:raise RuntimeError('Unsupported captured mode')
+ call('slope_activate');s=call('slope_state')
+ call('slope_configure',dict(session=s['session'],revision=s['revision'],mode=mode,**b['state']['slopeParameters']))
+s=call('state');call('select' if combined else 'slope_select',dict(session=s['session'],revision=s['revision'],start=ends[0],end=ends[1]))
 for i in range(60):
  s=call('slope_state')
  if s['previewReady']:break

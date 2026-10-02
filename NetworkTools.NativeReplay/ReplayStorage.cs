@@ -5,12 +5,14 @@ namespace NativeReplay;
 
 // Unknown is distinct from an explicitly absent component. All reads are traced.
 public sealed class ReplayWorld {
+    public int ReadLimit { get; init; } = 100000;
     readonly Dictionary<(Entity, Type), object?> cells = new();
     public readonly List<string> Reads = new();
     public readonly List<string> Writes = new();
     public void Record<T>(Entity entity, T value) => cells[(entity, typeof(T))] = value;
     public void Absent<T>(Entity entity) => cells[(entity, typeof(T))] = null;
     public bool Try<T>(Entity entity, out T value) {
+        if (Reads.Count >= ReadLimit) throw new InvalidOperationException("Captured-state read budget exceeded; possible cyclic references");
         Reads.Add($"{entity.Index}:{entity.Version}/{typeof(T).FullName}");
         if (!cells.TryGetValue((entity, typeof(T)), out var cell))
             throw new InvalidOperationException($"Not captured: {entity.Index}:{entity.Version}/{typeof(T).FullName}");
@@ -50,15 +52,18 @@ public sealed class ReplayArray<T>(Func<int, T> read, Action<int, T> write, int 
     public T this[int i] { get => read(i); set => write(i, value); }
 }
 public readonly struct ReplayChunk(ReplayWorld world, Entity[] entities) {
-    public ReplayArray<Entity> GetNativeArray(ReplayEntityType _) => new(i => entities[i],
-        (_, _) => throw new InvalidOperationException("Entity identity is read-only"), entities.Length);
+    public ReplayArray<Entity> GetNativeArray(ReplayEntityType handle) {
+        var capturedEntities = entities;
+        return new(i => capturedEntities[i],
+            (_, _) => throw new InvalidOperationException("Entity identity is read-only"), entities.Length);
+    }
     public ReplayArray<T> GetNativeArray<T>(ref ReplayComponentType<T> _) {
         var capturedWorld = world;
         var capturedEntities = entities;
         return new(i => capturedWorld.Get<T>(capturedEntities[i]),
             (i, value) => capturedWorld.Set(capturedEntities[i], value), entities.Length);
     }
-    public bool Has<T>(ref ReplayComponentType<T> _) {
+    public bool Has<T>(ref ReplayComponentType<T> handle) {
         if (entities.Length == 0) throw new InvalidOperationException("Empty chunk unsupported");
         bool present = world.Try<T>(entities[0], out _);
         foreach (var e in entities)

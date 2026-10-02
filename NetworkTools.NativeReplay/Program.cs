@@ -36,6 +36,17 @@ static class Program {
     }
 
     static int Main(string[] args) {
+        try { return Run(args); }
+        catch (Exception error) {
+            var cause = error.GetBaseException();
+            Console.Error.WriteLine($"Native replay rejected: {cause.GetType().Name}: {cause.Message}");
+            return 2;
+        }
+    }
+
+    static int Run(string[] args) {
+        if (args.Length == 3 && args[0] == "--world") return WorldCapture.Run(args[1], args[2]);
+        if (args.Length == 2 && args[0] == "--world-tests") return WorldStageTests.Run(args[1]);
         if (args.Length == 3 && args[0] == "--stages") return NativeStages.Run(args[1], args[2]);
         if (args.Length != 1) throw new ArgumentException("Supply a new report path");
         if (File.Exists(args[0])) throw new IOException("Refusing to overwrite evidence");

@@ -35,6 +35,8 @@ def main():
         (args.output / (name + '.log')).write_text(child.stdout + child.stderr, encoding='utf-8')
         if (child.returncode == 0) != success:
             raise AssertionError(name + ': unexpected exit ' + str(child.returncode))
+        if not success and (child.returncode != 2 or 'Native replay rejected:' not in child.stderr):
+            raise AssertionError(name + ': expected controlled diagnostic, not a process crash')
         if not success and output.exists():
             raise AssertionError(name + ': failed capture published success evidence')
         checks.append(name)

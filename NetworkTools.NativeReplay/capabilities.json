@@ -21,8 +21,17 @@
       "liveChecksRetired": []
     },
     {
+      "id": "source-world-initialize-flatten",
+      "status": "synthetic-validation-only",
+      "implementation": "Hash-pinned local source generation with explicit managed storage adapters",
+      "methods": ["GeometrySystem.InitializeNodeGeometryJob", "GeometrySystem.FlattenNodeGeometryJob", "EdgeIterator except unused AddSorted"],
+      "validation": "Synthetic retention, weighted initialization, mixed/permanent/temporary flattening and strict JSON contract tests",
+      "unsupported": ["Native query discovery", "Parallel scheduling equivalence", "Coherent native anchor inputs", "Full finishing", "Terrain", "Native differential validation"],
+      "liveChecksRetired": []
+    },
+    {
       "id": "bounded-geometry-world",
-      "status": "not-implemented",
+      "status": "partial-stage-execution",
       "required": ["Initialization", "EdgeIterator semantics", "Cut and retention", "Flattening and height map", "Finishing", "Later writers", "Anchor/control/held-out native comparisons"]
     }
   ],

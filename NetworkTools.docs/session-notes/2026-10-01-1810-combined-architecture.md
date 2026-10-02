@@ -122,3 +122,23 @@ acceptance plus the existing original-input/submission gates.
 Non-deploying compilation and existing production regressions pass; this does not
 establish native convergence or full lifecycle coverage. UI/provider exposure,
 additional stale-candidate tests and live validation remain. No deployment yet.
+
+## Experimental combined control and provider
+
+Added a Constant Slope opt-in inside Smooth Curve, hidden via an explicit backend
+availability binding outside Debug. The explanatory text identifies fixed endpoint,
+split and junction heights and incompatible split-grade rejection. New tool sessions
+and ordinary provider activation reset combined mode off, preserving independent
+Curve/Slope defaults. NT provider descriptor 1.2.0 adds `combined` with required
+session, revision and boolean enabled; state reports combinedSlope and surface
+acceptance/failure. The bridge remains unchanged. UI and provider use the same
+parameter invalidation and domain Apply gates.
+
+Production compile and existing offline Slope/combined tests passed. Generated
+55 parameter bindings using the real code generator. Initial npm ci failed because
+the existing lock omits optional platform packages. Installed locally without
+rewriting the lock, which initially resolved newer Node declarations incompatible
+with TypeScript 4.8.4. Installing exactly the lockfile's @types/node 24.9.2 locally
+(no-save/no lock writes) resolved that; `tsc --noEmit` then passed. No deployment,
+no in-game UI claim. Full build remains a later gate. Logs are under artifacts/
+combined-ui-*; no package manifests or Common revision changed.

@@ -27,7 +27,8 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                 ["apiVersion"] = 1, ["session"] = m_AutomationSession,
                 ["active"] = active, ["smoothMode"] = Template.Value == ShapeTransformTemplate.CurveSmooth, ["phase"] = Phase.ToString(),
                 ["revision"] = m_PreviewInputRevision, ["submission"] = m_SmoothTraceId,
-                ["mode"] = Template.Value.ToString(),
+                ["mode"] = Template.Value.ToString(), ["combinedSlope"] = CombinedMode,
+                ["surfaceAccepted"] = m_SurfaceAccepted, ["surfaceFailed"] = m_SurfaceFailed,
                 ["slopeParameters"] = new JObject { ["easeIn"] = EaseInLength.Value, ["easeOut"] = EaseOutLength.Value,
                     ["archHeight"] = ArchHeight.Value, ["archPosition"] = ArchPosition.Value,
                     ["smoothStart"] = SmoothStart.Value, ["smoothEnd"] = SmoothEnd.Value },
@@ -49,6 +50,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                 // mode afterwards, or immediately if the tool is already running.
                 m_AutomationRequestedTemplate = slope ? ShapeTransformTemplate.SlopeLinear : ShapeTransformTemplate.CurveSmooth;
                 m_AutomationActivatePending = !(m_ToolSystem.activeTool == this && Enabled);
+                CombinedSlope.Value = false;
                 RequestEnable();
                 if (!m_AutomationActivatePending) { ResetToIdle(); Template.Value = m_AutomationRequestedTemplate; MarkDirty(); }
                 return new JObject { ["accepted"] = true, ["state"] = AutomationState() };
@@ -64,6 +66,11 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             m_LastShapeJob.Complete();
             Dependency.Complete();
             switch (action) {
+                case "combined":
+                    if (slope || args["enabled"]?.Type != JTokenType.Boolean) throw new ArgumentException("boolean_combined_mode_required");
+                    CombinedSlope.Value = (bool)args["enabled"];
+                    MarkDirty();
+                    break;
                 case "configure":
                     if (!slope) throw new ArgumentException("slope_command_required");
                     ConfigureAutomationSlope(args);

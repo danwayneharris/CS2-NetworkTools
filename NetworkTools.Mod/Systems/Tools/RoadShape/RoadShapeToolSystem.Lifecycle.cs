@@ -117,6 +117,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
         protected override void OnStartRunning() {
             InvalidatePreviewObservation();
             base.OnStartRunning();
+            CombinedSlope.ResetToDefault();
 #if IS_DEBUG
             if (m_AutomationActivatePending) {
                 m_AutomationActivatePending = false;
@@ -167,6 +168,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                     ArchPosition.ResetToDefault();
                     break;
                 case ShapeTransformTemplate.CurveSmooth:
+                    CombinedSlope.ResetToDefault();
                     SmoothingFactor.ResetToDefault();
                     break;
             }

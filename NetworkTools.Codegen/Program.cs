@@ -24,6 +24,10 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 var enums = new Dictionary<string, EnumDef>();
 var parameters = new List<ParamDef>();
 var metadataEnums = new HashSet<string>();
+var enumProblems = new Dictionary<string, string>();
+var enumLocations = new Dictionary<string, SyntaxNode>();
+SyntaxNode? context = null;
+var parameterLocations = new Dictionary<string, SyntaxNode>();
 
 if (args.Length < 2) {
     Console.Error.WriteLine("Usage: NetworkTools.Codegen <sourceDir> <outputFile> [--configuration Debug|Release]");
@@ -34,8 +38,20 @@ var sourceDir = Path.GetFullPath(args[0]);
 var outputFile = Path.GetFullPath(args[1]);
 
 var configIdx = Array.IndexOf(args, "--configuration");
-var isDebug = configIdx >= 0 && configIdx + 1 < args.Length
-    && args[configIdx + 1].Equals("Debug", StringComparison.OrdinalIgnoreCase);
+var configuration = configIdx < 0 ? "Release" : configIdx + 1 < args.Length ? args[configIdx + 1] : "";
+if (configuration is not ("Debug" or "Release" or "I18N")) {
+    Console.Error.WriteLine("Expected --configuration Debug, Release or I18N.");
+    return 1;
+}
+var isDebug = configuration == "Debug";
+// Match the pinned Common configuration symbols; callers may add custom symbols.
+var symbols = new List<string> { "TRACE" };
+if (configuration == "Debug") symbols.Add("DEBUG");
+if (configuration is "Debug" or "I18N") symbols.AddRange(new[] { "IS_DEBUG", "ENABLE_PROFILER" });
+if (configuration == "I18N") symbols.Add("EXPORT_EN_US");
+if (configuration == "Release") symbols.Add("USE_BURST");
+var defineIdx = Array.IndexOf(args, "--define");
+if (defineIdx >= 0 && defineIdx + 1 < args.Length) symbols.AddRange(args[defineIdx + 1].Split(';', StringSplitOptions.RemoveEmptyEntries));
 
 if (!Directory.Exists(sourceDir)) {
     Console.Error.WriteLine($"Source directory not found: {sourceDir}");
@@ -46,8 +62,11 @@ if (!Directory.Exists(sourceDir)) {
 // in two passes without re-reading from disk.
 var csFiles = Directory.GetFiles(sourceDir, "*.cs", SearchOption.AllDirectories);
 var roots = new List<CompilationUnitSyntax>();
+try {
 foreach (var file in csFiles) {
-    var tree = CSharpSyntaxTree.ParseText(File.ReadAllText(file));
+    var tree = CSharpSyntaxTree.ParseText(File.ReadAllText(file), new CSharpParseOptions(LanguageVersion.CSharp11, preprocessorSymbols: symbols), path: file);
+    var error = tree.GetDiagnostics().FirstOrDefault(d => d.Severity == DiagnosticSeverity.Error);
+    if (error != null) throw new InvalidOperationException(error.ToString());
     roots.Add(tree.GetCompilationUnitRoot());
 }
 
@@ -57,8 +76,16 @@ foreach (var file in csFiles) {
 foreach (var root in roots) ParseEnums(root);
 foreach (var root in roots) ParseParameters(root);
 
-if (parameters.Count == 0)
-    Console.Error.WriteLine("WARNING: No parameter declarations found. Emitting empty generated file.");
+if (parameters.Count == 0) throw new InvalidOperationException("No parameter declarations found; refusing empty output.");
+foreach (var name in ReferencedEnumNames().Concat(metadataEnums)) RequireEnum(name);
+var emittedKeys = new HashSet<string>();
+foreach (var param in parameters) {
+    var group = param.Key.Split('.')[0];
+    if (!emittedKeys.Add(group + "." + GetShortKey(param.Key, group))) {
+        context = parameterLocations[param.Key];
+        throw new InvalidOperationException($"Generated short-key collision for '{param.Key}'.");
+    }
+}
 
 var ts = EmitTypeScript();
 
@@ -74,6 +101,20 @@ if (ts != existing) {
 }
 
 return 0;
+} catch (Exception error) when (error is InvalidOperationException or FormatException or OverflowException or ArgumentException) {
+    var location = context?.GetLocation().GetLineSpan();
+    var prefix = location.HasValue ? $"{location.Value.Path}({location.Value.StartLinePosition.Line + 1},{location.Value.StartLinePosition.Character + 1})" : sourceDir;
+    Console.Error.WriteLine($"{prefix}: error NTGEN001: {error.Message}");
+    return 1;
+}
+
+void RequireEnum(string name) {
+    if (enumProblems.TryGetValue(name, out var problem)) {
+        context = enumLocations[name];
+        throw new InvalidOperationException(problem);
+    }
+    if (!enums.ContainsKey(name)) throw new InvalidOperationException($"Missing enum declaration '{name}'.");
+}
 
 // ── Enum parsing ───────────────────────────────────────────────────────────────
 
@@ -86,13 +127,15 @@ return 0;
 void ParseEnums(CompilationUnitSyntax root) {
     foreach (var enumDecl in root.DescendantNodes().OfType<EnumDeclarationSyntax>()) {
         var name = enumDecl.Identifier.Text;
+        if (enumLocations.ContainsKey(name)) enumProblems[name] = $"Ambiguous enum name '{name}'. Use distinct names for generated enums.";
+        enumLocations[name] = enumDecl;
         var members = new List<EnumMember>();
         int nextValue = 0;
 
         foreach (var member in enumDecl.Members) {
             // Extract the integer value from the EqualsValue clause if present.
             // Handles both positive literals (e.g. `= 3`) and negated literals (e.g. `= -1`).
-            // Members with computed expressions (shifts, casts) are skipped.
+            // Unsupported expressions fail if this enum is referenced by metadata.
             // Members without an explicit value auto-increment from the previous value.
             var explicitValue = member.EqualsValue?.Value switch {
                 LiteralExpressionSyntax { Token.Value: int v } => (int?)v,
@@ -100,9 +143,13 @@ void ParseEnums(CompilationUnitSyntax root) {
                     when neg.IsKind(SyntaxKind.UnaryMinusExpression) => -v,
                 _ => member.EqualsValue == null ? (int?)nextValue : null
             };
-            if (explicitValue is not int value) continue;
+            if (explicitValue is not int value) {
+                enumProblems[name] = $"Unsupported expression in enum '{name}.{member.Identifier.Text}': {member.EqualsValue?.Value}. Use explicit integer literals.";
+                continue;
+            }
             nextValue = value + 1;
 
+            context = member;
             var options = member.AttributeLists
                 .SelectMany(al => al.Attributes)
                 .Where(a => a.Name.ToString() == "EnumOption")
@@ -131,7 +178,7 @@ void ParseEnums(CompilationUnitSyntax root) {
 /// </remarks>
 EnumOptionDef ParseEnumOptionAttr(AttributeSyntax attr) {
     var attrArgs = attr.ArgumentList?.Arguments;
-    if (attrArgs == null) return new EnumOptionDef("", "");
+    if (attrArgs == null) throw new InvalidOperationException("EnumOption requires literal label and icon arguments.");
 
     string label = "", icon = "";
     string? group = null;
@@ -144,27 +191,30 @@ EnumOptionDef ParseEnumOptionAttr(AttributeSyntax attr) {
         if (propName != null) {
             switch (propName) {
                 case "Group": group = GetStringLiteral(arg.Expression); break;
-                case "Visible": visible = arg.Expression.ToString() == "true"; break;
-                case "Disabled": disabled = arg.Expression.ToString() == "true"; break;
+                case "Visible": visible = bool.Parse(arg.Expression.ToString()); break;
+                case "Disabled": disabled = bool.Parse(arg.Expression.ToString()); break;
+                default: throw new InvalidOperationException($"Unknown EnumOption property '{propName}'.");
             }
         } else {
             // Positional args: first is the localization key, second is the icon URI
             if (positional == 0) label = GetStringLiteral(arg.Expression);
             else if (positional == 1) icon = GetStringLiteral(arg.Expression);
+            else throw new InvalidOperationException("EnumOption accepts two positional arguments.");
             positional++;
         }
     }
 
+    if (positional != 2) throw new InvalidOperationException("EnumOption requires label and icon arguments.");
     return new EnumOptionDef(label, icon, group, visible, disabled);
 }
 
 /// <summary>
 /// Extracts the raw string from a string literal expression node.
 /// Uses <c>Token.Value</c> to get the unescaped value without surrounding quotes.
-/// Falls back to <c>ToString().Trim('"')</c> for non-literal expressions.
+/// Rejects non-literal expressions rather than emitting their source as metadata.
 /// </summary>
 string GetStringLiteral(ExpressionSyntax expr) =>
-    expr is LiteralExpressionSyntax { Token.Value: string s } ? s : expr.ToString().Trim('"');
+    expr is LiteralExpressionSyntax { Token.Value: string s } ? s : throw new InvalidOperationException($"Expected string literal, got '{expr}'.");
 
 // ── Parameter parsing ──────────────────────────────────────────────────────────
 
@@ -191,9 +241,42 @@ void ParseParameters(CompilationUnitSyntax root) {
                 ObjectCreationExpressionSyntax obj => obj.ArgumentList,
                 _ => null
             };
-            if (argList == null) continue;
+            context = variable;
+            if (argList == null) throw new InvalidOperationException($"Parameter '{fieldName}' requires a direct constructor initializer.");
 
             var ctorArgs = ExtractArgs(argList.Arguments);
+            var positionalLimit = typeName is "FloatParameter" or "IntParameter" ? 5 : typeName == "NetPrefabParameter" ? 2 : 3;
+            var positionalNames = typeName is "FloatParameter" or "IntParameter" ? new[] { "key", "default", "min", "max", "modes" }
+                : typeName == "NetPrefabParameter" ? new[] { "key", "modes" } : new[] { "key", "default", "modes" };
+            for (int position = 0; position < positionalNames.Length; position++)
+                if (ctorArgs.ContainsKey(position.ToString()) && ctorArgs.ContainsKey(positionalNames[position]))
+                    throw new InvalidOperationException($"Argument '{positionalNames[position]}' supplied both positionally and by name.");
+            var allowed = new HashSet<string> { "key", "modes", "label" };
+            if (typeName != "NetPrefabParameter") allowed.Add("default");
+            if (typeName is "FloatParameter" or "IntParameter") allowed.UnionWith(new[] { "min", "max", "numberType", "displayScale", "persist" });
+            if (typeName == "FloatParameter") allowed.Add("fractionDigits");
+            if (typeName == "BoolParameter" || typeName.StartsWith("EnumParameter<")) allowed.Add("persist");
+            if (typeName == "NetPrefabParameter") allowed.Add("nullable");
+            foreach (var argument in ctorArgs.Keys) {
+                if (int.TryParse(argument, out var index)) {
+                    if (index >= positionalLimit) throw new InvalidOperationException("Use named arguments for optional metadata after modes.");
+                } else if (!allowed.Contains(argument)) throw new InvalidOperationException($"Unknown {typeName} argument '{argument}'.");
+            }
+            var keyValue = ctorArgs.GetValueOrDefault("key") ?? ctorArgs.GetValueOrDefault("0");
+            if (keyValue == null) throw new InvalidOperationException("Parameter key is required.");
+            var parsedKey = StripQuotes(keyValue);
+            if (!Regex.IsMatch(parsedKey, @"^[a-zA-Z_$][\w$]*(\.[a-zA-Z_$][\w$]*)+$"))
+                throw new InvalidOperationException($"Invalid dotted parameter key '{parsedKey}'.");
+            if (!parameterLocations.TryAdd(parsedKey, variable)) throw new InvalidOperationException($"Duplicate parameter key '{parsedKey}'.");
+            if (typeName is "FloatParameter" or "IntParameter") {
+                foreach (var (key, position) in new[] { ("default", "1"), ("min", "2"), ("max", "3") })
+                    if (!ctorArgs.ContainsKey(key) && !ctorArgs.ContainsKey(position)) throw new InvalidOperationException($"Missing required argument '{key}'.");
+            } else if (typeName == "BoolParameter" || typeName.StartsWith("EnumParameter<")) {
+                if (!ctorArgs.ContainsKey("default") && !ctorArgs.ContainsKey("1")) throw new InvalidOperationException("Missing required default argument.");
+            }
+            if (ctorArgs.TryGetValue("persist", out var persist)) bool.Parse(persist);
+            if (ctorArgs.TryGetValue("fractionDigits", out var digits)) int.Parse(digits, CultureInfo.InvariantCulture);
+            if (ctorArgs.TryGetValue("nullable", out var nullable)) bool.Parse(nullable);
 
             if (typeName == "FloatParameter")
                 ParseFloatParam(fieldName, ctorArgs);
@@ -246,13 +329,17 @@ bool IsParameterType(string typeName) =>
 Dictionary<string, string> ExtractArgs(SeparatedSyntaxList<ArgumentSyntax> syntaxArgs) {
     var result = new Dictionary<string, string>();
     int positional = 0;
+    bool sawNamed = false;
     foreach (var arg in syntaxArgs) {
-        var name = arg.NameColon?.Name.Identifier.Text;
+        var name = arg.NameColon?.Name.Identifier.ValueText;
         var value = arg.Expression.ToString().Trim();
-        if (name != null)
-            result[name] = value;
-        else
+        if (name != null) {
+            sawNamed = true;
+            if (!result.TryAdd(name, value)) throw new InvalidOperationException($"Duplicate named argument '{name}'.");
+        } else {
+            if (sawNamed) throw new InvalidOperationException("Positional arguments after named arguments are unsupported; use names consistently.");
             result[(positional++).ToString()] = value;
+        }
     }
     return result;
 }
@@ -361,9 +448,11 @@ string ParseNumberType(Dictionary<string, string> args) {
     var raw = args.GetValueOrDefault("numberType");
     if (raw == null) return "none";
     if (raw.Contains('.')) {
+        ResolveEnumValue(raw, raw.Split('.').First());
         metadataEnums.Add(raw.Split('.').First());
     }
-    var member = raw.Contains('.') ? raw.Split('.').Last() : raw;
+    if (!raw.Contains('.')) throw new InvalidOperationException($"Expected enum member metadata, got '{raw}'.");
+    var member = raw.Split('.').Last();
     return CamelCase(member);
 }
 
@@ -393,29 +482,31 @@ float? ParseDisplayScale(Dictionary<string, string> args) {
 /// </summary>
 float ParseFloatLiteral(string s) {
     s = s.Trim().TrimEnd('f', 'F');
-    return float.Parse(s, CultureInfo.InvariantCulture);
+    var value = float.Parse(s, CultureInfo.InvariantCulture);
+    if (!float.IsFinite(value)) throw new InvalidOperationException("Nonfinite numeric metadata is unsupported.");
+    return value;
 }
 
 /// <summary>
 /// Strips surrounding whitespace and double-quote characters from a string.
 /// </summary>
-string StripQuotes(string s) => s.Trim().Trim('"');
+string StripQuotes(string s) => GetStringLiteral(SyntaxFactory.ParseExpression(s));
 
 /// <summary>
 /// Resolves an enum member access expression (e.g. <c>"ConnectMode.SimpleCurve"</c>)
 /// to its integer value by looking it up in the previously-collected <see cref="enums"/> dictionary.
-/// Falls back to <see cref="int.TryParse"/> for raw integer literals, or <c>0</c> if unresolvable.
+/// Allows integer literals; unresolved expressions fail instead of silently becoming zero.
 /// </summary>
 int ResolveEnumValue(string expr, string enumType) {
+    RequireEnum(enumType);
     expr = expr.Trim();
-    // Match "EnumType.MemberName" and look up the integer value
-    var match = Regex.Match(expr, @"(\w+)\.(\w+)");
-    if (match.Success && enums.TryGetValue(match.Groups[1].Value, out var def)) {
-        var member = def.Members.FirstOrDefault(m => m.Name == match.Groups[2].Value);
+    var match = Regex.Match(expr, @"^(\w+)\.(\w+)$");
+    if (match.Success && match.Groups[1].Value == enumType) {
+        var member = enums[enumType].Members.FirstOrDefault(m => m.Name == match.Groups[2].Value);
         if (member != null) return member.Value;
     }
     if (int.TryParse(expr, out var intVal)) return intVal;
-    return 0;
+    throw new InvalidOperationException($"Unsupported or unresolved enum expression '{expr}' for '{enumType}'.");
 }
 
 /// <summary>
@@ -425,21 +516,13 @@ int ResolveEnumValue(string expr, string enumType) {
 /// The result is a bitmask controlling which tool modes a parameter is visible in.
 /// </summary>
 int ResolveModes(string expr) {
-    expr = expr.Trim();
-    if (expr == "0") return 0;
-    if (int.TryParse(expr, out var literal)) return literal;
-
-    // Split on | and resolve each "(int)EnumType.Member" segment
     int result = 0;
     foreach (var part in expr.Split('|')) {
         var trimmed = part.Trim();
-        var castMatch = Regex.Match(trimmed, @"\(int\)\s*(\w+)\.(\w+)");
-        if (castMatch.Success && enums.TryGetValue(castMatch.Groups[1].Value, out var def)) {
-            var member = def.Members.FirstOrDefault(m => m.Name == castMatch.Groups[2].Value);
-            if (member != null) { result |= member.Value; continue; }
-        }
-        if (int.TryParse(trimmed, out var intVal))
-            result |= intVal;
+        if (int.TryParse(trimmed, out var literal)) { result |= literal; continue; }
+        var match = Regex.Match(trimmed, @"^\(int\)\s*(\w+)\.(\w+)$");
+        if (!match.Success) throw new InvalidOperationException($"Unsupported mode expression '{trimmed}'.");
+        result |= ResolveEnumValue(match.Groups[1].Value + "." + match.Groups[2].Value, match.Groups[1].Value);
     }
     return result;
 }

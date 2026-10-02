@@ -19,16 +19,30 @@ namespace NetworkTools.Systems.Tools.Parameters {
             set => SetValue(value, ChangeOrigin.Code);
         }
 
-        public void SetValue(T value, ChangeOrigin origin) {
-            if (EqualityComparer<T>.Default.Equals(m_Value, value)) return;
+        public void SetValue(T value, ChangeOrigin origin) => TrySetValue(value, origin);
+
+        /// <summary>
+        ///     Accepts finite values without imposing UI range metadata on handle/code writes.
+        ///     Rejection retains the previous value and never raises OnChanged.
+        /// </summary>
+        public bool TrySetValue(T value, ChangeOrigin origin) {
+            if (!ParameterValueValidation.IsFinite(value)) {
+                Log?.Warn($"[Parameter] {Key}: rejected nonfinite value from {origin}; retaining current value.");
+                return false;
+            }
+            if (EqualityComparer<T>.Default.Equals(m_Value, value)) return true;
             var old = m_Value;
             m_Value = value;
             Log?.Debug($"[Parameter] {Key}: {old} → {value}");
             RaiseChanged(origin);
+            return true;
         }
 
         protected Parameter(string key, T @default, int modes = 0, bool bindable = true, string label = null, bool persist = true)
             : base(key, modes, bindable, label, persist) {
+            if (!ParameterValueValidation.IsFinite(@default)) {
+                throw new ArgumentException("A parameter default must be finite.", nameof(@default));
+            }
             Default = @default;
             m_Value = @default;
         }
@@ -39,12 +53,18 @@ namespace NetworkTools.Systems.Tools.Parameters {
 
         /// <inheritdoc />
         public override bool TryDeserializeValue(string raw) {
+            T parsed;
             try {
-                Value = (T)Convert.ChangeType(raw, typeof(T), CultureInfo.InvariantCulture);
-                return true;
-            } catch {
+                parsed = (T)Convert.ChangeType(raw, typeof(T), CultureInfo.InvariantCulture);
+            } catch (Exception error) when (error is FormatException || error is InvalidCastException ||
+                                            error is OverflowException || error is ArgumentException) {
+                Log?.Warn($"[Parameter] {Key}: persisted value could not be parsed ({error.GetType().Name}); retaining current value.");
                 return false;
             }
+
+            // Do not swallow subscriber exceptions after a successful write and misreport
+            // them as a failed parse. Nonfinite input is rejected before any state changes.
+            return TrySetValue(parsed, ChangeOrigin.Code);
         }
 
         public override void ResetToDefault() {

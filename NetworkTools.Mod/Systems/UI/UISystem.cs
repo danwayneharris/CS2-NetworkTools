@@ -45,6 +45,7 @@
         private ValueBindingHelper<int>                 m_SelectedViewsBinding;
         private ValueBindingHelper<int>                 m_ApplyStateBinding;
         private ValueBindingHelper<string>              m_SplitChoicesBinding;
+        private ValueBindingHelper<string>              m_ShapeApplyReasonBinding;
         private ValueBindingHelper<bool>                m_PanelOpenBinding;
         private ValueBindingHelper<NT_ToolPrefab[]>     m_ToolUIDataBinding;
 
@@ -104,6 +105,7 @@
             m_SelectedViewsBinding  = CreateBinding("SELECTED_VIEWS",  (int)ViewOption.None, HandleUpdateSelectedViews);
             m_ApplyStateBinding = CreateBinding("APPLY_STATE", (int)ApplyState.Hidden);
             m_SplitChoicesBinding = CreateBinding("SPLIT_CHOICES", "[]");
+            m_ShapeApplyReasonBinding = CreateBinding("SHAPE_APPLY_REASON", "");
             CreateTrigger<int, int, bool>("SET_SPLIT_NODE", (index, version, enabled) =>
                 m_NtRoadShapeToolSystem.SetSplitNode(new Entity { Index=index, Version=version }, enabled));
 
@@ -173,7 +175,10 @@
 
         private void RegisterParameterBinding(ParameterBase param) {
             if (param is FloatParameter fp) {
-                var b = CreateBinding(fp.Key, fp.Value, v => fp.Value = v);
+                ValueBindingHelper<float> b = null;
+                b = CreateBinding(fp.Key, fp.Value, v => {
+                    if (!fp.TrySetValue(v, ChangeOrigin.Code)) b.Value = fp.Value;
+                });
                 fp.OnChanged += _ => b.Value = fp.Value;
             } else if (param is IntParameter ip) {
                 var b = CreateBinding(ip.Key, ip.Value, v => ip.Value = v);

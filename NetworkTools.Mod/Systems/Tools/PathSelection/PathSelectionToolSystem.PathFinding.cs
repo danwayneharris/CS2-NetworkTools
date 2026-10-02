@@ -4,6 +4,7 @@
 // </copyright>
 
 namespace NetworkTools.Systems.Tools {
+    using System;
     using Colossal.Collections;
     using Colossal.Entities;
     using Game.Net;
@@ -71,13 +72,30 @@ namespace NetworkTools.Systems.Tools {
         }
 
         /// <summary>
-        ///     Heap entry for the weighted path search, ordered by accumulated cost.
+        ///     An arrival, not just a node: future cost and immediate-backtracking eligibility
+        ///     depend on the incoming edge. Entity identity includes its version.
+        /// </summary>
+        private struct PathState : IEquatable<PathState> {
+            public Entity m_Node;
+            public Entity m_Edge;
+
+            public bool Equals(PathState other) {
+                return m_Node == other.m_Node && m_Edge == other.m_Edge;
+            }
+
+            public override int GetHashCode() {
+                return unchecked((m_Node.GetHashCode() * 397) ^ m_Edge.GetHashCode());
+            }
+        }
+
+        /// <summary>
+        ///     Heap entry ordered by accumulated cost. Equal-cost ordering remains the
+        ///     native heap's existing policy; no new tie preference is introduced.
         /// </summary>
         private struct PathCandidate : ILessThan<NT_PathSelectionToolSystem.PathCandidate> {
-            public Entity m_Node;   // Node reached.
-            public Entity m_Edge;   // Edge traversed to reach m_Node.
-            public Entity m_Parent; // Node we arrived from.
-            public float m_Cost;    // Accumulated cost to reach m_Node.
+            public PathState m_State;
+            public PathState m_Parent;
+            public float m_Cost;
 
             public bool LessThan(NT_PathSelectionToolSystem.PathCandidate other) {
                 return m_Cost < other.m_Cost;
@@ -115,14 +133,14 @@ namespace NetworkTools.Systems.Tools {
             }
 
             var heap = new NativeMinHeap<NT_PathSelectionToolSystem.PathCandidate>(64, Allocator.Temp);
-            var visited = new NativeHashSet<Entity>(64, Allocator.Temp);
-            var parentMap = new NativeHashMap<Entity, Entity>(64, Allocator.Temp);
-            var edgeMap = new NativeHashMap<Entity, Entity>(64, Allocator.Temp);
+            var visited = new NativeHashSet<PathState>(64, Allocator.Temp);
+            var parentMap = new NativeHashMap<PathState, PathState>(64, Allocator.Temp);
+            var startState = new PathState { m_Node = startNode, m_Edge = Entity.Null };
+            var endState = default(PathState);
 
             heap.Insert(new NT_PathSelectionToolSystem.PathCandidate {
-                m_Node = startNode,
-                m_Edge = Entity.Null,
-                m_Parent = Entity.Null,
+                m_State = startState,
+                m_Parent = default,
                 m_Cost = 0f,
             });
 
@@ -131,31 +149,32 @@ namespace NetworkTools.Systems.Tools {
             while (heap.Length != 0) {
                 var current = heap.Extract();
 
-                // A node can be queued via several routes; the first one extracted is the
-                // cheapest, so settle it once and ignore any later, costlier arrivals.
-                if (!visited.Add(current.m_Node)) {
+                // Settle each arrival state once. A more expensive arrival at the same node
+                // can still win if its incoming prefab avoids the next change penalty.
+                if (!visited.Add(current.m_State)) {
                     continue;
                 }
 
-                // Record how we reached this node for path reconstruction.
-                if (current.m_Node != startNode) {
-                    parentMap[current.m_Node] = current.m_Parent;
-                    edgeMap[current.m_Node] = current.m_Edge;
+                // Parents must use the same state key, otherwise another arrival can overwrite
+                // the winning route during reconstruction.
+                if (!current.m_State.Equals(startState)) {
+                    parentMap[current.m_State] = current.m_Parent;
                 }
 
-                if (current.m_Node == endNode) {
+                if (current.m_State.m_Node == endNode) {
                     foundPath = true;
+                    endState = current.m_State;
                     break;
                 }
 
-                if (!EntityManager.TryGetBuffer<ConnectedEdge>(current.m_Node, true, out var connectedEdges)) {
+                if (!EntityManager.TryGetBuffer<ConnectedEdge>(current.m_State.m_Node, true, out var connectedEdges)) {
                     continue;
                 }
 
                 // Prefab of the edge we arrived on, used for the road-type-change penalty.
                 var arrivedPrefab = Entity.Null;
-                if (current.m_Edge != Entity.Null &&
-                    EntityManager.TryGetComponent<PrefabRef>(current.m_Edge, out var arrivedRef)) {
+                if (current.m_State.m_Edge != Entity.Null &&
+                    EntityManager.TryGetComponent<PrefabRef>(current.m_State.m_Edge, out var arrivedRef)) {
                     arrivedPrefab = arrivedRef.m_Prefab;
                 }
 
@@ -164,7 +183,7 @@ namespace NetworkTools.Systems.Tools {
                     var edgeEntity = connectedEdges[i].m_Edge;
 
                     // Don't immediately backtrack along the edge we just took.
-                    if (edgeEntity == current.m_Edge) {
+                    if (edgeEntity == current.m_State.m_Edge) {
                         continue;
                     }
 
@@ -172,9 +191,10 @@ namespace NetworkTools.Systems.Tools {
                         continue;
                     }
 
-                    var neighbor = edge.m_Start == current.m_Node ? edge.m_End : edge.m_Start;
+                    var neighbor = edge.m_Start == current.m_State.m_Node ? edge.m_End : edge.m_Start;
 
-                    if (visited.Contains(neighbor)) {
+                    var neighborState = new PathState { m_Node = neighbor, m_Edge = edgeEntity };
+                    if (visited.Contains(neighborState)) {
                         continue;
                     }
 
@@ -191,9 +211,8 @@ namespace NetworkTools.Systems.Tools {
                     }
 
                     heap.Insert(new NT_PathSelectionToolSystem.PathCandidate {
-                        m_Node = neighbor,
-                        m_Edge = edgeEntity,
-                        m_Parent = current.m_Node,
+                        m_State = neighborState,
+                        m_Parent = current.m_State,
                         m_Cost = cost,
                     });
                 }
@@ -203,13 +222,11 @@ namespace NetworkTools.Systems.Tools {
             if (foundPath) {
                 var pathNodes = new NativeList<Entity>(16, Allocator.Temp);
                 var pathEdges = new NativeList<Entity>(16, Allocator.Temp);
-                var current = endNode;
+                var current = endState;
 
-                while (current != startNode) {
-                    pathNodes.Add(current);
-                    if (edgeMap.TryGetValue(current, out var usedEdge)) {
-                        pathEdges.Add(usedEdge);
-                    }
+                while (!current.Equals(startState)) {
+                    pathNodes.Add(current.m_Node);
+                    pathEdges.Add(current.m_Edge);
 
                     if (!parentMap.TryGetValue(current, out current)) {
                         // Path broken - shouldn't happen
@@ -239,7 +256,6 @@ namespace NetworkTools.Systems.Tools {
             heap.Dispose();
             visited.Dispose();
             parentMap.Dispose();
-            edgeMap.Dispose();
 
             m_Log.Debug(
                 $"FindPathBetween: Found path with {nodesPath.Length} nodes and {edgePath.Length} edges: {foundPath}");

@@ -1,6 +1,13 @@
 # NetworkTools system architecture
 
-Current checkpoint (Sept 29): ordinary split constraints and Debug-only interior
+Current audit checkpoint (October 1): source-based changes on the terrain/profile
+PR are being verified; see [audit disposition](audit-disposition.md) for status.
+Do not infer live qualification of this sprint from earlier results. The supported
+surface correction remains Debug-only; Release/Burst execution is a separate gate.
+The [offline aggregate](../BOOTSTRAP.md#verification-commands-and-side-effects)
+now makes test scope and deployment side effects explicit.
+
+Historical checkpoint (Sept 29): ordinary split constraints and Debug-only interior
 junction section fitting are implemented. Native preview and independent Apply
 captures cover rail, road and highway cases; two rail cases retain strict failures
 for millimeter-scale native node-center drift. See [split points](split-points.md),
@@ -18,7 +25,7 @@ or Unity's Entity Component System (ECS). For a focused source-reading path, fol
 **parameter declaration → UI binding → job configuration → transformation →
 preview/apply** through sections 6–9.
 
-**Status and limitations (Sept 26, 2026):** the architecture below follows the mod's
+**Historical status and limitations (Sept 26, 2026):** the architecture below follows the mod's
 source. Debug builds and local deployment pass; an in-game smoke test confirmed the
 modified tooltip and a successful Connect operation joining two road segments.
 Other tools, automated tests, and Release/Burst behavior remain unverified in this
@@ -272,8 +279,10 @@ What exists:
 
 The mode is enabled in metadata on the integration branch.
 [CurveSmoothTransform](../NetworkTools.Mod/Systems/Tools/RoadShape/Transforms/CurveSmoothTransform.cs)
-calls the independent `PlanarPathTarget` single-boundary-cubic reconstruction and publishes its
-candidate arrays only if the whole selection passes validation. It bypasses the
+dispatches to `PlanarJunctionTarget` for supported Debug interior junctions,
+`PlanarSplitTarget` for ordinary split pins, or `PlanarPathTarget` for a single
+boundary target. It publishes candidate arrays only if the whole fit passes its
+geometry contract. Ordinary split constraints also apply at zero strength. It bypasses the
 generic transform pipeline's node-position averaging. Endpoints and junctions are
 fixed at selection boundaries. The Debug interior-junction path now partitions
 the selection using PlanarJunctionTarget and accepts candidates only after exact
@@ -296,10 +305,10 @@ Prototype scope, geometry requirements, and future directions are maintained in 
 
 The [curve geometry module](curve-geometry.md) supplies target construction and
 exact cubic subdivision; the earlier node fitter remains available but unused by
-Smooth Curve. External tests and full Debug/Release
-builds pass, including postprocessing, UI generation/build, and Windows Burst
-compilation. Debug is deployed and visually tested. Train traversal, save/reload,
-and Release execution remain unverified.
+Smooth Curve. Early full Debug/Release builds, including Windows Burst compilation,
+were recorded for the September 26 prototype, not this current revision. Later
+Debug preview/Apply and save/reload evidence is linked from the confidence guide.
+Current Release/Burst execution and vehicle traversal remain unqualified.
 
 ## 11. Anarchy and compatibility boundaries
 
@@ -432,3 +441,34 @@ Preserving the same segmentation fixes that preview/Apply discrepancy while keep
 geometry, freshness and directed-connection validation intact. The base lifecycle
 re-enables node reduction when the tool stops. The captured rail and highway cases
 passed strict permanent-result checks; see [the experiment and its limits](session-notes/2026-10-01-0145-preview-topology.md).
+
+
+### Audit sprint ownership and Apply checks (October 1; verification in progress)
+
+The current source captures the original-input baseline when path data is refreshed.
+Before a new fit, scheduling compares the current network with that cached baseline;
+preview refreshes changed inputs, while Apply rejects them. Submission copies that
+same baseline. The shared candidate gate checks revision, cache/submission/current
+inputs and completed job state for UI and provider entry points, and checks again
+when Apply executes. Debug Smooth Curve and Slope also require the corresponding
+native observation. This is stronger correlation, not a universal native completion
+fence. See `RoadShapeToolSystem.PathData.cs`, `.JobMethods.cs`, `.OriginalProbe.cs`
+and `.Update.cs`; final native validation of the new gate is still pending.
+
+Release Smooth Curve is being restricted to selections without degree>2 nodes,
+including endpoints, because it does not include the Debug native junction search.
+The experimental surface-aware Constant Slope path remains Debug-only. Ordinary
+Slope and Straighten do not acquire a new general lane/terrain guarantee from
+sharing the gate; validation is mode-specific.
+
+Affected unselected edges are composed once from their original curve, combining
+both endpoint displacements before preview/Apply emission. Node position writes
+preserve other component fields, including rotation. These focused changes have
+offline regressions; live qualification remains separate. Preserving incident
+edges means applying the operation's permitted endpoint/handle translation, not
+always requiring absolutely unchanged geometry outside a Slope selection.
+
+Structured probes, geometry captures, native observations, timing, rejection
+reasons and provider/replay access remain development tools. Required Apply checks
+must survive disabling optional logging. No removal of defensive synchronization,
+broad protocol relocation or generalized graph-edit framework is part of this work.

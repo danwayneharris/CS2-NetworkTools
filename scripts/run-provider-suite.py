@@ -4,6 +4,40 @@ Explicit --run required. Never retries an uncertain case or force-kills a game.
 import argparse,importlib.util,json,os,subprocess,sys,time
 from pathlib import Path
 
+def case_status(code, report):
+    """Only an explicit completed assertion report permits the next baseline reload."""
+    if not isinstance(report, dict) or type(report.get('passed')) is not bool:
+        return 'execution-incomplete'
+    if code == 0 and report['passed']:
+        return 'passed'
+    if not report['passed']:
+        return 'assertion-failed'
+    # A successful report followed by a failed process may indicate a late failure.
+    return 'execution-incomplete'
+
+
+def run_cases(cases, execute, summary_path):
+    """Persist all planned outcomes, stop uncertainty, aggregate completed failures."""
+    reports = [dict(fixture=f, case=c, status='not-run', exitCode=None, report=None)
+               for f, c in cases]
+    def save():
+        summary_path.write_text(json.dumps(reports, indent=2), encoding='utf-8')
+    save()
+    if not reports:
+        return 2
+    for i, row in enumerate(reports):
+        try:
+            code, report = execute(i, row['fixture'], row['case'])
+            row.update(exitCode=code, report=report, status=case_status(code, report))
+        except Exception as error:
+            row.update(status='execution-incomplete', error=str(error))
+        save()
+        print(row['case'] + ': ' + row['status'], flush=True)
+        if row['status'] == 'execution-incomplete':
+            return 2
+    return 1 if any(r['status'] != 'passed' for r in reports) else 0
+
+
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--bridge',default='../cities2-agent-bridge-ndc');p.add_argument('--save-root',required=True)
@@ -16,7 +50,6 @@ def main():
     spec=importlib.util.spec_from_file_location('bridge_client',bridge/'adapter/bridge_client.py')
     module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
     client=module.Client(Path(os.environ['LOCALAPPDATA'])/'CitiesIIAgentBridge',root/'status-intents')
-    reports=[]
     def ready(previous=None):
         deadline=time.monotonic()+240
         while time.monotonic()<deadline:
@@ -30,8 +63,8 @@ def main():
         with log.open('w') as f:
             result=subprocess.run([sys.executable,str(here/script),*arguments],stdout=f,stderr=subprocess.STDOUT,timeout=360)
         return result.returncode
-    for i,case_spec in enumerate(a.case):
-        fixture_name,case=case_spec.split(':',1);fixture=here/'fixtures'/fixture_name
+    def execute(i, fixture_name, case):
+        fixture=here/'fixtures'/fixture_name
         descriptor=json.loads(fixture.read_text())
         if case not in [c['name'] for c in descriptor['cases']]:raise ValueError('Unknown case '+case)
         state=ready();prefix=root/f'{i+1:02d}-{case}'
@@ -42,10 +75,6 @@ def main():
         print('Testing '+case,flush=True)
         code=invoke(a.runner,['--fixture',str(fixture),'--case',case,'--run','--save-root',a.save_root,'--bridge',str(bridge),'--output',str(prefix)],Path(str(prefix)+'.log'))
         report=prefix/'report.json'
-        reports.append({'fixture':fixture_name,'case':case,'exitCode':code,'report':json.loads(report.read_text()) if report.exists() else None})
-        (root/'summary.json').write_text(json.dumps(reports,indent=2))
-        print(case+': '+('PASS' if code==0 else 'FAIL'),flush=True)
-        # A completed assertion report is diagnosable. Unknown/incomplete execution
-        # stops the suite instead of blindly trying more mutations.
-        if code and not report.exists():raise RuntimeError('Incomplete case; inspect original capture before proceeding')
-if __name__=='__main__':main()
+        return code, json.loads(report.read_text(encoding='utf-8')) if report.exists() else None
+    return run_cases([case.split(':', 1) for case in a.case], execute, root/'summary.json')
+if __name__=='__main__':sys.exit(main())

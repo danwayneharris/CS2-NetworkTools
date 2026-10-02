@@ -38,7 +38,7 @@ namespace NetworkTools.Systems.Tools.Parameters {
             Persist  = persist;
         }
 
-        /// <summary>Reset value to the declared default. Always fires <see cref="OnChanged" />.</summary>
+        /// <summary>Reset value to the declared default. Fires <see cref="OnChanged" /> if the value changes.</summary>
         public abstract void ResetToDefault();
 
         /// <summary>Serialize the current value to a string for persistence.</summary>

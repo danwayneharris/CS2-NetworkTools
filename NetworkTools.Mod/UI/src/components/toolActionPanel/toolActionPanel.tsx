@@ -33,6 +33,7 @@ const ToolActionPanelInner = () => {
     const selectedBinding = useValue(GAME_BINDINGS.SELECTED_PREFAB.binding);
     const toolUIDataBinding = useValue(GAME_BINDINGS.UI_DATA.binding);
     const applyState = useValue(GAME_BINDINGS.APPLY_STATE.binding) as ApplyState;
+    const shapeApplyReason = useValue(GAME_BINDINGS.SHAPE_APPLY_REASON.binding);
     const activeTool = toolUIDataBinding.find((t) => t.PrefabId === selectedBinding);
     const { translate } = useLocalization();
     const [showTutorial, setShowTutorial] = useState(false);
@@ -79,6 +80,7 @@ const ToolActionPanelInner = () => {
                         </div>
                     </div>
                     {ToolComponent && <ToolComponent />}
+                    {shapeApplyReason && <div className={styles.helper}>{translate(shapeApplyReason)}</div>}
                     {applyState !== ApplyState.Hidden && (
                         <div className={styles.row}>
                             <div className={styles.actions}>

@@ -27,9 +27,20 @@ public static class OriginalComparisonChecks {
             throw new System.Exception("Uninitialized revision was not rejected");
         if (NetworkTools.Geometry.OriginalInputComparison.Observe(2, 2, submitted, submitted) != "matches")
             throw new System.Exception("Current observation mismatch");
+        var changedWorld = new object[] { new Value {Index=12, Version=1, Position=9}, true };
+        if (NetworkTools.Geometry.OriginalInputComparison.CandidateStatus(2,2,submitted,changedWorld,changedWorld) != "changed")
+            throw new System.Exception("Stale cache A was certified against submitted/current B");
+        if (NetworkTools.Geometry.OriginalInputComparison.CandidateStatus(2,2,submitted,submitted,changedWorld) != "changed")
+            throw new System.Exception("Changed original during rebuild/pre-Apply was accepted");
+        if (NetworkTools.Geometry.OriginalInputComparison.CandidateStatus(3,2,submitted,submitted,submitted) != "stale_revision")
+            throw new System.Exception("Changed parameters accepted old candidate");
+        if (NetworkTools.Geometry.OriginalInputComparison.CandidateStatus(2,2,null,submitted,submitted) != "unavailable")
+            throw new System.Exception("Missing cache accepted");
+        if (NetworkTools.Geometry.OriginalInputComparison.CandidateStatus(2,2,changedWorld,changedWorld,changedWorld) != "matches")
+            throw new System.Exception("Regathered B rejected");
     }
 }
 '@
 Add-Type -TypeDefinition ($source + "`n" + $tests)
 [OriginalComparisonChecks]::Run()
-Write-Output '11 original-input comparison checks passed (actual shared C# helper).'
+Write-Output '16 original-input comparison checks passed (actual shared C# helper).'

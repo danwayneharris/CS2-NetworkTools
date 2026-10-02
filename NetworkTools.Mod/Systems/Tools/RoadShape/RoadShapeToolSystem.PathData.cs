@@ -55,7 +55,8 @@ namespace NetworkTools.Systems.Tools.RoadShape {
         private void RefreshPathData() {
             InvalidatePreviewObservation();
             m_LastShapeJob.Complete();
-            if (m_SelectedNodes.Length < 2 || m_CurrentPathEdges.Length == 0) {
+            Dependency.Complete();
+            if (!CurrentPathCanBeGathered()) {
                 m_Log.Debug("RefreshPathData: Insufficient selection, skipping");
                 m_PathDataValid = false;
                 return;
@@ -101,8 +102,41 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             contextRef.Dispose();
 
             m_PathDataValid = true;
+            // Gather and comparison baseline are captured together on the main thread,
+            // after dependencies complete. Never label a cache from A with inputs B.
+            m_CachedOriginalInputs = CaptureOriginalProbeInputs();
+            m_PathDataValid = m_CachedOriginalInputs != null;
             m_Log.Debug($"RefreshPathData: Gathered {m_EdgeStates.Length} edges, TotalLength={m_ShapeTransformContext.TotalLength:F2}");
 
+        }
+
+        // Validate explicit selected path identities and adjacency, not only the
+        // incident closure: a deleted/replaced edge must never become a zero state.
+        private bool CurrentPathCanBeGathered() {
+            if (m_SelectedNodes.Length < 2 || m_CurrentPathEdges.Length == 0
+                || m_CurrentPathNodes.Length != m_CurrentPathEdges.Length + 1) return false;
+            foreach (var node in m_SelectedNodes) {
+                if (!ProbeLive(node) || !EntityManager.HasComponent<Node>(node)) return false;
+            }
+            foreach (var node in m_CurrentPathNodes) {
+                if (!ProbeLive(node) || !EntityManager.HasComponent<Node>(node)
+                    || !EntityManager.HasBuffer<ConnectedEdge>(node)) return false;
+            }
+            for (var i = 0; i < m_CurrentPathEdges.Length; i++) {
+                var entity = m_CurrentPathEdges[i];
+                if (!ProbeLive(entity) || !EntityManager.HasComponent<Edge>(entity)
+                    || !EntityManager.HasComponent<Curve>(entity)) return false;
+                var edge = EntityManager.GetComponentData<Edge>(entity);
+                var a = m_CurrentPathNodes[i];
+                var b = m_CurrentPathNodes[i + 1];
+                if (!((edge.m_Start == a && edge.m_End == b) || (edge.m_Start == b && edge.m_End == a))) return false;
+                var atStart = false;
+                var atEnd = false;
+                foreach (var incident in EntityManager.GetBuffer<ConnectedEdge>(a, true)) if (incident.m_Edge == entity) atStart = true;
+                foreach (var incident in EntityManager.GetBuffer<ConnectedEdge>(b, true)) if (incident.m_Edge == entity) atEnd = true;
+                if (!atStart || !atEnd) return false;
+            }
+            return true;
         }
 
         /// <summary>

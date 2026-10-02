@@ -1,6 +1,16 @@
 # Curve geometry module
 
-## Current integration: single-target experiment
+**Current status (October 1 audit sprint):** the single-target account below is
+historical. Active `CurveSmoothTransform` dispatches to `PlanarJunctionTarget`
+for supported Debug interior junctions, `PlanarSplitTarget` for ordinary split
+pins, and `PlanarPathTarget` otherwise. Ordinary split constraints apply even at
+zero strength. The Release junction envelope is restricted while its native
+validator is absent. See [current architecture](system-architecture.md#10-smooth-curve-current-infrastructure)
+and [audit disposition](audit-disposition.md) for implementation and verification
+status. These are planar targets, not combined vertical/terrain routing. Optional
+captured replay modes remain separate from the default offline suite.
+
+## Historical integration: single-target experiment
 
 Smooth Curve now calls `PlanarPathTarget.Fit`, shared with the external replay.
 It constructs one planar cubic from the selected outer curve endpoints and their

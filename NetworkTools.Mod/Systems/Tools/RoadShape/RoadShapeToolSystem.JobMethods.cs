@@ -25,6 +25,15 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                 return inputDeps;
             }
 
+            // A parameter edit may follow a network edit by another tool/system.
+            // Refresh both transform inputs and their comparison baseline before fit.
+            m_LastShapeJob.Complete();
+            inputDeps.Complete();
+            if (CachedOriginalStatus() != "matches") {
+                if (outputMode == ToolOutputMode.Apply) return inputDeps;
+                RefreshPathData();
+                if (!m_PathDataValid) return inputDeps;
+            }
             var config = BuildJobConfig();
             // Complete previous readers before collecting candidate-search inputs.
             m_LastShapeJob.Complete();
@@ -36,10 +45,10 @@ namespace NetworkTools.Systems.Tools.RoadShape {
 #endif
             // The result is consumed by the UI only after this job completes.
             m_LastShapeJob.Complete();
-#if IS_DEBUG
-            m_SubmittedPreviewRevision = m_PreviewInputRevision;
-            m_SubmittedOriginalInputs = outputMode == ToolOutputMode.Preview ? CaptureOriginalProbeInputs() : null;
-#endif
+            if (outputMode == ToolOutputMode.Preview) {
+                m_SubmittedPreviewRevision = m_PreviewInputRevision;
+                m_SubmittedOriginalInputs = new System.Collections.Generic.List<object>(m_CachedOriginalInputs);
+            }
             m_SmoothResult.Value = 0;
             m_Log.Debug($"SchedulePathTransformJob: Template={config.Template}, EaseIn={config.EaseInLength:F3}, EaseOut={config.EaseOutLength:F3}");
             m_Log.Debug($"  Path: Start={m_ShapeTransformContext.StartPosition}, End={m_ShapeTransformContext.EndPosition}, DeltaHeight={m_ShapeTransformContext.DeltaHeight:F2}");
@@ -109,6 +118,14 @@ namespace NetworkTools.Systems.Tools.RoadShape {
         }
 
         private JobHandle Apply(JobHandle inputDeps) {
+            // RequestApply and execution can occur in different updates. Recheck
+            // original inputs and candidate identity immediately before scheduling.
+            inputDeps.Complete();
+            if (!CandidateAllowsApply()) {
+                Phase = OperationPhase.Ready;
+                MarkDirty();
+                return Update(inputDeps);
+            }
             applyMode = ApplyMode.Clear;
             inputDeps = DestroyDefinitions(m_DefinitionQuery, m_Barrier, inputDeps);
             var jobHandle = SchedulePathTransformJob(inputDeps, ToolOutputMode.Apply);

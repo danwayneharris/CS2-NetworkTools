@@ -45,10 +45,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             [ReadOnly] public NativeList<Entity> SmoothSelectedNodes;
 #endif
 
-            /// <summary>
-            ///     Minimum height delta (in meters) to consider for intersection adjustments.
-            /// </summary>
-            private const float HeightDeltaThreshold = 0.001f;
+
 #if IS_DEBUG
             [BurstDiscard]
             private static void TraceSurfaceFit(bool applied) {
@@ -59,12 +56,26 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             /// <summary>
             ///     Minimum XZ delta squared (in meters²) to consider for intersection adjustments.
             /// </summary>
-            private const float XZDeltaSquaredThreshold = 0.000001f;
+
 
             public void Execute() {
                 if (EdgeStates.Length == 0) {
                     return;
                 }
+
+#if !IS_DEBUG
+                // Guard the candidate path too: unsupported Release selections must
+                // not display an apparently valid unchecked smoothing proposal.
+                if (Config.Template == ShapeTransformTemplate.CurveSmooth) {
+                    foreach (var state in NodeStates) {
+                        if (!ConnectedEdgeLookup.TryGetBuffer(state.Entity, out var incident)
+                            || incident.Length > 2) {
+                            SmoothResult.Value = -1;
+                            return;
+                        }
+                    }
+                }
+#endif
 
                 // 1. Copy cached data to mutable arrays for transform pipeline
                 var edges = new NativeArray<EdgeState>(EdgeStates.Length, Allocator.Temp);
@@ -186,22 +197,6 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             }
 
             /// <summary>
-            ///     Returns true if the node position has changed significantly in height or XZ.
-            /// </summary>
-            private bool HasNodePositionChanged(Entity nodeEntity, float3 newPosition) {
-                if (!NodeLookup.TryGetComponent(nodeEntity, out var node)) {
-                    return false;
-                }
-
-                if (math.abs(newPosition.y - node.m_Position.y) >= HeightDeltaThreshold) {
-                    return true;
-                }
-
-                var xzDelta = newPosition.xz - node.m_Position.xz;
-                return math.lengthsq(xzDelta) >= XZDeltaSquaredThreshold;
-            }
-
-            /// <summary>
             ///     Writes NT_Metadata (existing and new slope) to each selected edge entity.
             /// </summary>
             private void OutputMetadata(NativeArray<EdgeState> edges) {
@@ -229,7 +224,6 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             ///     Creates CreationDefinition + NetCourse entities for preview.
             /// </summary>
             private void OutputPreview(NativeArray<EdgeState> edges, NativeArray<NodeState> nodes) {
-                var processedNodes = new NativeHashSet<Entity>(nodes.Length, Allocator.Temp);
                 var nodePositionMap = new NativeHashMap<Entity, float3>(nodes.Length, Allocator.Temp);
                 for (var i = 0; i < nodes.Length; i++) {
                     nodePositionMap.TryAdd(nodes[i].Entity, nodes[i].Position);
@@ -250,97 +244,61 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                                       endNodePos);
                 }
 
-                // Output connected edges at each node
-                for (var i = 0; i < nodes.Length; i++)
-                {
-                    var node = nodes[i];
-
-                    if (processedNodes.Add(node.Entity))
-                    {
-                        var nodeDelta = node.Position - node.OriginalPosition;
-                        PreviewConnectedEdges(node.Entity, node.Position, nodeDelta, edges);
-                    }
+                // A side edge may touch two selected nodes. Emit it once, with both
+                // endpoint adjustments derived from the same original curve.
+                var incident = GatherIncidentEdits(edges, nodes);
+                for (var i = 0; i < incident.Length; i++) {
+                    var edit = incident[i];
+                    OutputPreviewEdge(edit.Entity, edit.Curve.m_Bezier, edit.Curve.m_Length,
+                        GetNetworkComposition(edit.Entity), edit.StartReference, edit.EndReference,
+                        edit.StartPosition, edit.EndPosition, false);
                 }
-
-                processedNodes.Dispose();
+                incident.Dispose();
                 nodePositionMap.Dispose();
             }
 
-            /// <summary>
-            ///     Creates preview entities for edges connected to a node that are not in the selection.
-            /// </summary>
-            private void PreviewConnectedEdges(
-                Entity                 nodeEntity,
-                float3                 nodePosition,
-                float3                 nodeDelta,
-                NativeArray<EdgeState> selectedEdges) {
-                //if (!HasNodePositionChanged(nodeEntity, nodePosition)) {
-                //    return;
-                //}
-
-                if (!ConnectedEdgeLookup.TryGetBuffer(nodeEntity, out var connectedEdges)) {
-                    return;
-                }
-
-                for (var i = 0; i < connectedEdges.Length; i++) {
-                    var connectedEdgeEntity = connectedEdges[i].m_Edge;
-
-                    if (IsEdgeInSelection(connectedEdgeEntity, selectedEdges)) {
-                        continue;
-                    }
-
-                    OutputPreviewConnectedEdge(connectedEdgeEntity, nodeEntity, nodePosition, nodeDelta);
-                }
+            private struct IncidentEdit {
+                public Entity Entity;
+                public Curve Curve;
+                public Entity StartReference, EndReference;
+                public float3 StartPosition, EndPosition;
+                public bool Changed;
             }
 
-            /// <summary>
-            ///     Creates a preview entity for a connected edge with adjusted control points at the intersection.
-            ///     Applies the node movement delta to the bezier endpoint and control point,
-            ///     preserving the original offset between node center and bezier endpoint.
-            /// </summary>
-            private void OutputPreviewConnectedEdge(Entity edgeEntity, Entity nodeEntity, float3 nodePosition, float3 nodeDelta) {
-                if (!EdgeLookup.TryGetComponent(edgeEntity, out var edge)) {
-                    return;
+            private NativeList<IncidentEdit> GatherIncidentEdits(NativeArray<EdgeState> selected, NativeArray<NodeState> nodes) {
+                var edits = new NativeList<IncidentEdit>(Allocator.Temp);
+                var positions = new NativeHashMap<Entity, float3>(nodes.Length, Allocator.Temp);
+                for (var i = 0; i < nodes.Length; i++) positions.TryAdd(nodes[i].Entity, nodes[i].Position);
+                for (var i = 0; i < nodes.Length; i++) {
+                    if (!ConnectedEdgeLookup.TryGetBuffer(nodes[i].Entity, out var incident)) continue;
+                    for (var j = 0; j < incident.Length; j++) {
+                        var entity = incident[j].m_Edge;
+                        if (IsEdgeInSelection(entity, selected)) continue;
+                        var seen = false;
+                        for (var k = 0; k < edits.Length; k++) if (edits[k].Entity == entity) { seen = true; break; }
+                        if (seen || !EdgeLookup.TryGetComponent(entity, out var edge)
+                            || !CurveLookup.TryGetComponent(entity, out var curve)
+                            || !NodeLookup.TryGetComponent(edge.m_Start, out var start)
+                            || !NodeLookup.TryGetComponent(edge.m_End, out var end)) continue;
+                        var hasStart = positions.TryGetValue(edge.m_Start, out var startPosition);
+                        var hasEnd = positions.TryGetValue(edge.m_End, out var endPosition);
+                        if (!hasStart) startPosition = start.m_Position;
+                        if (!hasEnd) endPosition = end.m_Position;
+                        var startDelta = startPosition - start.m_Position;
+                        var endDelta = endPosition - end.m_Position;
+                        curve.m_Bezier = IncidentCurveAdjustment.Translate(curve.m_Bezier, startDelta, endDelta);
+                        curve.m_Length = MathUtils.Length(curve.m_Bezier);
+                        edits.Add(new IncidentEdit {
+                            Entity = entity, Curve = curve,
+                            StartReference = hasStart ? Entity.Null : edge.m_Start,
+                            EndReference = hasEnd ? Entity.Null : edge.m_End,
+                            StartPosition = startPosition, EndPosition = endPosition,
+                            Changed = math.any(startDelta != float3.zero) || math.any(endDelta != float3.zero)
+                        });
+                    }
                 }
-
-                if (!CurveLookup.TryGetComponent(edgeEntity, out var curve)) {
-                    return;
-                }
-
-                var    bezier = curve.m_Bezier;
-                Entity startNodeRef;
-                Entity endNodeRef;
-                float3 startNodePos;
-                float3 endNodePos;
-
-                if (edge.m_Start == nodeEntity) {
-                    bezier.a     += nodeDelta;
-                    bezier.b     += nodeDelta;
-                    startNodeRef =  Entity.Null;
-                    endNodeRef   =  edge.m_End;
-                    startNodePos =  nodePosition;
-                    endNodePos   =  NodeLookup.TryGetComponent(edge.m_End, out var endNode) ? endNode.m_Position : bezier.d;
-                } else if (edge.m_End == nodeEntity) {
-                    bezier.d     += nodeDelta;
-                    bezier.c     += nodeDelta;
-                    startNodeRef =  edge.m_Start;
-                    endNodeRef   =  Entity.Null;
-                    startNodePos =  NodeLookup.TryGetComponent(edge.m_Start, out var startNode) ? startNode.m_Position : bezier.a;
-                    endNodePos   =  nodePosition;
-                } else {
-                    return;
-                }
-
-                var composition = GetNetworkComposition(edgeEntity);
-                OutputPreviewEdge(edgeEntity,
-                                  bezier,
-                                  MathUtils.Length(bezier),
-                                  composition,
-                                  startNodeRef,
-                                  endNodeRef,
-                                  startNodePos,
-                                  endNodePos, 
-                                  false);
+                positions.Dispose();
+                return edits;
             }
 
             /// <summary>
@@ -509,83 +467,24 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                                      });
                 }
 
-                // Update nodes and connected edges
+                // Preserve fields outside the position contract, including rotation.
                 for (var i = 0; i < nodes.Length; i++) {
-                    var node = nodes[i];
-
-                    if (processedNodes.Add(node.Entity)) {
-                        var nodeDelta = node.Position - node.OriginalPosition;
-                        UpdateNodeAndConnectedEdges(node.Entity, node.Position, nodeDelta, edges);
+                    var state = nodes[i];
+                    if (!processedNodes.Add(state.Entity)) continue;
+                    if (NodeLookup.TryGetComponent(state.Entity, out var original)) {
+                        ECB.SetComponent(state.Entity, IncidentCurveAdjustment.MoveNode(original, state.Position));
+                        MarkNodeUpdated(state.Entity);
                     }
                 }
-
+                var incident = GatherIncidentEdits(edges, nodes);
+                for (var i = 0; i < incident.Length; i++) {
+                    var edit = incident[i];
+                    if (!edit.Changed) continue;
+                    ECB.SetComponent(edit.Entity, edit.Curve);
+                    MarkUpdated(edit.Entity);
+                }
+                incident.Dispose();
                 processedNodes.Dispose();
-            }
-
-            /// <summary>
-            ///     Updates a node's position and adjusts connected edges not in the selection.
-            /// </summary>
-            private void UpdateNodeAndConnectedEdges(
-                Entity                 nodeEntity,
-                float3                 newPosition,
-                float3                 nodeDelta,
-                NativeArray<EdgeState> selectedEdges) {
-                // Update node position
-                ECB.SetComponent(nodeEntity, new Node { m_Position = newPosition });
-                MarkNodeUpdated(nodeEntity);
-
-                if (!HasNodePositionChanged(nodeEntity, newPosition)) {
-                    return;
-                }
-
-                if (!ConnectedEdgeLookup.TryGetBuffer(nodeEntity, out var connectedEdges)) {
-                    return;
-                }
-
-                for (var i = 0; i < connectedEdges.Length; i++) {
-                    var connectedEdgeEntity = connectedEdges[i].m_Edge;
-
-                    if (IsEdgeInSelection(connectedEdgeEntity, selectedEdges)) {
-                        continue;
-                    }
-
-                    AdjustConnectedEdgeAtNode(connectedEdgeEntity, nodeEntity, nodeDelta);
-                }
-            }
-
-            /// <summary>
-            ///     Adjusts a connected edge's bezier control points at the intersection node.
-            ///     Applies the node movement delta to preserve the original offset between
-            ///     node center and bezier endpoint.
-            /// </summary>
-            private void AdjustConnectedEdgeAtNode(Entity edgeEntity, Entity nodeEntity, float3 nodeDelta) {
-                if (!EdgeLookup.TryGetComponent(edgeEntity, out var edge)) {
-                    return;
-                }
-
-                if (!CurveLookup.TryGetComponent(edgeEntity, out var curve)) {
-                    return;
-                }
-
-                var bezier = curve.m_Bezier;
-
-                // Shift the endpoint and control point by the node's movement delta
-                if (edge.m_Start == nodeEntity) {
-                    bezier.a += nodeDelta;
-                    bezier.b += nodeDelta;
-                } else if (edge.m_End == nodeEntity) {
-                    bezier.d += nodeDelta;
-                    bezier.c += nodeDelta;
-                } else {
-                    return;
-                }
-
-                ECB.SetComponent(edgeEntity,
-                                 new Curve {
-                                     m_Bezier = bezier,
-                                     m_Length = MathUtils.Length(bezier)
-                                 });
-                MarkUpdated(edgeEntity);
             }
 
             /// <summary>

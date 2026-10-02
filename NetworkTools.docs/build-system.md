@@ -8,7 +8,16 @@ This guide is for contributors who know some programming but may be new to MSBui
 or CS2 modding. The descriptions follow this checkout's project files and installed
 toolchain.
 
-**Verification status (Sept 26, 2026):** Debug compilation, postprocessing, parameter
+**Current verification entry point (October 1 audit sprint):** use
+`bootstrap.ps1 -OfflineTest` or `scripts/run-offline-tests.py`. The aggregate runs
+actual executable/Python suites without deployment and reports missing/failed
+coverage explicitly. See the [command/side-effect matrix](../BOOTSTRAP.md#verification-commands-and-side-effects)
+and [audit disposition](audit-disposition.md) for evolving sprint status.
+Debug native evidence from the terrain/profile PR is recorded in the
+[review handoff](terrain-profile-review.md); this is not current Release/Burst
+certification. Experimental surface correction remains Debug-only.
+
+**Historical verification status (Sept 26, 2026):** Debug compilation, postprocessing, parameter
 generation, webpack, and local deployment pass. An in-game smoke test confirmed the
 modified tooltip appeared and Connect successfully joined two road segments.
 Automated test execution, Release/Burst builds, and other tool behavior remain
@@ -167,9 +176,13 @@ CS2's `DeployWIP` target replaces the local development mod directory and copies
 the C# outputs. UI generation/build and asset copying hook into this stage.
 Close the game before building and preserve any manual edits in that output folder.
 
-`bootstrap.ps1 -Test` builds and then invokes the existing test project with
-`--no-build --no-restore`. Test discovery and execution remain unverified in this
-fork as of Sept 26, 2026.
+`bootstrap.ps1 -Test` retains the legacy build/deploy plus legacy project path
+with `--no-build --no-restore`. That project has no current test source and is not
+the aggregate verification gate. `-OfflineTest` runs geometry, path-selection, parameters, codegen,
+compiled-production Slope, original-input comparison and Python suites in sequence.
+It records commands, revision/dirty state, tool context, logs and nonzero failures.
+These are offline contracts; no native ECS world or rendered behavior is exercised.
+Optional captured/trace replay modes remain separate and explicitly not run by default.
 
 Publishing uses separate targets and publishing configuration. The bootstrap calls
 `build`, not `publish`, and does not upload to Paradox Mods.

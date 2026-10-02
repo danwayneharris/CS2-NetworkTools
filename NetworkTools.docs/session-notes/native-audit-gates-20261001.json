@@ -1,0 +1,92 @@
+{
+  "sourceRuntimeRevision": "77f8c64",
+  "testHarnessRevision": "613e53c",
+  "pr": 14,
+  "geometryToleranceMeters": 0.05,
+  "twoEndedIncident": {
+    "case": "two-ended-incident-slope",
+    "geometryToleranceMeters": 0.05,
+    "sameTopology": true,
+    "previewApplyMaxError": 0.0,
+    "nodeHorizontalMaxError": 0.0,
+    "directedConnectionsPreserved": true,
+    "physicalLaneMappingPreserved": true,
+    "bothEndpointsMoved": true,
+    "incidentTranslationMaxError": 1.0000000088439265e-05,
+    "passed": true
+  },
+  "staleAuthoredInput": {
+    "allowedBefore": true,
+    "allowedWhileChanged": false,
+    "requestAccepted": false,
+    "allowedAfterRestoration": true,
+    "phaseAfter": "Ready",
+    "scope": "Single debugger suspension, control changed by 1 m and restored; not concurrent-mod race coverage."
+  },
+  "release": {
+    "dllSha256": "350753B3D50372ED127FD44292AB0271734BB515111F00FF2E05298BB5FD203B",
+    "burstEnabledObserved": true,
+    "nativeLibraryLoadedObserved": true,
+    "junctionRestriction": {
+      "allowed": false,
+      "reason": "NetworkTools.UI.Curve.ReleaseJunctionUnsupported",
+      "requestAccepted": false,
+      "baselineUnchanged": true
+    },
+    "curve": {
+      "case": "hill-road",
+      "mode": "curve",
+      "configuration": "Release",
+      "geometryToleranceMeters": 0.05,
+      "sameTopology": true,
+      "previewApplyMaxError": 0.0,
+      "unselectedCurveMaxError": 0.0,
+      "fixedEndpointMaxError": 0.0,
+      "preservedAxisMaxError": 0.0,
+      "directedConnectionsPreserved": true,
+      "physicalLaneMappingPreserved": true,
+      "afterFingerprint": "d2702940b8bc87677bf3f0dc781b5ab9ecd19af64cb9400cecd3a9bd1788a902",
+      "passed": true
+    },
+    "slope": {
+      "case": "crest-dip-road",
+      "mode": "slope",
+      "configuration": "Release",
+      "geometryToleranceMeters": 0.05,
+      "sameTopology": true,
+      "previewApplyMaxError": 0.0,
+      "unselectedCurveMaxError": 0.0,
+      "fixedEndpointMaxError": 0.0,
+      "preservedAxisMaxError": 0.0,
+      "directedConnectionsPreserved": true,
+      "physicalLaneMappingPreserved": true,
+      "afterFingerprint": "78c46c9a7c5c30f57dd9169d2fef97d7e13e71b90c497b9cace93eb087645aae",
+      "passed": true
+    },
+    "controlMethod": "Existing selection handlers and shared TryRequestApply via Unity debugger; independent generic bridge snapshots. Not ordinary UI interaction."
+  },
+  "final": {
+    "citySession": "f4923e4b5e584ffc9fa64ebdcf16b65a",
+    "save": "CitiesIIAgentBridge-review-surface-profile-settled-20261001-130556-32145a5a.cok",
+    "paused": true,
+    "baselineFingerprintMatches": true,
+    "fingerprint": "ddd31890adfa9fbe7cb861d45eb67938c9610c893a4ed677e059e41fc313e150",
+    "unsavedNetworkChanges": false,
+    "configuration": "Debug",
+    "dllSha256": "1E00617F0C7019F2FB692FBC420969B30C9683F298CE878691738AF24FD37B83"
+  },
+  "checkpoints": {
+    "twoEndedBaseline": "CitiesIIAgentBridge-two-ended-bowed-baseline-20261001-224818-2b97b10e.cok",
+    "twoEndedResult": "CitiesIIAgentBridge-regression-before-reload-20261001-225518-3cefa1d5.cok",
+    "releaseSlopeBefore": "CitiesIIAgentBridge-release-slope-before-20261001-230642-aab016f3.cok",
+    "releaseResults": "CitiesIIAgentBridge-regression-before-reload-20261001-230900-bf88977f.cok"
+  },
+  "remaining": [
+    "ordinary UI selection/reselection/rejected-input display",
+    "human visual review",
+    "vehicle traversal",
+    "live retained nonidentity Node rotation",
+    "adversarial concurrent entity replacement",
+    "broad Release qualification and large-city performance"
+  ]
+}

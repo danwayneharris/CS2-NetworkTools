@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings></PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../NetworkTools.Mod/Systems/Tools/Parameters/Parameter.cs" Link="Parameter.cs" />
+    <Compile Include="../NetworkTools.Mod/Systems/Tools/Parameters/ParameterBase.cs" Link="ParameterBase.cs" />
+    <Compile Include="../NetworkTools.Mod/Systems/Tools/Parameters/ParameterValueValidation.cs" Link="ParameterValueValidation.cs" />
+    <Compile Include="../NetworkTools.Mod/Systems/Tools/Parameters/ChangeOrigin.cs" Link="ChangeOrigin.cs" />
+    <Compile Include="../NetworkTools.Mod/Systems/Tools/Parameters/FloatParameter.cs" Link="FloatParameter.cs" />
+    <Compile Include="../NetworkTools.Mod/Systems/Tools/Parameters/Float3Parameter.cs" Link="Float3Parameter.cs" />
+    <Compile Include="../NetworkTools.Mod/Systems/Tools/Parameters/QuaternionParameter.cs" Link="QuaternionParameter.cs" />
+    <Compile Include="../NetworkTools.Mod/Systems/Tools/Parameters/IntParameter.cs" Link="IntParameter.cs" />
+    <Compile Include="../NetworkTools.Mod/Systems/Tools/Parameters/NumberType.cs" Link="NumberType.cs" />
+  </ItemGroup>
+</Project>

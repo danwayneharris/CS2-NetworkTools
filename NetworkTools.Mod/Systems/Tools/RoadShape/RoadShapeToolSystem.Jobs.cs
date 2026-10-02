@@ -53,6 +53,17 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             }
 #endif
 
+#if IS_DEBUG
+            private void ApplySurfaceCorrection(ref NativeArray<EdgeState> edges, ref NativeArray<NodeState> nodes) {
+                var surfaceFit = SlopeSurfaceProfileTransform.TryExecute(ref edges, ref nodes, in Config, in ConnectedEdgeLookup,
+                    in SurfaceGeometryLookup, in SurfaceNodeGeometryLookup, in PrefabRefLookup,
+                    in SurfacePrefabGeometryLookup, in SurfaceCompositionLookup, in SurfaceCompositionDataLookup,
+                    in CurveLookup, in EdgeLookup, in NodeLookup, in SurfaceReferences);
+                SurfaceCorrected.Value = surfaceFit ? 1 : 0;
+                TraceSurfaceFit(surfaceFit);
+            }
+#endif
+
             /// <summary>
             ///     Minimum XZ delta squared (in meters²) to consider for intersection adjustments.
             /// </summary>
@@ -94,12 +105,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                         var linearValid = SlopeLinearProfileTransform.Execute(ref edges, ref nodes, in Context, in Config);
 #if IS_DEBUG
                         if (linearValid) {
-                            var surfaceFit = SlopeSurfaceProfileTransform.TryExecute(ref edges, ref nodes, in Config, in ConnectedEdgeLookup,
-                                in SurfaceGeometryLookup, in SurfaceNodeGeometryLookup, in PrefabRefLookup,
-                                in SurfacePrefabGeometryLookup, in SurfaceCompositionLookup, in SurfaceCompositionDataLookup,
-                                in CurveLookup, in EdgeLookup, in NodeLookup, in SurfaceReferences);
-                            SurfaceCorrected.Value = surfaceFit ? 1 : 0;
-                            TraceSurfaceFit(surfaceFit);
+                            ApplySurfaceCorrection(ref edges, ref nodes);
                         }
 #endif
                         SmoothResult.Value = linearValid ? 1 : -1;

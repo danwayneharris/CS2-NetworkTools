@@ -33,3 +33,5 @@ First invocation incorrectly passed --source to dotnet run; the executable treat
 it as a replay filename and failed before assertions. Corrected invocation uses
 --no-restore after successful build/restore. Both logs are retained under artifacts.
 No game interaction since the preservation checkpoint; user is creating a baseline.
+
+Preparatory extraction: ordinary Constant Slope's surface-correction call now lives in one job helper, with identical arguments, result assignment and diagnostics. Non-deploying production compilation and Slope tests passed (96 assertions plus incident edits/rotation). No deployment or live mutation occurred. This creates the shared call site needed by later combined dispatch; current runtime behavior is unchanged.

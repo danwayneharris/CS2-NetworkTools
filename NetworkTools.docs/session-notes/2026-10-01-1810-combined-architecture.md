@@ -273,3 +273,18 @@ result was preserved before the next independent baseline reload in
 
 Updated combined-smoothing-options.md to separate current experimental behavior
 from its original generalized design proposals. Broader native testing remains.
+
+
+## Additional native comparisons and hill-road case
+
+Slope then Curve completed both stages and strict native preservation checks. The
+basic Slope prediction matched within 0.00003141m on its baseline input. Review save:
+`CitiesIIAgentBridge-combined-review-slope-curve-20261002-020830-77e18472.cok`.
+Unlike Curve then Slope, that order did not fail the extra basic-fit prediction.
+No visual quality inference is made from this difference.
+
+Hill-road combined strength 1, boundary flags false: native runner passed.
+Review checkpoint: `CitiesIIAgentBridge-combined-review-hill-road-20261002-021028-eef21927.cok`.
+Evidence: artifacts/combined-hill-road/summary.json and 0-combined/report.json.
+Game remains paused after the saved hill-road combined Apply; baseline untouched.
+Further matrix, repeatability and split/junction coverage remain.

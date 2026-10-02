@@ -52,3 +52,15 @@ execution/report discrimination, incomplete/version-changed capture, missing bou
 missing Curve field, missing Curve component, and deliberately incorrect output.
 Rejected execution uses handled stderr/exit 2; mismatches use report/exit 1.
 Reports in raw-edge-contract-01 explicitly retain the native mismatch count.
+
+Added same-runtime pure-method isolation: source-derived CalculateOffsets results
+feed identical arguments to generated-source and actual Game.dll CalculateCutOffset
+and Cut. Preview: 32 calls, 208 float32 fields exactly equal. Full native edge
+differential still has 71 mismatches. Therefore these sampled pure source/binary
+method adaptations do not explain the discrepancy; native intermediate offsets
+and curves are the next discriminating capture. This probe does not claim its
+upstream offsets equal the game's. World writes are forbidden during the probe;
+its reads are counted separately from the subsequent execution trace.
+
+Permanent probe also matches: 20 calls, 130 float32 fields, no probe world writes;
+52 full-edge mismatches persist. Build remains clean. No game mutation this turn.

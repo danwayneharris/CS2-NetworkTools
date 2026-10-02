@@ -111,6 +111,10 @@ static class RawEdgeCapture {
         var job = WorldStageTests.Bind<CalculateEdgeGeometryJob>(world);
         job.m_Entities = new(i => roots[i], (_, _) => throw new InvalidOperationException("Read-only identity"), roots.Length);
         job.m_TerrainBounds = (Colossal.Mathematics.Bounds3)Decode(typeof(Colossal.Mathematics.Bounds3), fields.GetProperty("m_TerrainBounds"), "m_TerrainBounds");
+        int writesBeforeProbe = world.Writes.Count;
+        var seamProbe = EdgeSeamProbe.Run(job, roots);
+        if (world.Writes.Count != writesBeforeProbe) throw new InvalidOperationException("Read-only seam probe wrote world state");
+        int probeReadCount = world.Reads.Count;
         for (int i = 0; i < roots.Length; i++) job.Execute(i);
         var after = Rows(exit); var differences = new List<object>(); int count = 0;
         foreach (var entity in roots) {
@@ -128,6 +132,7 @@ static class RawEdgeCapture {
             hardwareIntrinsicsOverride = Environment.GetEnvironmentVariable("DOTNET_EnableHWIntrinsic"),
             inputs = new { entryPath, sha256 = Hash(entryPath) }, expected = new { exitPath, sha256 = Hash(exitPath) },
             edges = roots.Length, comparedScalarFields = count, differences, excludedUnusedFields = exclusions,
+            seamProbe, probeReadCount,
             reads = world.Reads, writes = world.Writes
         }, new JsonSerializerOptions { WriteIndented = true }));
         Console.WriteLine($"Native edge differential: {roots.Length} edges, {count} fields, {differences.Count} mismatches");

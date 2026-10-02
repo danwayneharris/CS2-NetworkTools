@@ -10,7 +10,7 @@ reg=runpy.run_path(str(HERE/'live-regression.py'))
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--bridge',default='../bridge-terrain-profile');p.add_argument('--fixture',default=str(HERE/'fixtures/toy-terrain-v11.json'))
-    p.add_argument('--case',required=True);p.add_argument('--order',choices=['curve','slope','curve-slope','slope-curve'],required=True)
+    p.add_argument('--case',required=True);p.add_argument('--order',choices=['curve','slope','curve-slope','slope-curve','combined'],required=True)
     p.add_argument('--strength',type=float,default=1.0);p.add_argument('--mode',choices=['linear','ease','arch'],default='linear');p.add_argument('--reverse',action='store_true')
     p.add_argument('--smooth-start',action='store_true');p.add_argument('--smooth-end',action='store_true')
     p.add_argument('--repeat-slope',type=int,default=1);p.add_argument('--checkpoint-label');p.add_argument('--save-root',required=True);p.add_argument('--output',required=True);p.add_argument('--run',action='store_true')
@@ -44,8 +44,8 @@ def main():
         nodes,edges=r.network(fixture['region']);fingerprint=reg['fingerprint'](nodes,edges)
         if i==0 and fingerprint!=fixture['fingerprint']:raise ValueError('Original baseline geometry mismatch')
         destination=root/(str(i)+'-'+stage)
-        if stage=='curve':
-            modified={**fixture,'fingerprint':fingerprint,'cases':[{**case,'strengths':[a.strength]}]}
+        if stage in ('curve','combined'):
+            modified={**fixture,'fingerprint':fingerprint,'cases':[{**case,'strengths':[a.strength],'combined':stage=='combined','smoothStart':a.smooth_start,'smoothEnd':a.smooth_end}]}
             if a.reverse:modified['cases'][0].update(start=case['end'],end=case['start'])
             path=root/('curve-fixture-'+str(i)+'.json');path.write_text(json.dumps(modified,indent=2))
             execute('terrain-regression.py',['--bridge',str(bridge),'--fixture',str(path),'--case',a.case,'--save-root',a.save_root,'--output',str(destination),'--run'],str(i)+'-'+stage)

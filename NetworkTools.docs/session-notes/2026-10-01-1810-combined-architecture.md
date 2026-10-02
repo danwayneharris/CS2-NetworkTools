@@ -225,3 +225,30 @@ node elevation changes. The 5cm positional policy remains; NaN is never tolerate
 Production Slope/combined tests and TypeScript checking pass after these changes.
 Native first-Apply evidence above remains evidence for the earlier deployed build,
 not this new UI/provider increment.
+
+
+## Boundary deployment and terminal-ramp native verification
+
+Second full Debug build/postprocess/UI/deploy passed (32 warnings, no errors).
+Deployed DLL SHA256: `3FC26251F27544C9EDDF81B84758145A57414DBC19BE70BEA5AFE278F6466221`.
+Prior mainline changes preserved in
+`CitiesIIAgentBridge-regression-before-reload-20261002-015710-8136a541.cok`.
+Reloaded unchanged checksummed `bridge test - trumpet combined baseline`.
+
+Reversed traversal production transform test passes: now 28 assertions, including
+identical world geometry under reversed traversal. Existing sequence runner now
+supports combined mode using existing checkpoint/reload/native oracles. Compact
+terrain-region fixture describes existing cases inside the trumpet baseline.
+
+Terminal off-ramp combined strength 1, Smooth Start/End false: PASS. Five selected
+edges changed; no fixed-node drift or outside curve change; preview/permanent curve
+error 0m; directed lane transitions preserved at all five watched nodes.
+Checkpoint before Apply:
+`CitiesIIAgentBridge-regression-offramp-terminal-20261002-020316-aefb416a.cok`.
+Evidence: artifacts/combined-terminal-ramp-apply/report.json and terrain diagnostics.
+This establishes one native Apply, not repeatability, visual approval or traversal.
+Same-baseline sequential-tool comparisons follow.
+
+Automatic approval review rejected restoring the npm lockfile to HEAD because it
+could not establish task ownership of every change. Left it untouched and unstaged;
+review before final publication. No dependency changes intended in this feature.

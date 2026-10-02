@@ -27,6 +27,19 @@ internal static unsafe class CombinedProfileTransformTests {
         Near(e[1].Bezier.b.y,3.5,"outgoing handle follows new horizontal length");Near(nodes[1].Position.y,3,"pin height");
         var repeated=(EdgeState[])e.Clone();Check(Fit(e,nodes,original,out _),"deterministic repeat");
         Near(math.distance(e[0].Bezier.c,repeated[0].Bezier.c),0,"repeat control");
+        var reverseOriginal=new EdgeState[original.Length];var reverseEdges=new EdgeState[e.Length];
+        var reverseNodes=new NodeState[nodes.Length];
+        for(var i=0;i<e.Length;i++) {
+            reverseOriginal[i]=original[e.Length-1-i];reverseOriginal[i].IsForward=false;
+            reverseEdges[i]=e[e.Length-1-i];reverseEdges[i].IsForward=false;
+        }
+        for(var i=0;i<nodes.Length;i++) reverseNodes[i]=nodes[nodes.Length-1-i];
+        Check(Fit(reverseEdges,reverseNodes,reverseOriginal,out _),"reversed production fit");
+        for(var i=0;i<e.Length;i++) {
+            var c=reverseEdges[e.Length-1-i].Bezier;
+            Near(math.distance(e[i].Bezier.a,c.a),0,"reversed A");Near(math.distance(e[i].Bezier.b,c.b),0,"reversed B");
+            Near(math.distance(e[i].Bezier.c,c.c),0,"reversed C");Near(math.distance(e[i].Bezier.d,c.d),0,"reversed D");
+        }
         original[1].Bezier.b.y=8;
         var before=(EdgeState[])e.Clone();
         Check(!Fit(e,nodes,original,out var why)&&why==CombinedLinearProfileTransform.Failure.SplitGradeConflict,"conflicting pin rejected");

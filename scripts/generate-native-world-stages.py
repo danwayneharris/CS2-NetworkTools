@@ -28,9 +28,10 @@ def main():
     a = p.parse_args()
     expected = {'GeometrySystem.cs': '4D35623D0AAE5023348E218DC0078483FE1F100907911C2F4DE1FF259892C689',
                 'EdgeIterator.cs': 'D99AC105FF6127A13B015CE1369AB4B8DCCDF5A3F2C482A2D4A6CBB28E106B31'}
+    expected['NetCompositionHelpers.cs'] = '0D9ECED94C6ADBB0E6DF14F0A1715A5B78AC97F43EDCF393AAA2E7BC9951EDD3'
     sources = {}
     for name, checksum in expected.items():
-        path = a.decompile / 'src/Game/Game.Net' / name
+        path = a.decompile / ('src/Game/Game.Prefabs' if name == 'NetCompositionHelpers.cs' else 'src/Game/Game.Net') / name
         data = path.read_bytes()
         if hashlib.sha256(data).hexdigest().upper() != checksum:
             raise ValueError('Native source changed; review adaptations before regeneration: ' + name)
@@ -51,6 +52,7 @@ def main():
         edge = edge.replace('private struct', 'public struct', 1).replace(' : IJobParallelForDefer', '')
         pieces.append(edge)
     pieces.append(block(geometry, 'private struct EdgeData').replace('private struct', 'public struct', 1))
+    pieces.append('public static class ReplayCompositionHelpers {\n' + block(sources['NetCompositionHelpers.cs'], 'public static float2 CalculateRoundaboutSize(') + '\n}')
     text = '\n'.join(pieces)
     text = re.sub(r'\[(?:ReadOnly|WriteOnly|NativeDisableParallelForRestriction)\]\s*', '', text)
     replacements = {'EdgeIterator': 'ReplayEdgeIterator', 'ComponentLookup': 'ReplayLookup',
@@ -58,7 +60,8 @@ def main():
         'NativeArray': 'ReplayArray', 'EntityTypeHandle': 'ReplayEntityType',
         'ComponentTypeHandle': 'ReplayComponentType', 'NativeList': 'ReplayList',
         'NativeParallelHashMap': 'ReplayMap', 'Allocator.Temp': '0',
-        'TerrainHeightData': 'ReplayTerrainData', 'TerrainUtils.SampleHeight': 'ReplayTerrain.SampleHeight'}
+        'TerrainHeightData': 'ReplayTerrainData', 'TerrainUtils.SampleHeight': 'ReplayTerrain.SampleHeight',
+        'NetCompositionHelpers.CalculateRoundaboutSize': 'ReplayCompositionHelpers.CalculateRoundaboutSize'}
     for old, new in replacements.items():
         text = re.sub(r'\b' + re.escape(old) + r'\b', new, text)
     header = '''// Local generated source. Do not commit or distribute.
@@ -70,6 +73,8 @@ using Game.Tools;
 using Colossal.Mathematics;
 using Unity.Entities;
 using Unity.Mathematics;
+using OutsideConnection = Game.Net.OutsideConnection;
+using SubNet = Game.Net.SubNet;
 namespace NativeReplay;
 '''
     destination = a.project / 'obj/native-generated'
@@ -80,6 +85,8 @@ namespace NativeReplay;
         adaptations=['Rename storage/lookup types', 'Single explicit replay chunk entry point',
                      'Remove job scheduling/read-only attributes and interface forwarding',
                      'Exclude unused EdgeIterator.AddSorted', 'Replace temporary allocator argument with inert marker',
+                     'Alias OutsideConnection/SubNet to original Game.Net namespace resolution',
+                     'Source-adapt CalculateRoundaboutSize buffer helper; other game value helpers remain binary calls',
                      'Terrain sampling explicitly throws: terrain-dependent finishing is unsupported'],
         storageSemantics='See ReplayStorage.cs; no ECS scheduler or native allocation reproduced',
         generatedSha256=hashlib.sha256(output.read_bytes()).hexdigest().upper())

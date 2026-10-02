@@ -46,12 +46,13 @@ def main():
         original = original.replace('private struct', 'public struct', 1).replace(' : IJobChunk', '')
         original = original.replace('in ArchetypeChunk chunk, int unfilteredChunkIndex, bool useEnabledMask, in v128 chunkEnabledMask', 'in ReplayChunk chunk')
         pieces.append(original)
-    finish = block(geometry, 'private struct FinishEdgeGeometryJob')
-    finish = finish.replace('private struct', 'public struct', 1).replace(' : IJobParallelForDefer', '')
-    pieces.append(finish)
+    for name in ('CalculateEdgeGeometryJob', 'FinishEdgeGeometryJob'):
+        edge = block(geometry, 'private struct ' + name)
+        edge = edge.replace('private struct', 'public struct', 1).replace(' : IJobParallelForDefer', '')
+        pieces.append(edge)
     pieces.append(block(geometry, 'private struct EdgeData').replace('private struct', 'public struct', 1))
     text = '\n'.join(pieces)
-    text = re.sub(r'\[(?:ReadOnly|NativeDisableParallelForRestriction)\]\s*', '', text)
+    text = re.sub(r'\[(?:ReadOnly|WriteOnly|NativeDisableParallelForRestriction)\]\s*', '', text)
     replacements = {'EdgeIterator': 'ReplayEdgeIterator', 'ComponentLookup': 'ReplayLookup',
         'BufferLookup': 'ReplayBufferLookup', 'DynamicBuffer': 'ReplayBuffer',
         'NativeArray': 'ReplayArray', 'EntityTypeHandle': 'ReplayEntityType',
@@ -75,7 +76,7 @@ namespace NativeReplay;
     destination.mkdir(parents=True, exist_ok=True)
     output = destination / 'WorldStages.g.cs'
     output.write_text(header + text, encoding='utf-8')
-    ledger = dict(sourceHashes=expected, stages=['InitializeNodeGeometryJob', 'FlattenNodeGeometryJob', 'FinishEdgeGeometryJob'],
+    ledger = dict(sourceHashes=expected, stages=['InitializeNodeGeometryJob', 'CalculateEdgeGeometryJob', 'FlattenNodeGeometryJob', 'FinishEdgeGeometryJob'],
         adaptations=['Rename storage/lookup types', 'Single explicit replay chunk entry point',
                      'Remove job scheduling/read-only attributes and interface forwarding',
                      'Exclude unused EdgeIterator.AddSorted', 'Replace temporary allocator argument with inert marker',

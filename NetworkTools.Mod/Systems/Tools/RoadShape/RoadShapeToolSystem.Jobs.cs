@@ -207,25 +207,6 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             }
 
             /// <summary>
-            ///     Gets the network composition from an entity's Upgraded component.
-            /// </summary>
-            private NetworkComposition GetNetworkComposition(Entity entity) {
-                if (!UpgradedLookup.TryGetComponent(entity, out var upgraded)) {
-                    return NetworkComposition.None;
-                }
-
-                if ((upgraded.m_Flags.m_General & CompositionFlags.General.Elevated) != 0) {
-                    return NetworkComposition.Elevated;
-                }
-
-                if ((upgraded.m_Flags.m_General & CompositionFlags.General.Tunnel) != 0) {
-                    return NetworkComposition.Tunnel;
-                }
-
-                return NetworkComposition.Ground;
-            }
-
-            /// <summary>
             ///     Writes NT_Metadata (existing and new slope) to each selected edge entity.
             /// </summary>
             private void OutputMetadata(NativeArray<EdgeState> edges) {
@@ -266,7 +247,6 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                     OutputPreviewEdge(state.EdgeEntity,
                                       state.Bezier,
                                       MathUtils.Length(state.Bezier),
-                                      state.NetworkComposition,
                                       Entity.Null,
                                       Entity.Null,
                                       startNodePos,
@@ -279,7 +259,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                 for (var i = 0; i < incident.Length; i++) {
                     var edit = incident[i];
                     OutputPreviewEdge(edit.Entity, edit.Curve.m_Bezier, edit.Curve.m_Length,
-                        GetNetworkComposition(edit.Entity), edit.StartReference, edit.EndReference,
+                        edit.StartReference, edit.EndReference,
                         edit.StartPosition, edit.EndPosition, false);
                 }
                 incident.Dispose();
@@ -337,7 +317,6 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                 Entity             edgeEntity,
                 Bezier4x3          bezier,
                 float              length,
-                NetworkComposition composition,
                 Entity             startNodeEntity,
                 Entity             endNodeEntity,
                 float3             startNodePosition,
@@ -365,22 +344,6 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                 ECB.AddComponent(definitionEntity, creationDefinition);
                 ECB.AddComponent<Updated>(definitionEntity);
 
-                var startNodeFlags = GetFlagsFromComposition(composition);
-                var endNodeFlags   = GetFlagsFromComposition(composition);
-
-                // FreeHeight tells the game to respect our custom heights
-                startNodeFlags |= CoursePosFlags.FreeHeight | CoursePosFlags.IsGrid | CoursePosFlags.IsRight;
-                endNodeFlags   |= CoursePosFlags.FreeHeight | CoursePosFlags.IsGrid | CoursePosFlags.IsRight;
-
-                // Add flags to force connections
-                if (startNodeEntity != Entity.Null && endNodeEntity == Entity.Null) {
-                    startNodeFlags |= CoursePosFlags.IsFirst | CoursePosFlags.IsGrid;
-                    endNodeFlags |= CoursePosFlags.IsLast | CoursePosFlags.IsGrid;
-                } else if (endNodeEntity != Entity.Null && startNodeEntity == Entity.Null) {
-                    endNodeFlags |= CoursePosFlags.IsFirst | CoursePosFlags.IsGrid;
-                    startNodeFlags |= CoursePosFlags.IsLast | CoursePosFlags.IsGrid;
-                }
-
                 // Initialize elevations from what the edge and its nodes store: Apply keeps those,
                 // so the preview gets the same ground/elevated/tunnel pieces as the result
                 var startElevation = float2.zero;
@@ -401,83 +364,10 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                     courseElevation = atEdge.m_Elevation;
                 }
 
-                var netCourse = new NetCourse {
-                    m_Curve      = bezier,
-                    m_Length     = length,
-                    m_FixedIndex = -1,
-                    m_Elevation  = courseElevation,
-                    m_StartPosition = new CoursePos {
-                        m_Entity        = startNodeEntity,
-                        m_Position      = startNodePosition,
-                        m_Rotation      = NetUtils.GetNodeRotation(MathUtils.StartTangent(bezier)),
-                        m_CourseDelta   = 0,
-                        m_Elevation     = startElevation,
-                        m_Flags         = startNodeFlags,
-                        m_ParentMesh    = -1,
-                        m_SplitPosition = 0
-                    },
-                    m_EndPosition = new CoursePos {
-                        m_Entity        = endNodeEntity,
-                        m_Position      = endNodePosition,
-                        m_Rotation      = NetUtils.GetNodeRotation(MathUtils.EndTangent(bezier)),
-                        m_CourseDelta   = 1,
-                        m_Elevation     = endElevation,
-                        m_Flags         = endNodeFlags,
-                        m_ParentMesh    = -1,
-                        m_SplitPosition = 0
-                    }
-                };
-
-                // Apply composition constraints (ground/tunnel/elevated)
-                ApplyCompositionToNetCourse(ref netCourse, composition);
-
+                var netCourse = RoadShapePreviewCourse.Create(bezier, length,
+                    startNodeEntity, endNodeEntity, startNodePosition, endNodePosition,
+                    courseElevation, startElevation, endElevation);
                 ECB.AddComponent(definitionEntity, netCourse);
-            }
-
-            /// <summary>
-            ///     Applies network composition constraints to a NetCourse.
-            ///     Ground: forces elevation to 0.
-            ///     Tunnel: ensures elevation is at most the tunnel threshold.
-            ///     Elevated: ensures elevation is at least the elevated threshold.
-            /// </summary>
-            private static void ApplyCompositionToNetCourse(ref NetCourse netCourse, NetworkComposition composition) {
-                switch (composition) {
-                    case NetworkComposition.Ground:
-                        netCourse.m_Elevation = SlopeUtils.ForceGroundElevation;
-                        netCourse.m_StartPosition.m_Elevation = SlopeUtils.ForceGroundElevation;
-                        netCourse.m_EndPosition.m_Elevation = SlopeUtils.ForceGroundElevation;
-                        break;
-
-                    case NetworkComposition.Tunnel:
-                        netCourse.m_Elevation.x = math.min(netCourse.m_Elevation.x, SlopeUtils.TunnelThreshold.x);
-                        netCourse.m_Elevation.y = math.min(netCourse.m_Elevation.y, SlopeUtils.TunnelThreshold.y);
-                        netCourse.m_StartPosition.m_Elevation.x = math.min(netCourse.m_StartPosition.m_Elevation.x, SlopeUtils.TunnelThreshold.x);
-                        netCourse.m_StartPosition.m_Elevation.y = math.min(netCourse.m_StartPosition.m_Elevation.y, SlopeUtils.TunnelThreshold.y);
-                        netCourse.m_EndPosition.m_Elevation.x = math.min(netCourse.m_EndPosition.m_Elevation.x, SlopeUtils.TunnelThreshold.x);
-                        netCourse.m_EndPosition.m_Elevation.y = math.min(netCourse.m_EndPosition.m_Elevation.y, SlopeUtils.TunnelThreshold.y);
-                        break;
-
-                    case NetworkComposition.Elevated:
-                        netCourse.m_Elevation.x = math.max(netCourse.m_Elevation.x, SlopeUtils.ElevatedThreshold.x);
-                        netCourse.m_Elevation.y = math.max(netCourse.m_Elevation.y, SlopeUtils.ElevatedThreshold.y);
-                        netCourse.m_StartPosition.m_Elevation.x = math.max(netCourse.m_StartPosition.m_Elevation.x, SlopeUtils.ElevatedThreshold.x);
-                        netCourse.m_StartPosition.m_Elevation.y = math.max(netCourse.m_StartPosition.m_Elevation.y, SlopeUtils.ElevatedThreshold.y);
-                        netCourse.m_EndPosition.m_Elevation.x = math.max(netCourse.m_EndPosition.m_Elevation.x, SlopeUtils.ElevatedThreshold.x);
-                        netCourse.m_EndPosition.m_Elevation.y = math.max(netCourse.m_EndPosition.m_Elevation.y, SlopeUtils.ElevatedThreshold.y);
-                        break;
-                }
-            }
-
-            /// <summary>
-            ///     Gets the flags for a network composition.
-            /// </summary>
-            private static CoursePosFlags GetFlagsFromComposition(NetworkComposition composition) {
-                return composition switch {
-                    NetworkComposition.Elevated => CoursePosFlags.ForceElevatedEdge | CoursePosFlags.ForceElevatedNode,
-                    NetworkComposition.Tunnel   => 0,
-                    NetworkComposition.Ground   => 0,
-                    _                           => 0
-                };
             }
 
             /// <summary>

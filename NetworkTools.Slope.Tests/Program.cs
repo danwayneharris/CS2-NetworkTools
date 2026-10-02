@@ -17,6 +17,7 @@ static class Program {
     static float Grade(float3 tangent) => tangent.y / math.length(tangent.xz);
     static void Main(string[] args) {
         if (args.Length == 4 && args[0] == "--replay") { CapturedSlopeReplay.Run(args[1],args[2],args[3]); return; }
+        PreviewStructureTests.Run();
         IncidentEditTests.Run();
         CombinedProfileInputTests.Run();
         CombinedProfileTransformTests.Run();

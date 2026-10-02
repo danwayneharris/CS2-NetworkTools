@@ -354,3 +354,10 @@ to the normal geometry suite; all existing geometry tests pass. The legacy defau
 is retained, and only combined mode requests stable stationing through split and
 junction sections. No deployment/native claim for this change yet. Vertical drift
 still requires independent investigation after the horizontal confound is removed.
+
+Stable-station candidate full Debug build/postprocess/UI/deploy passed (32 warnings,
+0 errors). DLL SHA256 AF64F86FC7161A26810313FB8B6FCD6EE43EAB606DD9DC08200CA9E6D6C0EF1D.
+Prior paused session checkpointed as
+CitiesIIAgentBridge-regression-before-reload-20261002-022342-b015b182.cok and closed
+gracefully. Visible baseline launch requested, PID 43180; native verification of
+the new build is pending. No repeatability claim from offline success alone.

@@ -398,3 +398,10 @@ directed/physical lane preservation and preview/Apply agreement. Review checkpoi
 Updated README and architecture/options docs to describe current implementation
 rather than future-only combined functionality. Prepared compatible-split run is
 in progress. Human visual review and vehicle traversal are still separate.
+
+Compatible-split first attempt stopped before checkpoint/selection/Apply because
+its newly generated fixture hash was lowercase while live-regression compares
+against uppercase. Lifecycle verification accepted the same package case-insensitively,
+and region fingerprint verification passed after load. Corrected fixture formatting,
+then reused the unchanged loaded baseline with all original gates. This was a test
+fixture error, not a missing save or geometry failure; retry results pending.

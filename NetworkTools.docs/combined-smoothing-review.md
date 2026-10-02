@@ -163,3 +163,9 @@ Two subsequent native Applies from the explicitly saved combined result passed a
 checks, with zero node drift and 0.12mm maximum control drift. Preferred follow-up
 review checkpoint: `CitiesIIAgentBridge-junction-height-corrected-review-20261002-042335-70f78312`.
 The game was left paused with that result selected at strength 1.0, combined enabled.
+
+A subsequent independent Ease-In-Out Slope investigation found exact authored-curve
+preview/Apply agreement but a substantial generated roadside-surface discrepancy
+(up to 2.28m in corresponding control-point Y) and 0.414m sampled terrain change.
+Prior Curve equality must not be read as proof of rendered-surface equality. See
+[bounded surface investigation](session-notes/2026-10-01-2159-surface-preview-observations.md).

@@ -427,8 +427,35 @@ retained. Native-array/hash-map lifetime is fenced by the existing shape job.
 This is bounded numerical settling, not an exact mathematical fixed-point proof.
 Native verification and remaining limitations are recorded in the
 [surface-repeatability note](session-notes/2026-10-01-0552-profile-repeatability.md).
-Future combined Curve/Slope behavior is a separate
-[design proposal](combined-smoothing-options.md), not current functionality.
+### Combined Curve + Constant Slope experiment (Debug only)
+
+Smooth Curve exposes an opt-in Constant Slope option. The horizontal transform
+uses stable chord-projection stationing in combined mode, then
+`CombinedLinearProfileTransform` fits Y against the resulting XZ lengths and the
+immutable original offsets. `SectionedVerticalProfile` separates spans at fixed
+anchors. Ordinary Curve keeps its existing stationing/elevation behavior.
+
+Outer nodes, explicit splits and interior junction centers are XYZ-fixed. Free
+selected interior Y may change. An ordinary split requires compatible original
+vertical grades; a conflicting split rejects with a specific reason. Junction
+attachments retain their individual constraints, not a fabricated shared tangent.
+The restricted native surface correction remains available for eligible terminal
+ground ramps, without changing unselected authored curves.
+
+The surface observer primes native references for the horizontal candidate, then
+converges its vertical correction before junction validation. Horizontal search
+changes invalidate those references. Input revision, submission, original-input
+freshness and both validators must agree before the shared UI/provider Apply gate
+accepts. Surface retries and total combined time are bounded; exhaustion rejects.
+No sequential pair of Applies implements this feature.
+
+Initial native cases and the captured terminal-ramp three-Apply repeat now pass,
+but broader testing and human review remain in progress. See the
+[architecture checkpoint](combined-smoothing-architecture.md),
+[current options and limitations](combined-smoothing-options.md), and
+[session evidence](session-notes/2026-10-01-1810-combined-architecture.md).
+General terrain routing, perfect generated slopes, Release promotion and Connect
+reuse remain outside this prototype.
 
 ### RoadShape preview topology (October 1)
 

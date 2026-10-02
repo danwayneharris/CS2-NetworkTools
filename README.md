@@ -15,8 +15,9 @@ Current guides: [automation/provider](NetworkTools.docs/automation-provider.md),
 [terrain/profile review](NetworkTools.docs/terrain-profile-review.md), and
 [verification confidence](NetworkTools.docs/offline-validation-confidence.md).
 The brainstorming roadmap below mixes delivered prototypes and future work:
-simple smoothing and substantial instrumentation exist; combined smoothing and
-terrain/obstacle routing remain future features.
+simple smoothing and substantial instrumentation exist. This branch experiments
+with Debug-only combined Curve + Constant Slope; terrain/obstacle routing remains
+future work. See [combined behavior and limitations](NetworkTools.docs/combined-smoothing-options.md).
 
 Current experimental checkpoint (October 1, 2026): Smooth Curve, ordinary split
 points and Debug-only interior-junction smoothing have native preview/Apply

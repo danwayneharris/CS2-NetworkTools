@@ -19,9 +19,11 @@ and terrain/obstacle routing are not promised.
 
 See [architecture checkpoint](combined-smoothing-architecture.md) for ownership,
 validation and constraints, and [session evidence](session-notes/2026-10-01-1810-combined-architecture.md)
-for the evolving test results. Initial mainline and terminal-ramp native Applies
-passed; repeatability, broader fixture coverage and human review are still pending.
-These initial passes are not general feature certification.
+for the evolving test results. Native mainline, terminal-ramp, hill/crest-dip, rail
+and interior-highway cases have passed on their recorded builds. The captured ramp
+now passes three repeated Applies after a combined-only stationing correction.
+Split coverage, final regression reconciliation and human review remain in progress;
+these cases are not general feature certification.
 
 ## Original design discussion and future options
 

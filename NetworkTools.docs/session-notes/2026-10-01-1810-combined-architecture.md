@@ -385,3 +385,16 @@ Prepared a separate compatible-split fixture from the SAVED crest/dip result, wi
 zero grades on both sides of the chosen split. It is explicitly a prepared result,
 not mislabeled as unsmoothed. This exercises the supported pin contract; unsmoothed
 terrain paths with conflicting grades must still reject rather than invent policy.
+
+
+## Rail and interior-highway validation
+
+Stable-station build passed rail-high-branch and highway-mainline combined cases.
+Both strict runners verified fixed positions, unselected geometry, topology,
+directed/physical lane preservation and preview/Apply agreement. Review checkpoints:
+- CitiesIIAgentBridge-combined-review-rail-20261002-022904-eb9cb8f5.cok
+- CitiesIIAgentBridge-combined-review-interior-highway-20261002-023127-7a36db49.cok
+
+Updated README and architecture/options docs to describe current implementation
+rather than future-only combined functionality. Prepared compatible-split run is
+in progress. Human visual review and vehicle traversal are still separate.

@@ -56,6 +56,15 @@ internal static unsafe class CombinedProfileTransformTests {
         Near(nodes[1].Position.z,0,"junction Z remains fixed");
         Near(e[0].Bezier.c.y,2.5,"junction incoming old grade released");
         Near(e[1].Bezier.b.y,3.5,"junction outgoing old grade released");
+        var movedJunction=(EdgeState[])e.Clone();
+        var movedNodes=(NodeState[])nodes.Clone();
+        for(var i=0;i<movedNodes.Length;i++) movedNodes[i].OriginalPosition=movedNodes[i].Position;
+        Check(Fit(e,movedNodes,movedJunction,out _),"junction repeat from applied authored state");
+        Near(movedNodes[1].Position.y,3,"junction does not drift on repeat");
+        for(var i=0;i<e.Length;i++) {
+            Near(math.distance(e[i].Bezier.b,movedJunction[i].Bezier.b),0,"junction repeat B");
+            Near(math.distance(e[i].Bezier.c,movedJunction[i].Bezier.c),0,"junction repeat C");
+        }
         nodes[1].OriginalPosition.y=3;nodes[1].Position.y=3;
         original[0].Bezier.d.y=3;original[1].Bezier.a.y=3;
         nodes[1].SmoothJunction=false;

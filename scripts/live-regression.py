@@ -99,6 +99,7 @@ def check_node_constraints(old_nodes, new_nodes, selected_nodes, anchors, combin
 
 def check_incident_curves(old_nodes, new_nodes, old_edges, new_edges, selected_edges, combined):
     """Independent endpoint-pair translation oracle; never accept arbitrary branch edits."""
+    selected_nodes={identity(old_edges[key][end]) for key in selected_edges for end in ('startNode','endNode')}
     maximum=0.0
     for key,edge in old_edges.items():
         if key in selected_edges: continue
@@ -108,8 +109,9 @@ def check_incident_curves(old_nodes, new_nodes, old_edges, new_edges, selected_e
             expected=dict(a)
             if combined:
                 node=identity(edge['startNode' if i<2 else 'endNode'])
-                if node not in old_nodes or node not in new_nodes: raise AssertionError('Missing incident endpoint')
-                expected['y']+=new_nodes[node]['position']['y']-old_nodes[node]['position']['y']
+                if node in selected_nodes:
+                    if node not in old_nodes or node not in new_nodes: raise AssertionError('Missing affected endpoint')
+                    expected['y']+=new_nodes[node]['position']['y']-old_nodes[node]['position']['y']
             if not all(math.isfinite(b[k]) for k in ('x','y','z')): raise AssertionError('Nonfinite incident curve')
             error=math.dist(position(expected),position(b)); maximum=max(maximum,error)
             if error>GEOMETRY_TOLERANCE_METERS: raise AssertionError('Unexpected incident curve edit')

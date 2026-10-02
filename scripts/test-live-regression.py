@@ -82,14 +82,23 @@ class IncidentCurveTests(unittest.TestCase):
         nodes={(i,1):dict(position=dict(x=i,y=0,z=0)) for i in (1,2)}
         moved=copy.deepcopy(nodes);moved[(1,1)]['position']['y']=2;moved[(2,1)]['position']['y']=-3
         edges={(9,1):dict(startNode=dict(index=1,version=1),endNode=dict(index=2,version=1),curve=[dict(x=i,y=0,z=0) for i in range(4)])}
+        edges[(10,1)]=dict(startNode=dict(index=1,version=1),endNode=dict(index=2,version=1),curve=copy.deepcopy(edges[(9,1)]['curve']))
+        selected={(10,1)}
         result=copy.deepcopy(edges)
         for i,p in enumerate(result[(9,1)]['curve']): p['y']=2 if i<2 else -3
-        self.assertEqual(0,runner.check_incident_curves(nodes,moved,edges,result,set(),True))
-        with self.assertRaises(AssertionError): runner.check_incident_curves(nodes,moved,edges,result,set(),False)
+        self.assertEqual(0,runner.check_incident_curves(nodes,moved,edges,result,selected,True))
+        with self.assertRaises(AssertionError): runner.check_incident_curves(nodes,moved,edges,result,selected,False)
         for axis,value in [('x',1),('y',1),('z',1),('y',float('nan'))]:
             broken=copy.deepcopy(result);broken[(9,1)]['curve'][1][axis]+=value
-            with self.assertRaises(AssertionError): runner.check_incident_curves(nodes,moved,edges,broken,set(),True)
-        with self.assertRaises(AssertionError): runner.check_incident_curves(nodes,moved,edges,edges,set(),True)
+            with self.assertRaises(AssertionError): runner.check_incident_curves(nodes,moved,edges,broken,selected,True)
+        with self.assertRaises(AssertionError): runner.check_incident_curves(nodes,moved,edges,edges,selected,True)
+
+    def test_remote_unaffected_endpoint_needs_no_height_sample(self):
+        edge=dict(startNode=dict(index=90,version=1),endNode=dict(index=91,version=1),curve=[dict(x=i,y=0,z=0) for i in range(4)])
+        edges={(9,1):edge}
+        self.assertEqual(0,runner.check_incident_curves({}, {}, edges, edges, set(), True))
+        bad=copy.deepcopy(edges);bad[(9,1)]['curve'][1]['y']=1
+        with self.assertRaises(AssertionError):runner.check_incident_curves({}, {}, edges, bad, set(), True)
 
 class TransportTests(unittest.TestCase):
     def test_session_is_pinned_and_error_retains_request_id(self):

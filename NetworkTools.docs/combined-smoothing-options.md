@@ -8,12 +8,12 @@ and uses one preview/Apply; it does not automate two sequential Apply operations
 Independent tools and their defaults remain available. Release promotion is not
 part of this sprint.
 
-Outer nodes, explicit split points and interior junction centers stay fixed in
-XYZ. Free selected interior elevations may change. Ordinary split points must
-have compatible original vertical grades; conflicting grades reject the candidate
-rather than inventing a new transition policy. Interior junction attachments use
-the existing individual boundary constraints, with native connectivity validation.
-Unselected authored geometry remains fixed. Supported terminal ground ramps may
+Outer nodes and explicit split points stay fixed in XYZ. Interior junctions stay
+fixed in XZ but participate in the combined vertical fit, without preserving their
+old selected-path grades. Incident side-road endpoints and adjacent handles follow
+junction elevation changes; unrelated controls remain unchanged. Ordinary split
+points require compatible original vertical grades. Native directed connection
+validation remains mandatory. Supported terminal ground ramps may
 use the existing experimental native surface correction; perfect rendered slopes
 and terrain/obstacle routing are not promised.
 

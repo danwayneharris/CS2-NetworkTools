@@ -146,3 +146,20 @@ The final-build ramp checkpoint above is the preferred first visual review.
 Remaining decisions: generalized pin-grade transitions, junction-as-user-split
 semantics, neighbor-edit tolerances and broader supported surface envelopes remain
 future work. Do not infer terrain routing or obstacle avoidance from this prototype.
+
+## Interior-junction elevation follow-up
+
+The current correction releases interior junction Y and selected-path grades while
+retaining XZ. Runtime commit 00c789a; deployed Debug SHA256
+`6EC3B8AAF922CC332898ED89ADB1762CAAF0DB2BB91057AEE2E9885D0383F360`.
+All seven offline suites pass. The first captured native Apply passed geometry and
+incident-edit checks but failed a directed lane assertion at an ordinary degree-two
+join. A curve-only control from the identical baseline reproduced that exact lane
+change and another one: the issue is not unique to the new vertical correction.
+This remains a recorded limitation, not an all-green native run. See
+[follow-up evidence](session-notes/2026-10-01-2110-combined-junction-elevation.md).
+
+Two subsequent native Applies from the explicitly saved combined result passed all
+checks, with zero node drift and 0.12mm maximum control drift. Preferred follow-up
+review checkpoint: `CitiesIIAgentBridge-junction-height-corrected-review-20261002-042335-70f78312`.
+The game was left paused with that result selected at strength 1.0, combined enabled.

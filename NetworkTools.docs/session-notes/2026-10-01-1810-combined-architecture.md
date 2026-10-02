@@ -252,3 +252,24 @@ Same-baseline sequential-tool comparisons follow.
 Automatic approval review rejected restoring the npm lockfile to HEAD because it
 could not establish task ownership of every change. Left it untouched and unstaged;
 review before final publication. No dependency changes intended in this feature.
+
+
+## Sequential comparison: an offline prediction mismatch remains visible
+
+Curve then Slope on the same terminal-ramp baseline completed both native Applies.
+Slope report and independent audit confirm identical preview/permanent geometry,
+unchanged topology and fixed endpoints, and preserved directed/physical lanes.
+The additional simple offset-fit prediction failed: 5.5731243m maximum control
+error (`artifacts/combined-compare-curve-slope/1-slope/profile-analysis.json`).
+The sequence stopped; it is NOT recorded as an all-checks-passed comparison.
+
+Source shows SlopeSurfaceProfileTransform adjusts the ordinary profile after the
+basic offset fit. summarize-profile-experiment.py's independent fit does not model
+that correction. Native provider evidence reports surfaceAccepted, which alone does
+not prove correction was applied. Further provenance/model qualification is needed;
+do not simply increase tolerance or discard the failed prediction. The applied toy
+result was preserved before the next independent baseline reload in
+`CitiesIIAgentBridge-regression-before-reload-20261002-020654-46abc52a.cok`.
+
+Updated combined-smoothing-options.md to separate current experimental behavior
+from its original generalized design proposals. Broader native testing remains.

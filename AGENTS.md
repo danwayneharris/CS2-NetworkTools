@@ -92,6 +92,10 @@ baseline record, not evidence that subsequent changes work.
 - The agreed prototype moves existing nodes horizontally, preserves node elevations
   and topology, reuses selection/preview/Apply, and isolates out-of-game-testable math.
   Node removal, resegmentation, and obstacle/terrain routing are later explorations.
+- Debug-only combined Curve + Constant Slope is an opt-in experiment: free selected
+  interior elevations may change, while outer/split/junction XYZ remain fixed.
+  Independent Curve still preserves elevations. Read [combined review](NetworkTools.docs/combined-smoothing-review.md)
+  for the supported envelope and dated native evidence.
 - Account for reversed edge traversal, intersection-center versus Bézier-endpoint
   offsets, and effects on connections outside the selection.
 - Preview and Apply use different game integration paths; verify both. Preserve

@@ -281,3 +281,11 @@ See [live-debugging setup](../cities2-agent-bridge-ndc/docs/DEBUGGING-PLUGINS.md
 coherent-gameface and unity-devtools prerequisites, reversible development-player
 patch, and separate server/live-connection verification. These are optional
 developer tools and are not dependencies of the released mod.
+
+
+## Combined smoothing experiment
+
+Debug builds expose an opt-in Constant Slope option within Smooth Curve. Building
+with `-Build` deploys as described above; the offline test command does not.
+See [combined review and exact toy saves](NetworkTools.docs/combined-smoothing-review.md)
+for verification scope and manual steps. Release does not expose this experiment.

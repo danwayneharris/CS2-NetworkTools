@@ -423,3 +423,22 @@ agreeing on an obsolete submission, pending acceptance and failed acceptance.
 Existing original-input tests independently cover changed inputs. Geometry tests
 and production compilation/adapter tests pass. Runtime redeployment of this
 behavior-preserving extraction remains pending; prior native evidence predates it.
+
+
+## Final candidate verification and review preparation
+
+All seven aggregate suites passed at ac974e7. Full Debug build/postprocess/UI/deploy
+passed (32 warnings, zero errors); final Release Compile-only passed without replacing
+Debug deployment. Final DLL E04A87559607F2C0DFCBB0748C6FBFFD1FF0EA5C0E907791F5A0ACE5F229A1C1.
+Three native terminal-ramp Applies on this final build passed, with maximum third-
+versus-first node drift 0.25mm and control drift 0.34mm. Saved paused result:
+CitiesIIAgentBridge-combined-final-review-ramp-20261002-024520-35cb40dd.cok.
+No subsequent unsaved network changes. Final comparison, limitations and manual
+checklist are in combined-smoothing-review.md; manual UI/visual and vehicles remain
+for Dan. The basic offset-only comparison failure is retained explicitly.
+
+Re-fetched origin/main: still 5cc24c0; fork remote verified. Diff whitespace check
+passes. Common pin and committed dependency lock are unchanged from main. Build
+left an unstaged npm lock diff (same root metadata and existing package versions;
+additional optional packages); it remains outside commits/PR after earlier restore
+approval rejection. Original user worktree and bridge repository were not modified.

@@ -5,6 +5,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <None Update="Fixtures/combined-repeat-stations.json" Link="combined-repeat-stations.json" CopyToOutputDirectory="PreserveNewest" />
     <None Update="Fixtures/surface-response.json" Link="surface-response.json" CopyToOutputDirectory="PreserveNewest" />
     <None Update="Fixtures/offset-profile-native.json" Link="offset-profile-native.json" CopyToOutputDirectory="PreserveNewest" />
     <Compile Include="../NetworkTools.Mod/Geometry/SurfacePreviewConvergence.cs" Link="SurfacePreviewConvergence.cs" />

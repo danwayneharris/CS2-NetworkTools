@@ -20,5 +20,28 @@ internal static class RepeatStationReplay {
         var nativeError=second.Select((n,i)=>Distance(n,output[i])).Max();
         Console.WriteLine(JsonSerializer.Serialize(new {displacement,nativeError,stations}));
         if(displacement<1)throw new Exception("Counterexample no longer demonstrates substantial restationing; update experiment");
+        fixed(P* n=nodes,o=output) fixed(PlanarCubic* c=curves,f=fitted) fixed(double* s=stations) {
+            if(!PlanarPathTarget.Fit(n,c,nodes.Length,1,o,f,s,out _,out _,0,0,true))throw new Exception("Stable station fit rejected");
+        }
+        var stableDrift=nodes.Select((n,i)=>Distance(n,output[i])).Max();
+        Console.WriteLine(JsonSerializer.Serialize(new {stableDrift}));
+        if(stableDrift>.001)throw new Exception("Stable station replay moved already fitted nodes");
+        var again=new P[nodes.Length];var againCurves=new PlanarCubic[curves.Length];
+        fixed(P* n=output,o=again) fixed(PlanarCubic* c=fitted,f=againCurves) fixed(double* s=stations) {
+            if(!PlanarPathTarget.Fit(n,c,nodes.Length,1,o,f,s,out _,out _,0,0,true))throw new Exception("Repeated stable fit rejected");
+        }
+        if(output.Select((n,i)=>Distance(n,again[i])).Max()>1e-8)throw new Exception("Stable fit not idempotent");
+        for(var i=0;i<fitted.Length;i++) {
+            var x=fitted[i];var y=againCurves[i];
+            if(new[]{Distance(x.A,y.A),Distance(x.B,y.B),Distance(x.C,y.C),Distance(x.D,y.D)}.Max()>1e-8)
+                throw new Exception("Repeated controls drifted");
+        }
+        var reverseNodes=nodes.Reverse().ToArray();
+        var reverseCurves=curves.Reverse().Select(c=>new PlanarCubic(c.D,c.C,c.B,c.A)).ToArray();
+        fixed(P* n=reverseNodes,o=again) fixed(PlanarCubic* c=reverseCurves,f=againCurves) fixed(double* s=stations) {
+            if(!PlanarPathTarget.Fit(n,c,nodes.Length,1,o,f,s,out _,out _,0,0,true))throw new Exception("Reverse stable fit rejected");
+        }
+        if(output.Select((n,i)=>Distance(n,again[nodes.Length-1-i])).Max()>1e-8)throw new Exception("Reversed stations differ");
+        Console.WriteLine("PASS: captured station drift, stable repeated controls and reversed traversal.");
     }
 }

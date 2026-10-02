@@ -31,7 +31,7 @@ namespace NetworkTools.Geometry {
 
         public static unsafe bool Fit(Point* nodes, PlanarCubic* curves, int count, double strength,
             Point* outputNodes, PlanarCubic* outputCurves, double* stations,
-            out SmoothFailure failure, out int failureIndex, double startRotation, double endRotation) {
+            out SmoothFailure failure, out int failureIndex, double startRotation, double endRotation, bool stableStations = false) {
             failure = SmoothFailure.None;
             failureIndex = -1;
             if (double.IsNaN(startRotation) || double.IsInfinity(startRotation)
@@ -70,7 +70,23 @@ namespace NetworkTools.Geometry {
             var target=new PlanarCubic(first.A,b,c2,last.D);
             var total=stations[count-1];
             for (var i=0;i<count;i++) {
-                stations[i] /= total;
+                if (stableStations && i > 0 && i < count - 1) {
+                    // Preserve the node's coordinate along the fixed outer chord.
+                    // Inverting the monotone target projection avoids treating an
+                    // arc/chord length fraction as a Bezier parameter on every Apply.
+                    var offset = Difference(nodes[i], first.A);
+                    var projected = (offset.X * chord.X + offset.Z * chord.Z) / (chordLength * chordLength);
+                    if (!(projected > 0 && projected < 1))
+                        return Fail(SmoothFailure.InvalidSlice, i, out failure, out failureIndex);
+                    double lo = 0, hi = 1;
+                    for (var iteration = 0; iteration < 48; iteration++) {
+                        var mid = (lo + hi) * .5;
+                        var point = Difference(target.Evaluate(mid), first.A);
+                        var value = (point.X * chord.X + point.Z * chord.Z) / (chordLength * chordLength);
+                        if (value < projected) lo = mid; else hi = mid;
+                    }
+                    stations[i] = (lo + hi) * .5;
+                } else stations[i] = stableStations ? (i == 0 ? 0 : 1) : stations[i] / total;
                 outputNodes[i] = i==0 || i==count-1 ? nodes[i] : Blend(nodes[i],target.Evaluate(stations[i]),strength);
             }
             for (var i=0;i<count-1;i++) {

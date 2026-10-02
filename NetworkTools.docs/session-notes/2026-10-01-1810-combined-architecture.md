@@ -336,3 +336,21 @@ NetworkTools.Geometry.Tests/Fixtures/combined-repeat-stations.json.
 This is an explicit failing-behavior experiment, not a passing repeatability test.
 The next experiment will use chord-projection stationing in combined mode only,
 retaining independent Curve behavior. No runtime code changed in this commit.
+
+
+## Stable stationing experiment
+
+Added opt-in chord-projection stationing: invert the monotone target cubic's
+projection onto its outer chord to locate each original interior node. The target
+handle construction has ordered chord projections, so bounded bisection gives a
+unique parameter. Unlike cumulative node-chord fractions, the coordinate is
+unchanged when a node already lies on that target. Out-of-range/degenerate slices
+reject instead of silently relocating nodes. Outer curve endpoints stay separate
+from intersection centers.
+
+Captured replay now gives 0.0001098m node displacement (0.11mm), versus 7.7359381m
+with legacy stationing. Repeated controls and reversed traversal pass. Added replay
+to the normal geometry suite; all existing geometry tests pass. The legacy default
+is retained, and only combined mode requests stable stationing through split and
+junction sections. No deployment/native claim for this change yet. Vertical drift
+still requires independent investigation after the horizontal confound is removed.

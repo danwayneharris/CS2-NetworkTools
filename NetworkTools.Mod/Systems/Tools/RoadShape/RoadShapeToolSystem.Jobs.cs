@@ -137,7 +137,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                     case ShapeTransformTemplate.CurveSmooth:
                         var combinedFailure = 0;
                         var valid = CurveSmoothTransform.Execute(ref edges, ref nodes, Config.SmoothingFactor, out var failure, out var failureIndex,
-                            Config.JunctionStartRotation, Config.JunctionEndRotation, Config.AllowInteriorJunctions, Config.InteriorHandleScale, Config.InteriorRotation);
+                            Config.JunctionStartRotation, Config.JunctionEndRotation, Config.AllowInteriorJunctions, Config.InteriorHandleScale, Config.InteriorRotation, Config.CombinedSlope);
 #if IS_DEBUG
                         if (valid && Config.CombinedSlope) {
                             valid = CombinedLinearProfileTransform.Execute(ref edges, ref nodes, in EdgeStates,

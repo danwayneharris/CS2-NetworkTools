@@ -53,9 +53,10 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             }
         }
 
-        private bool SurfacePreviewAllowsApply() => m_SurfaceRevision == m_PreviewInputRevision
-            && m_SurfaceAccepted && !m_SurfaceFailed && m_SurfaceObserved == m_SmoothTraceId
-            && m_AutomationVerifiedSubmission == m_SmoothTraceId && OriginalProbeStatus() == "matches";
+        private bool SurfacePreviewAllowsApply() => SurfacePreviewIdentity.AllowsApply(
+            m_PreviewInputRevision, m_SurfaceRevision, m_SmoothTraceId, m_SurfaceObserved,
+            m_AutomationVerifiedSubmission, m_SurfaceAccepted, m_SurfaceFailed)
+            && OriginalProbeStatus() == "matches";
 
         private void ObserveSurfacePreview(PreviewProbe probe, bool fresh) {
             if (!UsesSurfaceValidation || m_SurfaceRevision != m_PreviewInputRevision

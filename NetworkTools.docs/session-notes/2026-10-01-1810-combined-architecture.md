@@ -405,3 +405,21 @@ against uppercase. Lifecycle verification accepted the same package case-insensi
 and region fingerprint verification passed after load. Corrected fixture formatting,
 then reused the unchanged loaded baseline with all original gates. This was a test
 fixture error, not a missing save or geometry failure; retry results pending.
+
+## Split and reverse native verification; stage identity counterexamples
+
+Compatible ordinary split passed fixed XYZ, planar tangent and vertical-grade
+continuity plus the usual native preservation checks. Review save:
+CitiesIIAgentBridge-combined-review-split-20261002-023442-c7c2e56e.cok.
+The prepared saved baseline reloaded with its exact region geometry fingerprint.
+Reverse terminal-ramp Apply passed; offline comparison of its captured permanent
+geometry against the forward result found zero node/control displacement and
+matching topology (artifacts/combined-stable-ramp-reverse/reversal-comparison.json).
+
+Extracted the unchanged surface/native stage identity predicate into a small pure
+helper, keeping original-input verification lazy and separate. Counterexamples
+reject a stale input revision, either stale validator submission, two validators
+agreeing on an obsolete submission, pending acceptance and failed acceptance.
+Existing original-input tests independently cover changed inputs. Geometry tests
+and production compilation/adapter tests pass. Runtime redeployment of this
+behavior-preserving extraction remains pending; prior native evidence predates it.

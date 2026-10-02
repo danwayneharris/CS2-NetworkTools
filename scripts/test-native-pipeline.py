@@ -7,21 +7,26 @@ def main():
     for n in ('dll','trace','output'):p.add_argument('--'+n,type=Path,required=True)
     p.add_argument('--junction',action='store_true')
     p.add_argument('--full',action='store_true')
+    p.add_argument('--burst-binary',type=Path)
     a=p.parse_args();a.output.mkdir(parents=True,exist_ok=False)
-    a.junction=a.junction or a.full
+    a.full=a.full or a.burst_binary is not None;a.junction=a.junction or a.full
     original=json.loads(a.trace.read_text(encoding='utf-8-sig'));results=[]
     records=[json.loads(Path(e['path']).read_text()) for e in original['result']['events'] if 'path' in e]
     init_roots={tuple(e) for r in records if r['job'].endswith('+InitializeNodeGeometryJob') and r['phase']=='entry' for e in r['roots']}
     edge_roots={tuple(e) for r in records if r['job'].endswith('+CalculateEdgeGeometryJob') and r['phase']=='entry' for e in r['roots']}
-    def run(name,edit=None,exit_code=0):
+    def run(name,edit=None,exit_code=0,managed=False,binary=None,status_edit=None):
         trace=copy.deepcopy(original);folder=a.output/name;folder.mkdir()
+        if status_edit:status_edit(trace['result'])
         for i,e in enumerate(trace['result']['events']):
             if 'path' not in e:continue
             record=json.loads(Path(e['path']).read_text())
             if edit and edit(record):
                 path=folder/(str(i)+'.json');path.write_text(json.dumps(record));e['path']=str(path.resolve())
         request=folder/'trace.json';request.write_text(json.dumps(trace));report=folder/'report.json'
-        proc=subprocess.run(['dotnet',str(a.dll),'--pipeline-full' if a.full else '--pipeline-junction' if a.junction else '--pipeline',str(request),str(report)],capture_output=True,text=True)
+        command=['dotnet',str(a.dll)]
+        if a.burst_binary and not managed:command+=['--pipeline-native',str(request),str(binary or a.burst_binary),str(report)]
+        else:command+=['--pipeline-full' if a.full else '--pipeline-junction' if a.junction else '--pipeline',str(request),str(report)]
+        proc=subprocess.run(command,capture_output=True,text=True)
         (folder/'stderr.txt').write_text(proc.stderr)
         assert proc.returncode==exit_code,(name,proc.returncode,proc.stderr)
         if exit_code==2:assert 'Native replay rejected:' in proc.stderr and not report.exists();data=None
@@ -96,6 +101,16 @@ def main():
             return False
         run('wrong-intersection-scratch',lambda r:wrong_publication(r,True),1)
         run('wrong-published-node-bounds',wrong_publication,1)
+    if a.burst_binary:
+        run('managed-lookup-counterfactual',exit_code=1,managed=True)
+        corrupt=a.output/'wrong-burst.dll';data=bytearray(a.burst_binary.read_bytes());data[-1]^=1;corrupt.write_bytes(data)
+        run('wrong-native-binary',exit_code=2,binary=corrupt)
+        run('wrong-execution-context',exit_code=2,status_edit=lambda s:s.update(burstEnabledAtArm=False))
+        def wrong_allocation(r):
+            if r['job'].endswith('+FinishEdgeGeometryJob') and r['phase']=='entry':
+                r['fields']['m_EdgeHeightMap']['capacity']=999;return True
+            return False
+        run('wrong-native-map-allocation',wrong_allocation,2)
     (a.output/'summary.json').write_text(json.dumps(dict(passed=True,tests=results),indent=2))
     print(f'PASS {len(results)} pipeline execution, missing-data, identity, metric and anti-substitution checks')
 

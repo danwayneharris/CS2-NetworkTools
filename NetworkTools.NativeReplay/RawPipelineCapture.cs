@@ -13,7 +13,7 @@ static class RawPipelineCapture {
     static string Job(JsonElement capture) => capture.GetProperty("job").GetString()!.Split('+')[1];
     static object Get(ReplayWorld world, Entity entity, Type type) => typeof(ReplayWorld).GetMethod("Get")!.MakeGenericMethod(type).Invoke(world,new object[]{entity})!;
 
-    public static int Run(string tracePath,string output,bool includeJunction=false,bool includePublication=false) {
+    public static int Run(string tracePath,string output,bool includeJunction=false,bool includePublication=false,string? burstBinary=null) {
         if(File.Exists(output))throw new IOException("Refusing to overwrite evidence");
         var native=typeof(GeometrySystem).Assembly;
         if(Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(native.Location)))!=RawEdgeCapture.GameHash)throw new ArgumentException("Game hash changed");
@@ -168,6 +168,12 @@ static class RawPipelineCapture {
             var job=WorldStageTests.Bind<FlattenNodeGeometryJob>(world);job.m_EdgeHeightMap=heightMap.Writer;job.Execute(new ReplayChunk(world,new[]{entity}));
         }
         Report("FlattenNodeGeometry",new[]{typeof(NodeGeometry)},heightMap);
+        BurstFinishLookup? nativeLookup=null;
+        if(burstBinary!=null) {
+            if(!status.GetProperty("burstEnabledAtArm").GetBoolean())throw new ArgumentException("Native lookup mode requires captured Burst-enabled context");
+            nativeLookup=new BurstFinishLookup(burstBinary,edgeIds.Length,finish.GetProperty("fields").GetProperty("m_EdgeHeightMap"));
+            heightMap.LookupReachable=nativeLookup.CanRetrieve;
+        }
         var finishIds=Roots(finish);var finishing=WorldStageTests.Bind<FinishEdgeGeometryJob>(world);
         finishing.m_Entities=new(i=>finishIds[i],(_,_)=>throw new InvalidOperationException("Read-only identity"),finishIds.Length);
         finishing.m_EdgeHeightMap=heightMap;finishing.m_TerrainHeightData=TerrainCapture.Load(finish.GetProperty("fields").GetProperty("m_TerrainHeightData"));
@@ -214,6 +220,7 @@ static class RawPipelineCapture {
         File.WriteAllText(output,JsonSerializer.Serialize(new{scope="Computed initialize -> edge -> flatten -> finish"+(includeJunction?" -> junction iterations 0/1":"")+(includePublication?" -> intersection -> copy -> node bounds":"")+"; no recorded intermediate overwrites; explicit native query membership",
             passed,toleranceMetres=0.03,toleranceBasis="Dan accepts a few cm of bounded accumulated geometric error; 3 cm spatial scalar/control-point bounds; nonspatial differences and identity/key mismatches remain failures",
             gameSha256=RawEdgeCapture.GameHash,tracePath,stageReports=reports,computedEdges,terrainSamples=ReplayTerrain.SampleCount,reads=world.Reads,writes=world.Writes,
+            nativeLookup=nativeLookup?.Evidence,nativeLookupQueries=nativeLookup?.Queries,
             scratchPolicy=includePublication?"AllocateBuffers.ResizeUninitialized(entities.Length) reproduced as fresh output storage; entry bytes never read; native entry nonfinite scratch is excluded, computed exit compared":null,
             captures=paths.Select(p=>new{path=p,sha256=Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(p)))})},new JsonSerializerOptions{WriteIndented=true}));
         Console.WriteLine($"Computed {(includePublication?8:includeJunction?5:4)}-stage pipeline: {edgeIds.Length} edges; within research tolerance: {passed}");

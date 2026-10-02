@@ -91,7 +91,11 @@ public sealed class ReplayList<T> : IDisposable {
 }
 public sealed class ReplayMap<TKey, TValue> where TKey : notnull {
     public readonly Dictionary<TKey, TValue> Values = new();
-    public bool TryGetValue(TKey key, out TValue value) => Values.TryGetValue(key, out value!);
+    public Func<TKey,bool>? LookupReachable;
+    public bool TryGetValue(TKey key, out TValue value) {
+        if(LookupReachable!=null&&!LookupReachable(key)){value=default!;return false;}
+        return Values.TryGetValue(key, out value!);
+    }
     public ParallelWriter Writer => new(this);
     public readonly struct ParallelWriter(ReplayMap<TKey, TValue> map) {
         public bool TryAdd(TKey key, TValue value) => map.Values.TryAdd(key, value);

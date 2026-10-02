@@ -205,3 +205,23 @@ before/preview/after and terrain observations. Checkpoint:
 Game remains paused on trumpet baseline with UNSAVED mainline combined changes.
 No human visual review or vehicle traversal claim. Repeat/reverse/reload, ramps,
 interior junctions, splits and same-baseline operation-order comparisons remain.
+
+## Explicit boundary controls and constraint counterexamples
+
+Combined UI now displays the existing Smooth Start/End boundary policies. Provider
+`combined` accepts optional boolean smoothStart/smoothEnd (validated before any
+parameter mutation); state exposes the same rejection reason shown by UI. Split
+grade conflict, failed vertical fit and exhausted surface convergence have distinct
+messages. Existing defaults/independent semantics remain. These changes are not yet
+deployed; the running game remains on the first combined Debug build.
+
+Live fixtures now configure combined boundary flags explicitly (default false),
+preventing persisted settings from contaminating operation-order comparisons.
+Factored the existing node checks to enforce fixed-node failures immediately and
+reject nonfinite positions. Ten runner tests pass, including counterexamples that
+allow changed Y only for free selected interiors in combined mode, while rejecting
+endpoint, pin, junction and unselected movement. Ordinary Curve still forbids all
+node elevation changes. The 5cm positional policy remains; NaN is never tolerated.
+Production Slope/combined tests and TypeScript checking pass after these changes.
+Native first-Apply evidence above remains evidence for the earlier deployed build,
+not this new UI/provider increment.

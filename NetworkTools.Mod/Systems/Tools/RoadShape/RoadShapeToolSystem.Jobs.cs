@@ -135,17 +135,19 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                         TransformPipeline.Execute(ref straightenTransform, ref edges, ref nodes, in Context, in Config);
                         break;
                     case ShapeTransformTemplate.CurveSmooth:
+                        var combinedFailure = 0;
                         var valid = CurveSmoothTransform.Execute(ref edges, ref nodes, Config.SmoothingFactor, out var failure, out var failureIndex,
                             Config.JunctionStartRotation, Config.JunctionEndRotation, Config.AllowInteriorJunctions, Config.InteriorHandleScale, Config.InteriorRotation);
 #if IS_DEBUG
                         if (valid && Config.CombinedSlope) {
                             valid = CombinedLinearProfileTransform.Execute(ref edges, ref nodes, in EdgeStates,
                                 in Context, in Config, out var verticalFailure, out var verticalIndex);
+                            combinedFailure = (int)verticalFailure;
                             UnityEngine.Debug.Log($"[NetworkTools.CombinedProfile] submission={SmoothTraceId} valid={valid} failure={verticalFailure} index={verticalIndex}");
                             if (valid) ApplySurfaceCorrection(ref edges, ref nodes);
                         }
 #endif
-                        SmoothResult.Value = valid ? 1 : -1;
+                        SmoothResult.Value = valid ? 1 : combinedFailure > 0 ? -100 - combinedFailure : -1;
 #if IS_DEBUG
                         TraceSmooth(SmoothTraceId, OutputMode, Config.SmoothingFactor, valid,
                             NodeStates, EdgeStates, nodes, edges, failure, failureIndex, ConnectedEdgeLookup, EdgeLookup, SmoothSelectedNodes);

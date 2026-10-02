@@ -98,3 +98,8 @@ current submission for Apply, not a single stage's acceptance flag. The command
 changes a preview parameter, not permanent geometry. Apply remains an explicit,
 separately validated mutation. This interface is under integration; see the
 combined architecture session note for verification status.
+
+The combined command also accepts optional boolean `smoothStart` and `smoothEnd`,
+matching the visible boundary controls. Regression fixtures set them explicitly;
+otherwise the existing tool values are retained. `rejectionReason` is a localization
+key shared with the manual Apply panel. These controls remain Debug-only.

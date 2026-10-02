@@ -78,6 +78,23 @@ def permanent_signature(snapshots, nodes, edges):
         junctions], sort_keys=True)
 
 
+def check_node_constraints(old_nodes, new_nodes, selected_nodes, anchors, combined):
+    """Only free selected interiors may change height in combined mode."""
+    if old_nodes.keys() != new_nodes.keys(): raise AssertionError('Node identities changed')
+    drifts=[]
+    for key,node in old_nodes.items():
+        target=new_nodes[key]['position']
+        if not all(math.isfinite(target[k]) for k in ('x','y','z')):
+            raise AssertionError('Nonfinite node position')
+        if not combined and abs(node['position']['y']-target['y'])>GEOMETRY_TOLERANCE_METERS:
+            raise AssertionError('Node elevation changed')
+        if key not in selected_nodes or len(node['edges'])>2 or key in anchors:
+            drift=math.dist(position(node['position']),position(target))
+            if drift>GEOMETRY_TOLERANCE_METERS: raise AssertionError('Fixed or unselected node moved')
+            if drift>0.001: drifts.append({'node':key,'distance':drift})
+    return drifts
+
+
 class Runner:
     def __init__(self, bridge, output):
         self.bridge, self.output = Path(bridge).resolve(), Path(output)
@@ -177,6 +194,8 @@ class Runner:
     def execute(self, fixture, case, save_root):
         combined = case.get('combined', False)
         if not isinstance(combined, bool): raise ValueError('combined must be boolean')
+        for key in ('smoothStart','smoothEnd'):
+            if key in case and not isinstance(case[key], bool): raise ValueError(key+' must be boolean')
         city = self.call('get_city_state')
         if city['selectedSpeed'] != 0 or city['population'] != 0 or not city['controlEnabled']:
             raise ValueError('Requires paused, control-enabled empty toy city')
@@ -219,7 +238,7 @@ class Runner:
         self.call('nt_activate')
         self.poll('nt_get_state', lambda s: s['active'] and s.get('smoothMode', False))
         self.control('nt_clear')
-        if combined: self.control('nt_combined', enabled=True)
+        if combined: self.control('nt_combined', enabled=True, smoothStart=case.get('smoothStart', False), smoothEnd=case.get('smoothEnd', False))
         self.control('nt_strength', value=case.get('strengths', [0.5,0.8])[0])
         self.control('nt_select', start=start, end=end)
         for node in split_nodes:
@@ -255,14 +274,8 @@ class Runner:
         old_edges, new_edges = ({identity(e): e for e in es} for es in (edges, after_edges))
         if old_nodes.keys() != new_nodes.keys() or old_edges.keys() != new_edges.keys():
             raise AssertionError('Topology identities changed')
-        fixed_node_drifts = []
-        for key, node in old_nodes.items():
-            if not combined and abs(node['position']['y'] - new_nodes[key]['position']['y']) > GEOMETRY_TOLERANCE_METERS:
-                raise AssertionError('Node elevation changed')
-            if key not in selected_nodes or len(node['edges']) > 2 or key in {identity(start),identity(end),*(identity(n) for n in split_nodes)}:
-                drift=math.dist(position(node['position']),position(new_nodes[key]['position']))
-                if drift>0.001:
-                    fixed_node_drifts.append({'node':key,'distance':drift})
+        fixed_node_drifts = check_node_constraints(old_nodes, new_nodes, selected_nodes,
+            {identity(start), identity(end), *(identity(n) for n in split_nodes)}, combined)
         for key, edge in old_edges.items():
             if any(edge[k] != new_edges[key][k] for k in ('startNode','endNode','prefab')):
                 raise AssertionError('Topology or prefab changed')

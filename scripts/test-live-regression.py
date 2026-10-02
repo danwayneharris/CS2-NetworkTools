@@ -58,6 +58,25 @@ class FixtureTests(unittest.TestCase):
         edges[0]['curve'][1]['z']=0.01
         self.assertNotEqual(original,runner.permanent_signature([snapshot],self.nodes,edges))
 
+class CombinedConstraintTests(unittest.TestCase):
+    def test_only_free_interiors_can_change_height(self):
+        original={(i,1):dict(index=i,version=1,position=dict(x=i,y=0,z=0),edges=[{},{}]) for i in range(5)}
+        original[(3,1)]['edges'].append({})
+        selected={(0,1),(1,1),(2,1),(3,1)};anchors={(0,1),(2,1)}
+        for moved in range(5):
+            changed=copy.deepcopy(original);changed[(moved,1)]['position']['y']=1
+            for combined in (False,True):
+                if combined and moved==1:
+                    self.assertEqual([],runner.check_node_constraints(original,changed,selected,anchors,combined))
+                else:
+                    with self.assertRaises(AssertionError): runner.check_node_constraints(original,changed,selected,anchors,combined)
+    def test_tolerance_and_nonfinite_are_distinct(self):
+        original={(1,1):dict(position=dict(x=0,y=0,z=0),edges=[])}
+        changed=copy.deepcopy(original);changed[(1,1)]['position']['y']=.03
+        runner.check_node_constraints(original,changed,set(),set(),True)
+        changed[(1,1)]['position']['y']=float('nan')
+        with self.assertRaises(AssertionError): runner.check_node_constraints(original,changed,{(1,1)},set(),True)
+
 class TransportTests(unittest.TestCase):
     def test_session_is_pinned_and_error_retains_request_id(self):
         class FakeClient:

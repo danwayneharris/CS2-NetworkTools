@@ -26,6 +26,10 @@ export const ShapeCurveControls: React.FC = () => {
                 <div className={styles.section__content}>
                     <ParameterField paramKey="roadShape.smoothingFactor" />
                     {combinedAvailable && <ParameterField paramKey="roadShape.combinedSlope" />}
+                    {combinedAvailable && combined && <>
+                        <ParameterField paramKey="roadShape.smoothStart" />
+                        <ParameterField paramKey="roadShape.smoothEnd" />
+                    </>}
                     {combinedAvailable && combined && <div>{translate("NetworkTools.UI.Curve.CombinedExplanation",
                         "Experimental: fit slope along the smoothed path. Endpoints, split points and junction heights stay fixed. Conflicting split grades cannot be applied.")}</div>}
                     {splits.length > 0 && <div className={styles.splitChoices}>

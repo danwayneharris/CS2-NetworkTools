@@ -18,7 +18,11 @@ namespace CitiesBridge {
                 if (action == "select") { props["start"] = Node(); props["end"] = Node(); required.Add("start"); required.Add("end"); }
                 if (action == "strength") { props["value"] = new JObject { ["type"] = "number", ["minimum"] = 0, ["maximum"] = 1 }; required.Add("value"); }
                 if (action == "split") { props["node"] = Node(); props["enabled"] = new JObject { ["type"] = "boolean" }; required.Add("node"); required.Add("enabled"); }
-                if (action == "combined") { props["enabled"] = new JObject { ["type"] = "boolean" }; required.Add("enabled"); }
+                if (action == "combined") {
+                    props["enabled"] = new JObject { ["type"] = "boolean" }; required.Add("enabled");
+                    props["smoothStart"] = new JObject { ["type"] = "boolean" };
+                    props["smoothEnd"] = new JObject { ["type"] = "boolean" };
+                }
                 if (action == "apply") { props["submission"] = Integer(); required.Add("submission"); }
                 commands.Add(new JObject { ["name"] = action, ["readOnly"] = action == "state",
                     ["description"] = "Smooth Curve " + action + ". Requires a loaded paused city. Changes require local controls. Apply acceptance is not completion; verify permanent geometry independently.",
@@ -34,7 +38,11 @@ namespace CitiesBridge {
                         Add("session", new JObject { ["type"] = "string" }); Add("revision", Integer());
                     }
                     if (action == "select") { Add("start", Node()); Add("end", Node()); }
-                    if (action == "combined") { props["enabled"] = new JObject { ["type"] = "boolean" }; required.Add("enabled"); }
+                    if (action == "combined") {
+                    props["enabled"] = new JObject { ["type"] = "boolean" }; required.Add("enabled");
+                    props["smoothStart"] = new JObject { ["type"] = "boolean" };
+                    props["smoothEnd"] = new JObject { ["type"] = "boolean" };
+                }
                 if (action == "apply") Add("submission", Integer());
                     if (action == "configure" && tool == "slope") {
                         Add("mode", new JObject { ["type"] = "string", ["enum"] = new JArray("linear", "ease", "arch") });

@@ -29,6 +29,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                 ["revision"] = m_PreviewInputRevision, ["submission"] = m_SmoothTraceId,
                 ["mode"] = Template.Value.ToString(), ["combinedSlope"] = CombinedMode,
                 ["surfaceAccepted"] = m_SurfaceAccepted, ["surfaceFailed"] = m_SurfaceFailed,
+                ["rejectionReason"] = ApplyRestrictionKey,
                 ["slopeParameters"] = new JObject { ["easeIn"] = EaseInLength.Value, ["easeOut"] = EaseOutLength.Value,
                     ["archHeight"] = ArchHeight.Value, ["archPosition"] = ArchPosition.Value,
                     ["smoothStart"] = SmoothStart.Value, ["smoothEnd"] = SmoothEnd.Value },
@@ -68,6 +69,10 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             switch (action) {
                 case "combined":
                     if (slope || args["enabled"]?.Type != JTokenType.Boolean) throw new ArgumentException("boolean_combined_mode_required");
+                    foreach (var key in new[] { "smoothStart", "smoothEnd" })
+                        if (args[key] != null && args[key].Type != JTokenType.Boolean) throw new ArgumentException("boolean_boundary_option_required");
+                    if (args["smoothStart"] != null) SmoothStart.Value = (bool)args["smoothStart"];
+                    if (args["smoothEnd"] != null) SmoothEnd.Value = (bool)args["smoothEnd"];
                     CombinedSlope.Value = (bool)args["enabled"];
                     MarkDirty();
                     break;

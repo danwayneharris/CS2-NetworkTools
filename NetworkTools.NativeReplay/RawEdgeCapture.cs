@@ -51,6 +51,13 @@ static class RawEdgeCapture {
         return result;
     }
     static string Hash(string path) => Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(path)));
+    internal static object Encode(object value) {
+        Type type=value.GetType();
+        if(type==typeof(Entity)){var e=(Entity)value;return new[]{e.Index,e.Version};}
+        if(type.IsEnum)return Convert.ChangeType(value,Enum.GetUnderlyingType(type));
+        if(type.IsPrimitive)return value;
+        return type.GetFields(Fields).ToDictionary(f=>f.Name,f=>Encode(f.GetValue(value)!));
+    }
     internal static Dictionary<Entity, JsonElement> Rows(JsonElement capture) => capture.GetProperty("entities")
         .EnumerateArray().ToDictionary(r => Id(r.GetProperty("id")), r => r.GetProperty("components"));
 

@@ -103,14 +103,21 @@ static class RawPipelineCapture {
                 }
             }
             var encoded=JsonSerializer.SerializeToElement(diffs);double maximum=0;bool accepted=true;
+            var controlErrors=new Dictionary<string,double>();
             foreach(var d in encoded.EnumerateArray()) {
                 string path=d.GetProperty("path").GetString()!;
                 bool spatial=path.Contains("/EdgeGeometry/")||path.Contains("/StartNodeGeometry/")||path.Contains("/EndNodeGeometry/")||path.Contains("/HeightMap/")||path.Contains("/NodeGeometry/m_Position")||path.Contains("/NodeGeometry/m_Offset");
                 if(d.GetProperty("native").ValueKind!=JsonValueKind.Number||!spatial){accepted=false;continue;}
                 double delta=Math.Abs(d.GetProperty("native").GetDouble()-d.GetProperty("replay").GetDouble());maximum=Math.Max(maximum,delta);
+                if(System.Text.RegularExpressions.Regex.IsMatch(path,@"/(m_Left|m_Right)/[abcd]/[xyz]$")) {
+                    string control=path.Substring(0,path.Length-2);
+                    controlErrors[control]=controlErrors.GetValueOrDefault(control)+delta*delta;
+                }
                 if(delta>0.03)accepted=false;
             }
-            reports.Add(new{stage=name,comparedScalarFields=count,exact=diffs.Count==0,withinResearchTolerance=accepted,maxSpatialComponentErrorMetres=maximum,differences=diffs});
+            double controlMaximum=controlErrors.Count==0?0:Math.Sqrt(controlErrors.Values.Max());
+            if(controlMaximum>0.03)accepted=false;
+            reports.Add(new{stage=name,comparedScalarFields=count,exact=diffs.Count==0,withinResearchTolerance=accepted,maxSpatialComponentErrorMetres=maximum,maxCurveControlPointErrorMetres=controlMaximum,differences=diffs});
         }
         foreach(var capture in init)foreach(var entity in Roots(capture)) {
             var job=WorldStageTests.Bind<InitializeNodeGeometryJob>(world);job.m_Loaded=capture.GetProperty("fields").GetProperty("m_Loaded").GetBoolean();job.Execute(new ReplayChunk(world,new[]{entity}));
@@ -133,9 +140,12 @@ static class RawPipelineCapture {
         for(int i=0;i<finishIds.Length;i++)finishing.Execute(i);
         Report("FinishEdgeGeometry",new[]{typeof(EdgeGeometry)});
         bool passed=reports.All(r=>JsonSerializer.SerializeToElement(r).GetProperty("withinResearchTolerance").GetBoolean());
+        var computedEdges=finishIds.Select(e=>new{id=new[]{e.Index,e.Version},
+            original=world.Try<Game.Tools.Temp>(e,out var temp)?new[]{temp.m_Original.Index,temp.m_Original.Version}:new[]{e.Index,e.Version},
+            edgeGeometry=RawEdgeCapture.Encode(world.Get<EdgeGeometry>(e))}).ToArray();
         File.WriteAllText(output,JsonSerializer.Serialize(new{scope="Computed initialize -> edge -> flatten -> finish; no recorded intermediate overwrites; explicit native query membership",
-            passed,toleranceMetres=0.03,toleranceBasis="Dan accepts a few cm of bounded accumulated geometric error; nonspatial differences and identity/key mismatches remain failures",
-            gameSha256=RawEdgeCapture.GameHash,tracePath,stageReports=reports,terrainSamples=ReplayTerrain.SampleCount,reads=world.Reads,writes=world.Writes,
+            passed,toleranceMetres=0.03,toleranceBasis="Dan accepts a few cm of bounded accumulated geometric error; 3 cm spatial scalar/control-point bounds; nonspatial differences and identity/key mismatches remain failures",
+            gameSha256=RawEdgeCapture.GameHash,tracePath,stageReports=reports,computedEdges,terrainSamples=ReplayTerrain.SampleCount,reads=world.Reads,writes=world.Writes,
             captures=paths.Select(p=>new{path=p,sha256=Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(p)))})},new JsonSerializerOptions{WriteIndented=true}));
         Console.WriteLine($"Computed 4-stage pipeline: {edgeIds.Length} edges; within research tolerance: {passed}");
         return passed?0:1;

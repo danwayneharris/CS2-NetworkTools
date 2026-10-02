@@ -43,7 +43,7 @@ differential evidence, described below; the complete pipeline remains unqualifie
 ## Stateful source replay (research increment)
 
 `generate-native-world-stages.py` produces hash-gated, local-only copies of the
-InitializeNodeGeometry/FlattenNodeGeometry/FinishEdgeGeometry bodies and their EdgeIterator, replacing
+InitializeNodeGeometry/CalculateEdgeGeometry/FlattenNodeGeometry/FinishEdgeGeometry bodies and their EdgeIterator, replacing
 storage containers and job entry scaffolding. Read its generated adaptation ledger
 in obj/native-generated. This is adapted-source execution, distinct from direct
 Game.dll invocation. Original math types/helpers remain referenced from the game.
@@ -66,8 +66,9 @@ its computed map; no recorded output is substituted. Supply explicit finishEdges
 (empty when finishing is not requested). Reports include all four surface curves,
 lengths and bounds. NetCompositionData now requires flags, width, state, heightMin
 and heightMax; schema 1 is rejected instead of silently supplying missing fields.
-Terrain-dependent finishing explicitly fails until a terrain execution boundary is
-implemented and validated. Other finishing branches execute the source body with
+The projected schema-2 world command does not carry terrain, so terrain-dependent
+finishing fails there. The full raw pipeline below supplies captured terrain.
+Other finishing branches execute the source body with
 the original math types/helpers. This does not reproduce CalculateEdgeGeometry:
 the initial surfaces remain explicit inputs to this bounded test.
 
@@ -124,6 +125,42 @@ membership are checked.
 
 Exit 0 means exact compared output, 1 means a completed differential with mismatches,
 2 means rejected/unexecutable input. Initial preview/permanent reports have 71/52
-surface-coordinate differences up to about 1 mm. These are unresolved failures,
-not accepted tolerances. Seven contract/negative checks pass independently of that
-failure. This path has no native scheduler and does not retire live tests.
+surface-coordinate differences up to about 1 mm. Strict exact comparison reports
+these as mismatches; the user's subsequently approved spatial tolerance is applied
+in the chained pipeline below. Seven contract/negative checks pass independently.
+This path has no native scheduler and does not retire live tests.
+
+## Computed pipeline with captured terrain
+
+```powershell
+dotnet NetworkTools.NativeReplay/bin/Debug/net8.0/NetworkTools.NativeReplay.dll --pipeline <completed-trace.json> <new-report.json>
+python scripts/test-native-pipeline.py --dll NetworkTools.NativeReplay/bin/Debug/net8.0/NetworkTools.NativeReplay.dll --trace <completed-trace.json> --output <new-test-dir>
+```
+
+The pipeline carries computed Initialize -> CalculateEdge -> Flatten -> Finish
+state forward. Later captured node/edge geometry is prohibited from replacing
+earlier computed outputs; the native height map is comparison-only. Initial input
+assembly uses consistent, nonwritten component fields from the same bounded pass.
+Terrain arrays are complete checksummed ushort grids with captured transforms;
+hash-pinned native TerrainUtils methods perform sampling on managed array storage.
+Reports export computed EdgeGeometry, original/temp identity mapping, terrain
+sample count and stage errors. Explicit query membership is still supplied.
+
+Dan approved millimetres and bounded accumulation into a few centimetres. Pipeline
+acceptance uses 3 cm spatial scalar and curve-control distance bounds; nonspatial
+markers and map/entity identities remain exact. Strict raw-edge mode still reports
+all bitwise mismatches. Preview, permanent, a simpler single-edge linear control
+and a held-out 6 m arch preview remain around 1 mm through finishing.
+The controls exercise 144 terrain samples each. No observed amplification here is
+evidence for these cases, not a guarantee for arbitrary geometry or new game patches.
+
+Seven real-capture checks reject missing/corrupted data, wrong final output, wrong
+map identities and even small errors in discrete sentinels. Poisoning recorded
+intermediates leaves computed output unchanged. Historical 1.844445 m discrepancy,
+ordinary scheduling equivalence, later junction processing and lanes remain outside
+current qualification. See the 0420 terrain-chain session note for exact artifacts.
+
+The arch variation changes authored control points by up to 15.23 m and finishes
+within 0.949 mm of native control points. A half-strength Combined capture was
+also retained, but its authored geometry matched the reference, so it is explicitly
+not counted as nontrivial held-out geometry evidence.

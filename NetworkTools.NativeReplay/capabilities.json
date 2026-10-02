@@ -32,17 +32,23 @@
     },
     {
       "id": "source-world-calculate-edge",
-      "status": "native-differential-mismatch",
+      "status": "metric-validated-in-computed-pipeline",
       "implementation": "Hash-pinned CalculateEdgeGeometryJob plus CalculateRoundaboutSize buffer helper; native binary value helpers; strict captured component fields",
-      "validation": "Instrumented preview: 8 edges, 1728 scalar fields, 71 mismatches. Permanent: 5 edges, 1080 fields, 52 mismatches. Differences in EdgeGeometry coordinates up to approximately 1 mm; not accepted. Seven capture/negative checks pass.",
+      "validation": "Strict comparison records 71/52 preview/permanent coordinate differences near 1 mm. User approved bounded centimetre-scale geometry tolerance; chained pipeline validates propagation. Seven raw capture/negative checks pass.",
       "excludedUnusedFields": ["NetGeometryData.m_EdgeCompositionArchetype", "NetGeometryData.m_NodeCompositionArchetype"],
       "unsupported": ["Parallel scheduling equivalence", "Explained numerical equivalence", "Ordinary failing anchor reproduction", "Held-out qualification"],
       "liveChecksRetired": []
     },
     {
       "id": "bounded-geometry-world",
-      "status": "partial-stage-execution",
-      "required": ["Initialization", "EdgeIterator semantics", "Cut and retention", "Flattening and height map", "Finishing", "Later writers", "Anchor/control/held-out native comparisons"]
+      "status": "four-stage-instrumented-cohort-validated",
+      "supported": ["Computed initialization", "Native-source EdgeIterator", "Computed edge cut and retention", "Computed flatten and height map", "Computed finishing with captured full terrain arrays"],
+      "validation": "Preview, permanent, single-edge linear control, held-out 6 m arch preview. Arch authored controls change up to 15.23 m; final control error 0.949 mm. Other cases remain near 1.049 mm. Half-strength Combined is equivalent-state evidence only. Seven pipeline negative/anti-substitution tests pass.",
+      "toleranceMetres": 0.03,
+      "exactRequirements": ["Entity membership", "Height-map keys", "Nonspatial markers"],
+      "required": ["Original failing discrepancy reproduction", "Ordinary execution comparison", "Relevant later writer scope audit", "Patch refresh and expansion process final report"],
+      "unsupported": ["Native query discovery/scheduling", "Later junction geometry writers", "Lane generation", "Arbitrary changed topology or uncaptured prefabs"],
+      "liveChecksRetired": []
     }
   ],
   "patchRefresh": {

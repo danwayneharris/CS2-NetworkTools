@@ -5,7 +5,8 @@ from pathlib import Path
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     for name in ('bridge','output','start','end'):p.add_argument('--'+name,required=True)
-    p.add_argument('--kind',choices=['linear','combined'],required=True);p.add_argument('--strength',type=float,default=.5)
+    p.add_argument('--kind',choices=['linear','combined','arch'],required=True);p.add_argument('--strength',type=float,default=.5)
+    p.add_argument('--arch-height',type=float,default=6)
     a=p.parse_args()
     def entity(s):
         i,v=map(int,s.split(':'));return dict(index=i,version=v)
@@ -20,13 +21,14 @@ def main():
     provider=next(x for x in r.call('list_providers')['providers'] if x['id']=='networktools')
     def call(command,args=None):return r.call('invoke_provider',dict(provider='networktools',revision=provider['revision'],command=command,args=args or {}))
     call('activate' if a.kind=='combined' else 'slope_activate')
+    state_command='state' if a.kind=='combined' else 'slope_state'
     def change(command,**values):
-        s=call('state');return call(command,dict(session=s['session'],revision=s['revision'],**values))
-    change('clear')
+        s=call(state_command);return call(command,dict(session=s['session'],revision=s['revision'],**values))
+    change('clear' if a.kind=='combined' else 'slope_clear')
     if a.kind=='combined':
         change('combined',enabled=True,smoothStart=True,smoothEnd=True);change('strength',value=a.strength)
-    else:change('slope_configure',mode='linear',easeIn=0,easeOut=0,archHeight=0,archPosition=.5,smoothStart=False,smoothEnd=False)
-    preflight=call('state')
+    else:change('slope_configure',mode=a.kind,easeIn=0,easeOut=0,archHeight=a.arch_height if a.kind=='arch' else 0,archPosition=.5,smoothStart=False,smoothEnd=False)
+    preflight=call(state_command)
     armed=r.call('begin_geometry_schedule_trace',dict(citySession=r.city_session,operationId=Path(a.output).name,maxPasses=1))
     if not armed['patched'] or armed['remainingPasses']!=1:raise RuntimeError('Trace not armed')
     try:
@@ -40,10 +42,10 @@ def main():
     finally:
         final=r.call('end_geometry_schedule_trace')
         (Path(a.output)/'trace-completed.json').write_text(json.dumps(dict(result=final),indent=2))
-    ready=call('state')
+    ready=call(state_command)
     for _ in range(20):
         if ready['previewReady'] or ready['surfaceFailed']:break
-        time.sleep(.25);ready=call('state')
+        time.sleep(.25);ready=call(state_command)
     (Path(a.output)/'variation.json').write_text(json.dumps(dict(kind=a.kind,strength=a.strength if a.kind=='combined' else None,
         start=start,end=end,city=city,preflight=preflight,result=ready,applied=False),indent=2))
     print(json.dumps(dict(kind=a.kind,previewReady=ready['previewReady'],surfaceFailed=ready['surfaceFailed'],captures=len([e for e in final['events'] if 'path' in e]))))

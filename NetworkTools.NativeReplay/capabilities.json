@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "gameSha256": "AAEE15C4FA41C130ABAA1183840667E4FAAE531D67E8A9FA7536618EFFA2F86A",
+  "capabilities": [
+    {
+      "id": "value-geometry-binary",
+      "status": "offline-executable",
+      "implementation": "Original Game.dll private methods invoked with explicit value arguments",
+      "methods": ["GeometrySystem+CalculateEdgeGeometryJob.CalculateCutOffset", "GeometrySystem+CalculateEdgeGeometryJob.Cut", "GeometrySystem+FinishEdgeGeometryJob.StraightenMiddleHeights", "GeometrySystem+FinishEdgeGeometryJob.LimitMiddleHeights"],
+      "dependencies": ["Game.dll", "Unity.Mathematics.dll", "Colossal.Mathematics.dll"],
+      "validation": "Analytic flat and translated controls; missing/invalid inputs and wrong Game.dll hash rejected",
+      "nativeDifferential": "pending",
+      "liveChecksRetired": []
+    },
+    {
+      "id": "legacy-pairwise-flatten",
+      "status": "restricted-model-only",
+      "implementation": "Existing Python scalar reconstruction; no original native method invocation",
+      "validation": "Historical preview endpoints reproduced to approximately 0.0001 metres; iteration cap reached",
+      "unsupported": ["Participant discovery", "Mixed temporary/permanent branch", "Retention sentinel", "Complete float32 equivalence", "Height-map publication", "Permanent divergence"],
+      "liveChecksRetired": []
+    },
+    {
+      "id": "bounded-geometry-world",
+      "status": "not-implemented",
+      "required": ["Initialization", "EdgeIterator semantics", "Cut and retention", "Flattening and height map", "Finishing", "Later writers", "Anchor/control/held-out native comparisons"]
+    }
+  ],
+  "patchRefresh": {
+    "policy": "Changed game, dependency, runtime, capture schema or relevant prefab/asset data requires capability revalidation; historical captures remain immutable",
+    "automated": false
+  }
+}

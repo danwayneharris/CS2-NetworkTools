@@ -56,3 +56,23 @@ tests, not native anchor/control/held-out differential qualification.
 Next: freeze the retained evidence and build an actual participant/state capture
 contract for initialization/flattening/finishing. Permanent divergence remains
 unexplained; the goal is active. No game queries or mutations yet.
+
+## Evidence inventory and live orientation
+
+Created freeze-native-research.py and a manifest pinning 11 existing evidence files,
+three decompiled source hashes and five matching installed assemblies. Bulk artifacts
+remain untouched in the original investigation worktree. The manifest lists capture
+gaps and does not relabel final-state observations as coherent pre-job inputs.
+
+Read-only Bridge state at 09:02 UTC reports Wantagh, population zero, speed zero,
+controls/rememberControl true. Process remains 54932, but citySession changed to
+0100c8864c714d9f9805b29d558a3d44. Historical entities cannot be assumed current.
+Unity status initially reported no attachment, suspension or breakpoints. A pure
+value-only native cut-offset comparison was attempted, but connection failed BEFORE
+evaluation: socket accepted with no Mono debugger greeting. No expression ran.
+Do not retry blindly or take another debugger's slot. Asked whether the other
+debugger has detached; continue offline while clarification is pending.
+
+No saves, network edits, rebuilds, deployment or game lifecycle changes performed.
+The direct read command's response confirms the city already remained paused.
+Added an explicit capability registry: no live checks are retired yet.

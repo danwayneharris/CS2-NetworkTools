@@ -288,3 +288,20 @@ Review checkpoint: `CitiesIIAgentBridge-combined-review-hill-road-20261002-02102
 Evidence: artifacts/combined-hill-road/summary.json and 0-combined/report.json.
 Game remains paused after the saved hill-road combined Apply; baseline untouched.
 Further matrix, repeatability and split/junction coverage remain.
+
+
+## Crest/dip and repeat-Apply instrumentation
+
+Crest/dip combined strength 1, boundary flags false passed strict native preview/
+Apply checks, fixed-node and unselected-geometry checks, and lane preservation.
+Review save: `CitiesIIAgentBridge-combined-review-crest-dip-20261002-021317-8d62793e.cok`.
+Raw evidence remains under artifacts/combined-crest-dip (ignored).
+
+Extended the existing profile sequence runner with --repeat-combined 1..3. Each
+Apply retains its prior recoverable checkpoint and native checks. Later results
+are compared to the FIRST result, not just the preceding result, to expose
+cumulative drift. Node/control displacement, exact topology and finite observations
+are checked; a drift over 5cm fails and stops further mutation. Three offline tests
+pass, with missing/duplicate/topology/NaN/truncated-cubic counterexamples. The normal
+offline Python aggregate discovers this new test script automatically.
+A three-Apply terminal-ramp test is running; no repeatability claim yet.

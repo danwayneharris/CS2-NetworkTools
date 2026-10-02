@@ -8,9 +8,13 @@ m=runpy.run_path(str(Path(__file__).with_name('live-regression.py')))
 p=argparse.ArgumentParser(description=__doc__)
 p.add_argument('--bridge',required=True);p.add_argument('--output',required=True)
 p.add_argument('--save-root',required=True)
+p.add_argument('--trace-native',action='store_true',help='Capture one native Apply geometry pass, explicitly allowing Burst')
 g=p.add_mutually_exclusive_group(required=True);g.add_argument('--apply',action='store_true');g.add_argument('--capture-only',action='store_true')
 a=p.parse_args()
 r=m['Runner'](a.bridge,a.output);root=Path(a.output)
+if a.trace_native:
+ if not a.apply:raise ValueError('--trace-native requires --apply')
+ r.command_timeout=45
 city=r.call('get_city_state')
 if city['population']!=0 or city['selectedSpeed']!=0 or not city['controlEnabled']:raise RuntimeError('Paused controlled toy required')
 provider=next(x for x in r.call('list_providers')['providers'] if x['id']=='networktools')
@@ -72,11 +76,17 @@ if not final['previewReady'] or any(final[k]!=s[k] for k in ('session','revision
 root.joinpath('before.json').write_text(json.dumps({'city':city,'state':s,'path':path,'checkpoint':saved,'snapshots':before,'previews':previews,'terrain':terrain_before,'points':points},indent=2))
 if a.capture_only:
  print(json.dumps({'output':a.output,'submission':s['submission'],'captureOnly':True}));raise SystemExit(0)
-invoke('slope_apply' if is_slope else 'apply',{k:s[k] for k in ('session','revision','submission')})
-for i in range(40):
- if invoke('slope_state')['phase']=='Idle':break
- time.sleep(.25)
-else:raise RuntimeError('Apply incomplete; no retry')
+if a.trace_native:r.call('begin_geometry_schedule_trace',dict(citySession=r.city_session,operationId=root.name,maxPasses=1,allowBurst=True))
+try:
+ invoke('slope_apply' if is_slope else 'apply',{k:s[k] for k in ('session','revision','submission')})
+ for i in range(40):
+  if invoke('slope_state')['phase']=='Idle':break
+  time.sleep(.25)
+ else:raise RuntimeError('Apply incomplete; no retry')
+finally:
+ if a.trace_native:
+  trace=r.call('end_geometry_schedule_trace')
+  root.joinpath('trace-completed.json').write_text(json.dumps(dict(result=trace),indent=2))
 # Observe road surfaces over time, not just authored Curve stability.
 for label,delay in (('immediate',0),('settled',3),('later',5)):
  time.sleep(delay)

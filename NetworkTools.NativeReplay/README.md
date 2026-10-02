@@ -180,8 +180,26 @@ Negative lengths and m_Middle branch markers are exact; vertex-sync parameters
 use a separate unitless 1e-5 bound with exact zero/one endpoints. This is not a
 metre tolerance applied to dimensionless values.
 
-Preview, permanent, linear control and changed arch pass the five-stage replay.
+With Burst disabled, preview, permanent, linear control and changed arch pass the five-stage replay.
 This boundary ends before CalculateIntersectionGeometry/CopyNodeGeometry update
 the middle curves and bounds and before UpdateNodeGeometry publishes node bounds.
 It does not yet reproduce the historical failing preview/permanent difference.
 See `2026-10-02-0459-junction-stage.md` for evidence and the downstream write map.
+
+## Full publication and the recovered failure
+
+`--pipeline-full <completed-trace.json> <new-report.json>` adds original-source
+CalculateIntersectionGeometry, CopyNodeGeometry and UpdateNodeGeometry. Computed
+scratch slots feed publication; recorded scratch values never replace them.
+Uninitialized entry scratch may contain nonfinite bytes and is explicitly excluded
+because the pinned native job overwrites every slot before use. Unknown read
+dependencies still fail. Run `test-native-pipeline.py --full` for twelve checks.
+
+The Burst-enabled anchor preview passes all eight stages (maximum control residual
+0.2 mm). The corresponding Apply reproduces the historical 1.844445 m discrepancy
+in the game, and **offline replay correctly fails** from FinishEdgeGeometry onward.
+Its initialization, cut geometry, and flattened map entries match exactly. The
+Burst-enabled linear and arch captures also diverge first at Finish; they are
+retained failure fixtures. Do not retire those live checks or claim Burst-enabled
+pipeline equivalence. Dictionary substitution currently omits native bucket/lookup
+semantics under investigation. See the 0524 full-publication note and cohort manifest.

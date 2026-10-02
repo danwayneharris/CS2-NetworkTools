@@ -41,14 +41,15 @@
     },
     {
       "id": "bounded-geometry-world",
-      "status": "five-stage-instrumented-cohort-validated",
+      "status": "eight-stage-executable-burst-permanent-differential-failing",
       "supported": ["Computed initialization", "Native-source EdgeIterator", "Computed edge cut and retention", "Computed flatten and height map", "Computed finishing with captured full terrain arrays", "Computed CalculateNodeGeometry iterations 0 and 1 via --pipeline-junction"],
-      "validation": "Preview, permanent, single-edge linear control, held-out 6 m arch preview. Arch authored controls change up to 15.23 m; final control error 0.949 mm. Other cases remain near 1.049 mm. Half-strength Combined is equivalent-state evidence only. Seven pipeline negative/anti-substitution tests pass.",
+      "validation": "Burst-disabled five-stage preview/permanent/linear/arch cohort within tolerance. Burst-enabled eight-stage anchor preview passes (0.2 mm max control error), but permanent, linear and arch first diverge at Finish despite matching map entries. Historical 1.844445 m native failure recovered. Twelve full-pipeline negative/anti-substitution tests pass on the preview.",
       "toleranceMetres": 0.03,
       "exactRequirements": ["Entity membership", "Height-map keys", "Nonspatial markers"],
-      "required": ["Original failing discrepancy reproduction", "Ordinary execution comparison", "Relevant later writer scope audit", "Patch refresh and expansion process final report"],
+      "required": ["Offline reproduction of recovered native failing discrepancy", "Native hash-map lookup/storage capture and execution equivalence", "Ordinary Burst-enabled comparison", "Patch refresh and expansion process final report"],
       "junctionValidation": "Preview/permanent/linear/changed-arch native iteration outputs within spatial bounds; ten pipeline checks including junction branch marker, missing composition buffers and recorded-output substitution",
-      "unsupported": ["Native query discovery/scheduling", "CalculateIntersectionGeometry and CopyNodeGeometry middle/bounds publication", "UpdateNodeGeometry bounds", "Lane generation", "Arbitrary changed topology or uncaptured prefabs"],
+      "publicationValidation": "--pipeline-full executes intersection scratch, middle/bounds copy and node bounds using propagated computed values; native Burst-enabled preview differential passes",
+      "unsupported": ["Native query discovery/scheduling", "Native hash-map lookup semantics beyond enumerated entries", "Burst-enabled permanent/linear/arch equivalence", "Lane generation", "Arbitrary changed topology or uncaptured prefabs"],
       "liveChecksRetired": []
     }
   ],

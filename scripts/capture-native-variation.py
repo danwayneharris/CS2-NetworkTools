@@ -9,12 +9,13 @@ def main():
     p.add_argument('--arch-height',type=float,default=6)
     p.add_argument('--ordinary',action='store_true',help='Do not arm scheduling instrumentation')
     p.add_argument('--observe',help='Original junction index:version to observe between matching provider tokens')
+    p.add_argument('--allow-burst',action='store_true',help='Explicitly permit scheduling-boundary capture with Burst enabled')
     a=p.parse_args()
     def entity(s):
         i,v=map(int,s.split(':'));return dict(index=i,version=v)
     start,end=entity(a.start),entity(a.end)
     Runner=runpy.run_path(str(Path(__file__).with_name('live-regression.py')))['Runner']
-    r=Runner(a.bridge,a.output);city=r.call('get_city_state')
+    r=Runner(a.bridge,a.output);r.command_timeout=45;city=r.call('get_city_state')
     if city['selectedSpeed']!=0 or city['population']!=0 or not city['controlEnabled']:raise RuntimeError('Paused controlled toy required')
     # Validate current entity versions/types before using these explicit endpoints.
     for e in (start,end,*([entity(a.observe)] if a.observe else [])):
@@ -36,7 +37,7 @@ def main():
         status=r.call('get_geometry_schedule_trace')
         if status['patched'] or status['insideCapturedPass'] or status['remainingPasses']:raise RuntimeError('Ordinary observation requires disarmed tracing')
     else:
-        armed=r.call('begin_geometry_schedule_trace',dict(citySession=r.city_session,operationId=Path(a.output).name,maxPasses=1))
+        armed=r.call('begin_geometry_schedule_trace',dict(citySession=r.city_session,operationId=Path(a.output).name,maxPasses=1,allowBurst=a.allow_burst))
         if not armed['patched'] or armed['remainingPasses']!=1:raise RuntimeError('Trace not armed')
     try:
         change('select' if a.kind=='combined' else 'slope_select',start=start,end=end)

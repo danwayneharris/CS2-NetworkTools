@@ -34,7 +34,7 @@ static class ScheduleTranspilerTests {
         }
         var changed = Rewrite(calls);
         var indices = calls.Select((m, i) => i).Where(i => calls[i] != changed[i]).ToArray();
-        if (indices.Length != 5) throw new Exception($"Expected 5 replacements, got {indices.Length}");
+        if (indices.Length != 8) throw new Exception($"Expected 8 replacements, got {indices.Length}");
         foreach (int i in indices) {
             var before = calls[i]; var after = changed[i];
             if (after.DeclaringType != mod || before.ReturnType != after.ReturnType
@@ -47,15 +47,15 @@ static class ScheduleTranspilerTests {
             catch (Exception e) when (e.GetBaseException().Message == expected) { return; }
             throw new Exception("Missing rejection: " + expected);
         }
-        Reject(calls.Where((_, i) => i != indices[0]).ToArray(), "geometry_schedule_call_sites_changed:4");
-        Reject(calls.Append(calls[indices[0]]).ToArray(), "geometry_schedule_call_sites_changed:6");
+        Reject(calls.Where((_, i) => i != indices[0]).ToArray(), "geometry_schedule_call_sites_changed:7");
+        Reject(calls.Append(calls[indices[0]]).ToArray(), "geometry_schedule_call_sites_changed:9");
         File.WriteAllText(reportPath, JsonSerializer.Serialize(new {
             scope = "Actual research transpiler; installed native call operands; no Unity execution",
             gameMvid = native.Module.ModuleVersionId, bridgePath, callCount = calls.Length,
             replacements = indices.Select(i => new { native = calls[i].ToString(), replacement = changed[i].ToString() }),
             negativeTests = new[] { "missing call site rejected", "extra call site rejected" }
         }, new JsonSerializerOptions { WriteIndented = true }));
-        Console.WriteLine("PASS: 5 native scheduling signatures preserved; missing/extra sites rejected");
+        Console.WriteLine("PASS: 8 native scheduling signatures preserved; missing/extra sites rejected");
         return 0;
     }
 

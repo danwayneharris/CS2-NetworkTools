@@ -63,6 +63,10 @@ public readonly struct ReplayChunk(ReplayWorld world, Entity[] entities) {
     public ReplayArray<T> GetNativeArray<T>(ref ReplayComponentType<T> _) {
         var capturedWorld = world;
         var capturedEntities = entities;
+        // Unity returns an empty array for a component absent from the chunk.
+        // Unknown presence still throws through Has/Try rather than becoming empty.
+        if (!Has(ref _)) return new(_ => throw new IndexOutOfRangeException(),
+            (_, _) => throw new IndexOutOfRangeException(), 0);
         return new(i => capturedWorld.Get<T>(capturedEntities[i]),
             (i, value) => capturedWorld.Set(capturedEntities[i], value), entities.Length);
     }
@@ -80,7 +84,7 @@ public sealed class ReplayList<T> : IDisposable {
     public ReplayList(int capacity, int _) { values = new(capacity); }
     public int Length => values.Count;
     public void Add(in T value) => values.Add(value);
-    public T this[int index] => values[index];
+    public T this[int index] { get => values[index]; set => values[index] = value; }
     public ref T ElementAt(int index) => ref CollectionsMarshal.AsSpan(values)[index];
     public void Clear() => values.Clear();
     public void Dispose() { }

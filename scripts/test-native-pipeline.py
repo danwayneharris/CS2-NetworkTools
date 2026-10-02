@@ -6,7 +6,9 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     for n in ('dll','trace','output'):p.add_argument('--'+n,type=Path,required=True)
     p.add_argument('--junction',action='store_true')
+    p.add_argument('--full',action='store_true')
     a=p.parse_args();a.output.mkdir(parents=True,exist_ok=False)
+    a.junction=a.junction or a.full
     original=json.loads(a.trace.read_text(encoding='utf-8-sig'));results=[]
     records=[json.loads(Path(e['path']).read_text()) for e in original['result']['events'] if 'path' in e]
     init_roots={tuple(e) for r in records if r['job'].endswith('+InitializeNodeGeometryJob') and r['phase']=='entry' for e in r['roots']}
@@ -19,7 +21,7 @@ def main():
             if edit and edit(record):
                 path=folder/(str(i)+'.json');path.write_text(json.dumps(record));e['path']=str(path.resolve())
         request=folder/'trace.json';request.write_text(json.dumps(trace));report=folder/'report.json'
-        proc=subprocess.run(['dotnet',str(a.dll),'--pipeline-junction' if a.junction else '--pipeline',str(request),str(report)],capture_output=True,text=True)
+        proc=subprocess.run(['dotnet',str(a.dll),'--pipeline-full' if a.full else '--pipeline-junction' if a.junction else '--pipeline',str(request),str(report)],capture_output=True,text=True)
         (folder/'stderr.txt').write_text(proc.stderr)
         assert proc.returncode==exit_code,(name,proc.returncode,proc.stderr)
         if exit_code==2:assert 'Native replay rejected:' in proc.stderr and not report.exists();data=None
@@ -34,11 +36,14 @@ def main():
             cells=row['components'];e=tuple(row['id'])
             if job=='CalculateEdgeGeometryJob' and e in init_roots and cells.get('Game.Net.NodeGeometry',{}).get('presence')=='present':
                 cells['Game.Net.NodeGeometry']['value']['m_Position']+=1000;changed=True
-            if job in ('FlattenNodeGeometryJob','FinishEdgeGeometryJob','CalculateNodeGeometryJob') and e in edge_roots and cells.get('Game.Net.EdgeGeometry',{}).get('presence')=='present':
+            if job in ('FlattenNodeGeometryJob','FinishEdgeGeometryJob','CalculateNodeGeometryJob','CalculateIntersectionGeometryJob','CopyNodeGeometryJob','UpdateNodeGeometryJob') and e in edge_roots and cells.get('Game.Net.EdgeGeometry',{}).get('presence')=='present':
                 cells['Game.Net.EdgeGeometry']['value']['m_Start']['m_Left']['a']['y']+=1000;changed=True
-            if job=='CalculateNodeGeometryJob' and e in edge_roots:
+            if job in ('CalculateNodeGeometryJob','CalculateIntersectionGeometryJob','CopyNodeGeometryJob','UpdateNodeGeometryJob') and e in edge_roots:
                 for name in ('Game.Net.StartNodeGeometry','Game.Net.EndNodeGeometry'):
-                    cells[name]['value']['m_Geometry']['m_Left']['m_Left']['a']['y']+=1000;changed=True
+                    if name in cells:cells[name]['value']['m_Geometry']['m_Left']['m_Left']['a']['y']+=1000;changed=True
+        if job=='CopyNodeGeometryJob':
+            for value in r['fields']['m_BufferedData']:value['m_StartMiddle']['a']['x']+=1000
+            changed=True
         return changed
     poisoned=run('recorded-intermediates-poisoned',poison)
     assert poisoned['stageReports']==baseline['stageReports'],'Recorded intermediate replaced computed output'
@@ -82,6 +87,15 @@ def main():
                 return True
             return False
         run('missing-junction-composition-pieces',missing_junction,2)
+    if a.full:
+        def wrong_publication(r,scratch=False):
+            if scratch and r['job'].endswith('+CalculateIntersectionGeometryJob') and r['phase']=='exit':
+                r['fields']['m_BufferedData'][0]['m_StartMiddle']['a']['x']+=1;return True
+            if not scratch and r['job'].endswith('+UpdateNodeGeometryJob') and r['phase']=='exit':
+                r['fields']['m_NodeGeometryType']['values'][0]['m_Bounds']['min']['x']+=1;return True
+            return False
+        run('wrong-intersection-scratch',lambda r:wrong_publication(r,True),1)
+        run('wrong-published-node-bounds',wrong_publication,1)
     (a.output/'summary.json').write_text(json.dumps(dict(passed=True,tests=results),indent=2))
     print(f'PASS {len(results)} pipeline execution, missing-data, identity, metric and anti-substitution checks')
 

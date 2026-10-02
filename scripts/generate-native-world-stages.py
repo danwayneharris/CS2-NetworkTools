@@ -43,17 +43,18 @@ def main():
     # Sorting is not called by either selected stage; do not emulate its dependencies.
     iterator = iterator.replace(block(iterator, 'public void AddSorted('), '')
     pieces = [iterator]
-    for name in ('InitializeNodeGeometryJob', 'FlattenNodeGeometryJob'):
+    for name in ('InitializeNodeGeometryJob', 'FlattenNodeGeometryJob', 'UpdateNodeGeometryJob'):
         original = block(geometry, 'private struct ' + name)
         original = original.replace(block(original, 'void IJobChunk.Execute('), '')
         original = original.replace('private struct', 'public struct', 1).replace(' : IJobChunk', '')
         original = original.replace('in ArchetypeChunk chunk, int unfilteredChunkIndex, bool useEnabledMask, in v128 chunkEnabledMask', 'in ReplayChunk chunk')
         pieces.append(original)
-    for name in ('CalculateEdgeGeometryJob', 'FinishEdgeGeometryJob', 'CalculateNodeGeometryJob'):
+    for name in ('CalculateEdgeGeometryJob', 'FinishEdgeGeometryJob', 'CalculateNodeGeometryJob', 'CalculateIntersectionGeometryJob', 'CopyNodeGeometryJob'):
         edge = block(geometry, 'private struct ' + name)
         edge = edge.replace('private struct', 'public struct', 1).replace(' : IJobParallelForDefer', '')
         pieces.append(edge)
     pieces.append(block(geometry, 'private struct EdgeData').replace('private struct', 'public struct', 1))
+    pieces.append(block(geometry, 'private struct IntersectionData').replace('private struct', 'public struct', 1))
     pieces.append('public static class ReplayCompositionHelpers {\n' + block(sources['NetCompositionHelpers.cs'], 'public static float2 CalculateRoundaboutSize(') + '\n}')
     terrain = sources['TerrainUtils.cs']
     constant = re.search(r'public static readonly float3 BackDropWorldSizeScale[^;]+;', terrain).group(0)
@@ -99,7 +100,7 @@ namespace NativeReplay;
     destination.mkdir(parents=True, exist_ok=True)
     output = destination / 'WorldStages.g.cs'
     output.write_text(header + text, encoding='utf-8')
-    ledger = dict(sourceHashes=expected, stages=['InitializeNodeGeometryJob', 'CalculateEdgeGeometryJob', 'FlattenNodeGeometryJob', 'FinishEdgeGeometryJob', 'CalculateNodeGeometryJob'],
+    ledger = dict(sourceHashes=expected, stages=['InitializeNodeGeometryJob', 'CalculateEdgeGeometryJob', 'FlattenNodeGeometryJob', 'FinishEdgeGeometryJob', 'CalculateNodeGeometryJob', 'CalculateIntersectionGeometryJob', 'CopyNodeGeometryJob', 'UpdateNodeGeometryJob'],
         adaptations=['Rename storage/lookup types', 'Single explicit replay chunk entry point',
                      'Remove job scheduling/read-only attributes and interface forwarding',
                      'Exclude unused EdgeIterator.AddSorted', 'Replace temporary allocator argument with inert marker',

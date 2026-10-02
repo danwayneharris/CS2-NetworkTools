@@ -22,7 +22,7 @@ validation and constraints, and [session evidence](session-notes/2026-10-01-1810
 for the evolving test results. Native mainline, terminal-ramp, hill/crest-dip, rail
 and interior-highway cases have passed on their recorded builds. The captured ramp
 now passes three repeated Applies after a combined-only stationing correction.
-Split coverage, final regression reconciliation and human review remain in progress;
+Compatible split and reverse/repeat coverage now pass; human review remains pending;
 these cases are not general feature certification.
 
 ## Original design discussion and future options

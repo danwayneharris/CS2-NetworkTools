@@ -457,3 +457,41 @@ preview probe, preserving correctness identity and old trace consumers. Existing
 128-node detail cap applies. Production adapter compilation/tests pass. No solver
 or validation changes. This instrumentation increment still needs full build and
 live capture verification before calling the sprint complete.
+
+
+## Final diagnostics and requirement audit
+
+Runtime 08d7f85 full Debug build/postprocess/UI/deploy: passed, 32 warnings/0 errors.
+DLL SHA256 4CC93AB32DEE612674B0647F5A359CCCF4F85CDB50433A56F711C1D0F66427B2.
+Compile-only Release: passed; Debug deployment unchanged. Seven actual aggregate
+suites passed; all 19 Python scripts also passed after adding diagnostic parser tests.
+The final three-Apply ramp run passed again with 0.34mm maximum control drift.
+Twelve complete actual horizontal/vertical/final stage captures validated, with
+no missing/rejected groups or horizontal change during the vertical stages.
+
+Final review save: CitiesIIAgentBridge-combined-review-complete-20261002-025652-37bbd9af.cok.
+Game remains paused; loaded from the original trumpet baseline, final ramp edits
+saved in this unique checkpoint. No subsequent unsaved network changes.
+
+Completion evidence was checked against the requested scope:
+- Baseline/worktree/user protection: isolated branch from verified main 5cc24c0;
+  no original-user-checkout, bridge, submodule or committed dependency changes.
+- Bounded architecture A-E: combined-smoothing-architecture.md and implemented
+  original ownership, sectioned vertical fitting, current candidate gates and
+  bounded coordinated surface/junction validation. No broad refactor.
+- Combined feature/constraints/UI/provider: Debug opt-in, one candidate/Apply,
+  independent modes preserved; source and production/native tests in review ledger.
+- Offline cases: actual math/adapter suites plus captured station counterexample,
+  original-input comparison and cross-validator identity tests; aggregate passed.
+- Native cases: ramp/hill/crest-dip/rail/interior-highway/split/trumpet, operation
+  orders, reverse, repeat and prepared save reload documented by build, not conflated.
+- Diagnostics: original, intermediate and final geometry; existing timing,
+  convergence/failure, lane snapshots and provider/replay retained. Raw artifacts
+  ignored; compact fixtures and reusable parser/tests retained.
+- Documentation/publication: exact review saves, manual checklist, known failed
+  offset-only predictor and Release/visual/vehicle limitations stated explicitly.
+  Draft PR #15 targets the fork's main; final follow-up push still to perform.
+
+The requested outcome is experimental review readiness, not release certification.
+Human UI/visual/vehicle review and the explicitly documented future policy decisions
+remain outside the autonomous completion claim. No test invariant was loosened.

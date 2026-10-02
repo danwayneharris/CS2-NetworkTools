@@ -85,14 +85,18 @@ record save hashes and positions; local toy saves are not bundled.
 
 ## Final candidate and game state
 
-Runtime source: ac974e7. Final Debug build/postprocess/UI/deploy passed (32 warnings,
+Runtime source: 08d7f85 (intermediate diagnostics added after ac974e7; solver unchanged). Final Debug build/postprocess/UI/deploy passed (32 warnings,
 zero errors); final Compile-only Release check passed. Deployed DLL SHA256:
-`E04A87559607F2C0DFCBB0748C6FBFFD1FF0EA5C0E907791F5A0ACE5F229A1C1`.
+`4CC93AB32DEE612674B0647F5A359CCCF4F85CDB50433A56F711C1D0F66427B2`.
 Final native three-Apply ramp sequence passed again (0.34mm maximum control drift).
-Evidence: `artifacts/combined-final-ramp/summary.json` and per-stage reports.
+Twelve complete horizontal/vertical/final native stage captures passed the offline
+log checker; no XZ changes occurred during vertical/surface stages. All seven
+aggregate suites passed again at 08d7f85, and all 19 Python test scripts passed
+after adding the diagnostic parser tests.
+Evidence: `artifacts/combined-trace-ramp/summary.json` and per-stage reports.
 Game paused in the toy loaded from `bridge test - trumpet combined baseline`, with
 the final ramp changes saved as
-`CitiesIIAgentBridge-combined-final-review-ramp-20261002-024520-35cb40dd`.
+`CitiesIIAgentBridge-combined-review-complete-20261002-025652-37bbd9af`.
 No subsequent unsaved network edits were made by this sprint.
 
 ## Exact review saves

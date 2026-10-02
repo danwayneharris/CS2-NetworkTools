@@ -169,3 +169,15 @@ preview/Apply agreement but a substantial generated roadside-surface discrepancy
 (up to 2.28m in corresponding control-point Y) and 0.414m sampled terrain change.
 Prior Curve equality must not be read as proof of rendered-surface equality. See
 [bounded surface investigation](session-notes/2026-10-01-2159-surface-preview-observations.md).
+
+### Follow-up: structural preview mismatch corrected
+
+The ground/elevated transition captured on October 1 now has a focused correction:
+RoadShapePreviewCourse carries stored edge and endpoint Elevation independently,
+without inferring node elevation from edge-wide Upgraded flags. This keeps a ground
+transition node from becoming elevated only in the preview. One native SlopeEaseInOut
+replay now matches all five observed authored curves, generated edge-surface curves
+and compositions before/after Apply, with directed lane connections unchanged.
+Terrain deformation itself is still not previewed. See the
+[fix and qualification record](session-notes/2026-10-01-2305-preview-structure-fix.md)
+for scope; this does not establish universal surface fidelity.

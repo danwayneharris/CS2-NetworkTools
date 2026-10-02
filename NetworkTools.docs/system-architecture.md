@@ -501,3 +501,13 @@ Structured probes, geometry captures, native observations, timing, rejection
 reasons and provider/replay access remain development tools. Required Apply checks
 must survive disabling optional logging. No removal of defensive synchronization,
 broad protocol relocation or generalized graph-edit framework is part of this work.
+
+### Existing-edge preview structural metadata
+
+RoadShapePreviewCourse constructs courses for existing selected and incident edges.
+It preserves each edge's and each endpoint's stored Elevation independently,
+including ground-to-elevated and tunnel-portal transitions. It does not derive node
+Elevation from the incident edge's Upgraded classification. Apply preserves those
+structural components. The game still owns native composition/surface generation;
+authored Curve agreement alone is insufficient to establish surface agreement.
+See the [transition regression](session-notes/2026-10-01-2305-preview-structure-fix.md).

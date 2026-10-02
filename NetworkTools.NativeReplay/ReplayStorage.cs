@@ -14,6 +14,9 @@ public sealed class ReplayWorld {
     public bool Try<T>(Entity entity, out T value) {
         if (Reads.Count >= ReadLimit) throw new InvalidOperationException("Captured-state read budget exceeded; possible cyclic references");
         Reads.Add($"{entity.Index}:{entity.Version}/{typeof(T).FullName}");
+        // Installed EntityComponentStore.Exists rejects version 0; Entity.Null
+        // is a known nonexistent identity, not an uncaptured world entity.
+        if (entity == Entity.Null) { value = default!; return false; }
         if (!cells.TryGetValue((entity, typeof(T)), out var cell))
             throw new InvalidOperationException($"Not captured: {entity.Index}:{entity.Version}/{typeof(T).FullName}");
         value = cell is null ? default! : (T)cell;

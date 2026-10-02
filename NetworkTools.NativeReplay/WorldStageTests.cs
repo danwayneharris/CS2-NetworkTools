@@ -119,6 +119,13 @@ static class WorldStageTests {
             Bind<InitializeNodeGeometryJob>(unknown).Execute(new ReplayChunk(unknown, new[] { Id(1) }));
         } catch (InvalidOperationException e) { rejected = e.Message.StartsWith("Not captured:"); }
         Check(rejected, "Unknown is not silently absent");
+        var nullWorld = new ReplayWorld();
+        Check(!nullWorld.Try<Node>(Entity.Null, out _), "Null component lookup reports nonexistent");
+        Check(!nullWorld.Try<ConnectedEdge[]>(Entity.Null, out _), "Null buffer lookup reports nonexistent");
+        rejected = false;
+        try { nullWorld.Get<Node>(Entity.Null); }
+        catch (InvalidOperationException e) { rejected = e.Message.StartsWith("Required component absent:"); }
+        Check(rejected, "Required null lookup still fails");
         foreach (bool temp in new[] { false, true }) {
             var map = Flatten(FlattenWorld(temp, false));
             Check(map.Values.Count == 2, "Flatten emits both participants");

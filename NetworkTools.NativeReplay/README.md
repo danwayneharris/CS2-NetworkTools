@@ -37,7 +37,8 @@ status. NativeArray allocation is currently unavailable outside the Unity runtim
 
 The original-binary method path does not include ECS reconstruction, query selection,
 full finishing jobs or terrain. The source-derived path below adds bounded stateful
-stages. Neither yet has native preview/permanent differential qualification.
+stages. Initialize and flatten now have bounded diagnostic preview/permanent
+differential evidence, described below; the complete pipeline remains unqualified.
 
 ## Stateful source replay (research increment)
 
@@ -77,5 +78,31 @@ additional prerequisite for successful differential reproduction.
 Native ECS query selection and parallel scheduling are not simulated: nodes are an
 explicit input, executed as homogeneous single-node chunks. Original EdgeIterator
 logic determines their edge participants using captured buffer/tag data. Missing
-state is never silently treated as absent. The actual anchor is not yet captured
-at this stage boundary; synthetic tests do not retire native regression cases.
+state is never silently treated as absent. Entity.Null is a known nonexistent
+identity (installed ECS rejects version zero), so optional lookups return false;
+required access still fails. Other uncaptured identities still fail explicitly.
+
+## Native scheduling capture differential
+
+The opt-in Bridge research tracer records paired completed scheduling boundaries.
+It adds synchronization and can affect timing/change versions. The first captured
+preview/Apply run did **not** retain the historical surface discrepancy; no causal
+attribution to instrumentation alone is established without an ordinary control.
+All 11 preview and 6 permanent initialization/flatten node results, plus respective
+7 and 4 height-map entries, match offline float32 output exactly. These are separate
+stage tests supplied with recorded upstream inputs, not end-to-end prediction.
+
+```powershell
+python scripts/project-native-initialize.py --trace-status <completed-trace.json> --stage InitializeNodeGeometry --output <new-fixture-dir>
+# Or --stage FlattenNodeGeometry. The name retains its initial-stage origin.
+dotnet NetworkTools.NativeReplay/bin/Debug/net8.0/NetworkTools.NativeReplay.dll --world <new-fixture-dir>/fixture.json <new-fixture-dir>/replay.json
+python scripts/compare-native-initialize.py <new-fixture-dir> --output <new-fixture-dir>/differential.json
+```
+
+The projector keeps native outputs in a separate expected.json, preserves explicit
+absence, and leaves unavailable cells unknown. Flatten starts with a fresh map,
+as native OnUpdate does; its recorded downstream map is comparison-only. Exact
+IEEE754 binary32 comparison avoids mistaking different JSON decimal renderings for
+numeric errors. Tests reject a deliberately wrong output and missing identity.
+Source captures, checksums, omissions and instrumented boundaries remain in the
+local fixture manifests. No live regression has been retired.

@@ -22,11 +22,12 @@
     },
     {
       "id": "source-world-initialize-flatten-finish",
-      "status": "synthetic-validation-only",
+      "status": "bounded-native-initialize-flatten-differential",
       "implementation": "Hash-pinned local source generation with explicit managed storage adapters",
       "methods": ["GeometrySystem.InitializeNodeGeometryJob", "GeometrySystem.FlattenNodeGeometryJob", "GeometrySystem.FinishEdgeGeometryJob except terrain sampling", "EdgeIterator except unused AddSorted"],
-      "validation": "37 synthetic source-world assertions; 16 schema-2 JSON contract/output cases including computed flatten-to-finish propagation and incorrect-result rejection",
-      "unsupported": ["Native query discovery", "Parallel scheduling equivalence", "Coherent native anchor inputs", "Terrain", "Native differential validation"],
+      "validation": "40 synthetic assertions; 16 schema-2 contract cases. Instrumented preview: 11 nodes initialize/flatten and 7 height-map entries exact float32; instrumented Apply: 6 nodes and 4 map entries exact float32. Wrong output and missing identity rejected.",
+      "nativeDifferentialScope": "Separate initialize and flatten stage tests using native upstream state. Diagnostic completion barriers; this run did not exhibit the historical surface discrepancy. Not end-to-end prediction.",
+      "unsupported": ["Native query discovery", "Parallel scheduling equivalence", "Ordinary failing anchor reproduction", "Terrain", "Native finishing differential", "Held-out qualification"],
       "liveChecksRetired": []
     },
     {

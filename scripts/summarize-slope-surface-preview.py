@@ -26,6 +26,16 @@ def error(a,b):
     return dict(maxDistance=max(math.dist(x[k],y[k]) for k in x),maxY=max(abs(x[k][1]-y[k][1]) for k in x),points=len(x))
 o=owners(b['snapshots']);v=owners([s['connectedSnapshot'] for s in b['previews']],True);n=owners(after['snapshots']);selected={identity(e) for e in b['path']['edges']}
 rows=[dict(edge=k,selected=k in selected,authoredPreviewVsApply=error(v[k]['curve'],n[k]['curve']),surfacePreviewVsApply=error(v[k]['edgeGeometry'],n[k]['edgeGeometry']),surfaceBeforeVsAfter=error(o[k]['edgeGeometry'],n[k]['edgeGeometry'])) for k in v]
+# Composition is an independent native output: equal authored cubics do not
+# establish matching ground/bridge classification or generated surface width.
+def composition_summary(owner):
+    return {part:{field:data[field] for field in ('width','state','flags')}
+            for part,data in owner['composition'].items()}
+for row in rows:
+    key=row['edge']
+    row['previewComposition']=composition_summary(v[key])
+    row['appliedComposition']=composition_summary(n[key])
+    row['compositionMatches']=row['previewComposition']==row['appliedComposition']
 x=b['terrain']['samples'];y=after['terrain']['samples']
 if len(x)!=len(y) or not x:raise ValueError('Terrain sample coverage mismatch')
 report=dict(mode=b['state']['mode'],submission=b['state']['submission'],rows=rows,terrainSampleCount=len(x),terrainMaxYChange=max(abs(a['position']['y']-z['position']['y']) for a,z in zip(x,y)),limits='Corresponding generated Bezier controls, not a mesh-distance or terrain-causality proof.')

@@ -22,7 +22,66 @@
         "maxDistance": 0.0032541382883925388,
         "maxY": 0.00324599999999009,
         "points": 16
-      }
+      },
+      "previewComposition": {
+        "edge": {
+          "width": 13.0,
+          "state": "HasSurface, HasForwardRoadLanes, HasPedestrianLanes, HasBackwardRoadLanes, BlockZone",
+          "flags": {
+            "general": "Edge, Elevated, Pavement",
+            "left": "0",
+            "right": "0"
+          }
+        },
+        "startNode": {
+          "width": 13.0,
+          "state": "HasSurface, BlockZone",
+          "flags": {
+            "general": "Node, Invert, Elevated, Pavement",
+            "left": "0",
+            "right": "0"
+          }
+        },
+        "endNode": {
+          "width": 13.0,
+          "state": "HasSurface, BlockZone",
+          "flags": {
+            "general": "Node, Elevated, Pavement",
+            "left": "0",
+            "right": "0"
+          }
+        }
+      },
+      "appliedComposition": {
+        "edge": {
+          "width": 13.0,
+          "state": "HasSurface, HasForwardRoadLanes, HasPedestrianLanes, HasBackwardRoadLanes, BlockZone",
+          "flags": {
+            "general": "Edge, Elevated, Pavement",
+            "left": "0",
+            "right": "0"
+          }
+        },
+        "startNode": {
+          "width": 13.0,
+          "state": "HasSurface, BlockZone, LowerToTerrain",
+          "flags": {
+            "general": "Node, Invert, Elevated, Pavement",
+            "left": "HighTransition",
+            "right": "HighTransition"
+          }
+        },
+        "endNode": {
+          "width": 13.0,
+          "state": "HasSurface, BlockZone",
+          "flags": {
+            "general": "Node, Elevated, Pavement",
+            "left": "0",
+            "right": "0"
+          }
+        }
+      },
+      "compositionMatches": false
     },
     {
       "edge": [
@@ -44,7 +103,66 @@
         "maxDistance": 0.2839611346660795,
         "maxY": 0.15049999999996544,
         "points": 16
-      }
+      },
+      "previewComposition": {
+        "edge": {
+          "width": 13.0,
+          "state": "HasSurface, HasForwardRoadLanes, HasPedestrianLanes, HasBackwardRoadLanes, BlockZone",
+          "flags": {
+            "general": "Edge, Elevated, Pavement",
+            "left": "0",
+            "right": "0"
+          }
+        },
+        "startNode": {
+          "width": 13.0,
+          "state": "HasSurface, BlockZone",
+          "flags": {
+            "general": "Node, Invert, Elevated, Pavement",
+            "left": "0",
+            "right": "0"
+          }
+        },
+        "endNode": {
+          "width": 13.0,
+          "state": "HasSurface, BlockZone, LowerToTerrain",
+          "flags": {
+            "general": "Node, Intersection, Elevated, Pavement",
+            "left": "HighTransition",
+            "right": "HighTransition"
+          }
+        }
+      },
+      "appliedComposition": {
+        "edge": {
+          "width": 12.0,
+          "state": "ExclusiveGround, HasSurface, HasForwardRoadLanes, HasPedestrianLanes, HasBackwardRoadLanes, BlockZone, LowerToTerrain",
+          "flags": {
+            "general": "Edge, Pavement",
+            "left": "0",
+            "right": "0"
+          }
+        },
+        "startNode": {
+          "width": 12.0,
+          "state": "ExclusiveGround, HasSurface, BlockZone, LowerToTerrain",
+          "flags": {
+            "general": "Node, Invert, Pavement",
+            "left": "0",
+            "right": "0"
+          }
+        },
+        "endNode": {
+          "width": 12.0,
+          "state": "ExclusiveGround, HasSurface, BlockZone, LowerToTerrain",
+          "flags": {
+            "general": "Node, Intersection, Pavement",
+            "left": "0",
+            "right": "0"
+          }
+        }
+      },
+      "compositionMatches": false
     },
     {
       "edge": [
@@ -66,7 +184,66 @@
         "maxDistance": 0.08754905653415476,
         "maxY": 0.005040000000008149,
         "points": 16
-      }
+      },
+      "previewComposition": {
+        "edge": {
+          "width": 8.0,
+          "state": "ExclusiveGround, HasSurface, HasForwardRoadLanes, SeparatedCarriageways, HasPedestrianLanes, Asymmetric, BlockZone, LowerToTerrain",
+          "flags": {
+            "general": "Edge, Pavement",
+            "left": "0",
+            "right": "0"
+          }
+        },
+        "startNode": {
+          "width": 8.0,
+          "state": "ExclusiveGround, HasSurface, BlockZone, LowerToTerrain",
+          "flags": {
+            "general": "Node, Invert, Intersection, Pavement",
+            "left": "0",
+            "right": "0"
+          }
+        },
+        "endNode": {
+          "width": 8.0,
+          "state": "ExclusiveGround, HasSurface, BlockZone, LowerToTerrain",
+          "flags": {
+            "general": "Node, Pavement",
+            "left": "0",
+            "right": "0"
+          }
+        }
+      },
+      "appliedComposition": {
+        "edge": {
+          "width": 8.0,
+          "state": "ExclusiveGround, HasSurface, HasForwardRoadLanes, SeparatedCarriageways, HasPedestrianLanes, Asymmetric, BlockZone, LowerToTerrain",
+          "flags": {
+            "general": "Edge, Pavement",
+            "left": "0",
+            "right": "0"
+          }
+        },
+        "startNode": {
+          "width": 8.0,
+          "state": "ExclusiveGround, HasSurface, BlockZone, LowerToTerrain",
+          "flags": {
+            "general": "Node, Invert, Intersection, Pavement",
+            "left": "0",
+            "right": "0"
+          }
+        },
+        "endNode": {
+          "width": 8.0,
+          "state": "ExclusiveGround, HasSurface, BlockZone, LowerToTerrain",
+          "flags": {
+            "general": "Node, Pavement",
+            "left": "0",
+            "right": "0"
+          }
+        }
+      },
+      "compositionMatches": true
     },
     {
       "edge": [
@@ -88,7 +265,66 @@
         "maxDistance": 0.06222725744379351,
         "maxY": 0.005336999999940417,
         "points": 16
-      }
+      },
+      "previewComposition": {
+        "edge": {
+          "width": 8.0,
+          "state": "ExclusiveGround, HasSurface, HasForwardRoadLanes, SeparatedCarriageways, HasPedestrianLanes, Asymmetric, BlockZone, LowerToTerrain",
+          "flags": {
+            "general": "Edge, Pavement",
+            "left": "0",
+            "right": "0"
+          }
+        },
+        "startNode": {
+          "width": 8.0,
+          "state": "ExclusiveGround, HasSurface, BlockZone, LowerToTerrain",
+          "flags": {
+            "general": "Node, Invert, Pavement",
+            "left": "0",
+            "right": "0"
+          }
+        },
+        "endNode": {
+          "width": 8.0,
+          "state": "ExclusiveGround, HasSurface, BlockZone, LowerToTerrain",
+          "flags": {
+            "general": "Node, Intersection, Pavement",
+            "left": "0",
+            "right": "0"
+          }
+        }
+      },
+      "appliedComposition": {
+        "edge": {
+          "width": 8.0,
+          "state": "ExclusiveGround, HasSurface, HasForwardRoadLanes, SeparatedCarriageways, HasPedestrianLanes, Asymmetric, BlockZone, LowerToTerrain",
+          "flags": {
+            "general": "Edge, Pavement",
+            "left": "0",
+            "right": "0"
+          }
+        },
+        "startNode": {
+          "width": 8.0,
+          "state": "ExclusiveGround, HasSurface, BlockZone, LowerToTerrain",
+          "flags": {
+            "general": "Node, Invert, Pavement",
+            "left": "0",
+            "right": "0"
+          }
+        },
+        "endNode": {
+          "width": 8.0,
+          "state": "ExclusiveGround, HasSurface, BlockZone, LowerToTerrain",
+          "flags": {
+            "general": "Node, Intersection, Pavement",
+            "left": "0",
+            "right": "0"
+          }
+        }
+      },
+      "compositionMatches": true
     },
     {
       "edge": [
@@ -110,14 +346,70 @@
         "maxDistance": 0.0044947191236232335,
         "maxY": 0.003399999999942338,
         "points": 16
-      }
+      },
+      "previewComposition": {
+        "edge": {
+          "width": 20.0,
+          "state": "ExclusiveGround, HasSurface, HasForwardRoadLanes, HasPedestrianLanes, HasBackwardRoadLanes, BlockZone, Multilane, LowerToTerrain",
+          "flags": {
+            "general": "Edge, Pavement",
+            "left": "0",
+            "right": "0"
+          }
+        },
+        "startNode": {
+          "width": 20.0,
+          "state": "ExclusiveGround, HasSurface, BlockZone, LowerToTerrain",
+          "flags": {
+            "general": "Node, Invert, Intersection, Pavement",
+            "left": "0",
+            "right": "0"
+          }
+        },
+        "endNode": {
+          "width": 20.0,
+          "state": "ExclusiveGround, HasSurface, BlockZone, LowerToTerrain",
+          "flags": {
+            "general": "Node, DeadEnd, Pavement",
+            "left": "0",
+            "right": "0"
+          }
+        }
+      },
+      "appliedComposition": {
+        "edge": {
+          "width": 20.0,
+          "state": "ExclusiveGround, HasSurface, HasForwardRoadLanes, HasPedestrianLanes, HasBackwardRoadLanes, BlockZone, Multilane, LowerToTerrain",
+          "flags": {
+            "general": "Edge, Pavement",
+            "left": "0",
+            "right": "0"
+          }
+        },
+        "startNode": {
+          "width": 20.0,
+          "state": "ExclusiveGround, HasSurface, BlockZone, LowerToTerrain",
+          "flags": {
+            "general": "Node, Invert, Intersection, Pavement",
+            "left": "0",
+            "right": "0"
+          }
+        },
+        "endNode": {
+          "width": 20.0,
+          "state": "ExclusiveGround, HasSurface, BlockZone, LowerToTerrain",
+          "flags": {
+            "general": "Node, DeadEnd, Pavement",
+            "left": "0",
+            "right": "0"
+          }
+        }
+      },
+      "compositionMatches": true
     }
   ],
   "terrainSampleCount": 225,
   "terrainMaxYChange": 0.41399999999998727,
   "limits": "Corresponding generated Bezier controls, not a mesh-distance or terrain-causality proof.",
-  "surfacesStableAfterApply": true,
-  "beforeCheckpoint": "CitiesIIAgentBridge-surface-preview-before-apply-20261002-045548-ef974c79",
-  "afterCheckpoint": "CitiesIIAgentBridge-surface-preview-after-apply-20261002-045856-b9415c47",
-  "binarySha256": "6EC3B8AAF922CC332898ED89ADB1762CAAF0DB2BB91057AEE2E9885D0383F360"
+  "surfacesStableAfterApply": true
 }

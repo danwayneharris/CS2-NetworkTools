@@ -94,8 +94,18 @@ public sealed class ReplayMap<TKey, TValue> where TKey : notnull {
     }
 }
 
-public struct ReplayTerrainData { }
+public struct ReplayTerrainData {
+    public bool captured;
+    public ushort[] heights, downscaledHeights;
+    public Unity.Mathematics.int3 resolution, downScaledResolution;
+    public Unity.Mathematics.float3 scale, offset;
+    public bool hasBackdrop;
+}
 public static class ReplayTerrain {
-    public static float SampleHeight(ref ReplayTerrainData data, Unity.Mathematics.float3 position) =>
-        throw new InvalidOperationException("Not captured: terrain sampler required by FinishEdgeGeometry; terrain execution unsupported");
+    public static int SampleCount;
+    public static float SampleHeight(ref ReplayTerrainData data, Unity.Mathematics.float3 position) {
+        if (!data.captured) throw new InvalidOperationException("Not captured: terrain sampler required by FinishEdgeGeometry");
+        SampleCount++;
+        return ReplayTerrainCore.SampleHeight(ref data, position);
+    }
 }

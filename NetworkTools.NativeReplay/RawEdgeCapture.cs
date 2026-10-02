@@ -9,14 +9,14 @@ using Unity.Entities;
 // Full captured value fields for a single, explicitly bounded CalculateEdge job.
 // The two native archetype handles are outside the hash-pinned stage read set.
 static class RawEdgeCapture {
-    const string GameHash = "AAEE15C4FA41C130ABAA1183840667E4FAAE531D67E8A9FA7536618EFFA2F86A";
+    internal const string GameHash = "AAEE15C4FA41C130ABAA1183840667E4FAAE531D67E8A9FA7536618EFFA2F86A";
     static readonly BindingFlags Fields = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
     static readonly List<string> exclusions = new();
-    static Entity Id(JsonElement e) {
+    internal static Entity Id(JsonElement e) {
         if (e.GetArrayLength() != 2) throw new ArgumentException("Invalid entity identity");
         return new() { Index = e[0].GetInt32(), Version = e[1].GetInt32() };
     }
-    static object Decode(Type type, JsonElement e, string path) {
+    internal static object Decode(Type type, JsonElement e, string path) {
         if (type == typeof(Entity)) return Id(e);
         if (type.IsEnum) return Enum.ToObject(type, Decode(Enum.GetUnderlyingType(type), e, path));
         if (type.IsPrimitive) {
@@ -51,10 +51,10 @@ static class RawEdgeCapture {
         return result;
     }
     static string Hash(string path) => Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(path)));
-    static Dictionary<Entity, JsonElement> Rows(JsonElement capture) => capture.GetProperty("entities")
+    internal static Dictionary<Entity, JsonElement> Rows(JsonElement capture) => capture.GetProperty("entities")
         .EnumerateArray().ToDictionary(r => Id(r.GetProperty("id")), r => r.GetProperty("components"));
 
-    static void Compare(object actual, JsonElement expected, string path, List<object> differences, ref int count) {
+    internal static void Compare(object actual, JsonElement expected, string path, List<object> differences, ref int count) {
         Type type = actual.GetType();
         if (type.IsEnum) actual = Convert.ChangeType(actual, Enum.GetUnderlyingType(type));
         if (actual.GetType().IsPrimitive) {

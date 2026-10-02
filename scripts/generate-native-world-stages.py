@@ -54,6 +54,11 @@ def main():
     pieces.append(block(geometry, 'private struct EdgeData').replace('private struct', 'public struct', 1))
     pieces.append('public static class ReplayCompositionHelpers {\n' + block(sources['NetCompositionHelpers.cs'], 'public static float2 CalculateRoundaboutSize(') + '\n}')
     text = '\n'.join(pieces)
+    # The raw stage decoder excludes native archetype handles. Fail regeneration
+    # if this fixed stage closure starts reading them after a reviewed source change.
+    for excluded in ('m_EdgeCompositionArchetype', 'm_NodeCompositionArchetype'):
+        if excluded in text:
+            raise ValueError('Stage now requires excluded native archetype: ' + excluded)
     text = re.sub(r'\[(?:ReadOnly|WriteOnly|NativeDisableParallelForRestriction)\]\s*', '', text)
     replacements = {'EdgeIterator': 'ReplayEdgeIterator', 'ComponentLookup': 'ReplayLookup',
         'BufferLookup': 'ReplayBufferLookup', 'DynamicBuffer': 'ReplayBuffer',

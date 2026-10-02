@@ -106,3 +106,24 @@ IEEE754 binary32 comparison avoids mistaking different JSON decimal renderings f
 numeric errors. Tests reject a deliberately wrong output and missing identity.
 Source captures, checksums, omissions and instrumented boundaries remain in the
 local fixture manifests. No live regression has been retired.
+
+## Captured edge-stage execution
+
+```powershell
+dotnet NetworkTools.NativeReplay/bin/Debug/net8.0/NetworkTools.NativeReplay.dll --raw-edge <native-entry.json> <native-exit.json> <new-report.json>
+python scripts/test-raw-edge-capture.py --dll NetworkTools.NativeReplay/bin/Debug/net8.0/NetworkTools.NativeReplay.dll --entry <native-entry.json> --exit <native-exit.json> --output <new-test-dir>
+```
+
+This runs the locally generated CalculateEdge body against captured component
+fields and ordered buffers. Native exit data is comparison-only. The generator
+also adapts the hash-pinned CalculateRoundaboutSize buffer helper; remaining value
+helpers execute from installed assemblies. Two unused NetGeometryData archetype
+handles are excluded explicitly and guarded against source reads. Missing other
+fields/components fail. Schema, game MVID/hash, operation, pass, city and entity
+membership are checked.
+
+Exit 0 means exact compared output, 1 means a completed differential with mismatches,
+2 means rejected/unexecutable input. Initial preview/permanent reports have 71/52
+surface-coordinate differences up to about 1 mm. These are unresolved failures,
+not accepted tolerances. Seven contract/negative checks pass independently of that
+failure. This path has no native scheduler and does not retire live tests.

@@ -87,6 +87,17 @@ static class WorldStageTests {
         job.Execute(new ReplayChunk(world, new[] { Id(1) }));
         return map;
     }
+    static FinishEdgeGeometryJob Finish(ReplayWorld world, ReplayMap<int2, float4> map) {
+        foreach (int id in new[] { 2, 3 }) {
+            world.Record(Id(id), new Composition { m_Edge = Id(101) });
+            world.Absent<Owner>(Id(id));
+        }
+        world.Record(Id(101), new NetCompositionData { m_Width = 2, m_HeightRange = new Bounds1(-1, 2) });
+        var job = Bind<FinishEdgeGeometryJob>(world);
+        job.m_Entities = new(i => Id(i + 2), (_, _) => throw new Exception("Read-only"), 2);
+        job.m_EdgeHeightMap = map;
+        return job;
+    }
     internal static int Run(string output) {
         if (File.Exists(output)) throw new IOException("Refusing to overwrite evidence");
         foreach (bool updated in new[] { false, true }) {
@@ -120,6 +131,31 @@ static class WorldStageTests {
         Check(mixed.Values.Count == 1 && mixed.Values.ContainsKey(new int2(2, 0)), "Mixed branch writes temporary participant only");
         Check(mixed.Values[new int2(2, 0)].y == 7 && mixed.Values[new int2(2, 0)].x == 7.5f,
             "Mixed branch retains original surface and current handle delta");
+        foreach (bool temporary in new[] { false, true }) {
+            var world = FlattenWorld(temporary, false);
+            var map = Flatten(world);
+            var finish = Finish(world, map);
+            finish.Execute(0); finish.Execute(1);
+            foreach (int id in new[] { 2, 3 }) {
+                var surface = world.Get<EdgeGeometry>(Id(id));
+                Check(surface.m_Start.m_Left.a.y == 1 && surface.m_Start.m_Right.a.y == 1,
+                    "Finishing consumes computed flatten endpoints");
+                Check(surface.m_Start.m_Left.b.y == 1.5f && surface.m_Start.m_Right.b.y == 1.5f,
+                    "Finishing consumes computed flatten handles");
+                Check(math.all(math.isfinite(surface.m_Start.m_Length)) && surface.m_Start.m_Length.x > 0,
+                    "Finishing computes finite lengths");
+                Check(surface.m_Bounds.min.y <= 0 && surface.m_Bounds.max.y >= 3,
+                    "Finishing includes composition height range");
+            }
+            Check(world.Writes.Count == 2, "Finishing publishes two edge writes");
+        }
+        var terrainWorld = FlattenWorld(false, false);
+        var terrainFinish = Finish(terrainWorld, Flatten(terrainWorld));
+        terrainWorld.Record(Id(101), new NetCompositionData { m_Width = 2, m_State = CompositionState.LowerToTerrain });
+        rejected = false;
+        try { terrainFinish.Execute(0); }
+        catch (InvalidOperationException e) { rejected = e.Message.Contains("terrain sampler"); }
+        Check(rejected && terrainWorld.Writes.Count == 0, "Unsupported terrain cannot silently publish fabricated bounds");
         var cyclic = new ReplayWorld { ReadLimit = 20 };
         cyclic.Record(Id(1), new Temp { m_Original = Id(1) });
         cyclic.Record(Id(1), Array.Empty<ConnectedEdge>());

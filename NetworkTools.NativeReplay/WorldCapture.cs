@@ -8,7 +8,7 @@ using NativeReplay;
 using Unity.Entities;
 using Unity.Mathematics;
 
-// Schema 1 is an explicit field projection for the two supported stages, not a
+// Schema 2 is an explicit field projection for the supported stages, not a
 // generic serializer. Fields not read by these stages are deliberately excluded.
 static class WorldCapture {
     static JsonElement P(JsonElement e, string name) => e.GetProperty(name);
@@ -56,7 +56,10 @@ static class WorldCapture {
             case "NetGeometryData": Put(world, entity, v, x => new NetGeometryData {
                 m_MergeLayers = (Layer)P(x, "mergeLayers").GetUInt64(), m_Flags = (GeometryFlags)P(x, "flags").GetUInt64(),
                 m_MaxSlopeSteepness = F(P(x, "maxSlope")) }); break;
-            case "NetCompositionData": Put(world, entity, v, x => new NetCompositionData { m_Flags = Flags(x) }); break;
+            case "NetCompositionData": Put(world, entity, v, x => new NetCompositionData {
+                m_Flags = Flags(P(x, "flags")), m_Width = F(P(x, "width")),
+                m_State = (CompositionState)P(x, "state").GetUInt32(),
+                m_HeightRange = new Bounds1(F(P(x, "heightMin")), F(P(x, "heightMax"))) }); break;
             case "ConnectedEdge": Put(world, entity, v, x => x.EnumerateArray().Select(n => new ConnectedEdge { m_Edge = E(n) }).ToArray()); break;
             case "EdgeGeometry": Put(world, entity, v, x => new EdgeGeometry { m_Start = S(P(x, "start")), m_End = S(P(x, "end")) }); break;
             default: throw new ArgumentException("Unsupported component projection: " + name);
@@ -70,7 +73,7 @@ static class WorldCapture {
         if (File.Exists(output)) throw new IOException("Refusing to overwrite evidence");
         using var document = JsonDocument.Parse(File.ReadAllText(fixture));
         var root = document.RootElement;
-        if (P(root, "schemaVersion").GetInt32() != 1) throw new ArgumentException("Unsupported world schema");
+        if (P(root, "schemaVersion").GetInt32() != 2) throw new ArgumentException("Unsupported world schema");
         var assembly = typeof(GeometrySystem).Assembly;
         var hash = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(assembly.Location)));
         if (!string.Equals(hash, P(root, "gameSha256").GetString(), StringComparison.OrdinalIgnoreCase))
@@ -87,16 +90,30 @@ static class WorldCapture {
         }
         var nodes = P(root, "nodes").EnumerateArray().Select(E).ToArray();
         if (nodes.Length == 0 || nodes.Distinct().Count() != nodes.Length) throw new ArgumentException("Empty/duplicate node input");
+        var edges = P(root, "finishEdges").EnumerateArray().Select(E).ToArray();
+        if (edges.Distinct().Count() != edges.Length) throw new ArgumentException("Duplicate finishing edge");
         bool loaded = P(root, "loaded").GetBoolean();
         var reports = new List<object>();
+        var map = new ReplayMap<int2, float4>();
+        bool flattened = false;
         foreach (var stage in P(root, "stages").EnumerateArray()) {
             // One entity per replay chunk: homogeneous component layout by construction.
             // This does not infer native query membership or inter-chunk scheduling.
-            var map = new ReplayMap<int2, float4>();
-            foreach (var node in nodes) {
+            if (stage.GetString() == "FlattenNodeGeometry") {
+                map = new(); flattened = true;
+            }
+            if (stage.GetString() == "FinishEdgeGeometry") {
+                if (!flattened || edges.Length == 0) throw new ArgumentException("Finish requires computed flatten map and explicit nonempty finishEdges");
+                var finish = WorldStageTests.Bind<FinishEdgeGeometryJob>(world);
+                finish.m_EdgeHeightMap = map;
+                finish.m_Entities = new(i => edges[i], (_, _) => throw new InvalidOperationException("Read-only identity"), edges.Length);
+                for (int i = 0; i < edges.Length; i++) finish.Execute(i);
+                flattened = false;
+            } else foreach (var node in nodes) {
                 var chunk = new ReplayChunk(world, new[] { node });
                 switch (stage.GetString()) {
                     case "InitializeNodeGeometry":
+                        flattened = false;
                         var initialize = WorldStageTests.Bind<InitializeNodeGeometryJob>(world);
                         initialize.m_Loaded = loaded; initialize.Execute(chunk); break;
                     case "FlattenNodeGeometry":
@@ -109,14 +126,22 @@ static class WorldCapture {
                 var g = world.Get<NodeGeometry>(n);
                 return new { id = new[] { n.Index, n.Version }, position = g.m_Position, flatness = g.m_Flatness,
                     offset = g.m_Offset, retentionSentinel = g.m_Bounds.min.x };
-            }).ToArray(), heightMap = map.Values.Select(kv => new { key = new[] { kv.Key.x, kv.Key.y },
+            }).ToArray(), edges = stage.GetString() == "FinishEdgeGeometry" ? edges.Select(e => {
+                var g = world.Get<EdgeGeometry>(e);
+                return new { id = new[] { e.Index, e.Version }, startLeft = Controls(g.m_Start.m_Left),
+                    startRight = Controls(g.m_Start.m_Right), endLeft = Controls(g.m_End.m_Left), endRight = Controls(g.m_End.m_Right),
+                    lengths = new[] { g.m_Start.m_Length.x, g.m_Start.m_Length.y, g.m_End.m_Length.x, g.m_End.m_Length.y },
+                    boundsMin = Coordinates(g.m_Bounds.min), boundsMax = Coordinates(g.m_Bounds.max) };
+            }).ToArray() : null, heightMap = map.Values.Select(kv => new { key = new[] { kv.Key.x, kv.Key.y },
                 value = new[] { kv.Value.x, kv.Value.y, kv.Value.z, kv.Value.w } }).ToArray() });
         }
         if (reports.Count == 0) throw new ArgumentException("No stages");
-        File.WriteAllText(output, JsonSerializer.Serialize(new { schemaVersion = 1, gameSha256 = hash,
+        File.WriteAllText(output, JsonSerializer.Serialize(new { schemaVersion = 2, gameSha256 = hash,
             scope = "Source-derived stage replay; explicit node list, no scheduler; projected inputs", stages = reports,
             reads = world.Reads, writes = world.Writes }, new JsonSerializerOptions { WriteIndented = true }));
         Console.WriteLine($"Executed {reports.Count} source world stages; {world.Reads.Count} captured-state reads");
         return 0;
     }
+    static float[] Coordinates(float3 v) => new[] { v.x, v.y, v.z };
+    static float[][] Controls(Bezier4x3 c) => new[] { Coordinates(c.a), Coordinates(c.b), Coordinates(c.c), Coordinates(c.d) };
 }

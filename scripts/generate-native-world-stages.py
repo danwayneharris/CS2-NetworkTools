@@ -46,6 +46,9 @@ def main():
         original = original.replace('private struct', 'public struct', 1).replace(' : IJobChunk', '')
         original = original.replace('in ArchetypeChunk chunk, int unfilteredChunkIndex, bool useEnabledMask, in v128 chunkEnabledMask', 'in ReplayChunk chunk')
         pieces.append(original)
+    finish = block(geometry, 'private struct FinishEdgeGeometryJob')
+    finish = finish.replace('private struct', 'public struct', 1).replace(' : IJobParallelForDefer', '')
+    pieces.append(finish)
     pieces.append(block(geometry, 'private struct EdgeData').replace('private struct', 'public struct', 1))
     text = '\n'.join(pieces)
     text = re.sub(r'\[(?:ReadOnly|NativeDisableParallelForRestriction)\]\s*', '', text)
@@ -53,7 +56,8 @@ def main():
         'BufferLookup': 'ReplayBufferLookup', 'DynamicBuffer': 'ReplayBuffer',
         'NativeArray': 'ReplayArray', 'EntityTypeHandle': 'ReplayEntityType',
         'ComponentTypeHandle': 'ReplayComponentType', 'NativeList': 'ReplayList',
-        'NativeParallelHashMap': 'ReplayMap', 'Allocator.Temp': '0'}
+        'NativeParallelHashMap': 'ReplayMap', 'Allocator.Temp': '0',
+        'TerrainHeightData': 'ReplayTerrainData', 'TerrainUtils.SampleHeight': 'ReplayTerrain.SampleHeight'}
     for old, new in replacements.items():
         text = re.sub(r'\b' + re.escape(old) + r'\b', new, text)
     header = '''// Local generated source. Do not commit or distribute.
@@ -71,10 +75,11 @@ namespace NativeReplay;
     destination.mkdir(parents=True, exist_ok=True)
     output = destination / 'WorldStages.g.cs'
     output.write_text(header + text, encoding='utf-8')
-    ledger = dict(sourceHashes=expected, stages=['InitializeNodeGeometryJob', 'FlattenNodeGeometryJob'],
+    ledger = dict(sourceHashes=expected, stages=['InitializeNodeGeometryJob', 'FlattenNodeGeometryJob', 'FinishEdgeGeometryJob'],
         adaptations=['Rename storage/lookup types', 'Single explicit replay chunk entry point',
                      'Remove job scheduling/read-only attributes and interface forwarding',
-                     'Exclude unused EdgeIterator.AddSorted', 'Replace temporary allocator argument with inert marker'],
+                     'Exclude unused EdgeIterator.AddSorted', 'Replace temporary allocator argument with inert marker',
+                     'Terrain sampling explicitly throws: terrain-dependent finishing is unsupported'],
         storageSemantics='See ReplayStorage.cs; no ECS scheduler or native allocation reproduced',
         generatedSha256=hashlib.sha256(output.read_bytes()).hexdigest().upper())
     (destination / 'adaptations.json').write_text(json.dumps(ledger, indent=2), encoding='utf-8')

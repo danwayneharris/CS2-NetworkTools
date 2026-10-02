@@ -42,7 +42,7 @@ stages. Neither yet has native preview/permanent differential qualification.
 ## Stateful source replay (research increment)
 
 `generate-native-world-stages.py` produces hash-gated, local-only copies of the
-InitializeNodeGeometry/FlattenNodeGeometry bodies and their EdgeIterator, replacing
+InitializeNodeGeometry/FlattenNodeGeometry/FinishEdgeGeometry bodies and their EdgeIterator, replacing
 storage containers and job entry scaffolding. Read its generated adaptation ledger
 in obj/native-generated. This is adapted-source execution, distinct from direct
 Game.dll invocation. Original math types/helpers remain referenced from the game.
@@ -53,12 +53,26 @@ python scripts/test-native-world-capture.py --dll NetworkTools.NativeReplay/bin/
 dotnet NetworkTools.NativeReplay/bin/Debug/net8.0/NetworkTools.NativeReplay.dll --world <fixture.json> <new-report.json>
 ```
 
-World schema 1 requires gameSha256, loaded, nodes (index/version pairs), stages and
+World schema 2 requires gameSha256, loaded, nodes (index/version pairs), finishEdges, stages and
 entities. Each entity has id and a components object. JSON null means explicitly
 absent; an omitted component means not captured and throws if queried. Present tags
 are true. WorldCapture.cs defines the strict, stage-specific field projections;
 fields outside the projection are not evidence of a complete original component.
 Reads/writes and height-map outputs are retained in reports.
+
+FinishEdgeGeometry requires a preceding FlattenNodeGeometry invocation and consumes
+its computed map; no recorded output is substituted. Supply explicit finishEdges
+(empty when finishing is not requested). Reports include all four surface curves,
+lengths and bounds. NetCompositionData now requires flags, width, state, heightMin
+and heightMax; schema 1 is rejected instead of silently supplying missing fields.
+Terrain-dependent finishing explicitly fails until a terrain execution boundary is
+implemented and validated. Other finishing branches execute the source body with
+the original math types/helpers. This does not reproduce CalculateEdgeGeometry:
+the initial surfaces remain explicit inputs to this bounded test.
+
+The research target is validated reproduction and learning, including reproduction
+of the preview/Apply discrepancy. A causal explanation is useful but is not an
+additional prerequisite for successful differential reproduction.
 
 Native ECS query selection and parallel scheduling are not simulated: nodes are an
 explicit input, executed as homogeneous single-node chunks. Original EdgeIterator

@@ -105,3 +105,20 @@ compile/tests pass: 28 input and 19 transform assertions plus unchanged incident
 and 96 Slope assertions. `artifacts/combined-dispatch-tests-final.log`. No deployment
 or live mutation. Next: current-candidate native reference priming, bounded validator
 coordination, UI/provider integration, then full offline/live validation.
+
+## Native observer coordination increment
+
+Combined candidates now first submit the regular combined profile to collect
+stable native EdgeGeometry references for their changed horizontal alignment.
+Only then is the supported surface correction attempted. Junction observers wait
+for the surface stage to accept that same fresh submission; dirty evidence is
+not passed onward after an observer requests a retry. Changes in endpoint rotation
+or interior handle scale/rotation discard surface references and convergence.
+The input revision owns a 60-second combined budget, in addition to the existing
+20-second surface and bounded correction/search limits. Independent Slope keeps
+its original reference path. Combined Apply now requires both surface and junction
+acceptance plus the existing original-input/submission gates.
+
+Non-deploying compilation and existing production regressions pass; this does not
+establish native convergence or full lifecycle coverage. UI/provider exposure,
+additional stale-candidate tests and live validation remain. No deployment yet.

@@ -55,6 +55,11 @@ namespace NetworkTools.Systems.Tools.RoadShape {
 
 #if IS_DEBUG
             private void ApplySurfaceCorrection(ref NativeArray<EdgeState> edges, ref NativeArray<NodeState> nodes) {
+                if (Config.CombinedSlope && SurfaceReferences.Count() == 0) {
+                    // Native cuts must first be observed for this horizontal candidate.
+                    SurfaceCorrected.Value = 2;
+                    return;
+                }
                 var surfaceFit = SlopeSurfaceProfileTransform.TryExecute(ref edges, ref nodes, in Config, in ConnectedEdgeLookup,
                     in SurfaceGeometryLookup, in SurfaceNodeGeometryLookup, in PrefabRefLookup,
                     in SurfacePrefabGeometryLookup, in SurfaceCompositionLookup, in SurfaceCompositionDataLookup,

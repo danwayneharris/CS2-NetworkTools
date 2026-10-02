@@ -24,9 +24,20 @@ namespace NetworkTools.Systems.Tools.RoadShape {
         private readonly HashSet<Entity> m_SurfaceRequired = new();
         private readonly System.Diagnostics.Stopwatch m_SurfaceClock = new();
 
-        private void ConfigureSurfacePreview() {
-            if (Template.Value != ShapeTransformTemplate.SlopeLinear) { return; }
-            if (m_SurfaceRevision != m_PreviewInputRevision) {
+        private ShapeJobConfig m_SurfaceConfig;
+        private readonly System.Diagnostics.Stopwatch m_CombinedClock = new();
+        private bool UsesSurfaceValidation => Template.Value == ShapeTransformTemplate.SlopeLinear || CombinedMode;
+
+        private void ConfigureSurfacePreview(in ShapeJobConfig config) {
+            if (!UsesSurfaceValidation) { return; }
+            var newRevision = m_SurfaceRevision != m_PreviewInputRevision;
+            var newHorizontal = CombinedMode && (config.JunctionStartRotation != m_SurfaceConfig.JunctionStartRotation
+                || config.JunctionEndRotation != m_SurfaceConfig.JunctionEndRotation
+                || config.InteriorHandleScale != m_SurfaceConfig.InteriorHandleScale
+                || config.InteriorRotation != m_SurfaceConfig.InteriorRotation);
+            if (newRevision) m_CombinedClock.Restart();
+            m_SurfaceConfig = config;
+            if (newRevision || newHorizontal) {
                 m_SurfaceReferences.Clear(); m_SurfaceRequired.Clear();
                 m_SurfaceRevision = m_PreviewInputRevision;
                 m_SurfaceObserved = 0; m_SurfaceStable = 0;
@@ -47,8 +58,11 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             && m_AutomationVerifiedSubmission == m_SmoothTraceId && OriginalProbeStatus() == "matches";
 
         private void ObserveSurfacePreview(PreviewProbe probe, bool fresh) {
-            if (Template.Value != ShapeTransformTemplate.SlopeLinear || m_SurfaceRevision != m_PreviewInputRevision
+            if (!UsesSurfaceValidation || m_SurfaceRevision != m_PreviewInputRevision
                 || m_SurfaceFailed) { return; }
+            if (CombinedMode && m_CombinedClock.Elapsed.TotalSeconds > 60 && !m_SurfaceAccepted) {
+                m_SurfaceFailed = true; return;
+            }
             if (m_SurfaceAccepted) {
                 if (m_SurfaceObserved == probe.Id) { return; }
                 // A same-input rebuild still needs evidence for its new submission.
@@ -61,8 +75,9 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                 m_SurfaceObserved = probe.Id; m_SurfaceStable = 0; m_SurfaceObservedGeometry = null;
             }
             var corrected = m_SurfaceCorrected.Value == 1;
+            var priming = CombinedMode && m_SurfaceCorrected.Value == 2;
             var observed = new Dictionary<Entity, EdgeGeometry>();
-            if (corrected) {
+            if (corrected || priming) {
                 using var query = EntityManager.CreateEntityQuery(new EntityQueryDesc {
                     All = new[] { ComponentType.ReadOnly<EdgeGeometry>(), ComponentType.ReadOnly<Temp>() },
                     None = new[] { ComponentType.ReadOnly<Deleted>() }
@@ -84,6 +99,13 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             m_SurfaceObservedGeometry = observed;
             m_SurfaceStable = stable ? m_SurfaceStable + 1 : 0;
             if (m_SurfaceStable < 2) { return; }
+            if (priming) {
+                m_SurfaceReferences.Clear();
+                foreach (var pair in observed) m_SurfaceReferences.Add(pair.Key, pair.Value);
+                m_UpdateNeeded = true;
+                UnityEngine.Debug.Log($"[NetworkTools.SurfacePreview] submission={probe.Id} primedReferences={observed.Count}");
+                return;
+            }
             var displacement = double.PositiveInfinity;
             if (m_SurfacePrevious != null && m_SurfacePrevious.Count == probe.Curves.Count) {
                 displacement = 0;

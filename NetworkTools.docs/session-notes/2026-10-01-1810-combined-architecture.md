@@ -324,3 +324,15 @@ was not attempted. Do not increase tolerance or call the repeated sequence passe
 All seven actual offline aggregate suites pass at 4662884, including new repeat
 measurement tests (artifacts/combined-offline-4662884/summary.json). This native
 counterexample demonstrates an integration behavior not covered by those tests.
+
+## Captured horizontal drift reproduced offline
+
+Added compact combined-repeat-stations.json and --repeat-stations executable replay
+using the actual PlanarPathTarget. It predicts 7.7359381m horizontal node movement;
+maximum discrepancy against the second native Apply is only 0.0001478m. This isolates
+horizontal chord-length-to-parameter redistribution without native surface code.
+Command: dotnet run --project NetworkTools.Geometry.Tests -- --repeat-stations
+NetworkTools.Geometry.Tests/Fixtures/combined-repeat-stations.json.
+This is an explicit failing-behavior experiment, not a passing repeatability test.
+The next experiment will use chord-projection stationing in combined mode only,
+retaining independent Curve behavior. No runtime code changed in this commit.

@@ -47,7 +47,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             }
             for (var i = 0; i <= count; i++) {
                 var n = nodes[i];
-                var fixedNode = i == 0 || i == count || n.SmoothPinned || n.SmoothSplit;
+                var fixedNode = i == 0 || i == count || (n.SmoothPinned && !n.SmoothJunction) || n.SmoothSplit;
                 anchors[i] = new SectionedVerticalProfile.Anchor { Fixed = fixedNode, Height = n.OriginalPosition.y };
                 if (!fixedNode) continue;
                 // Horizontal stage must already have honored fixed XYZ anchors.

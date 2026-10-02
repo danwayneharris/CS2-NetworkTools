@@ -66,7 +66,7 @@ class CombinedConstraintTests(unittest.TestCase):
         for moved in range(5):
             changed=copy.deepcopy(original);changed[(moved,1)]['position']['y']=1
             for combined in (False,True):
-                if combined and moved==1:
+                if combined and moved in (1,3):
                     self.assertEqual([],runner.check_node_constraints(original,changed,selected,anchors,combined))
                 else:
                     with self.assertRaises(AssertionError): runner.check_node_constraints(original,changed,selected,anchors,combined)
@@ -76,6 +76,20 @@ class CombinedConstraintTests(unittest.TestCase):
         runner.check_node_constraints(original,changed,set(),set(),True)
         changed[(1,1)]['position']['y']=float('nan')
         with self.assertRaises(AssertionError): runner.check_node_constraints(original,changed,{(1,1)},set(),True)
+
+class IncidentCurveTests(unittest.TestCase):
+    def test_both_ends_and_forbidden_edits(self):
+        nodes={(i,1):dict(position=dict(x=i,y=0,z=0)) for i in (1,2)}
+        moved=copy.deepcopy(nodes);moved[(1,1)]['position']['y']=2;moved[(2,1)]['position']['y']=-3
+        edges={(9,1):dict(startNode=dict(index=1,version=1),endNode=dict(index=2,version=1),curve=[dict(x=i,y=0,z=0) for i in range(4)])}
+        result=copy.deepcopy(edges)
+        for i,p in enumerate(result[(9,1)]['curve']): p['y']=2 if i<2 else -3
+        self.assertEqual(0,runner.check_incident_curves(nodes,moved,edges,result,set(),True))
+        with self.assertRaises(AssertionError): runner.check_incident_curves(nodes,moved,edges,result,set(),False)
+        for axis,value in [('x',1),('y',1),('z',1),('y',float('nan'))]:
+            broken=copy.deepcopy(result);broken[(9,1)]['curve'][1][axis]+=value
+            with self.assertRaises(AssertionError): runner.check_incident_curves(nodes,moved,edges,broken,set(),True)
+        with self.assertRaises(AssertionError): runner.check_incident_curves(nodes,moved,edges,edges,set(),True)
 
 class TransportTests(unittest.TestCase):
     def test_session_is_pinned_and_error_retains_request_id(self):

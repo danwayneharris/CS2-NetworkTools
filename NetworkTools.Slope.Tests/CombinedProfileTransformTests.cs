@@ -47,6 +47,18 @@ internal static unsafe class CombinedProfileTransformTests {
         nodes[1].SmoothSplit=false;nodes[1].SmoothPinned=true;
         Check(Fit(e,nodes,original,out _),"junction distinct original branch grades");
         Near(e[1].Bezier.b.y,5.5,"junction outgoing grade preserved");Near(nodes[1].Position.y,3,"junction stays fixed");
+        nodes[1].SmoothJunction=true;
+        nodes[1].OriginalPosition.y=13;nodes[1].Position.y=13;
+        original[0].Bezier.d.y=13;original[1].Bezier.a.y=13;
+        Check(Fit(e,nodes,original,out _),"interior junction participates in global vertical profile");
+        Near(nodes[1].Position.y,3,"junction height follows overall grade");
+        Near(nodes[1].Position.x,30,"junction X remains fixed");
+        Near(nodes[1].Position.z,0,"junction Z remains fixed");
+        Near(e[0].Bezier.c.y,2.5,"junction incoming old grade released");
+        Near(e[1].Bezier.b.y,3.5,"junction outgoing old grade released");
+        nodes[1].OriginalPosition.y=3;nodes[1].Position.y=3;
+        original[0].Bezier.d.y=3;original[1].Bezier.a.y=3;
+        nodes[1].SmoothJunction=false;
         nodes[1].SmoothPinned=false;
         Check(Fit(e,nodes,original,out _),"free interior");Near(e[0].Bezier.c.y,2.5,"unconstrained constant grade");
         nodes[0].SmoothPinned=true;original[0].Bezier.b.y=9;

@@ -79,7 +79,7 @@ def permanent_signature(snapshots, nodes, edges):
 
 
 def check_node_constraints(old_nodes, new_nodes, selected_nodes, anchors, combined):
-    """Only free selected interiors may change height in combined mode."""
+    """Selected interiors, including junctions, may change height in combined mode."""
     if old_nodes.keys() != new_nodes.keys(): raise AssertionError('Node identities changed')
     drifts=[]
     for key,node in old_nodes.items():
@@ -88,11 +88,32 @@ def check_node_constraints(old_nodes, new_nodes, selected_nodes, anchors, combin
             raise AssertionError('Nonfinite node position')
         if not combined and abs(node['position']['y']-target['y'])>GEOMETRY_TOLERANCE_METERS:
             raise AssertionError('Node elevation changed')
-        if key not in selected_nodes or len(node['edges'])>2 or key in anchors:
+        if combined and len(node['edges'])>2 and math.dist((node['position']['x'],node['position']['z']),(target['x'],target['z']))>GEOMETRY_TOLERANCE_METERS:
+            raise AssertionError('Junction moved horizontally')
+        if key not in selected_nodes or (not combined and len(node['edges'])>2) or key in anchors:
             drift=math.dist(position(node['position']),position(target))
             if drift>GEOMETRY_TOLERANCE_METERS: raise AssertionError('Fixed or unselected node moved')
             if drift>0.001: drifts.append({'node':key,'distance':drift})
     return drifts
+
+
+def check_incident_curves(old_nodes, new_nodes, old_edges, new_edges, selected_edges, combined):
+    """Independent endpoint-pair translation oracle; never accept arbitrary branch edits."""
+    maximum=0.0
+    for key,edge in old_edges.items():
+        if key in selected_edges: continue
+        actual=new_edges[key]['curve']; original=edge['curve']
+        if len(actual)!=4 or len(original)!=4: raise AssertionError('Invalid incident cubic')
+        for i,(a,b) in enumerate(zip(original,actual)):
+            expected=dict(a)
+            if combined:
+                node=identity(edge['startNode' if i<2 else 'endNode'])
+                if node not in old_nodes or node not in new_nodes: raise AssertionError('Missing incident endpoint')
+                expected['y']+=new_nodes[node]['position']['y']-old_nodes[node]['position']['y']
+            if not all(math.isfinite(b[k]) for k in ('x','y','z')): raise AssertionError('Nonfinite incident curve')
+            error=math.dist(position(expected),position(b)); maximum=max(maximum,error)
+            if error>GEOMETRY_TOLERANCE_METERS: raise AssertionError('Unexpected incident curve edit')
+    return maximum
 
 
 class Runner:
@@ -280,13 +301,15 @@ class Runner:
             if any(edge[k] != new_edges[key][k] for k in ('startNode','endNode','prefab')):
                 raise AssertionError('Topology or prefab changed')
         changes = [key for key in old_edges if old_edges[key]['curve'] != new_edges[key]['curve']]
-        outside_error=max((math.dist(position(a),position(b)) for key in changes if key not in selected_edges for a,b in zip(old_edges[key]['curve'],new_edges[key]['curve'])),default=0)
-        if outside_error>GEOMETRY_TOLERANCE_METERS:
-            raise AssertionError('Unselected edge geometry changed beyond accepted tolerance')
-        for key in selected_edges:
+        outside_error = check_incident_curves(old_nodes, new_nodes, old_edges, new_edges, selected_edges, combined)
+        expected_preview = selected_edges | {key for key,e in old_edges.items() if key not in selected_edges
+            and any(identity(e[end]) in selected_nodes for end in ('startNode','endNode'))}
+        for key in expected_preview:
+            if key not in preview_curves or len(preview_curves[key]) != 4:
+                raise AssertionError('Missing selected or incident preview curve')
             if max(math.dist(position(a),position(b)) for a,b in
                    zip(preview_curves[key],new_edges[key]['curve']))>GEOMETRY_TOLERANCE_METERS:
-                raise AssertionError('Selected preview/permanent geometry mismatch')
+                raise AssertionError('Selected/incident preview/permanent geometry mismatch')
         report = {'case':case['name'], 'combined':combined, 'checkpoint':saved['saveName'], 'changedEdges':changes,
                   'junctions':[], 'fixedNodeDrifts':fixed_node_drifts,
                   'geometryToleranceMeters':GEOMETRY_TOLERANCE_METERS,'unselectedCurveMaxError':outside_error,

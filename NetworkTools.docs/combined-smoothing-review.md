@@ -9,11 +9,16 @@ reuse and terrain/obstacle routing are not part of this change.
 
 The original authored snapshot remains immutable. Curve fitting produces candidate
 XZ; vertical fitting recomputes XZ arc lengths and uses original endpoint offsets.
-Sectioned profiles preserve outer nodes, explicit split nodes and interior junction
-centers in XYZ. Free selected interior heights may change. Ordinary split points
+Sectioned profiles preserve outer and explicit split nodes in XYZ. Interior junction
+centers keep XZ but participate in the vertical fit; their original vertical grades
+are not forced onto the selected path. Ordinary split points
 require compatible original vertical grades; incompatible grades reject instead
 of inventing a transition policy. Junction attachments have individual constraints.
-Unselected authored geometry and topology remain fixed.
+Topology remains fixed. Incident side-road endpoint/adjacent-handle pairs translate
+vertically with moved junctions; both ends are composed when affected. Other
+unselected controls remain unchanged. Native validation checks these exact intended
+edits and directed connections. See the junction-elevation follow-up session note
+for verification of this changed policy; earlier evidence below used fixed junction Y.
 
 Eligible terminal ground ramps reuse the existing restricted surface correction.
 Native references are primed for the new horizontal shape; surface and junction

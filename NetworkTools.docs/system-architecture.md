@@ -435,7 +435,9 @@ uses stable chord-projection stationing in combined mode, then
 immutable original offsets. `SectionedVerticalProfile` separates spans at fixed
 anchors. Ordinary Curve keeps its existing stationing/elevation behavior.
 
-Outer nodes, explicit splits and interior junction centers are XYZ-fixed. Free
+Outer nodes and explicit splits are XYZ-fixed; interior junctions keep XZ but may
+move vertically with the selected profile. Incident branch endpoint/handle pairs
+translate coherently and are checked against that intended edit. Free
 selected interior Y may change. An ordinary split requires compatible original
 vertical grades; a conflicting split rejects with a specific reason. Junction
 attachments retain their individual constraints, not a fabricated shared tangent.

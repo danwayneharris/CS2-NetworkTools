@@ -19,7 +19,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             NativeArray<NodeState> nodes, NativeArray<EdgeState> edges,
             SmoothFailure failure, int failureIndex, BufferLookup<ConnectedEdge> connected,
             ComponentLookup<Edge> edgeLookup, NativeList<Entity> selectedNodes, string stage = "final") {
-            if (stage == "final") CapturePreviewProbe(id, mode, valid, edges);
+            if (stage == "final") CapturePreviewProbe(id, mode, valid, edges, nodes);
             var prefix = stage == "final" ? "NetworkTools.SmoothTrace" : "NetworkTools.CombinedStage";
             var text = new StringBuilder();
             var strengthJson = math.isfinite(strength) ? strength.ToString("R", System.Globalization.CultureInfo.InvariantCulture) : "null";

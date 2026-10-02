@@ -35,3 +35,23 @@ it as a replay filename and failed before assertions. Corrected invocation uses
 No game interaction since the preservation checkpoint; user is creating a baseline.
 
 Preparatory extraction: ordinary Constant Slope's surface-correction call now lives in one job helper, with identical arguments, result assignment and diagnostics. Non-deploying production compilation and Slope tests passed (96 assertions plus incident edits/rotation). No deployment or live mutation occurred. This creates the shared call site needed by later combined dispatch; current runtime behavior is unchanged.
+
+## Combined input ownership regression
+
+Added Debug-only `CombinedProfileInputs` to prepare section-fit data from the
+horizontal candidate while reading endpoint/node offsets and boundary grades
+from immutable authored input. Tests deliberately give the candidate stale Y
+values and halve its horizontal lengths: the candidate stationing changes while
+authored offsets/grades remain intact, including reversed traversal. Undefined
+horizontal tangents, nonfinite candidate controls and mismatched traversal are
+rejected. This helper does not yet enable combined mode.
+
+Validation: `scripts/test-slope.ps1` passed non-deploying production compilation,
+28 new production-adapter assertions, existing incident-edit regressions and 96
+independent Slope assertions. Existing generated-source warnings remain. No game
+mutation or deployment occurred. Output: `artifacts/combined-input-tests.log`.
+
+Dan reports `bridge test - trumpet combined baseline` is saved, loaded and paused.
+This is the intended unsmoothed toy baseline; verify its file/hash and live
+identity before first automated mutation. Earlier preservation checkpoint is a
+different, already edited state and must not be used as an unsmoothed baseline.

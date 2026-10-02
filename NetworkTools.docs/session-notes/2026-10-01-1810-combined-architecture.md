@@ -442,3 +442,18 @@ passes. Common pin and committed dependency lock are unchanged from main. Build
 left an unstaged npm lock diff (same root metadata and existing package versions;
 additional optional packages); it remains outside commits/PR after earlier restore
 approval rejection. Original user worktree and bridge repository were not modified.
+
+
+## Draft publication and completion-audit instrumentation follow-up
+
+Draft PR #15 opened against fork main at 27f9075:
+https://github.com/danwayneharris/CS2-NetworkTools/pull/15.
+Final read-only handoff check confirmed paused empty toy session and recorded DLL.
+
+Completion audit identified missing separate intermediate-stage geometry captures.
+Added bounded Debug horizontal/vertical JSON traces using the existing formatter,
+with a separate CombinedStage prefix. Only the final SmoothTrace updates the native
+preview probe, preserving correctness identity and old trace consumers. Existing
+128-node detail cap applies. Production adapter compilation/tests pass. No solver
+or validation changes. This instrumentation increment still needs full build and
+live capture verification before calling the sprint complete.

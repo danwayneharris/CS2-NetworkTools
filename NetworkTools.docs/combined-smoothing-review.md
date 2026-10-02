@@ -57,6 +57,12 @@ vehicle traversal or final rendered road-surface quality.
 | Ordinary manual UI / human visuals | Not certified by provider automation. Review below is required. |
 | Actual vehicles | Not tested in this sprint. |
 
+Debug jobs emit bounded `NetworkTools.CombinedStage` JSON captures for horizontal
+and vertical intermediate candidates, keyed by session/submission/mode/stage. The
+existing `NetworkTools.SmoothTrace` retains originals and final candidate and alone
+updates the native preview probe. Details are omitted above 128 nodes. This logging
+does not enable validation or replace native evidence; it is excluded from Release.
+
 Raw captures remain ignored under `artifacts/`. Compact replay fixture
 `NetworkTools.Geometry.Tests/Fixtures/combined-repeat-stations.json` preserves the
 stationing counterexample in a clean checkout. Source-controlled fixture manifests

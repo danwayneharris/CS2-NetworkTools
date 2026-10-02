@@ -18,13 +18,14 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             NativeList<NodeState> originalNodes, NativeList<EdgeState> originalEdges,
             NativeArray<NodeState> nodes, NativeArray<EdgeState> edges,
             SmoothFailure failure, int failureIndex, BufferLookup<ConnectedEdge> connected,
-            ComponentLookup<Edge> edgeLookup, NativeList<Entity> selectedNodes) {
-            CapturePreviewProbe(id, mode, valid, edges);
+            ComponentLookup<Edge> edgeLookup, NativeList<Entity> selectedNodes, string stage = "final") {
+            if (stage == "final") CapturePreviewProbe(id, mode, valid, edges);
+            var prefix = stage == "final" ? "NetworkTools.SmoothTrace" : "NetworkTools.CombinedStage";
             var text = new StringBuilder();
             var strengthJson = math.isfinite(strength) ? strength.ToString("R", System.Globalization.CultureInfo.InvariantCulture) : "null";
-            text.Append(FormattableString.Invariant($"[NetworkTools.SmoothTrace] {{\"id\":{id},\"mode\":\"{mode}\",\"strength\":{strengthJson},\"valid\":{(valid ? "true" : "false")},\"nodeCount\":{nodes.Length},\"edgeCount\":{edges.Length}"));
+            text.Append(FormattableString.Invariant($"[{prefix}] {{\"id\":{id},\"mode\":\"{mode}\",\"strength\":{strengthJson},\"valid\":{(valid ? "true" : "false")},\"nodeCount\":{nodes.Length},\"edgeCount\":{edges.Length}"));
             // Avoid flooding logs on city-scale selections. Use a short selection for captures.
-            text.Append(FormattableString.Invariant($",\"schema\":2,\"session\":\"{s_SmoothSession}\",\"failure\":\"{failure}\",\"failureIndex\":{failureIndex}"));
+            text.Append(FormattableString.Invariant($",\"stage\":\"{stage}\",\"schema\":2,\"session\":\"{s_SmoothSession}\",\"failure\":\"{failure}\",\"failureIndex\":{failureIndex}"));
             if (nodes.Length > 128) {
                 text.Append(",\"detailsOmitted\":true}");
                 UnityEngine.Debug.Log(text.ToString());

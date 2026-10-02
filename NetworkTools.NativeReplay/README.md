@@ -164,3 +164,24 @@ The arch variation changes authored control points by up to 15.23 m and finishes
 within 0.949 mm of native control points. A half-strength Combined capture was
 also retained, but its authored geometry matched the reference, so it is explicitly
 not counted as nontrivial held-out geometry evidence.
+
+## Junction surface construction
+
+`--pipeline-junction <completed-trace.json> <new-report.json>` extends the computed
+pipeline through both native CalculateNodeGeometry iterations. Run the same
+contract script with `--junction` for ten positive/negative checks. No additional
+game capture is needed when the trace already contains both iterations.
+
+The original source body uses existing storage adapters unchanged. Computed
+StartNodeGeometry/EndNodeGeometry propagate between iterations; recorded inputs
+for those already-written entities cannot substitute for computed outputs.
+Reports include each iteration and export the computed junction geometry.
+Negative lengths and m_Middle branch markers are exact; vertex-sync parameters
+use a separate unitless 1e-5 bound with exact zero/one endpoints. This is not a
+metre tolerance applied to dimensionless values.
+
+Preview, permanent, linear control and changed arch pass the five-stage replay.
+This boundary ends before CalculateIntersectionGeometry/CopyNodeGeometry update
+the middle curves and bounds and before UpdateNodeGeometry publishes node bounds.
+It does not yet reproduce the historical failing preview/permanent difference.
+See `2026-10-02-0459-junction-stage.md` for evidence and the downstream write map.

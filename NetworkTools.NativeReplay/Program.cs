@@ -46,6 +46,7 @@ static class Program {
 
     static int Run(string[] args) {
         if (args.Length == 3 && args[0] == "--pipeline") return RawPipelineCapture.Run(args[1], args[2]);
+        if (args.Length == 3 && args[0] == "--pipeline-junction") return RawPipelineCapture.Run(args[1], args[2], true);
         if (args.Length == 4 && args[0] == "--raw-edge") return RawEdgeCapture.Run(args[1], args[2], args[3]);
         if (args.Length == 4 && args[0] == "--schedule-transpiler-tests") return ScheduleTranspilerTests.Run(args[1], args[2], args[3]);
         if (args.Length == 3 && args[0] == "--world") return WorldCapture.Run(args[1], args[2]);

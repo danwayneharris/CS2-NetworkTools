@@ -5,6 +5,7 @@ from pathlib import Path
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     for n in ('dll','trace','output'):p.add_argument('--'+n,type=Path,required=True)
+    p.add_argument('--junction',action='store_true')
     a=p.parse_args();a.output.mkdir(parents=True,exist_ok=False)
     original=json.loads(a.trace.read_text(encoding='utf-8-sig'));results=[]
     records=[json.loads(Path(e['path']).read_text()) for e in original['result']['events'] if 'path' in e]
@@ -18,7 +19,7 @@ def main():
             if edit and edit(record):
                 path=folder/(str(i)+'.json');path.write_text(json.dumps(record));e['path']=str(path.resolve())
         request=folder/'trace.json';request.write_text(json.dumps(trace));report=folder/'report.json'
-        proc=subprocess.run(['dotnet',str(a.dll),'--pipeline',str(request),str(report)],capture_output=True,text=True)
+        proc=subprocess.run(['dotnet',str(a.dll),'--pipeline-junction' if a.junction else '--pipeline',str(request),str(report)],capture_output=True,text=True)
         (folder/'stderr.txt').write_text(proc.stderr)
         assert proc.returncode==exit_code,(name,proc.returncode,proc.stderr)
         if exit_code==2:assert 'Native replay rejected:' in proc.stderr and not report.exists();data=None
@@ -33,8 +34,11 @@ def main():
             cells=row['components'];e=tuple(row['id'])
             if job=='CalculateEdgeGeometryJob' and e in init_roots and cells.get('Game.Net.NodeGeometry',{}).get('presence')=='present':
                 cells['Game.Net.NodeGeometry']['value']['m_Position']+=1000;changed=True
-            if job in ('FlattenNodeGeometryJob','FinishEdgeGeometryJob') and e in edge_roots and cells.get('Game.Net.EdgeGeometry',{}).get('presence')=='present':
+            if job in ('FlattenNodeGeometryJob','FinishEdgeGeometryJob','CalculateNodeGeometryJob') and e in edge_roots and cells.get('Game.Net.EdgeGeometry',{}).get('presence')=='present':
                 cells['Game.Net.EdgeGeometry']['value']['m_Start']['m_Left']['a']['y']+=1000;changed=True
+            if job=='CalculateNodeGeometryJob' and e in edge_roots:
+                for name in ('Game.Net.StartNodeGeometry','Game.Net.EndNodeGeometry'):
+                    cells[name]['value']['m_Geometry']['m_Left']['m_Left']['a']['y']+=1000;changed=True
         return changed
     poisoned=run('recorded-intermediates-poisoned',poison)
     assert poisoned['stageReports']==baseline['stageReports'],'Recorded intermediate replaced computed output'
@@ -61,6 +65,23 @@ def main():
             r['fields']['m_NodeGeometryType']['values'][0]['m_Bounds']['min']['x']+=.001;return True
         return False
     run('small-nonspatial-sentinel-error',wrong_sentinel,1)
+    if a.junction:
+        def junction_output(r,marker=False):
+            if r['job'].endswith('+CalculateNodeGeometryJob') and r['phase']=='exit' and r['fields']['m_IterationIndex']==1:
+                row=next(e for e in r['entities'] if e['id']==r['roots'][0])
+                geometry=row['components']['Game.Net.StartNodeGeometry']['value']['m_Geometry']
+                if marker:geometry['m_Middle']['d']['x']+=.001
+                else:geometry['m_Left']['m_Left']['a']['x']+=1
+                return True
+            return False
+        run('wrong-junction-output',junction_output,1)
+        run('small-junction-branch-marker-error',lambda r:junction_output(r,True),1)
+        def missing_junction(r):
+            if r['phase']=='entry':
+                for row in r['entities']:row['components'].pop('Game.Prefabs.NetCompositionPiece',None)
+                return True
+            return False
+        run('missing-junction-composition-pieces',missing_junction,2)
     (a.output/'summary.json').write_text(json.dumps(dict(passed=True,tests=results),indent=2))
     print(f'PASS {len(results)} pipeline execution, missing-data, identity, metric and anti-substitution checks')
 

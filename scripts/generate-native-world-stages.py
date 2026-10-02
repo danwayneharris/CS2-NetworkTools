@@ -49,7 +49,7 @@ def main():
         original = original.replace('private struct', 'public struct', 1).replace(' : IJobChunk', '')
         original = original.replace('in ArchetypeChunk chunk, int unfilteredChunkIndex, bool useEnabledMask, in v128 chunkEnabledMask', 'in ReplayChunk chunk')
         pieces.append(original)
-    for name in ('CalculateEdgeGeometryJob', 'FinishEdgeGeometryJob'):
+    for name in ('CalculateEdgeGeometryJob', 'FinishEdgeGeometryJob', 'CalculateNodeGeometryJob'):
         edge = block(geometry, 'private struct ' + name)
         edge = edge.replace('private struct', 'public struct', 1).replace(' : IJobParallelForDefer', '')
         pieces.append(edge)
@@ -99,7 +99,7 @@ namespace NativeReplay;
     destination.mkdir(parents=True, exist_ok=True)
     output = destination / 'WorldStages.g.cs'
     output.write_text(header + text, encoding='utf-8')
-    ledger = dict(sourceHashes=expected, stages=['InitializeNodeGeometryJob', 'CalculateEdgeGeometryJob', 'FlattenNodeGeometryJob', 'FinishEdgeGeometryJob'],
+    ledger = dict(sourceHashes=expected, stages=['InitializeNodeGeometryJob', 'CalculateEdgeGeometryJob', 'FlattenNodeGeometryJob', 'FinishEdgeGeometryJob', 'CalculateNodeGeometryJob'],
         adaptations=['Rename storage/lookup types', 'Single explicit replay chunk entry point',
                      'Remove job scheduling/read-only attributes and interface forwarding',
                      'Exclude unused EdgeIterator.AddSorted', 'Replace temporary allocator argument with inert marker',

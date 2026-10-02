@@ -13,7 +13,7 @@ static class RawPipelineCapture {
     static string Job(JsonElement capture) => capture.GetProperty("job").GetString()!.Split('+')[1];
     static object Get(ReplayWorld world, Entity entity, Type type) => typeof(ReplayWorld).GetMethod("Get")!.MakeGenericMethod(type).Invoke(world,new object[]{entity})!;
 
-    public static int Run(string tracePath,string output) {
+    public static int Run(string tracePath,string output,bool includeJunction=false) {
         if(File.Exists(output))throw new IOException("Refusing to overwrite evidence");
         var native=typeof(GeometrySystem).Assembly;
         if(Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(native.Location)))!=RawEdgeCapture.GameHash)throw new ArgumentException("Game hash changed");
@@ -22,7 +22,7 @@ static class RawPipelineCapture {
             || status.GetProperty("remainingPasses").GetInt32()!=0 || status.GetProperty("gameSha256").GetString()!=RawEdgeCapture.GameHash)
             throw new ArgumentException("Incomplete trace");
         var paths=status.GetProperty("events").EnumerateArray().Where(e=>e.TryGetProperty("path",out _)).Select(e=>e.GetProperty("path").GetString()!).ToArray();
-        var captures=paths.Select(Read).Where(c=>Job(c)!="CalculateNodeGeometryJob").ToArray();
+        var captures=paths.Select(Read).Where(c=>includeJunction||Job(c)!="CalculateNodeGeometryJob").ToArray();
         foreach(var c in captures) {
             if(c.GetProperty("schemaVersion").GetInt32()!=1 || c.GetProperty("gameModuleVersionId").GetString()!=native.ManifestModule.ModuleVersionId.ToString()
                 || c.GetProperty("operationId").GetString()!=status.GetProperty("operationId").GetString()
@@ -34,6 +34,14 @@ static class RawPipelineCapture {
         JsonElement[] Stage(string name,string phase)=>captures.Where(c=>Job(c)==name+"Job" && c.GetProperty("phase").GetString()==phase).ToArray();
         var init=Stage("InitializeNodeGeometry","entry");var edge=Stage("CalculateEdgeGeometry","entry").Single();
         var flatten=Stage("FlattenNodeGeometry","entry");var finish=Stage("FinishEdgeGeometry","entry").Single();
+        var junction=Stage("CalculateNodeGeometry","entry");
+        if(includeJunction && !junction.Select(c=>c.GetProperty("fields").GetProperty("m_IterationIndex").GetInt32()).SequenceEqual(new[]{0,1}))
+            throw new ArgumentException("Expected ordered junction iterations 0 and 1");
+        foreach(var c in junction) {
+            int iteration=c.GetProperty("fields").GetProperty("m_IterationIndex").GetInt32();
+            var after=Stage("CalculateNodeGeometry","exit").Single(x=>x.GetProperty("fields").GetProperty("m_IterationIndex").GetInt32()==iteration);
+            if(!Roots(c).SequenceEqual(Roots(after)) || !Roots(c).SequenceEqual(Roots(finish)))throw new ArgumentException("Junction membership changed");
+        }
         var initialNodes=init.SelectMany(Roots).ToHashSet();var edgeIds=Roots(edge);var edgeSet=edgeIds.ToHashSet();
         if(initialNodes.Count==0 || edgeIds.Length==0)throw new ArgumentException("Empty pipeline");
         foreach(string stage in new[]{"InitializeNodeGeometry","CalculateEdgeGeometry","FlattenNodeGeometry","FinishEdgeGeometry"}) {
@@ -71,6 +79,7 @@ static class RawPipelineCapture {
             }
         }
         foreach(var c in init)Import(c,0);Import(edge,1);foreach(var c in flatten)Import(c,2);Import(finish,3);
+        foreach(var c in junction)Import(c,4);
         var world=new ReplayWorld();
         foreach(var (key,cell) in cells) {
             string? presence=cell.GetProperty("presence").GetString();
@@ -79,9 +88,9 @@ static class RawPipelineCapture {
             else throw new ArgumentException("Unknown input: "+key);
         }
         var reports=new List<object>();
-        void Report(string name,Type[] types,ReplayMap<int2,float4>? map=null) {
+        void Report(string name,Type[] types,ReplayMap<int2,float4>? map=null,int? iteration=null) {
             var diffs=new List<object>();int count=0;
-            foreach(var expected in Stage(name,"exit")) {
+            foreach(var expected in Stage(name,"exit").Where(c=>!iteration.HasValue||c.GetProperty("fields").GetProperty("m_IterationIndex").GetInt32()==iteration.Value)) {
                 var rows=RawEdgeCapture.Rows(expected);
                 foreach(var entity in Roots(expected))foreach(var type in types) {
                     JsonElement value;
@@ -102,13 +111,24 @@ static class RawPipelineCapture {
                     for(int i=0;i<4;i++)RawEdgeCapture.Compare(value[i],row.GetProperty("value")[i],key+"/HeightMap/"+i,diffs,ref count);
                 }
             }
-            var encoded=JsonSerializer.SerializeToElement(diffs);double maximum=0;bool accepted=true;
+            var encoded=JsonSerializer.SerializeToElement(diffs);double maximum=0,syncMaximum=0;bool accepted=true;
             var controlErrors=new Dictionary<string,double>();
             foreach(var d in encoded.EnumerateArray()) {
                 string path=d.GetProperty("path").GetString()!;
                 bool spatial=path.Contains("/EdgeGeometry/")||path.Contains("/StartNodeGeometry/")||path.Contains("/EndNodeGeometry/")||path.Contains("/HeightMap/")||path.Contains("/NodeGeometry/m_Position")||path.Contains("/NodeGeometry/m_Offset");
                 if(d.GetProperty("native").ValueKind!=JsonValueKind.Number||!spatial){accepted=false;continue;}
-                double delta=Math.Abs(d.GetProperty("native").GetDouble()-d.GetProperty("replay").GetDouble());maximum=Math.Max(maximum,delta);
+                double nativeValue=d.GetProperty("native").GetDouble(),replayValue=d.GetProperty("replay").GetDouble();
+                double delta=Math.Abs(nativeValue-replayValue);
+                // Junction m_Middle stores branch markers here, not world positions.
+                // Negative segment lengths signal deferred middle connections.
+                if(path.Contains("/m_Geometry/m_Middle/") || (path.Contains("/m_Length/") && (nativeValue<0||replayValue<0))) {accepted=false;continue;}
+                if(path.Contains("/m_SyncVertexTargets")) {
+                    syncMaximum=Math.Max(syncMaximum,delta);
+                    // Unitless interpolation parameters: do not apply metres to them.
+                    if(delta>0.00001 || (nativeValue==0||nativeValue==1||replayValue==0||replayValue==1))accepted=false;
+                    continue;
+                }
+                maximum=Math.Max(maximum,delta);
                 if(System.Text.RegularExpressions.Regex.IsMatch(path,@"/(m_Left|m_Right)/[abcd]/[xyz]$")) {
                     string control=path.Substring(0,path.Length-2);
                     controlErrors[control]=controlErrors.GetValueOrDefault(control)+delta*delta;
@@ -117,7 +137,7 @@ static class RawPipelineCapture {
             }
             double controlMaximum=controlErrors.Count==0?0:Math.Sqrt(controlErrors.Values.Max());
             if(controlMaximum>0.03)accepted=false;
-            reports.Add(new{stage=name,comparedScalarFields=count,exact=diffs.Count==0,withinResearchTolerance=accepted,maxSpatialComponentErrorMetres=maximum,maxCurveControlPointErrorMetres=controlMaximum,differences=diffs});
+            reports.Add(new{stage=name,iteration,comparedScalarFields=count,exact=diffs.Count==0,withinResearchTolerance=accepted,maxSpatialComponentErrorMetres=maximum,maxCurveControlPointErrorMetres=controlMaximum,maxSyncParameterError=syncMaximum,differences=diffs});
         }
         foreach(var capture in init)foreach(var entity in Roots(capture)) {
             var job=WorldStageTests.Bind<InitializeNodeGeometryJob>(world);job.m_Loaded=capture.GetProperty("fields").GetProperty("m_Loaded").GetBoolean();job.Execute(new ReplayChunk(world,new[]{entity}));
@@ -139,15 +159,24 @@ static class RawPipelineCapture {
         ReplayTerrain.SampleCount=0;
         for(int i=0;i<finishIds.Length;i++)finishing.Execute(i);
         Report("FinishEdgeGeometry",new[]{typeof(EdgeGeometry)});
+        foreach(var capture in junction) {
+            var job=WorldStageTests.Bind<CalculateNodeGeometryJob>(world);var ids=Roots(capture);
+            job.m_Entities=new(i=>ids[i],(_,_)=>throw new InvalidOperationException("Read-only identity"),ids.Length);
+            job.m_IterationIndex=capture.GetProperty("fields").GetProperty("m_IterationIndex").GetInt32();
+            for(int i=0;i<ids.Length;i++)job.Execute(i);
+            Report("CalculateNodeGeometry",new[]{typeof(StartNodeGeometry),typeof(EndNodeGeometry)},iteration:job.m_IterationIndex);
+        }
         bool passed=reports.All(r=>JsonSerializer.SerializeToElement(r).GetProperty("withinResearchTolerance").GetBoolean());
         var computedEdges=finishIds.Select(e=>new{id=new[]{e.Index,e.Version},
             original=world.Try<Game.Tools.Temp>(e,out var temp)?new[]{temp.m_Original.Index,temp.m_Original.Version}:new[]{e.Index,e.Version},
-            edgeGeometry=RawEdgeCapture.Encode(world.Get<EdgeGeometry>(e))}).ToArray();
-        File.WriteAllText(output,JsonSerializer.Serialize(new{scope="Computed initialize -> edge -> flatten -> finish; no recorded intermediate overwrites; explicit native query membership",
+            edgeGeometry=RawEdgeCapture.Encode(world.Get<EdgeGeometry>(e)),
+            startNodeGeometry=includeJunction?RawEdgeCapture.Encode(world.Get<StartNodeGeometry>(e)):null,
+            endNodeGeometry=includeJunction?RawEdgeCapture.Encode(world.Get<EndNodeGeometry>(e)):null}).ToArray();
+        File.WriteAllText(output,JsonSerializer.Serialize(new{scope="Computed initialize -> edge -> flatten -> finish"+(includeJunction?" -> junction iterations 0/1":"")+"; no recorded intermediate overwrites; explicit native query membership",
             passed,toleranceMetres=0.03,toleranceBasis="Dan accepts a few cm of bounded accumulated geometric error; 3 cm spatial scalar/control-point bounds; nonspatial differences and identity/key mismatches remain failures",
             gameSha256=RawEdgeCapture.GameHash,tracePath,stageReports=reports,computedEdges,terrainSamples=ReplayTerrain.SampleCount,reads=world.Reads,writes=world.Writes,
             captures=paths.Select(p=>new{path=p,sha256=Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(p)))})},new JsonSerializerOptions{WriteIndented=true}));
-        Console.WriteLine($"Computed 4-stage pipeline: {edgeIds.Length} edges; within research tolerance: {passed}");
+        Console.WriteLine($"Computed {(includeJunction?5:4)}-stage pipeline: {edgeIds.Length} edges; within research tolerance: {passed}");
         return passed?0:1;
     }
 }

@@ -25,6 +25,8 @@ static class RawPipelineCapture {
         var captures=paths.Select(Read).Where(c=>(includeJunction||Job(c)!="CalculateNodeGeometryJob")
             && (includePublication||!new[]{"CalculateIntersectionGeometryJob","CopyNodeGeometryJob","UpdateNodeGeometryJob"}.Contains(Job(c)))).ToArray();
         foreach(var c in captures) {
+            string Execution(JsonElement value) => value.TryGetProperty("finishExecution",out var execution) ? execution.GetString()! : "native";
+            if(Execution(c)!=Execution(status) || (Execution(c)!="native" && Execution(c)!="managed"))throw new ArgumentException("Capture finishing execution context mismatch");
             if(c.GetProperty("schemaVersion").GetInt32()!=1 || c.GetProperty("gameModuleVersionId").GetString()!=native.ManifestModule.ModuleVersionId.ToString()
                 || c.GetProperty("operationId").GetString()!=status.GetProperty("operationId").GetString()
                 || c.GetProperty("citySession").GetString()!=status.GetProperty("citySession").GetString()
@@ -170,6 +172,7 @@ static class RawPipelineCapture {
         Report("FlattenNodeGeometry",new[]{typeof(NodeGeometry)},heightMap);
         BurstFinishLookup? nativeLookup=null;
         if(burstBinary!=null) {
+            if(status.TryGetProperty("finishExecution",out var execution) && execution.GetString()!="native")throw new ArgumentException("Native lookup mode cannot replay a managed finishing intervention");
             if(!status.GetProperty("burstEnabledAtArm").GetBoolean())throw new ArgumentException("Native lookup mode requires captured Burst-enabled context");
             nativeLookup=new BurstFinishLookup(burstBinary,edgeIds.Length,finish.GetProperty("fields").GetProperty("m_EdgeHeightMap"));
             heightMap.LookupReachable=nativeLookup.CanRetrieve;

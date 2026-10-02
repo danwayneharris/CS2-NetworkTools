@@ -7,10 +7,12 @@ def main():
     for name in ('bridge','output','start','end'):p.add_argument('--'+name,required=True)
     p.add_argument('--kind',choices=['linear','combined','arch'],required=True);p.add_argument('--strength',type=float,default=.5)
     p.add_argument('--arch-height',type=float,default=6)
+    p.add_argument('--managed-finish',action='store_true',help='Explicitly change captured Finish execution to managed; toy checkpoint required')
     p.add_argument('--ordinary',action='store_true',help='Do not arm scheduling instrumentation')
     p.add_argument('--observe',help='Original junction index:version to observe between matching provider tokens')
     p.add_argument('--allow-burst',action='store_true',help='Explicitly permit scheduling-boundary capture with Burst enabled')
     a=p.parse_args()
+    if a.managed_finish and a.ordinary:raise ValueError("Managed finishing requires an explicitly armed trace")
     def entity(s):
         i,v=map(int,s.split(':'));return dict(index=i,version=v)
     start,end=entity(a.start),entity(a.end)
@@ -37,7 +39,7 @@ def main():
         status=r.call('get_geometry_schedule_trace')
         if status['patched'] or status['insideCapturedPass'] or status['remainingPasses']:raise RuntimeError('Ordinary observation requires disarmed tracing')
     else:
-        armed=r.call('begin_geometry_schedule_trace',dict(citySession=r.city_session,operationId=Path(a.output).name,maxPasses=1,allowBurst=a.allow_burst))
+        armed=r.call('begin_geometry_schedule_trace',dict(citySession=r.city_session,operationId=Path(a.output).name,maxPasses=1,allowBurst=a.allow_burst,finishExecution="managed" if a.managed_finish else "native"))
         if not armed['patched'] or armed['remainingPasses']!=1:raise RuntimeError('Trace not armed')
     try:
         change('select' if a.kind=='combined' else 'slope_select',start=start,end=end)

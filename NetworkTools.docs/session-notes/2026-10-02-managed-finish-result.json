@@ -1,0 +1,234 @@
+{
+  "scope": "Bounded explicitly armed original managed FinishEdgeGeometry execution; not a persistent product fix",
+  "ntBase": "c198a7c",
+  "bridgeBase": "e2472d1",
+  "bridgeDllSha256": "70D14ED0705962498522559694903D935F67AEA2F21AD2C4A819D0C48EA519CE",
+  "mode": "CurveSmooth",
+  "combinedSlope": true,
+  "strength": 1.0,
+  "submission": 4,
+  "surfaces": [
+    {
+      "edge": [
+        54264,
+        1
+      ],
+      "authored": {
+        "maxDistance": 0.0,
+        "maxY": 0.0,
+        "points": 4
+      },
+      "surface": {
+        "maxDistance": 0.0,
+        "maxY": 0.0,
+        "points": 16
+      }
+    },
+    {
+      "edge": [
+        54263,
+        1
+      ],
+      "authored": {
+        "maxDistance": 0.0,
+        "maxY": 0.0,
+        "points": 4
+      },
+      "surface": {
+        "maxDistance": 0.0,
+        "maxY": 0.0,
+        "points": 16
+      }
+    },
+    {
+      "edge": [
+        81714,
+        1
+      ],
+      "authored": {
+        "maxDistance": 0.0,
+        "maxY": 0.0,
+        "points": 4
+      },
+      "surface": {
+        "maxDistance": 0.0,
+        "maxY": 0.0,
+        "points": 16
+      }
+    },
+    {
+      "edge": [
+        54261,
+        1
+      ],
+      "authored": {
+        "maxDistance": 0.0,
+        "maxY": 0.0,
+        "points": 4
+      },
+      "surface": {
+        "maxDistance": 0.0,
+        "maxY": 0.0,
+        "points": 16
+      }
+    },
+    {
+      "edge": [
+        54262,
+        1
+      ],
+      "authored": {
+        "maxDistance": 0.0,
+        "maxY": 0.0,
+        "points": 4
+      },
+      "surface": {
+        "maxDistance": 0.0,
+        "maxY": 0.0,
+        "points": 16
+      }
+    }
+  ],
+  "terrainSampleCount": 1548,
+  "terrainMaxYChange": 1.8363359999999602,
+  "surfacesStableAfterApply": true,
+  "directedConnections": [
+    {
+      "junction": {
+        "index": 54969,
+        "version": 1
+      },
+      "before": 3,
+      "after": 3,
+      "removed": [],
+      "added": []
+    },
+    {
+      "junction": {
+        "index": 54968,
+        "version": 1
+      },
+      "before": 4,
+      "after": 4,
+      "removed": [],
+      "added": []
+    },
+    {
+      "junction": {
+        "index": 54966,
+        "version": 1
+      },
+      "before": 14,
+      "after": 14,
+      "removed": [],
+      "added": []
+    }
+  ],
+  "replays": [
+    {
+      "phase": "preview",
+      "reportSha256": "c1c9057ad98ee1286754b4b6dfd64622630ff020d4958307fd2a17179d5737c5",
+      "passed": true,
+      "stages": [
+        {
+          "stage": "InitializeNodeGeometry",
+          "maxCurveControlPointErrorMetres": 0,
+          "passed": true
+        },
+        {
+          "stage": "CalculateEdgeGeometry",
+          "maxCurveControlPointErrorMetres": 0.00020000000040454324,
+          "passed": true
+        },
+        {
+          "stage": "FlattenNodeGeometry",
+          "maxCurveControlPointErrorMetres": 0,
+          "passed": true
+        },
+        {
+          "stage": "FinishEdgeGeometry",
+          "maxCurveControlPointErrorMetres": 0.00020000000040454324,
+          "passed": true
+        },
+        {
+          "stage": "CalculateNodeGeometry",
+          "maxCurveControlPointErrorMetres": 0,
+          "passed": true
+        },
+        {
+          "stage": "CalculateNodeGeometry",
+          "maxCurveControlPointErrorMetres": 0,
+          "passed": true
+        },
+        {
+          "stage": "CalculateIntersectionGeometry",
+          "maxCurveControlPointErrorMetres": 0,
+          "passed": true
+        },
+        {
+          "stage": "CopyNodeGeometry",
+          "maxCurveControlPointErrorMetres": 0,
+          "passed": true
+        },
+        {
+          "stage": "UpdateNodeGeometry",
+          "maxCurveControlPointErrorMetres": 0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "phase": "apply",
+      "reportSha256": "0e71086dd503117ceb53e78bd9952882813ddf668d7885a9e222d38bff3359f8",
+      "passed": true,
+      "stages": [
+        {
+          "stage": "InitializeNodeGeometry",
+          "maxCurveControlPointErrorMetres": 0,
+          "passed": true
+        },
+        {
+          "stage": "CalculateEdgeGeometry",
+          "maxCurveControlPointErrorMetres": 0,
+          "passed": true
+        },
+        {
+          "stage": "FlattenNodeGeometry",
+          "maxCurveControlPointErrorMetres": 0,
+          "passed": true
+        },
+        {
+          "stage": "FinishEdgeGeometry",
+          "maxCurveControlPointErrorMetres": 0,
+          "passed": true
+        },
+        {
+          "stage": "CalculateNodeGeometry",
+          "maxCurveControlPointErrorMetres": 0,
+          "passed": true
+        },
+        {
+          "stage": "CalculateNodeGeometry",
+          "maxCurveControlPointErrorMetres": 0,
+          "passed": true
+        },
+        {
+          "stage": "CalculateIntersectionGeometry",
+          "maxCurveControlPointErrorMetres": 0,
+          "passed": true
+        },
+        {
+          "stage": "CopyNodeGeometry",
+          "maxCurveControlPointErrorMetres": 0,
+          "passed": true
+        },
+        {
+          "stage": "UpdateNodeGeometry",
+          "maxCurveControlPointErrorMetres": 0,
+          "passed": true
+        }
+      ]
+    }
+  ],
+  "finalCheckpoint": "CitiesIIAgentBridge-managed-finish-experiment-completed-20261002-142424-207b8a77.cok"
+}

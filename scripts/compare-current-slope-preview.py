@@ -8,9 +8,11 @@ m=runpy.run_path(str(Path(__file__).with_name('live-regression.py')))
 p=argparse.ArgumentParser(description=__doc__)
 p.add_argument('--bridge',required=True);p.add_argument('--output',required=True)
 p.add_argument('--save-root',required=True)
+p.add_argument('--managed-finish',action='store_true',help='Change captured finishing execution; requires --trace-native --apply')
 p.add_argument('--trace-native',action='store_true',help='Capture one native Apply geometry pass, explicitly allowing Burst')
 g=p.add_mutually_exclusive_group(required=True);g.add_argument('--apply',action='store_true');g.add_argument('--capture-only',action='store_true')
 a=p.parse_args()
+if a.managed_finish and not a.trace_native:raise ValueError("Managed finishing requires --trace-native")
 r=m['Runner'](a.bridge,a.output);root=Path(a.output)
 if a.trace_native:
  if not a.apply:raise ValueError('--trace-native requires --apply')
@@ -76,7 +78,7 @@ if not final['previewReady'] or any(final[k]!=s[k] for k in ('session','revision
 root.joinpath('before.json').write_text(json.dumps({'city':city,'state':s,'path':path,'checkpoint':saved,'snapshots':before,'previews':previews,'terrain':terrain_before,'points':points},indent=2))
 if a.capture_only:
  print(json.dumps({'output':a.output,'submission':s['submission'],'captureOnly':True}));raise SystemExit(0)
-if a.trace_native:r.call('begin_geometry_schedule_trace',dict(citySession=r.city_session,operationId=root.name,maxPasses=1,allowBurst=True))
+if a.trace_native:r.call('begin_geometry_schedule_trace',dict(citySession=r.city_session,operationId=root.name,maxPasses=1,allowBurst=True,finishExecution="managed" if a.managed_finish else "native"))
 try:
  invoke('slope_apply' if is_slope else 'apply',{k:s[k] for k in ('session','revision','submission')})
  for i in range(40):

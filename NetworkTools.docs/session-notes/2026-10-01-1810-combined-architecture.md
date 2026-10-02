@@ -305,3 +305,22 @@ are checked; a drift over 5cm fails and stops further mutation. Three offline te
 pass, with missing/duplicate/topology/NaN/truncated-cubic counterexamples. The normal
 offline Python aggregate discovers this new test script automatically.
 A three-Apply terminal-ramp test is running; no repeatability claim yet.
+
+
+## Repeat-Apply counterexample (not a tolerance issue)
+
+The three-repeat terminal-ramp test stopped after the SECOND Apply: maximum world
+node/control drift from the first result was 9.7085447m. Each individual operation
+passed preview/permanent, topology, fixed-node, outside-geometry and directed-lane
+checks. Those local passes do not establish repeatability.
+
+Captured delta decomposition shows up to 7.736m XZ node movement and 5.866m node-Y
+movement (up to 6.651m control-Y). Therefore this is not solely a vertical surface
+feedback error: horizontal fitting/endpoint constraints must also be investigated.
+Evidence: artifacts/combined-ramp-repeat/1-combined/repeat-drift.json and original
+native snapshots; second result checkpointed separately for diagnosis. Third Apply
+was not attempted. Do not increase tolerance or call the repeated sequence passed.
+
+All seven actual offline aggregate suites pass at 4662884, including new repeat
+measurement tests (artifacts/combined-offline-4662884/summary.json). This native
+counterexample demonstrates an integration behavior not covered by those tests.

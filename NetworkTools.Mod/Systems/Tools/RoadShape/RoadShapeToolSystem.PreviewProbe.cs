@@ -77,6 +77,8 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             var originalInputs = OriginalProbeStatus();
             m_AutomationVerifiedSubmission = revisionMatches && originalInputs == "matches"
                 && matches.Count == probe.Curves.Count && duplicates == 0 && mismatches == 0 && missingBuffers == 0 ? probe.Id : 0;
+            ObserveSurfacePreview(probe, revisionMatches && originalInputs == "matches"
+                && matches.Count == probe.Curves.Count && duplicates == 0 && mismatches == 0 && missingBuffers == 0);
             ObserveJunctionSearch(probe.Id, revisionMatches && originalInputs == "matches"
                 && matches.Count == probe.Curves.Count && duplicates == 0 && mismatches == 0 && missingBuffers == 0);
             ObserveInteriorJunctions(probe.Id, revisionMatches && originalInputs == "matches"

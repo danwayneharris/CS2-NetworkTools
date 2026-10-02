@@ -97,3 +97,13 @@ with movement of authored pins or elevations.
 
 See [diagnostic archives](diagnostic-archives.md) for full raw runs, checksums and
 recovery instructions. Curated summaries and offline replay inputs stay in Git.
+
+## Updated acceptance policy (October 1 terrain/profile sprint)
+
+Dan clarified that geometric discrepancies up to 5 cm are acceptable and should
+not count as failures. The live harness now records that 0.05 m threshold and
+retains measurements. Earlier 1 mm-based failure labels, including the 23.5 mm
+rail-center result above, are historical; that discrepancy is acceptable under
+the current policy. Directed connections, lane identities, topology and freshness
+remain separate strict checks. A player-facing tolerance setting is deferred.
+See [the clarification](session-notes/2026-10-01-0359-geometric-tolerance-policy.md).

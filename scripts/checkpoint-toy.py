@@ -12,6 +12,7 @@ verified_package=runpy.run_path(str(HERE/'reload-toy-baseline.py'))['verified_pa
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--bridge',default='../cities2-agent-bridge-ndc')
     parser.add_argument('--output',required=True)
     parser.add_argument('--save-root',required=True)
     parser.add_argument('--expected-city-session',required=True)
@@ -19,7 +20,7 @@ def main():
     parser.add_argument('--label',default='toy-checkpoint')
     parser.add_argument('--save',action='store_true')
     args=parser.parse_args()
-    runner=Runner('../cities2-agent-bridge-ndc',args.output)
+    runner=Runner(args.bridge,args.output)
     city=runner.call('get_city_state')
     if runner.city_session!=args.expected_city_session or city['selectedSpeed']!=0 or city['population']!=0 or not city['controlEnabled']:
         raise ValueError('Known paused control-enabled toy session required')

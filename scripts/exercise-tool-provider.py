@@ -5,6 +5,7 @@ vehicle validation. Stops on uncertain operations; never retries Apply.
 import argparse,json,math,runpy,time,zipfile
 from pathlib import Path
 m=runpy.run_path(str(Path(__file__).with_name('live-regression.py')))
+TOLERANCE=m['GEOMETRY_TOLERANCE_METERS']
 verified=runpy.run_path(str(Path(__file__).with_name('reload-toy-baseline.py')))['verified_package']
 def connect_preview_error(state, new_edges):
  curves=[v for v in state['previewObservation'] if isinstance(v,dict) and all(k in v for k in ('a','b','c','d'))]
@@ -15,10 +16,13 @@ def connect_preview_error(state, new_edges):
   errors.append(min(min(max(math.dist(p,c[k]) for p,k in zip(points,order)) for order in ('abcd','dcba')) for c in curves))
  return max(errors)
 
+def preview_curves_to_rows(curves):
+ return [{'edge':key,'curve':curve} for key,curve in curves.items()]
+
 def main():
- p=argparse.ArgumentParser();p.add_argument('--output',required=True);p.add_argument('--save-root',required=True);p.add_argument('--run',action='store_true');p.add_argument('--stage',choices=['curve','slope','connect'],required=True);p.add_argument('--expected-fingerprint');p.add_argument('--case',default='highway-ramp-out');p.add_argument('--connect-kind',choices=['road','rail'],default='road');a=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('--fixture',default=str(Path(__file__).parent/'fixtures/toy-terrain-v11.json'));p.add_argument('--bridge',default='../cities2-agent-bridge-ndc');p.add_argument('--slope-mode',choices=['linear','ease','arch'],default='ease');p.add_argument('--smooth-start',action='store_true');p.add_argument('--smooth-end',action='store_true');p.add_argument('--reverse',action='store_true');p.add_argument('--output',required=True);p.add_argument('--save-root',required=True);p.add_argument('--run',action='store_true');p.add_argument('--stage',choices=['curve','slope','connect'],required=True);p.add_argument('--expected-fingerprint');p.add_argument('--case',default='highway-ramp-out');p.add_argument('--connect-kind',choices=['road','rail'],default='road');a=p.parse_args()
  if not a.run:p.error('Explicit --run required')
- f=json.loads((Path(__file__).parent/'fixtures/toy-terrain-v11.json').read_text());case=next(c for c in f['cases'] if c['name']==a.case);r=m['Runner']('../cities2-agent-bridge-ndc',a.output)
+ f=json.loads(Path(a.fixture).read_text());case=next(c for c in f['cases'] if c['name']==a.case);r=m['Runner'](a.bridge,a.output)
  city=r.call('get_city_state')
  if city['selectedSpeed']!=0 or city['population']!=0 or not city['controlEnabled']:raise ValueError('Paused controlled toy required')
  verified(a.save_root,f['baseline'],f['baselineSha256'])
@@ -44,11 +48,12 @@ def main():
   raise TimeoutError('Tool preview/state did not settle; inspect captures')
  invoke('activate');poll(lambda s:s['active']);control('clear')
  if a.stage=='slope':
-  control('configure',mode='ease',easeIn=.1,easeOut=.1,archHeight=10,archPosition=.5,smoothStart=True,smoothEnd=True)
+  control('configure',mode=a.slope_mode,easeIn=.1,easeOut=.1,archHeight=10,archPosition=.5,smoothStart=a.smooth_start,smoothEnd=a.smooth_end)
   start,end=(m['resolve'](ns,case[k]) for k in ('start','end'))
  else:
   first,second,first_key=('hill-road','crest-dip-road','end') if a.connect_kind=='road' else ('rail-high-branch','rail-low-branch','start')
   start=m['resolve'](ns,next(c for c in f['cases'] if c['name']==first)[first_key]);end=m['resolve'](ns,next(c for c in f['cases'] if c['name']==second)['start'])
+ if a.reverse:start,end=end,start
  control('select',start=start,end=end);s=poll(lambda s:s['previewReady'])
  # Deliberately invalid old revision must fail before any mutation.
  try:invoke('apply',{'session':s['session'],'revision':s['revision']-1,'submission':s['submission']})
@@ -76,11 +81,18 @@ def main():
  if not final['previewReady'] or any(final[k]!=s[k] for k in ('session','revision','submission')):raise RuntimeError('Preview token changed')
  invoke('apply',{k:s[k] for k in ('session','revision','submission')});poll(lambda s:s['phase']=='Idle')
  after,an,ae=r.settled_permanent(watched,f['region']);new={m['identity'](e):e for e in ae};old={m['identity'](e):e for e in es}
- report={'stage':a.stage,'checkpoint':saved['saveName'],'beforeFingerprint':m['fingerprint'](ns,es),'afterFingerprint':m['fingerprint'](an,ae),'staleRevisionRejected':True,'nodeCount':[len(ns),len(an)],'edgeCount':[len(es),len(ae)],'limits':'No visual/vehicle validation; junction lane results captured, not automatically certified by this smoke test.'}
+ report={'geometryToleranceMeters':TOLERANCE,'stage':a.stage,'checkpoint':saved['saveName'],'beforeFingerprint':m['fingerprint'](ns,es),'afterFingerprint':m['fingerprint'](an,ae),'staleRevisionRejected':True,'nodeCount':[len(ns),len(an)],'edgeCount':[len(es),len(ae)],'parameters':{'slopeMode':a.slope_mode,'smoothStart':a.smooth_start,'smoothEnd':a.smooth_end,'reverse':a.reverse},'limits':'No visual/vehicle or rendered-surface validation.'}
  if a.stage=='slope':
   report['sameTopology']=old.keys()==new.keys() and all(all(e[k]==new[key][k] for k in ('startNode','endNode','prefab')) for key,e in old.items())
   report['previewApplyMaxError']=max(math.dist(m['position'](p),m['position'](q)) for key in chosen for p,q in zip(preview_curves[key],new[key]['curve']))
   report['changedUnselectedEdges']=[key for key,e in old.items() if key not in chosen and e['curve']!=new[key]['curve']]
+  report['directedConnectionsPreserved']=all(m['lane_transitions'](b)==m['lane_transitions'](c) for b,c in zip(before,after))
+  report['physicalLaneMappingPreserved']=all(m['_lane_module'].composition_signature(b)==m['_lane_module'].composition_signature(c) for b,c in zip(before,after))
+  report['incidentPreviewApplyMaxError']=max(math.dist(m['position'](p),m['position'](q)) for key,curve in preview_curves.items() for p,q in zip(curve,new[key]['curve']))
+  oldnodes={m['identity'](n):n for n in ns};newnodes={m['identity'](n):n for n in an}
+  report['nodeHorizontalMaxError']=max(math.hypot(n['position']['x']-newnodes[key]['position']['x'],n['position']['z']-newnodes[key]['position']['z']) for key,n in oldnodes.items())
+  report['fixedEndpointMaxError']=max(math.dist(m['position'](oldnodes[m['identity'](n)]['position']),m['position'](newnodes[m['identity'](n)]['position'])) for n in (start,end))
+  (r.output/'comparison.json').write_text(json.dumps({'beforeNodes':ns,'beforeEdges':es,'afterNodes':an,'afterEdges':ae,'path':path,'previews':preview_curves_to_rows(preview_curves)},indent=2))
  else:
   trace=r.call('trace_network',{'fromIndex':start['index'],'fromVersion':start['version'],'toIndex':end['index'],'toVersion':end['version']})
   source=[e for e in es if m['identity'](start) in (m['identity'](e['startNode']),m['identity'](e['endNode']))]
@@ -91,7 +103,7 @@ def main():
   report['connected']=trace['connected'];report['newEdges']=[key for key in new if key not in old]
   report['previewApplyMaxError']=connect_preview_error(final,[new[key] for key in report['newEdges']])
  (r.output/'report.json').write_text(json.dumps(report,indent=2));print(json.dumps(report,indent=2))
- if a.stage=='slope' and (not report['sameTopology'] or report['previewApplyMaxError']>.001):raise AssertionError('Slope verification failed')
- if a.stage=='connect' and (not report['connected'] or not report['prefabInherited'] or not report['newEdges'] or report['previewApplyMaxError']>.001):raise AssertionError('Connect permanent topology failed')
+ if a.stage=='slope' and (not report['sameTopology'] or report['previewApplyMaxError']>TOLERANCE or report['incidentPreviewApplyMaxError']>TOLERANCE or report['nodeHorizontalMaxError']>TOLERANCE or report['fixedEndpointMaxError']>TOLERANCE or not report['directedConnectionsPreserved'] or not report['physicalLaneMappingPreserved']):raise AssertionError('Slope verification failed')
+ if a.stage=='connect' and (not report['connected'] or not report['prefabInherited'] or not report['newEdges'] or report['previewApplyMaxError']>TOLERANCE):raise AssertionError('Connect permanent topology failed')
 if __name__=='__main__':main()
 

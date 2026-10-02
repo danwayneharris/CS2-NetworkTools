@@ -41,3 +41,32 @@ terrain modified by network placement versus terrain sampled without that networ
 verify the game's actual sampling/deformation layers before assuming a particular
 model. The measured centerline grade discontinuity does not rule out an additional
 terrain/rendered-surface effect. See [observation and setup notes](session-notes/2026-10-01-terrain-observation-plugins.md).
+
+## Active experiment: horizontal-distance Constant Slope
+
+The terrain-profile sprint integrates an offset-aware fit for Constant Slope only.
+See [model and offline limits](session-notes/2026-10-01-0330-offset-profile-research.md)
+and [integration checkpoint](session-notes/2026-10-01-0331-constant-slope-integration.md).
+The first forward/reverse native test now passes; see
+[native validation](session-notes/2026-10-01-0338-profile-native-validation.md). Ease/Arch and coordinated
+Curve/Slope remain separate work; this is not terrain-following behavior.
+
+
+## October 1 acceptance priority: stable improvement before perfect grade
+
+Dan visually confirmed the first surface-aware ramp candidate looks MUCH better
+and the small discontinuity is gone. That is valuable evidence, but repeating it
+moved an interior node by another 1.17 m. Idempotence (same operation again should
+not keep moving the network) takes priority over exact constant grade. Investigate
+and fix that feedback; retain the visual improvement. Small geometric residuals
+through 5 cm are accepted. Pursuing perfectly constant generated slopes is a
+much-lower-priority future refinement, not a reason to delay a stable useful tool.
+
+
+Update: the current Debug native-preview loop resolves the observed repeated-Apply
+feedback before Apply. It keeps the 5 cm threshold, requires two small consecutive
+candidate changes, and fails closed on a lost correction or bounded-search failure.
+See the [verification record](session-notes/2026-10-01-0552-profile-repeatability.md).
+A combined Smooth tool and Connect reuse are proposed separately in
+[combined smoothing options](combined-smoothing-options.md); no new UI policy has
+been chosen or implemented during this fix.

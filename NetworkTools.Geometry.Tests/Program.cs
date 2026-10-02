@@ -22,6 +22,10 @@ internal static class Program {
     private static unsafe void Main(string[] args) {
         if (args.Length == 2 && args[0] == "--trace-log") { TraceReplay.Run(args[1]); return; }
         TargetReplay.Run(args);
+        VerticalProfileTests.Run();
+        SurfaceResponseTests.Run();
+        SurfacePreviewTests.Run();
+        NativeProfileReplayTests.Run();
         FailureTests.Run();
         JunctionSearchTests.Run();
         BoundaryRotationTests.Run();

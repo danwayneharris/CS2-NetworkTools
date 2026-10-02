@@ -356,24 +356,70 @@ latency, acceptance details and the outstanding strict node-center drift failure
 
 ### Slope endpoint fitting (October 1)
 
-Slope's end-handle station is measured backwards from that handle's own endpoint,
-not by distance from the curve start. After fitting the vertical profile and
-averaging interior node displacements, it preserves the original endpoint/node
-height offsets at the new node heights. Adjacent handles translate by the same
-vertical delta, retaining their fitted endpoint grade. Both Preview and Apply
-consume this corrected geometry. Curve Smooth does not use this alignment step.
+Constant Slope now uses the pure `VerticalLinearProfile` fitter through
+`SlopeLinearProfileTransform`. It measures horizontal cubic arc length, includes
+original endpoint/node Y offsets in the height equations, then constructs vertical
+handles with a common endpoint grade. Outer node heights and horizontal geometry
+remain fixed; interior node heights change. Invalid or unresolved numerical input
+rejects the candidate before publishing partial output.
 
-This resolves the captured off-ramp discrepancy where native reconstruction
-replaced two different requested heights with a common junction height. Slope
-still moves interior junctions and adjusts unselected incident edges at those
-nodes; it does not avoid terrain or guarantee acceptable grades. Directed lane
-connections survived the tested off-ramp operation, but appearance and vehicle
-traversal remain separate checks. See the [session evidence](session-notes/2026-10-01-0820-selected-fixes-slope.md).
+Offsets are fitted before reconstruction rather than correcting a completed
+profile afterward. This removes the measured extra dip caused by the older
+post-fit alignment in the retained ramp case. Every selected edge has the same
+mean grade; an arbitrary horizontal cubic still has some interior grade variation.
+Enabled boundary smoothing substitutes the neighboring edge's grade at that end,
+so conflicting boundary constraints deliberately make that boundary edge nonconstant.
+Junction spans retain their original endpoint-height offsets; they are not solved
+as additional constant-grade travel distance.
+
+Ease/Arch retain the earlier end-handle station correction and post-fit
+endpoint/node-height alignment. Curve Smooth retains its elevation-preserving
+behavior and does not run the vertical fitter. Applying Curve after Slope can
+therefore change grades even while preserving all control-point Y coordinates.
+
+Slope still moves interior junctions vertically and adjusts unselected incident
+edges at those nodes. It does not avoid terrain or guarantee acceptable grades.
+Native previews, permanent curves and directed physical lane connections passed
+the initial profile cases, but rendered surfaces and vehicle traversal remain
+separate evidence categories. See [native profile evidence](session-notes/2026-10-01-0348-profile-replay.md)
+and the [profile plan](slope-improvement-plan.md).
 
 Connect and Parallel now default to **Same as selected**. An explicit asset choice
 still overrides that behavior. Parallel inherits each source edge's prefab;
 Connect uses its first selected node's prefab. Other non-nullable pickers prefer
 the last network selected in the game, then a prioritized road fallback.
+
+### Experimental native surface profile correction (October 1)
+
+In Debug builds, Constant Slope additionally tries `SlopeSurfaceProfileTransform`
+after the ordinary offset-aware fit. It is restricted to supported ground
+SmoothElevation paths with one terminal junction, a dead end, degree-two interior
+nodes, zero node offsets/flatness, no boundary easing and a sufficiently long native
+junction cut. Unsupported initial cases retain the ordinary fit. This extension is
+not enabled in Release, whose ordinary Constant Slope fit remains available.
+
+The correction predicts a junction reference height from the ordinary profile and
+incident authored curves (`SurfaceJunctionHeightModel`), then fits three bounded
+vertical adjustments with `SurfaceProfileResponseFit`. It preserves the fixed
+outer nodes, topology and authored XZ; it does not edit unselected incident curves.
+Generated junction surfaces can still change. Perfect constant generated grade and
+terrain/obstacle routing are not promised.
+
+Generated cut positions also depend on slope, so fitting against the previous
+permanent surface alone was not idempotent. `RoadShapeToolSystem.SurfacePreview`
+feeds fresh native preview boundary values back into the same immutable authored
+baseline. It requires unambiguous original-to-temp mappings, repeated stable
+geometry observations, and two consecutive candidate changes within 5 cm. It caps
+work at six candidates and 20 seconds, rejects disappearance of a previously
+available correction, and gates Apply on the current verified submission. Apply
+reuses that candidate's reference values; temporary entity identities are not
+retained. Native-array/hash-map lifetime is fenced by the existing shape job.
+
+This is bounded numerical settling, not an exact mathematical fixed-point proof.
+Native verification and remaining limitations are recorded in the
+[surface-repeatability note](session-notes/2026-10-01-0552-profile-repeatability.md).
+Future combined Curve/Slope behavior is a separate
+[design proposal](combined-smoothing-options.md), not current functionality.
 
 ### RoadShape preview topology (October 1)
 

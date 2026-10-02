@@ -30,11 +30,18 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             [ReadOnly] public required ComponentLookup<Upgraded>         UpgradedLookup;
             [ReadOnly] public required ComponentLookup<Aggregated>       AggregatedLookup;
             [ReadOnly] public required ComponentLookup<Elevation>        ElevationLookup;
+            [ReadOnly] public ComponentLookup<EdgeGeometry> SurfaceGeometryLookup;
+            [ReadOnly] public ComponentLookup<NodeGeometry> SurfaceNodeGeometryLookup;
+            [ReadOnly] public ComponentLookup<NetGeometryData> SurfacePrefabGeometryLookup;
+            [ReadOnly] public ComponentLookup<Composition> SurfaceCompositionLookup;
+            [ReadOnly] public ComponentLookup<NetCompositionData> SurfaceCompositionDataLookup;
             public required            ToolOutputMode                    OutputMode;
             public required            EntityCommandBuffer               ECB;
             public NativeReference<int> SmoothResult;
 #if IS_DEBUG
             public int SmoothTraceId;
+            [ReadOnly] public NativeParallelHashMap<Entity, EdgeGeometry> SurfaceReferences;
+            public NativeReference<int> SurfaceCorrected;
             [ReadOnly] public NativeList<Entity> SmoothSelectedNodes;
 #endif
 
@@ -42,6 +49,12 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             ///     Minimum height delta (in meters) to consider for intersection adjustments.
             /// </summary>
             private const float HeightDeltaThreshold = 0.001f;
+#if IS_DEBUG
+            [BurstDiscard]
+            private static void TraceSurfaceFit(bool applied) {
+                UnityEngine.Debug.Log("[NetworkTools SurfaceProfile] Correction applied=" + applied);
+            }
+#endif
 
             /// <summary>
             ///     Minimum XZ delta squared (in meters²) to consider for intersection adjustments.
@@ -67,8 +80,25 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                 // 2. Execute transformation (context = path geometry, config = user settings)
                 switch (Config.Template) {
                     case ShapeTransformTemplate.SlopeLinear:
-                        var linearTransform = new SlopeLinearTransform();
-                        TransformPipeline.Execute(ref linearTransform, ref edges, ref nodes, in Context, in Config);
+                        var linearValid = SlopeLinearProfileTransform.Execute(ref edges, ref nodes, in Context, in Config);
+#if IS_DEBUG
+                        if (linearValid) {
+                            var surfaceFit = SlopeSurfaceProfileTransform.TryExecute(ref edges, ref nodes, in Config, in ConnectedEdgeLookup,
+                                in SurfaceGeometryLookup, in SurfaceNodeGeometryLookup, in PrefabRefLookup,
+                                in SurfacePrefabGeometryLookup, in SurfaceCompositionLookup, in SurfaceCompositionDataLookup,
+                                in CurveLookup, in EdgeLookup, in NodeLookup, in SurfaceReferences);
+                            SurfaceCorrected.Value = surfaceFit ? 1 : 0;
+                            TraceSurfaceFit(surfaceFit);
+                        }
+#endif
+                        SmoothResult.Value = linearValid ? 1 : -1;
+                        if (!linearValid) {
+#if IS_DEBUG
+                            CapturePreviewProbe(SmoothTraceId, OutputMode, false, edges);
+#endif
+                            edges.Dispose(); nodes.Dispose();
+                            return;
+                        }
                         break;
                     case ShapeTransformTemplate.SlopeEaseInOut:
                         var easeInOutTransform = new SlopeEaseInOutTransform();
@@ -101,8 +131,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                 // Slope must submit the same endpoint/node relationship to Preview and Apply.
                 // The pipeline averages interior node displacements; fit each incident curve
                 // to that common height without changing its fitted endpoint grade.
-                if (Config.Template == ShapeTransformTemplate.SlopeLinear
-                    || Config.Template == ShapeTransformTemplate.SlopeEaseInOut
+                if (Config.Template == ShapeTransformTemplate.SlopeEaseInOut
                     || Config.Template == ShapeTransformTemplate.SlopeArch) {
                     for (var i = 0; i < edges.Length; i++) {
                         var edge = edges[i];

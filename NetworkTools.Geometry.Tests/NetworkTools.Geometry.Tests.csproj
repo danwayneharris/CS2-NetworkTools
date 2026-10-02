@@ -5,6 +5,11 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <None Update="Fixtures/surface-response.json" Link="surface-response.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Fixtures/offset-profile-native.json" Link="offset-profile-native.json" CopyToOutputDirectory="PreserveNewest" />
+    <Compile Include="../NetworkTools.Mod/Geometry/SurfacePreviewConvergence.cs" Link="SurfacePreviewConvergence.cs" />
+    <Compile Include="../NetworkTools.Mod/Geometry/SurfaceProfileResponseFit.cs" Link="SurfaceProfileResponseFit.cs" />
+    <Compile Include="../NetworkTools.Mod/Geometry/VerticalLinearProfile.cs" Link="VerticalLinearProfile.cs" />
     <Compile Include="../NetworkTools.Mod/Geometry/JunctionCandidateSearch.cs" Link="JunctionCandidateSearch.cs" />
     <Compile Include="../NetworkTools.Mod/Geometry/OriginalInputComparison.cs" Link="OriginalInputComparison.cs" />
     <Compile Include="../NetworkTools.Mod/Geometry/PlanarFairing.cs" Link="PlanarFairing.cs" />

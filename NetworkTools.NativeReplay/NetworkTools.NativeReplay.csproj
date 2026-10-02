@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="obj/native-generated/WorldStages.g.cs" Condition="Exists('obj/native-generated/WorldStages.g.cs')" />
     <Reference Include="Game"><HintPath>$(ManagedPath)/Game.dll</HintPath></Reference>
     <Reference Include="Unity.Mathematics"><HintPath>$(ManagedPath)/Unity.Mathematics.dll</HintPath></Reference>
     <Reference Include="Colossal.Mathematics"><HintPath>$(ManagedPath)/Colossal.Mathematics.dll</HintPath></Reference>

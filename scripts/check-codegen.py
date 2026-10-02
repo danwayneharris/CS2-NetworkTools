@@ -39,7 +39,18 @@ class CodegenTests(unittest.TestCase):
                 output=Path(d)/'output.ts'
                 result=subprocess.run([DOTNET,DLL,str(ROOT/'NetworkTools.Mod/Systems'),str(output),'--configuration',config],text=True,capture_output=True)
                 self.assertEqual(0,result.returncode,result.stderr)
-                content='\n'.join(sorted(output.read_text(encoding='utf-8').splitlines()))
+                lines=output.read_text(encoding='utf-8').splitlines()
+                # Intentional additive metadata: verify every new line explicitly,
+                # then retain the unchanged golden for all pre-existing parameters.
+                added={
+                    'combinedSlope: "roadShape.combinedSlope",',
+                    '"roadShape.combinedSlope": { type: "bool", default: false, modes: 16, label: "NetworkTools.UI.Curve.CombinedSlope" },',
+                    'combinedSlope: new TwoWayBinding<boolean>("roadShape.combinedSlope", false),',
+                    '"roadShape.combinedSlope": PARAM_BINDINGS.roadShape.combinedSlope,'}
+                actual=[line.strip() for line in lines if 'combinedSlope' in line]
+                self.assertEqual(len(added),len(actual))
+                self.assertEqual(added,set(actual))
+                content='\n'.join(sorted(line for line in lines if 'combinedSlope' not in line))
                 self.assertEqual(digest,hashlib.sha256(content.encode()).hexdigest())
 
     def test_golden_styles_and_configuration_options(self):

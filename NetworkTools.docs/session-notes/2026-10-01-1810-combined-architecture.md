@@ -142,3 +142,28 @@ with TypeScript 4.8.4. Installing exactly the lockfile's @types/node 24.9.2 loca
 (no-save/no lock writes) resolved that; `tsc --noEmit` then passed. No deployment,
 no in-game UI claim. Full build remains a later gate. Logs are under artifacts/
 combined-ui-*; no package manifests or Common revision changed.
+
+## Aggregate, Release compile, and first deployment
+
+Initial aggregate: six suites passed, codegen failed because its whole-output
+snapshot detected the intentional combined parameter. The updated test explicitly
+asserts all four new generated lines, removes only those from the old comparison,
+and retains the old complete-output hash for every existing parameter. Five codegen
+tests then passed. Full aggregate rerun passed all seven suites (`artifacts/combined-offline-final/summary.json`).
+Release `Compile` target passed without postprocessing/deployment; this is C#
+compatibility, not Burst/native execution. Full Debug bootstrap subsequently passed
+UI generation/bundling, postprocessing and deployment (32 warnings, zero errors).
+
+Live read-only discovery verified paused population-zero Wantagh, controls enabled,
+city session 23d319ec8e6042c69039b406db23a65b. Dan's unsmoothed baseline package:
+`bridge test - trumpet combined baseline.cok`, SHA256
+`d7724aa3a84e56bcbd617cce5d364687445c22fae175828a426ba0c00f3fd0ef`.
+Package integrity and metadata verified. Before gracefully closing, preserved and
+verified `CitiesIIAgentBridge-regression-before-reload-20261002-014406-27c72bcb.cok`.
+
+Deployed Debug DLL SHA256:
+`2EADDE8E2933C129B52F587E9B91FE43AA746E7C2D0A7773212A152DE1896EF6`.
+Visible launch requested for the original baseline (metadata
+63417f2b0b32c6769118c5d88745fd54), process 25304. Loaded-city readiness and native
+combined verification still pending. Build-owned lockfile churn reviewed separately
+and restored to HEAD; no intended dependency change.

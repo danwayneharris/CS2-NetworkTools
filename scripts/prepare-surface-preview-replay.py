@@ -5,6 +5,7 @@ import argparse,json,math,runpy,time
 from pathlib import Path
 p=argparse.ArgumentParser(description=__doc__)
 p.add_argument('--capture',required=True);p.add_argument('--bridge',required=True);p.add_argument('--output',required=True)
+p.add_argument('--no-wait',action='store_true',help='Return after selection acknowledgement; debugger capture owns subsequent polling')
 a=p.parse_args();m=runpy.run_path(str(Path(__file__).with_name('live-regression.py')))
 b=json.loads((Path(a.capture)/'before.json').read_text());r=m['Runner'](a.bridge,a.output)
 c=r.call('get_city_state')
@@ -34,6 +35,8 @@ else:
  call('slope_activate');s=call('slope_state')
  call('slope_configure',dict(session=s['session'],revision=s['revision'],mode=mode,**b['state']['slopeParameters']))
 s=call('state');call('select' if combined else 'slope_select',dict(session=s['session'],revision=s['revision'],start=ends[0],end=ends[1]))
+if a.no_wait:
+ print(json.dumps({'status':'selection_acknowledged','previewReadiness':'not_polled','citySession':r.city_session}));raise SystemExit(0)
 for i in range(60):
  s=call('slope_state')
  if s['previewReady']:break

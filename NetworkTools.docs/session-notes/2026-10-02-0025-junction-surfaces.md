@@ -61,3 +61,7 @@ Native measurement confirms the bug, not its cause or a correction. Runtime stil
 04792dd, Debug. No new build, deployment, or Release testing. Game paused after Apply.
 
 Final verified checkpoint: CitiesIIAgentBridge-junction-surface-mismatch-after-20261002-072749-74d5c33d. No subsequent permanent changes; selection cleared by Apply.
+
+Follow-up: see [junction input investigation](2026-10-02-0050-junction-inputs.md)
+for corrected full EdgeGeometry comparison, native cut/flatten replay, subsequent
+unsuccessful rebuild experiments, and the exact paused-work handoff.

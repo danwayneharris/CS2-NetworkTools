@@ -55,13 +55,13 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                     failedIndex = i; return false;
                 }
                 var a = anchors[i];
-                if (i > 0 && (i < count || n.SmoothPinned)) {
+                if (i > 0 && (i < count || n.SmoothJunction)) {
                     if (!CombinedProfileInputs.TryGrade(originals[i-1], false, out a.IncomingGrade)) {
                         failure = Failure.UndefinedGrade; failedIndex = i; return false;
                     }
                     a.MatchIncoming = true;
                 }
-                if (i < count && (i > 0 || n.SmoothPinned)) {
+                if (i < count && (i > 0 || n.SmoothJunction)) {
                     if (!CombinedProfileInputs.TryGrade(originals[i], true, out a.OutgoingGrade)) {
                         failure = Failure.UndefinedGrade; failedIndex = i; return false;
                     }
@@ -74,10 +74,10 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                     // Equivalent original grades: preserve the incoming one, no policy averaging.
                     a.OutgoingGrade = a.IncomingGrade;
                 }
-                if (i == 0 && !n.SmoothPinned && config.SmoothStart && context.StartSmoothEligible) {
+                if (i == 0 && !n.SmoothJunction && config.SmoothStart && context.StartSmoothEligible) {
                     a.MatchOutgoing = true; a.OutgoingGrade = context.StartAnchorSlope;
                 }
-                if (i == count && !n.SmoothPinned && config.SmoothEnd && context.EndSmoothEligible) {
+                if (i == count && !n.SmoothJunction && config.SmoothEnd && context.EndSmoothEligible) {
                     a.MatchIncoming = true; a.IncomingGrade = context.EndAnchorSlope;
                 }
                 anchors[i] = a;

@@ -81,3 +81,27 @@ compatible split grades, explicit split-conflict rejection, fixed junction branc
 grades, deterministic repeat and no partial publication on failure. This is not
 native game evidence and does not yet cover the full planned combined matrix.
 Output: `artifacts/combined-transform-tests-final.log`. Game remains untouched.
+
+## Combined dispatch checkpoint (not deployable yet)
+
+Connected the horizontal and constrained vertical stages inside one Debug job,
+with an opt-in parameter defaulting false. Release configuration forces combined
+off. Combined Apply is intentionally disabled until the native surface/junction
+observers are coordinated; this is an intermediate checkpoint, not delivered
+feature behavior. UI/provider exposure still follows. Independent dispatch is
+unchanged. Surface correction cannot overwrite interior split/junction anchors;
+its existing restricted terminal-ramp envelope is not expanded to those cases.
+
+Corrected an architecture-note assumption after reading the actual predictor:
+SurfaceJunctionHeightModel.Predict already substitutes selected candidate geometry
+and adjacent candidate position. The outstanding issue is old native cut-reference
+XZ, not substitution of the authored selected curve.
+
+Found that SmoothPinned includes dead ends, not only junctions. Added explicit
+SmoothJunction metadata from incident degree so the combined boundary policy does
+not preserve dead-end grade accidentally. Two counterexamples distinguish a
+height-only dead end from a terminal junction grade anchor. Non-deploying production
+compile/tests pass: 28 input and 19 transform assertions plus unchanged incident
+and 96 Slope assertions. `artifacts/combined-dispatch-tests-final.log`. No deployment
+or live mutation. Next: current-candidate native reference priming, bounded validator
+coordination, UI/provider integration, then full offline/live validation.

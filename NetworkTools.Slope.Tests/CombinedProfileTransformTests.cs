@@ -36,6 +36,12 @@ internal static unsafe class CombinedProfileTransformTests {
         Near(e[1].Bezier.b.y,5.5,"junction outgoing grade preserved");Near(nodes[1].Position.y,3,"junction stays fixed");
         nodes[1].SmoothPinned=false;
         Check(Fit(e,nodes,original,out _),"free interior");Near(e[0].Bezier.c.y,2.5,"unconstrained constant grade");
+        nodes[0].SmoothPinned=true;original[0].Bezier.b.y=9;
+        Check(Fit(e,nodes,original,out _),"fixed dead end remains a height anchor only");
+        Near(e[0].Bezier.b.y,1,"dead end does not accidentally preserve original grade");
+        nodes[0].SmoothJunction=true;
+        Check(Fit(e,nodes,original,out _),"terminal junction grade anchor");
+        Near(e[0].Bezier.b.y,9,"terminal junction retains authored grade");
         var bad=(EdgeState[])original.Clone();bad[1].Bezier.d.y=float.NaN;
         before=(EdgeState[])e.Clone();Check(!Fit(e,nodes,bad,out _),"invalid later input");
         Near(math.distance(e[0].Bezier.c,before[0].Bezier.c),0,"late failure atomic");

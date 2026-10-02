@@ -58,6 +58,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
 
             Template.OnChanged += _ => InvalidatePreviewObservation();
             SmoothingFactor.OnChanged += _ => InvalidatePreviewObservation();
+            CombinedSlope.OnChanged += _ => InvalidatePreviewObservation();
             EaseInLength.OnChanged += _ => InvalidatePreviewObservation();
             EaseOutLength.OnChanged += _ => InvalidatePreviewObservation();
             ArchHeight.OnChanged += _ => InvalidatePreviewObservation();

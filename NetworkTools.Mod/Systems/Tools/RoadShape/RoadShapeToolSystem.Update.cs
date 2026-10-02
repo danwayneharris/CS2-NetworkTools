@@ -155,6 +155,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                 if (m_UpdateNeeded || !m_PathDataValid || !m_LastShapeJob.IsCompleted) { return 0; }
                 m_LastShapeJob.Complete();
 #if IS_DEBUG
+                if (CombinedMode) { return 0; } // Integration checkpoint: native stage coordination follows.
                 if (Template.Value == ShapeTransformTemplate.CurveSmooth && !JunctionSearchAllowsApply()) { return 0; }
                 if (Template.Value == ShapeTransformTemplate.SlopeLinear && !SurfacePreviewAllowsApply()) { return 0; }
 #endif

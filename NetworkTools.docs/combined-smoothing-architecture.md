@@ -17,10 +17,11 @@ those steps inside one job is feasible, but the one-span fitter would move pinne
 interior heights. A section-aware vertical wrapper is required, without changing
 ordinary Constant Slope semantics.
 
-SurfaceProfileTransform reads the selected junction incident from CurveLookup
-(original authored curve). In combined mode that must be the candidate curve and
-candidate adjacent node position. Native reference cut positions can also be from
-old XZ. Failed initial correction must not be mistaken for proof that no supported
+SurfaceProfileTransform initially collects the selected junction incident from
+CurveLookup, but source inspection of SurfaceJunctionHeightModel.Predict confirms
+it already substitutes the candidate curve and adjacent candidate node for incident
+zero. No correction to that substitution is needed. Native reference cut positions
+can still be from old XZ. Failed initial correction must not be mistaken for proof that no supported
 correction is needed after horizontal movement; collect current native references
 before making that decision. Existing correction deliberately supports only a
 restricted terminal ground ramp, not arbitrary pinned/interior-junction paths.

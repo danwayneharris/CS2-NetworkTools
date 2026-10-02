@@ -1,4 +1,4 @@
-"""Checkpoint and compare the current paused toy Slope preview with one Apply.
+"""Checkpoint and compare the current paused toy Slope or combined Curve preview with one Apply.
 No activation, parameter changes or reselection. Requires explicit --apply.
 Raw output remains in the requested capture directory.
 """
@@ -16,7 +16,8 @@ if city['population']!=0 or city['selectedSpeed']!=0 or not city['controlEnabled
 provider=next(x for x in r.call('list_providers')['providers'] if x['id']=='networktools')
 def invoke(command,args=None):return r.call('invoke_provider',{'provider':'networktools','revision':provider['revision'],'command':command,'args':args or {}})
 s=invoke('slope_state')
-if not s['active'] or not s['previewReady'] or not s['mode'].startswith('Slope'):raise RuntimeError('Expected ready slope selection')
+is_slope=s['mode'].startswith('Slope')
+if not s['active'] or not s['previewReady'] or not (is_slope or (s['mode']=='CurveSmooth' and s['combinedSlope'])):raise RuntimeError('Expected ready slope or combined selection')
 path=r.call('trace_network',dict(fromIndex=s['start']['index'],fromVersion=s['start']['version'],toIndex=s['end']['index'],toVersion=s['end']['version']))
 if not path['connected'] or len(path['edges'])>16:raise RuntimeError('Bounded connected selection required')
 operation=r.call('save_checkpoint',{'label':'surface-preview-before-apply'})
@@ -25,8 +26,28 @@ if saved['status']!='complete':raise RuntimeError('Checkpoint failed')
 runpy.run_path(str(Path(__file__).with_name('reload-toy-baseline.py')))['verified_package'](a.save_root,saved['saveName']+'.cok')
 watched=[s['start'],s['end']]
 before=[r.call('get_junction_snapshot',n) for n in watched]
+# Include interior nodes when the endpoint snapshots cover the selected path.
+# Fail closed rather than silently inspecting only boundaries of a longer path.
+selected={m['identity'](e) for e in path['edges']}
+selected_owners={m['identity'](o):o for snap in before for o in snap['owners'] if m['identity'](o) in selected}
+if selected_owners.keys()!=selected:raise RuntimeError('Selected edge coverage incomplete; use full regression runner')
+seen={m['identity'](n) for n in watched}
+for o in selected_owners.values():
+ for field in ('startNode','endNode'):
+  n=o[field]
+  if m['identity'](n) not in seen:
+   watched.append(n);seen.add(m['identity'](n));before.append(r.call('get_junction_snapshot',n))
 previews=[r.call('get_junction_preview',n) for n in watched]
-if any(not x.get('connectedSnapshot') or not x['connectedSnapshot']['complete'] for x in previews):raise RuntimeError('Missing preview')
+for x in previews:
+ if x.get('connectedSnapshot'):
+  if not x['connectedSnapshot']['complete']:raise RuntimeError('Incomplete preview')
+ else:
+  # Degree-one has no unique shared-endpoint junction. Retain unsupported status;
+  # capture its one uniquely mapped edge, without claiming node/lane coverage.
+  rel=x.get('relatedPreviewEdges',{})
+  if x.get('topologyResolution',{}).get('status')!='unsupported' or not rel.get('complete') or len(rel.get('expectedOriginalEdges',[]))!=1 or len(rel.get('edges',[]))!=1:
+   raise RuntimeError('Missing or ambiguous preview')
+  if m['identity'](rel['edges'][0]['temp']['original'])!=m['identity'](rel['expectedOriginalEdges'][0]):raise RuntimeError('Preview edge mismatch')
 owners={m['identity'](o):o for snap in before for o in snap['owners'] if o.get('curve')}
 points=[]
 for o in owners.values():
@@ -38,7 +59,7 @@ terrain_before=r.call('sample_terrain',{'points':points})
 final=invoke('slope_state')
 if not final['previewReady'] or any(final[k]!=s[k] for k in ('session','revision','submission')):raise RuntimeError('Preview token changed')
 root.joinpath('before.json').write_text(json.dumps({'city':city,'state':s,'path':path,'checkpoint':saved,'snapshots':before,'previews':previews,'terrain':terrain_before,'points':points},indent=2))
-invoke('slope_apply',{k:s[k] for k in ('session','revision','submission')})
+invoke('slope_apply' if is_slope else 'apply',{k:s[k] for k in ('session','revision','submission')})
 for i in range(40):
  if invoke('slope_state')['phase']=='Idle':break
  time.sleep(.25)

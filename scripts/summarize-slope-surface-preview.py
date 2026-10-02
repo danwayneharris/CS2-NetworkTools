@@ -24,7 +24,7 @@ def error(a,b):
     if not x or x.keys()!=y.keys():raise ValueError('Missing or mismatched geometry coverage')
     if not all(math.isfinite(v) for d in (x,y) for p in d.values() for v in p):raise ValueError('Nonfinite geometry')
     return dict(maxDistance=max(math.dist(x[k],y[k]) for k in x),maxY=max(abs(x[k][1]-y[k][1]) for k in x),points=len(x))
-o=owners(b['snapshots']);v=owners([s['connectedSnapshot'] for s in b['previews']],True);n=owners(after['snapshots']);selected={identity(e) for e in b['path']['edges']}
+o=owners(b['snapshots']);v=owners([s['connectedSnapshot'] if s.get('connectedSnapshot') else {'complete':s['relatedPreviewEdges']['complete'],'owners':s['relatedPreviewEdges']['edges']} for s in b['previews']],True);n=owners(after['snapshots']);selected={identity(e) for e in b['path']['edges']}
 rows=[dict(edge=k,selected=k in selected,authoredPreviewVsApply=error(v[k]['curve'],n[k]['curve']),surfacePreviewVsApply=error(v[k]['edgeGeometry'],n[k]['edgeGeometry']),surfaceBeforeVsAfter=error(o[k]['edgeGeometry'],n[k]['edgeGeometry'])) for k in v]
 # Composition is an independent native output: equal authored cubics do not
 # establish matching ground/bridge classification or generated surface width.

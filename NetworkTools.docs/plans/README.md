@@ -58,10 +58,29 @@ Autonomous execution scope, toy-save/game permissions, publication details and
 blocked-work alternatives must be explicit in the six plans and goal prompt.
 No live game work or plan implementation was performed when recording this workflow.
 
-## Required section: Dan's evaluation
+## Required implementation document (all plans)
+
+Each stage must create or update a durable feature and review document as an
+implementation artifact. Session notes and the original plan do not substitute
+for this document. Each draft PR must link it, and it must describe the delivered
+implementation rather than merely repeat intended behavior.
+
+The document must contain:
+
+- **Features and usage:** what changed, how to use it, defaults, and supported scenarios.
+- **Architecture:** how it works, component responsibilities, data flow, and relevant design decisions.
+- **Testing:** what actually ran, reproduction instructions, results, and separate evidence for offline tests, native preview, permanent Apply, reload, and human verification.
+- **Limitations:** unsupported cases, known issues, missing evidence, and deferred decisions.
+- **Dan's review:** exact build/settings/save information, numbered review steps, expected results, accepted imperfections, and remaining visual, UI, or vehicle-traversal checks.
+
+Keep this document current as fixes land. Documentation-only stages describe
+their findings and architectural recommendations using the same structure where
+applicable. The detailed review requirements below also apply to this document.
+
+## Required section: Dan's review
 
 Every plan and its resulting review documentation must include a clearly labeled
-**Dan's evaluation** section; each draft PR links it. Keep the completed handoff
+**Dan's review** section; each draft PR links it. Keep the completed handoff
 current rather than leaving only the pre-execution checklist.
 
 For each item specify:
@@ -107,4 +126,4 @@ It does not turn offline success into native/visual success, excuse known failin
 assertions, or authorize weakening checks. If evidence establishes a defect that
 invalidates a dependent step, fix it or document that dependency as blocked and
 continue independent work. Clearly label unverified native behavior and relevant
-dependent assumptions in every affected PR and in Dan's evaluation checklist.
+dependent assumptions in every affected PR and in Dan's review checklist.

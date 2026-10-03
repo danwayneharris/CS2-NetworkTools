@@ -12,6 +12,10 @@ namespace NetworkTools.Systems.Tools.Parameters {
 
         public T Default { get; }
 
+        /// <summary>Optional domain boundary; rejects a write without mutation or events.</summary>
+        public Func<T, bool> ValidateValue { get; init; }
+
+
         public IHandleSpec<T>[] Handles { get; init; }
 
         public T Value {
@@ -22,12 +26,17 @@ namespace NetworkTools.Systems.Tools.Parameters {
         public void SetValue(T value, ChangeOrigin origin) => TrySetValue(value, origin);
 
         /// <summary>
-        ///     Accepts finite values without imposing UI range metadata on handle/code writes.
+        ///     Accepts finite values and any explicit domain validator, without implicitly imposing
+        ///     UI range metadata on handle/code writes.
         ///     Rejection retains the previous value and never raises OnChanged.
         /// </summary>
         public bool TrySetValue(T value, ChangeOrigin origin) {
             if (!ParameterValueValidation.IsFinite(value)) {
                 Log?.Warn($"[Parameter] {Key}: rejected nonfinite value from {origin}; retaining current value.");
+                return false;
+            }
+            if (ValidateValue != null && !ValidateValue(value)) {
+                Log?.Warn($"[Parameter] {Key}: rejected out-of-domain value from {origin}; retaining current value.");
                 return false;
             }
             if (EqualityComparer<T>.Default.Equals(m_Value, value)) return true;

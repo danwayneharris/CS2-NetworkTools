@@ -45,6 +45,26 @@ static class Program {
         bool threw = false;
         try { new FloatParameter("bad", float.NaN, 0, 1); } catch (ArgumentException) { threw = true; }
         Require(threw, "invalid developer default rejected before instance can hold it");
+        var bounded = new FloatParameter("junctionLimit", 5, 0, 20, persist: false) {
+            ValidateValue = value => value >= 0 && value <= 20
+        };
+        int boundedChanges = 0;
+        bounded.OnChanged += _ => ++boundedChanges;
+        foreach (var origin in new[] { ChangeOrigin.Code, ChangeOrigin.Handle, ChangeOrigin.Dependency })
+            foreach (var bad in new[] { -0.1f, 20.1f, float.NaN, float.PositiveInfinity }) {
+                Require(!bounded.TrySetValue(bad, origin), "optional domain rejects invalid writes from every origin");
+                Require(bounded.Value == 5 && boundedChanges == 0, "domain rejection retains state and freshness event count");
+            }
+        bounded.Value = 21;
+        bounded.SetValue(-1, ChangeOrigin.Handle);
+        Require(!bounded.TryDeserializeValue("21") && bounded.Value == 5 && boundedChanges == 0,
+            "property, legacy setter and persisted-value path share the domain boundary");
+        Require(!bounded.Persist, "session parameter is not persisted");
+        foreach (var valid in new[] { 0f, 20f, 1.234f })
+            Require(bounded.TrySetValue(valid, ChangeOrigin.Code) && bounded.Value == valid,
+                "domain accepts endpoints and precise values without slider quantization");
+        bounded.ResetToDefault();
+        Require(bounded.Value == 5 && boundedChanges == 4, "bounded default restores through validated setter");
         var integer = new IntParameter("count", 2, 0, 10); integer.Value = 20;
         Require(integer.Value == 20 && !integer.TryDeserializeValue("999999999999999999999"), "integer range policy unchanged; overflow rejected");
         Require(integer.Value == 20, "integer overflow does not mutate");

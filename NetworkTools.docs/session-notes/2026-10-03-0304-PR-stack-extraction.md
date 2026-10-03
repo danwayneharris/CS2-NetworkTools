@@ -33,3 +33,9 @@ in its original worktree. Qualification and publication results follow below.
 
 Reports are local under artifacts/pr-split-*; raw captures and generated game
 source/binaries are ignored and are not part of the PR.
+
+The complete seven-suite bootstrap offline aggregate also passes after setting
+up this fresh worktree. First attempts correctly failed for an uninitialized
+pinned Common submodule, then missing NuGet assets. Initialized Common at its
+existing recorded revision and restored packages; no production changes were
+needed. The already-tested uv invocation fix is included in this base PR.

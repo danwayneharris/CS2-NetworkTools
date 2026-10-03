@@ -242,18 +242,28 @@
         public int ApplyMinNodeCount => 2;
 
         /// <inheritdoc />
-        public bool CanApply => Phase == OperationPhase.Ready && Mode.Value != ConnectMode.None;
+        public bool CanApply {
+            get {
+                if (Phase != OperationPhase.Ready || Mode.Value == ConnectMode.None) return false;
+#if IS_DEBUG
+                if (Mode.Value == ConnectMode.SimpleCurve) return ControlCandidateAllowsApply();
+#endif
+                return true;
+            }
+        }
 
         /// <summary>
         ///     Requests the tool to apply the current transformation.
         /// </summary>
-        public void RequestApply() {
-            if (Phase != OperationPhase.Ready)
-            {
-                return;
-            }
+        public void RequestApply() => TryRequestApply();
 
+        private bool TryRequestApply() {
+            if (!CanApply) return false;
+#if IS_DEBUG
+            m_ControlAcceptedCandidate = Mode.Value == ConnectMode.SimpleCurve ? m_ControlCandidate : null;
+#endif
             Phase = OperationPhase.Applying;
+            return true;
         }
 
         protected override bool GetRaycastResult(out ControlPoint controlPoint) =>
@@ -263,6 +273,11 @@
         ///     Resets the tool to idle state, clearing all selection.
         /// </summary>
         public void ResetToIdle() {
+#if IS_DEBUG
+            m_ControlAcceptedCandidate = null;
+            m_ControlCandidate = null;
+            m_ControlRejection = "preview_unavailable";
+#endif
             // Clear state to completely blank
             Phase = OperationPhase.Idle;
 

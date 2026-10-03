@@ -26,24 +26,70 @@ namespace NetworkTools.Systems.Tools.Connect {
         private HashSet<Entity> m_ControlPreviousTemps = new();
         private JobHandle m_ControlJob;
         private bool m_ControlActivatePending;
+        private ConnectCandidate<ConnectJobConfig> m_ControlCandidate;
+        private ConnectCandidate<ConnectJobConfig> m_ControlAcceptedCandidate;
+        private string m_ControlRejection = "preview_unavailable";
+
+        // Bounded prerequisite: Debug SimpleCurve only. Complex/Loop keep their
+        // legacy domain until their explicit profile/approach acceptance is added.
+        private bool ControlCandidateAllowsApply(bool executing = false) {
+            if (!Enabled || m_ToolSystem.activeTool != this || Mode.Value != ConnectMode.SimpleCurve) {
+                m_ControlRejection = "connect_not_active";
+                return false;
+            }
+            RefreshControlInputs();
+            var candidate = executing ? m_ControlAcceptedCandidate : m_ControlCandidate;
+            if (candidate == null || (executing && candidate != m_ControlCandidate)) {
+                m_ControlRejection = "candidate_unavailable";
+                return false;
+            }
+            if (m_ControlJob.IsCompleted) m_ControlJob.Complete();
+            var preview = m_ControlJob.IsCompleted && !m_UpdateNeeded ? ReadControlPreview() : null;
+            m_ControlRejection = candidate.Status(m_ControlRevision, m_ControlSubmission, m_ControlInputs,
+                m_ControlJob.IsCompleted, m_UpdateNeeded, m_ControlStableFrames, m_ControlPreview, preview, GetAllowApply());
+            return m_ControlRejection == "accepted";
+        }
+
 
         // Scoped snapshot: selected endpoints, all incident edges and their far nodes,
         // parameters, prefab selection and validation setting. Not a city-wide lock.
         private string ControlInputs() {
-            var data = new List<object> { Enabled, Phase, AnarchyEnabled, Mode.Value,
+            var data = new List<object> { AnarchyEnabled, Mode.Value,
                 NetPrefab.NetPrefabEntity, NetPrefab.NetLanePrefabEntity, BuildJobConfig() };
+            if (!m_SelectedNodes.IsCreated || m_SelectedNodes.Length != 2) return null;
             var incident = new HashSet<Entity>();
             foreach (var node in m_SelectedNodes) {
                 if (!ControlLive(node) || !EntityManager.HasComponent<Node>(node)
-                    || !EntityManager.HasBuffer<ConnectedEdge>(node)) return null;
+                    || !EntityManager.HasBuffer<ConnectedEdge>(node) || !EntityManager.HasComponent<PrefabRef>(node)) return null;
                 data.Add(node); data.Add(EntityManager.GetComponentData<Node>(node));
+                data.Add(EntityManager.GetComponentData<PrefabRef>(node));
+                var hasElevation = EntityManager.HasComponent<Elevation>(node);
+                data.Add(hasElevation);
+                if (hasElevation) data.Add(EntityManager.GetComponentData<Elevation>(node));
                 foreach (var e in EntityManager.GetBuffer<ConnectedEdge>(node, true)) incident.Add(e.m_Edge);
+            }
+            // Capture the effective inherited/explicit prefab inputs consumed by
+            // native creation, not only the user's optional prefab selection.
+            var effectivePrefab = NetPrefab.NetPrefabEntity;
+            var lanePrefab = NetPrefab.NetLanePrefabEntity;
+            if (effectivePrefab == Entity.Null && lanePrefab == Entity.Null)
+                effectivePrefab = EntityManager.GetComponentData<PrefabRef>(m_SelectedNodes[0]).m_Prefab;
+            foreach (var prefab in new[] { effectivePrefab, lanePrefab }) {
+                data.Add(prefab);
+                if (prefab == Entity.Null) continue;
+                if (!EntityManager.Exists(prefab)) return null;
+                var hasGeometry = EntityManager.HasComponent<NetGeometryData>(prefab);
+                data.Add(hasGeometry);
+                if (hasGeometry) data.Add(EntityManager.GetComponentData<NetGeometryData>(prefab));
             }
             if (incident.Count > 64) return null;
             var ordered = new List<Entity>(incident); ordered.Sort((a,b) => a.Index.CompareTo(b.Index));
             foreach (var entity in ordered) {
-                if (!ControlLive(entity) || !EntityManager.HasComponent<Curve>(entity)) return null;
+                if (!ControlLive(entity) || !EntityManager.HasComponent<Curve>(entity)
+                    || !EntityManager.HasComponent<Edge>(entity) || !EntityManager.HasComponent<PrefabRef>(entity)) return null;
                 var edge = EntityManager.GetComponentData<Edge>(entity);
+                if (!ControlLive(edge.m_Start) || !ControlLive(edge.m_End)
+                    || !EntityManager.HasComponent<Node>(edge.m_Start) || !EntityManager.HasComponent<Node>(edge.m_End)) return null;
                 data.Add(entity); data.Add(edge); data.Add(EntityManager.GetComponentData<Curve>(entity));
                 data.Add(EntityManager.GetComponentData<PrefabRef>(entity));
                 data.Add(EntityManager.GetComponentData<Node>(edge.m_Start));
@@ -59,15 +105,18 @@ namespace NetworkTools.Systems.Tools.Connect {
             var inputs = ControlInputs();
             if (inputs == null || inputs != m_ControlInputs) {
                 m_ControlInputs = inputs; ++m_ControlRevision; m_ControlStableFrames = 0; m_ControlPreview = null;
+                if (Phase == OperationPhase.Ready && m_SelectedNodes.Length == 2) m_UpdateNeeded = true;
             }
         }
         private EntityQuery ControlTempQuery() => EntityManager.CreateEntityQuery(new EntityQueryDesc {
             All = new[] { ComponentType.ReadOnly<Edge>(), ComponentType.ReadOnly<Curve>(), ComponentType.ReadOnly<Temp>() },
             None = new[] { ComponentType.ReadOnly<Deleted>() }
         });
-        private void BeginControlPreview() {
+        private void BeginControlPreview(ConnectJobConfig config) {
             RefreshControlInputs(); ++m_ControlSubmission;
             m_ControlSubmittedRevision = m_ControlRevision; m_ControlSubmittedInputs = m_ControlInputs;
+            m_ControlCandidate = new ConnectCandidate<ConnectJobConfig>(m_ControlRevision, m_ControlSubmission, m_ControlInputs, config);
+            m_ControlAcceptedCandidate = null;
             m_ControlStableFrames = 0; m_ControlPreview = null; m_ControlPreviousTemps.Clear();
             using var q = ControlTempQuery();
             using var es = q.ToEntityArray(Allocator.Temp);
@@ -84,7 +133,7 @@ namespace NetworkTools.Systems.Tools.Connect {
                 // Require a newly rebuilt set after this submission; native reuse stays
                 // explicitly unverified, rather than accepting a stale previous preview.
                 if (m_ControlPreviousTemps.Contains(e) || EntityManager.HasComponent<Updated>(e)
-                    || EntityManager.HasComponent<Created>(e) || !EntityManager.HasBuffer<Game.Net.SubLane>(e)) return null;
+                    || EntityManager.HasComponent<Created>(e) || !EntityManager.HasBuffer<Game.Net.SubLane>(e) || !EntityManager.HasComponent<PrefabRef>(e)) return null;
                 var temp = EntityManager.GetComponentData<Temp>(e);
                 if (temp.m_Original == Entity.Null) newEdges++;
                 var c = EntityManager.GetComponentData<Curve>(e).m_Bezier;
@@ -110,13 +159,11 @@ namespace NetworkTools.Systems.Tools.Connect {
         }
         internal JObject AutomationState() {
             RefreshControlInputs();
-            var ready = Enabled && m_ToolSystem.activeTool == this && CanApply && Mode.Value == ConnectMode.SimpleCurve
-                && !m_UpdateNeeded && m_ControlStableFrames >= 3 && m_ControlSubmittedRevision == m_ControlRevision
-                && m_ControlInputs != null && m_ControlInputs == m_ControlSubmittedInputs;
+            var ready = CanApply && Mode.Value == ConnectMode.SimpleCurve;
             return new JObject { ["apiVersion"] = 1, ["tool"] = "connect", ["session"] = m_ControlSession,
                 ["revision"] = m_ControlRevision, ["submission"] = m_ControlSubmission,
                 ["active"] = Enabled && m_ToolSystem.activeTool == this, ["phase"] = Phase.ToString(),
-                ["previewReady"] = ready, ["mode"] = Mode.Value.ToString(), ["anarchy"] = AnarchyEnabled,
+                ["rejectionReason"] = m_ControlRejection, ["previewReady"] = ready, ["mode"] = Mode.Value.ToString(), ["anarchy"] = AnarchyEnabled,
                 ["start"] = JToken.FromObject(StartNode), ["end"] = JToken.FromObject(EndNode),
                 ["parameters"] = JToken.Parse(JsonConvert.SerializeObject(BuildJobConfig(), NetworkTools.Automation.VectorJsonConverter.Settings)),
                 ["previewObservation"] = m_ControlPreview == null ? JValue.CreateNull() : JToken.Parse(m_ControlPreview),
@@ -170,7 +217,8 @@ namespace NetworkTools.Systems.Tools.Connect {
                     if (!(bool)state["previewReady"] || args["submission"]?.Type != JTokenType.Integer
                         || (long)args["submission"] != m_ControlSubmission || ReadControlPreview() != m_ControlPreview)
                         throw new InvalidOperationException("stale_or_unverified_preview");
-                    RequestApply(); break;
+                    if (!TryRequestApply()) throw new InvalidOperationException("stale_or_unverified_preview");
+                    break;
                 default: throw new ArgumentException("unknown_action");
             }
             return AutomationState();

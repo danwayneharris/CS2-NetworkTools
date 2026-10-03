@@ -14,6 +14,9 @@ namespace NetworkTools.Systems.Tools.Connect {
     using Unity.Jobs;
 
     public partial class NT_ConnectToolSystem {
+#if IS_DEBUG
+        private bool m_ControlClearingPreview;
+#endif
         /// <summary>
         ///     Builds a Burst-compatible snapshot struct from the current parameter values and contextual state.
         /// </summary>
@@ -117,6 +120,21 @@ namespace NetworkTools.Systems.Tools.Connect {
                 m_ControlAcceptedCandidate = null;
                 m_ControlRejection = "inputs_unavailable";
                 return Clear(inputDeps);
+            }
+#endif
+#if IS_DEBUG
+            // A native rebuild may reuse temporary IDs. Establish an empty preview
+            // boundary before replacing a guarded candidate; never accept old IDs
+            // merely because their coordinates happen to match the new request.
+            if (ControlCandidateRequired && (m_ControlCandidate != null || m_ControlClearingPreview)) {
+                m_ControlCandidate = null; m_ControlAcceptedCandidate = null;
+                using var oldPreview = ControlTempQuery();
+                if (!m_ControlClearingPreview || oldPreview.CalculateEntityCount() != 0) {
+                    m_ControlClearingPreview = true;
+                    m_ControlRejection = "preview_clearing";
+                    return Clear(inputDeps);
+                }
+                m_ControlClearingPreview = false;
             }
 #endif
             // Recreate temp entities

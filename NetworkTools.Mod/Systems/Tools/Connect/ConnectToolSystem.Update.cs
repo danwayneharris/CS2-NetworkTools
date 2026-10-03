@@ -276,6 +276,7 @@
 #if IS_DEBUG
             m_ControlAcceptedCandidate = null;
             m_ControlCandidate = null;
+            m_ControlClearingPreview = false;
             m_ControlRejection = "preview_unavailable";
 #endif
             // Clear state to completely blank

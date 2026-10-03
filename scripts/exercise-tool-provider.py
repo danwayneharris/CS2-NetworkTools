@@ -82,7 +82,7 @@ def preview_curves_to_rows(curves):
  return [{'edge':key,'curve':curve} for key,curve in curves.items()]
 
 def main():
- p=argparse.ArgumentParser();p.add_argument('--fixture',default=str(Path(__file__).parent/'fixtures/toy-terrain-v11.json'));p.add_argument('--bridge',default='../cities2-agent-bridge-ndc');p.add_argument('--slope-mode',choices=['linear','ease','arch'],default='ease');p.add_argument('--smooth-start',action='store_true');p.add_argument('--smooth-end',action='store_true');p.add_argument('--reverse',action='store_true');p.add_argument('--output',required=True);p.add_argument('--save-root',required=True);p.add_argument('--run',action='store_true');p.add_argument('--stage',choices=['curve','slope','connect'],required=True);p.add_argument('--expected-fingerprint');p.add_argument('--case',default='highway-ramp-out');p.add_argument('--connect-profile',action='store_true');p.add_argument('--connect-mode',choices=['SimpleCurve','ComplexCurve'],default='SimpleCurve');p.add_argument('--preview-only',action='store_true');p.add_argument('--connect-kind',choices=['road','rail'],default='road');a=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('--fixture',default=str(Path(__file__).parent/'fixtures/toy-terrain-v11.json'));p.add_argument('--bridge',default='../cities2-agent-bridge-ndc');p.add_argument('--slope-mode',choices=['linear','ease','arch'],default='ease');p.add_argument('--smooth-start',action='store_true');p.add_argument('--smooth-end',action='store_true');p.add_argument('--reverse',action='store_true');p.add_argument('--output',required=True);p.add_argument('--save-root',required=True);p.add_argument('--run',action='store_true');p.add_argument('--stage',choices=['curve','slope','connect'],required=True);p.add_argument('--expected-fingerprint');p.add_argument('--case',default='highway-ramp-out');p.add_argument('--connect-straight-controls',action='store_true');p.add_argument('--connect-profile',action='store_true');p.add_argument('--connect-mode',choices=['SimpleCurve','ComplexCurve'],default='SimpleCurve');p.add_argument('--preview-only',action='store_true');p.add_argument('--connect-kind',choices=['road','rail'],default='road');a=p.parse_args()
  if not a.run:p.error('Explicit --run required')
  f=json.loads(Path(a.fixture).read_text());case=next(c for c in f['cases'] if c['name']==a.case);r=m['Runner'](a.bridge,a.output)
  city=r.call('get_city_state')
@@ -119,6 +119,15 @@ def main():
  control('select',start=start,end=end)
  if a.stage=='connect' and (a.connect_profile or a.connect_mode!='SimpleCurve'):
   control('configure',mode=a.connect_mode,smoothElevationProfile=a.connect_profile)
+  # Native may reuse the previous temp graph when controls produce identical
+  # geometry. Reselect from a cleared observation rather than certify reused IDs.
+  control('clear');time.sleep(1);control('select',start=start,end=end)
+ if a.stage=='connect' and a.connect_straight_controls:
+  node_map={m['identity'](n):n for n in ns}
+  pa=m['position'](node_map[m['identity'](start)]['position']);pb=m['position'](node_map[m['identity'](end)]['position'])
+  def lerp(t):return [x+(y-x)*t for x,y in zip(pa,pb)]
+  opts={'startControl':lerp(1/3),'endControl':lerp(2/3)} if a.connect_mode=='SimpleCurve' else {'startControl':lerp(1/6),'endControl':lerp(5/6),'midPoint':lerp(.5),'midStartControl':lerp(1/3),'midEndControl':lerp(2/3)}
+  control('configure',**opts)
  if a.preview_only:
   if a.stage!='connect':raise ValueError('Preview-only currently supports Connect')
   s=poll(lambda s:s['previewReady'] or str(s.get('rejectionReason','')).startswith(('profile_native_','profile_endpoint_','profile_Horizontal','profile_Degenerate')))

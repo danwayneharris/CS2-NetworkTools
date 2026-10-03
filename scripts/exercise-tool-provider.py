@@ -78,11 +78,34 @@ def assert_connect_report(report):
   raise AssertionError('Connect preservation or preview/permanent verification failed')
 
 
+def connect_selected_lane_proof(before, after, selected, new_edges):
+ """Independent permanent graph reachability; no preview/provider success shortcut."""
+ if len(before)!=2 or len(after)!=2 or len(selected)!=2:raise ValueError('Two selected endpoint lanes required')
+ new_owners={edge[0] for edge in new_edges};proof=[]
+ for ordinal,(old,current,chosen) in enumerate(zip(before,after,selected)):
+  matches=[lane for lane in old['lanes'] if m['identity'](lane)==m['identity'](chosen)]
+  if len(matches)!=1:raise ValueError('Original selected lane missing or duplicated')
+  lane=matches[0];owner=lane['owner']['index']
+  if owner==old['junction']['index']:raise ValueError('Expected approach edge lane')
+  indices={lane[p]['laneIndex'] & 255 for p in ('start','middle','end') if lane[p]['ownerIndex']==owner}
+  if len(indices)!=1:raise ValueError('Ambiguous original composition lane')
+  label=(owner,next(iter(indices)),lane.get('secondary',False))
+  original_composition=m['_lane_module'].composition_signature(old)
+  current_composition=m['_lane_module'].composition_signature(current)
+  if original_composition.get(owner)!=current_composition.get(owner):raise ValueError('Selected lane composition changed')
+  transitions=m['_lane_module'].transitions(current,'car')
+  if ordinal==0:witnesses=[(source,target) for source,target in transitions if source==label and target[0] in new_owners]
+  else:witnesses=[(source,target) for source,target in transitions if target==label and source[0] in new_owners]
+  if not witnesses:raise AssertionError('Chosen permanent directed lane connection absent')
+  proof.append({'selected':label,'witnesses':witnesses})
+ return proof
+
+
 def preview_curves_to_rows(curves):
  return [{'edge':key,'curve':curve} for key,curve in curves.items()]
 
 def main():
- p=argparse.ArgumentParser();p.add_argument('--fixture',default=str(Path(__file__).parent/'fixtures/toy-terrain-v11.json'));p.add_argument('--bridge',default='../cities2-agent-bridge-ndc');p.add_argument('--slope-mode',choices=['linear','ease','arch'],default='ease');p.add_argument('--smooth-start',action='store_true');p.add_argument('--smooth-end',action='store_true');p.add_argument('--reverse',action='store_true');p.add_argument('--output',required=True);p.add_argument('--save-root',required=True);p.add_argument('--run',action='store_true');p.add_argument('--stage',choices=['curve','slope','connect'],required=True);p.add_argument('--expected-fingerprint');p.add_argument('--case',default='highway-ramp-out');p.add_argument('--connect-start-endpoint',choices=['start','end'],default='end');p.add_argument('--connect-straight-controls',action='store_true');p.add_argument('--connect-profile',action='store_true');p.add_argument('--connect-mode',choices=['SimpleCurve','ComplexCurve'],default='SimpleCurve');p.add_argument('--preview-only',action='store_true');p.add_argument('--connect-kind',choices=['road','rail'],default='road');a=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('--fixture',default=str(Path(__file__).parent/'fixtures/toy-terrain-v11.json'));p.add_argument('--bridge',default='../cities2-agent-bridge-ndc');p.add_argument('--slope-mode',choices=['linear','ease','arch'],default='ease');p.add_argument('--smooth-start',action='store_true');p.add_argument('--smooth-end',action='store_true');p.add_argument('--reverse',action='store_true');p.add_argument('--output',required=True);p.add_argument('--save-root',required=True);p.add_argument('--run',action='store_true');p.add_argument('--stage',choices=['curve','slope','connect'],required=True);p.add_argument('--expected-fingerprint');p.add_argument('--case',default='highway-ramp-out');p.add_argument('--connect-lanes',action='store_true');p.add_argument('--connect-start-lane-index',type=int);p.add_argument('--connect-end-lane-index',type=int);p.add_argument('--connect-start-endpoint',choices=['start','end'],default='end');p.add_argument('--connect-straight-controls',action='store_true');p.add_argument('--connect-profile',action='store_true');p.add_argument('--connect-mode',choices=['SimpleCurve','ComplexCurve'],default='SimpleCurve');p.add_argument('--preview-only',action='store_true');p.add_argument('--connect-kind',choices=['road','rail'],default='road');a=p.parse_args()
  if not a.run:p.error('Explicit --run required')
  f=json.loads(Path(a.fixture).read_text());case=next(c for c in f['cases'] if c['name']==a.case);r=m['Runner'](a.bridge,a.output)
  city=r.call('get_city_state')
@@ -122,6 +145,14 @@ def main():
   # Native may reuse the previous temp graph when controls produce identical
   # geometry. Reselect from a cleared observation rather than certify reused IDs.
   control('clear');time.sleep(1);control('select',start=start,end=end)
+ chosen_lanes=None
+ if a.stage=='connect' and a.connect_lanes:
+  choices=state()['laneChoices'];chosen_lanes=[]
+  for endpoint,index in zip(choices,(a.connect_start_lane_index,a.connect_end_lane_index)):
+   eligible=[c for c in endpoint['choices'] if c['eligible'] and (index is None or c['index']==index)]
+   if len(eligible)!=1:raise ValueError('Explicit unique eligible lane index required: '+json.dumps(endpoint))
+   chosen_lanes.append(eligible[0]['lane'])
+  control('configure',laneAwareDirection=True,startLanes=[chosen_lanes[0]],endLanes=[chosen_lanes[1]])
  if a.stage=='connect' and a.connect_straight_controls:
   node_map={m['identity'](n):n for n in ns}
   pa=m['position'](node_map[m['identity'](start)]['position']);pb=m['position'](node_map[m['identity'](end)]['position'])
@@ -130,7 +161,7 @@ def main():
   control('configure',**opts)
  if a.preview_only:
   if a.stage!='connect':raise ValueError('Preview-only currently supports Connect')
-  s=poll(lambda s:s['previewReady'] or str(s.get('rejectionReason','')).startswith(('profile_native_','profile_endpoint_','profile_Horizontal','profile_Degenerate')))
+  s=poll(lambda s:s['previewReady'] or str(s.get('rejectionReason','')).startswith(('profile_native_','profile_endpoint_','profile_Horizontal','profile_Degenerate','lane_native_')))
   blocked_apply=False
   if not s['previewReady']:
    try:invoke('apply',{k:s[k] for k in ('session','revision','submission')})
@@ -169,7 +200,7 @@ def main():
  if not final['previewReady'] or any(final[k]!=s[k] for k in ('session','revision','submission')):raise RuntimeError('Preview token changed')
  invoke('apply',{k:s[k] for k in ('session','revision','submission')});poll(lambda s:s['phase']=='Idle')
  after,an,ae=r.settled_permanent(watched,f['region']);new={m['identity'](e):e for e in ae};old={m['identity'](e):e for e in es}
- report={'geometryToleranceMeters':TOLERANCE,'stage':a.stage,'checkpoint':saved['saveName'],'beforeFingerprint':m['fingerprint'](ns,es),'afterFingerprint':m['fingerprint'](an,ae),'staleRevisionRejected':True,'nodeCount':[len(ns),len(an)],'edgeCount':[len(es),len(ae)],'parameters':{'slopeMode':a.slope_mode,'smoothStart':a.smooth_start,'smoothEnd':a.smooth_end,'reverse':a.reverse,'connectProfile':a.connect_profile,'connectMode':a.connect_mode,'connectStraightControls':a.connect_straight_controls},'limits':'No visual/vehicle or rendered-surface validation.'}
+ report={'geometryToleranceMeters':TOLERANCE,'stage':a.stage,'checkpoint':saved['saveName'],'beforeFingerprint':m['fingerprint'](ns,es),'afterFingerprint':m['fingerprint'](an,ae),'staleRevisionRejected':True,'nodeCount':[len(ns),len(an)],'edgeCount':[len(es),len(ae)],'parameters':{'slopeMode':a.slope_mode,'smoothStart':a.smooth_start,'smoothEnd':a.smooth_end,'reverse':a.reverse,'connectProfile':a.connect_profile,'connectMode':a.connect_mode,'connectStraightControls':a.connect_straight_controls,'connectLanes':a.connect_lanes,'selectedLanes':chosen_lanes},'limits':'No visual/vehicle or rendered-surface validation.'}
  if a.stage=='slope':
   report['sameTopology']=old.keys()==new.keys() and all(all(e[k]==new[key][k] for k in ('startNode','endNode','prefab')) for key,e in old.items())
   report['previewApplyMaxError']=max(math.dist(m['position'](p),m['position'](q)) for key in chosen for p,q in zip(preview_curves[key],new[key]['curve']))
@@ -190,6 +221,7 @@ def main():
   report.update(connect_preservation(ns,es,an,ae))
   report['connected']=trace['connected'];report['newEdges']=[key for key in new if key not in old]
   report['previewApplyMaxError']=connect_preview_error(final,[new[key] for key in report['newEdges']])
+  if chosen_lanes:report['selectedLaneConnections']=connect_selected_lane_proof(before,after,chosen_lanes,report['newEdges'])
  (r.output/'report.json').write_text(json.dumps(report,indent=2));print(json.dumps(report,indent=2))
  if a.stage=='slope' and (not report['sameTopology'] or report['previewApplyMaxError']>TOLERANCE or report['incidentPreviewApplyMaxError']>TOLERANCE or report['nodeHorizontalMaxError']>TOLERANCE or report['fixedEndpointMaxError']>TOLERANCE or not report['directedConnectionsPreserved'] or not report['physicalLaneMappingPreserved']):raise AssertionError('Slope verification failed')
  if a.stage=='connect':assert_connect_report(report)

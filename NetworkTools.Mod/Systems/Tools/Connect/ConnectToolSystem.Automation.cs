@@ -32,7 +32,7 @@ namespace NetworkTools.Systems.Tools.Connect {
 
         // Complex uses the same frozen candidate when the optional profile is active.
         private bool ControlCandidateRequired => Mode.Value == ConnectMode.SimpleCurve
-            || (Mode.Value == ConnectMode.ComplexCurve && SmoothElevationProfile.Value);
+            || (Mode.Value == ConnectMode.ComplexCurve && (SmoothElevationProfile.Value || LaneAwareDirection.Value));
         private bool ControlCandidateAllowsApply(bool executing = false) {
             if (!Enabled || m_ToolSystem.activeTool != this || !ControlCandidateRequired) {
                 m_ControlRejection = "connect_not_active";
@@ -41,8 +41,9 @@ namespace NetworkTools.Systems.Tools.Connect {
             RefreshControlInputs();
             var candidate = executing ? m_ControlAcceptedCandidate : m_ControlCandidate;
             if (candidate == null || (executing && candidate != m_ControlCandidate)) {
-                if (!SmoothElevationProfile.Value || m_ControlRejection == null
-                    || !m_ControlRejection.StartsWith("profile_", StringComparison.Ordinal))
+                if ((!SmoothElevationProfile.Value && !LaneAwareDirection.Value) || m_ControlRejection == null
+                    || (!m_ControlRejection.StartsWith("profile_", StringComparison.Ordinal)
+                        && !m_ControlRejection.StartsWith("lane_", StringComparison.Ordinal)))
                     m_ControlRejection = "candidate_unavailable";
                 return false;
             }
@@ -52,6 +53,8 @@ namespace NetworkTools.Systems.Tools.Connect {
                 m_ControlJob.IsCompleted, m_UpdateNeeded, m_ControlStableFrames, m_ControlPreview, preview, GetAllowApply());
             if (m_ControlRejection == "accepted" && candidate.Config.SmoothElevationProfile
                 && !ValidateNativeProfile(candidate.Config, out m_ControlRejection)) return false;
+            if (m_ControlRejection == "accepted" && LaneAwareDirection.Value
+                && !ValidateNativeLaneDirection(out m_ControlRejection)) return false;
             return m_ControlRejection == "accepted";
         }
 
@@ -60,7 +63,7 @@ namespace NetworkTools.Systems.Tools.Connect {
         // parameters, prefab selection and validation setting. Not a city-wide lock.
         private string ControlInputs() {
             var data = new List<object> { AnarchyEnabled, Mode.Value,
-                NetPrefab.NetPrefabEntity, NetPrefab.NetLanePrefabEntity, BuildJobConfig(), ProfileContextIdentity };
+                NetPrefab.NetPrefabEntity, NetPrefab.NetLanePrefabEntity, BuildJobConfig(), ProfileContextIdentity, LaneDirectionContextIdentity };
             if (!m_SelectedNodes.IsCreated || m_SelectedNodes.Length != 2) return null;
             var incident = new HashSet<Entity>();
             foreach (var node in m_SelectedNodes) {
@@ -172,10 +175,12 @@ namespace NetworkTools.Systems.Tools.Connect {
                 ["rejectionReason"] = m_ControlRejection, ["previewReady"] = ready, ["mode"] = Mode.Value.ToString(), ["anarchy"] = AnarchyEnabled,
                 ["start"] = JToken.FromObject(StartNode), ["end"] = JToken.FromObject(EndNode),
                 ["profileContext"] = JArray.Parse(ProfileContextJson()),
+                ["laneChoices"] = JArray.Parse(LaneDirectionChoicesJson()),
+                ["laneAwareDirection"] = LaneAwareDirection.Value,
                 ["parameters"] = JToken.Parse(JsonConvert.SerializeObject(BuildJobConfig(), NetworkTools.Automation.VectorJsonConverter.Settings)),
                 ["authoredCandidate"] = m_ControlCandidate == null ? JValue.CreateNull() : JToken.Parse(JsonConvert.SerializeObject(m_ControlCandidate.Config, NetworkTools.Automation.VectorJsonConverter.Settings)),
                 ["previewObservation"] = m_ControlPreview == null ? JValue.CreateNull() : JToken.Parse(m_ControlPreview),
-                ["limits"] = "SimpleCurve and profile-enabled ComplexCurve, existing connected nodes with matching prefab. Profile acceptance checks authored/native curves, not terrain surfaces, collision or lane-connectivity certification." };
+                ["limits"] = "SimpleCurve and profile-enabled ComplexCurve, existing connected nodes; new prefab is explicit or inherited from start. Profile acceptance checks authored/native curves, not terrain surfaces, collision or lane-connectivity certification." };
         }
         internal JObject AutomationCommand(string action, JObject args) {
             if (action == "state") return AutomationState();
@@ -206,8 +211,8 @@ namespace NetworkTools.Systems.Tools.Connect {
                     var start = Endpoint(args["start"]); var end = Endpoint(args["end"]);
                     if (start == end || math.distance(EntityManager.GetComponentData<Node>(start).m_Position,
                         EntityManager.GetComponentData<Node>(end).m_Position) > 2000) throw new ArgumentException("invalid_endpoint_pair");
-                    if (EntityManager.GetComponentData<PrefabRef>(start).m_Prefab != EntityManager.GetComponentData<PrefabRef>(end).m_Prefab)
-                        throw new ArgumentException("matching_prefabs_required");
+                    if (!EntityManager.HasComponent<PrefabRef>(start) || !EntityManager.HasComponent<PrefabRef>(end))
+                        throw new ArgumentException("endpoint_prefabs_required");
                     HandleAddNode(start); HandleAddNode(end); m_UpdateNeeded = true; break;
                 case "configure":
                     float3 Point(string key) {
@@ -232,11 +237,14 @@ namespace NetworkTools.Systems.Tools.Connect {
                         throw new ArgumentException("complex_controls_require_complex_mode");
                     if (!TryPrepareProfileOptions(args, requestedMode, out var applyProfile, out var profileReason))
                         throw new ArgumentException(profileReason);
-                    if (points.Count == 0 && args["mode"] == null && args["smoothElevationProfile"] == null
+                    if (!TryPrepareLaneDirectionOptions(args, requestedMode, out var applyLanes, out var laneReason))
+                        throw new ArgumentException(laneReason);
+                    if (points.Count == 0 && args["laneAwareDirection"] == null && args["startLanes"] == null && args["endLanes"] == null && args["mode"] == null && args["smoothElevationProfile"] == null
                         && args["startApproach"] == null && args["endApproach"] == null)
                         throw new ArgumentException("configuration_required");
                     Mode.Value = requestedMode;
                     applyProfile();
+                    applyLanes();
                     if (requestedMode == ConnectMode.SimpleCurve) {
                         if (points.TryGetValue("startControl", out var b)) CurveStartControlPointPosition.Value = b;
                         if (points.TryGetValue("endControl", out var c)) CurveEndControlPointPosition.Value = c;

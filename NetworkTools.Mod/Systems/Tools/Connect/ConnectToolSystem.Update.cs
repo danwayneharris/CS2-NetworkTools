@@ -299,6 +299,7 @@
         protected void ClearSelectionState() {
             // Clear caches
             ResetProfileApproaches();
+            ResetLaneDirectionChoices();
             m_SelectedNodes.Clear();
 
             // Batch remove all marker components using cached queries

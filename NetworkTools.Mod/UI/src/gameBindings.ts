@@ -96,6 +96,9 @@ export const EMPTY_NET_PREFAB_DATA: NetPrefabData = {
 export type DistanceUnits = "Meters" | "Units";
 
 export const GAME_BINDINGS = {
+    CONNECT_LANE_DIRECTION_AVAILABLE: new TwoWayBinding<boolean>("CONNECT_LANE_DIRECTION_AVAILABLE", false),
+    CONNECT_LANE_DIRECTION_STATUS: new TwoWayBinding<string>("CONNECT_LANE_DIRECTION_STATUS", "disabled"),
+    CONNECT_LANE_DIRECTION_CHOICES: new TwoWayBinding<string>("CONNECT_LANE_DIRECTION_CHOICES", "[]"),
     CONNECT_PROFILE_AVAILABLE: new TwoWayBinding<boolean>("CONNECT_PROFILE_AVAILABLE", false),
     CONNECT_PROFILE_STATUS: new TwoWayBinding<string>("CONNECT_PROFILE_STATUS", "{}"),
     CONNECT_PROFILE_CONTEXT: new TwoWayBinding<string>("CONNECT_PROFILE_CONTEXT", "[]"),
@@ -122,6 +125,7 @@ export const GAME_BINDINGS = {
 };
 
 export const GAME_TRIGGERS = {
+    SET_CONNECT_LANE_DIRECTION: (json: string) => trigger(mod.id, "TRIGGER:SET_CONNECT_LANE_DIRECTION", json),
     SET_CONNECT_PROFILE_APPROACH: (json: string) => trigger(mod.id, "TRIGGER:SET_CONNECT_PROFILE_APPROACH", json),
     SET_SPLIT_NODE: (index: number, version: number, enabled: boolean) => {
         trigger(mod.id, "TRIGGER:SET_SPLIT_NODE", index, version, enabled);

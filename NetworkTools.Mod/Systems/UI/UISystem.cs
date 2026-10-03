@@ -44,6 +44,8 @@ namespace NetworkTools.Systems.UI {
         private ValueBindingHelper<int>                 m_SelectedTargetsBinding;
         private ValueBindingHelper<int>                 m_SelectedViewsBinding;
         private ValueBindingHelper<int>                 m_ApplyStateBinding;
+        private ValueBindingHelper<string>              m_ConnectLaneDirectionChoicesBinding;
+        private ValueBindingHelper<string>              m_ConnectLaneDirectionStatusBinding;
         private ValueBindingHelper<string>              m_ConnectProfileStatusBinding;
         private ValueBindingHelper<string>              m_ConnectProfileContextBinding;
         private ValueBindingHelper<string>              m_SplitChoicesBinding;
@@ -106,6 +108,9 @@ namespace NetworkTools.Systems.UI {
             m_AvailableViewsBinding = CreateBinding("AVAILABLE_VIEWS", (int)ViewOption.All);
             m_SelectedViewsBinding  = CreateBinding("SELECTED_VIEWS",  (int)ViewOption.None, HandleUpdateSelectedViews);
             m_ApplyStateBinding = CreateBinding("APPLY_STATE", (int)ApplyState.Hidden);
+            m_ConnectLaneDirectionStatusBinding = CreateBinding("CONNECT_LANE_DIRECTION_STATUS", "disabled");
+            m_ConnectLaneDirectionChoicesBinding = CreateBinding("CONNECT_LANE_DIRECTION_CHOICES", "[]");
+            CreateTrigger<string>("SET_CONNECT_LANE_DIRECTION", json => m_NtConnectToolSystem.SetLaneDirectionChoiceJson(json));
             m_ConnectProfileStatusBinding = CreateBinding("CONNECT_PROFILE_STATUS", "{}");
             m_ConnectProfileContextBinding = CreateBinding("CONNECT_PROFILE_CONTEXT", "[]");
             CreateTrigger<string>("SET_CONNECT_PROFILE_APPROACH", json => m_NtConnectToolSystem.SetProfileApproachJson(json));
@@ -114,9 +119,11 @@ namespace NetworkTools.Systems.UI {
 #if IS_DEBUG
             CreateBinding("COMBINED_SMOOTH_AVAILABLE", true);
             CreateBinding("CONNECT_PROFILE_AVAILABLE", true);
+            CreateBinding("CONNECT_LANE_DIRECTION_AVAILABLE", true);
 #else
             CreateBinding("COMBINED_SMOOTH_AVAILABLE", false);
             CreateBinding("CONNECT_PROFILE_AVAILABLE", false);
+            CreateBinding("CONNECT_LANE_DIRECTION_AVAILABLE", false);
 #endif
             CreateTrigger<int, int, bool>("SET_SPLIT_NODE", (index, version, enabled) =>
                 m_NtRoadShapeToolSystem.SetSplitNode(new Entity { Index=index, Version=version }, enabled));

@@ -72,7 +72,7 @@ namespace NetworkTools.Systems.Tools.Connect {
                     Style            = HandleTypeFlags.BezierControlPoint,
                     DependsOn        = new Dependency[] { nameof(CurveStartPointPosition) },
                     Size             = NT_Dimensions.HANDLE_AXIS_CIRCLE_RADIUS,
-                    ConstraintAxis   = t => ((NT_ConnectToolSystem)t).StartDirection.Value,
+                    ConstraintAxis   = t => ((NT_ConnectToolSystem)t).EffectiveStartDirection,
                     ConstraintOrigin = t => ((NT_ConnectToolSystem)t).StartPosition.Value,
                 }
             }
@@ -85,7 +85,7 @@ namespace NetworkTools.Systems.Tools.Connect {
                     Style            = HandleTypeFlags.BezierControlPoint,
                     DependsOn        = new Dependency[] { nameof(CurveEndPointPosition) },
                     Size             = NT_Dimensions.HANDLE_AXIS_CIRCLE_RADIUS,
-                    ConstraintAxis   = t => ((NT_ConnectToolSystem)t).EndDirection.Value,
+                    ConstraintAxis   = t => ((NT_ConnectToolSystem)t).EffectiveEndDirection,
                     ConstraintOrigin = t => ((NT_ConnectToolSystem)t).EndPosition.Value,
                 }
             }
@@ -110,7 +110,7 @@ namespace NetworkTools.Systems.Tools.Connect {
                     Style            = HandleTypeFlags.BezierControlPoint,
                     DependsOn        = new Dependency[] { nameof(ComplexStartPointPosition) },
                     Size             = NT_Dimensions.HANDLE_AXIS_CIRCLE_RADIUS,
-                    ConstraintAxis   = t => ((NT_ConnectToolSystem)t).StartDirection.Value,
+                    ConstraintAxis   = t => ((NT_ConnectToolSystem)t).EffectiveStartDirection,
                     ConstraintOrigin = t => ((NT_ConnectToolSystem)t).StartPosition.Value,
                 }
             }
@@ -123,7 +123,7 @@ namespace NetworkTools.Systems.Tools.Connect {
                     Style            = HandleTypeFlags.BezierControlPoint,
                     DependsOn        = new Dependency[] { nameof(ComplexEndPointPosition) },
                     Size             = NT_Dimensions.HANDLE_AXIS_CIRCLE_RADIUS,
-                    ConstraintAxis   = t => ((NT_ConnectToolSystem)t).EndDirection.Value,
+                    ConstraintAxis   = t => ((NT_ConnectToolSystem)t).EffectiveEndDirection,
                     ConstraintOrigin = t => ((NT_ConnectToolSystem)t).EndPosition.Value,
                 }
             }

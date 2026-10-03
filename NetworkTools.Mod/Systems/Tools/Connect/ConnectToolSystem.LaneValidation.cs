@@ -80,15 +80,17 @@ namespace NetworkTools.Systems.Tools.Connect {
                 && !lane.m_StartNode.IsSecondary() && !lane.m_MiddleNode.IsSecondary() && !lane.m_EndNode.IsSecondary();
         }
 
-        private bool NativeLaneComposition(Entity edge, Lane lane, PrefabRef prefab, out NetCompositionLane matched) {
+        private bool NativeLaneComposition(Entity entity, Entity edge, Lane lane, PrefabRef prefab, out NetCompositionLane matched) {
             matched = default;
             if (!EntityManager.TryGetComponent<Composition>(edge, out var composition)
                 || !EntityManager.Exists(composition.m_Edge)
                 || !EntityManager.HasBuffer<NetCompositionLane>(composition.m_Edge)) return false;
             int index = lane.m_MiddleNode.GetLaneIndex() & 255;
-            if (lane.m_StartNode.GetOwnerIndex() != edge.Index || lane.m_MiddleNode.GetOwnerIndex() != edge.Index
-                || lane.m_EndNode.GetOwnerIndex() != edge.Index
-                || (lane.m_StartNode.GetLaneIndex() & 255) != index || (lane.m_EndNode.GetLaneIndex() & 255) != index) return false;
+            if (!EntityManager.TryGetComponent<Edge>(edge, out var endpoints)
+                || !EntityManager.TryGetComponent<EdgeLane>(entity, out var delta)
+                || !LanePathOwnersValid(endpoints, edge, lane, delta)
+                || (lane.m_StartNode.GetOwnerIndex() == edge.Index && (lane.m_StartNode.GetLaneIndex() & 255) != index)
+                || (lane.m_EndNode.GetOwnerIndex() == edge.Index && (lane.m_EndNode.GetLaneIndex() & 255) != index)) return false;
             var lanes = EntityManager.GetBuffer<NetCompositionLane>(composition.m_Edge, true);
             int count = 0;
             foreach (var item in lanes) if (item.m_Index == index) {
@@ -149,7 +151,7 @@ namespace NetworkTools.Systems.Tools.Connect {
                 if (EntityManager.HasComponent<Game.Net.MasterLane>(sub.m_SubLane)) continue;
                 if (!EntityManager.HasComponent<CarLane>(sub.m_SubLane) || !EntityManager.HasComponent<EdgeLane>(sub.m_SubLane)) continue;
                 if (!NativeOrdinaryCarLane(sub.m_SubLane, newEdge, out var lane, out var prefab)
-                    || !NativeLaneComposition(newEdge, lane, prefab, out var composition)) {
+                    || !NativeLaneComposition(sub.m_SubLane, newEdge, lane, prefab, out var composition)) {
                     reason = "new_lane_mapping_unsupported"; return false;
                 }
                 // Opposite-travel lanes are legitimate, but cannot witness this direction.
@@ -185,18 +187,24 @@ namespace NetworkTools.Systems.Tools.Connect {
                     mapped = sub.m_SubLane;
                 }
                 if (mapped == Entity.Null || !NativeOrdinaryCarLane(mapped, approach, out var lane, out var prefab)
-                    || !NativeLaneComposition(approach, lane, prefab, out var composition)
+                    || !NativeLaneComposition(mapped, approach, lane, prefab, out var composition)
                     || !EntityManager.TryGetComponent<Lane>(originalEntity, out var originalLane)
                     || !EntityManager.TryGetComponent<PrefabRef>(originalEntity, out var originalPrefab)
                     || originalPrefab.m_Prefab != prefab.m_Prefab
-                    || !NativeLaneComposition(endpoint.Approach, originalLane, originalPrefab, out var originalComposition)) {
+                    || !NativeLaneComposition(originalEntity, endpoint.Approach, originalLane, originalPrefab, out var originalComposition)) {
                     reason = "selected_lane_mapping_missing"; return false;
                 }
                 var normalized = lane;
                 normalized.m_StartNode.ReplaceOwner(approach, endpoint.Approach);
                 normalized.m_MiddleNode.ReplaceOwner(approach, endpoint.Approach);
                 normalized.m_EndNode.ReplaceOwner(approach, endpoint.Approach);
-                if (!normalized.Equals(originalLane) || composition.m_Index != originalComposition.m_Index
+                // Temp.original establishes the exact physical lane. Native skipped-lane
+                // rewriting may change endpoint ports, but not its middle identity
+                // or edge station interval. Directed connectivity is checked below.
+                if (!normalized.m_MiddleNode.Equals(originalLane.m_MiddleNode)
+                    || !EntityManager.TryGetComponent<EdgeLane>(originalEntity, out var originalDelta)
+                    || !math.all(EntityManager.GetComponentData<EdgeLane>(mapped).m_EdgeDelta == originalDelta.m_EdgeDelta)
+                    || composition.m_Index != originalComposition.m_Index
                     || composition.m_Flags != originalComposition.m_Flags || composition.m_Group != originalComposition.m_Group
                     || composition.m_Carriageway != originalComposition.m_Carriageway
                     || !math.all(composition.m_Position == originalComposition.m_Position)) {

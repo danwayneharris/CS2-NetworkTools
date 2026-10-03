@@ -1,6 +1,6 @@
-# NT-003: explicit approach lanes and direction-aware Connect
+﻿# NT-003: explicit approach lanes and direction-aware Connect
 
-Status: reviewed planning draft; saved October 3, 2026. Not yet executing.
+Status: Debug implementation at `fdbf10d`; 12 offline suites passed. Native acceptance and human review pending (October 3, 2026). See [implemented behavior, testing and review guide](../connect-lane-direction.md).
 Order: 5 of 6. Dependency: [NT-002](NT-002-connect-elevation-profile.md).
 Proposed branch: dan/nt-003-connect-lane-direction.
 All [shared execution rules](first-six-execution-contract.md) and [documentation requirements](README.md#required-implementation-document-all-plans) apply.
@@ -65,3 +65,4 @@ Do not claim exclusive routing or traffic qualification from provider tests.
 
 One draft PR stacked on NT-002, lane-direction fixtures and evidence, and a
 stage-specific review build/checkpoint. Leave lateral group alignment to NT-022.
+

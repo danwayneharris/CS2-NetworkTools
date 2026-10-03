@@ -133,12 +133,12 @@ namespace NetworkTools.Systems.Tools.Connect {
                 var atLaneStart = edgeLane.m_EdgeDelta.x == station;
                 var atLaneEnd = edgeLane.m_EdgeDelta.y == station;
                 if (!atLaneStart && !atLaneEnd) continue;
-                if (atLaneStart == atLaneEnd || lane.m_StartNode.GetOwnerIndex() != approach.Index
-                    || lane.m_MiddleNode.GetOwnerIndex() != approach.Index || lane.m_EndNode.GetOwnerIndex() != approach.Index) {
+                if (atLaneStart == atLaneEnd || !LanePathOwnersValid(edge, approach, lane, edgeLane)) {
                     reason = "lane_endpoint_ambiguous"; return false;
                 }
                 var index = lane.m_MiddleNode.GetLaneIndex() & 255;
-                if ((lane.m_StartNode.GetLaneIndex() & 255) != index || (lane.m_EndNode.GetLaneIndex() & 255) != index) {
+                if ((lane.m_StartNode.GetOwnerIndex() == approach.Index && (lane.m_StartNode.GetLaneIndex() & 255) != index)
+                    || (lane.m_EndNode.GetOwnerIndex() == approach.Index && (lane.m_EndNode.GetLaneIndex() & 255) != index)) {
                     reason = "lane_path_mapping_unsupported"; return false;
                 }
                 var matches = 0; NetCompositionLane matched = default;
@@ -200,6 +200,19 @@ namespace NetworkTools.Systems.Tools.Connect {
                 ["composition"] = compositionEvidence, ["lanes"] = evidence }.ToString(Formatting.None);
             reason = context.Choices.Count == 0 ? "lane_choices_unavailable" : null;
             return reason == null;
+        }
+
+        // LaneReferencesSystem:237-307 can replace an edge endpoint with a shared
+        // node-owned port after skipping a degree-two junction lane. The middle
+        // remains edge-owned and carries the composition lane/segment identity.
+        private static bool LanePathOwnersValid(Edge edge, Entity owner, Lane lane, EdgeLane delta) {
+            if (lane.m_MiddleNode.GetOwnerIndex() != owner.Index) return false;
+            bool Endpoint(PathNode port, float station) {
+                if (port.GetOwnerIndex() == owner.Index) return true;
+                return station == 0f ? port.GetOwnerIndex() == edge.m_Start.Index
+                    : station == 1f && port.GetOwnerIndex() == edge.m_End.Index;
+            }
+            return Endpoint(lane.m_StartNode, delta.m_EdgeDelta.x) && Endpoint(lane.m_EndNode, delta.m_EdgeDelta.y);
         }
 
         private bool TryLaneDirectionGroup(LaneDirectionContext context, Entity[] selected,

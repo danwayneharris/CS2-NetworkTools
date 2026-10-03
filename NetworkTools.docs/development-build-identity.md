@@ -1,6 +1,6 @@
 # Development build identity (NT-001)
 
-Status: implementation in progress; verification below is updated as checks finish.
+Status: implemented; offline/full Debug packaging verified, live identity review pending.
 This is development housekeeping, not a release version bump or Release qualification.
 
 ## Features and usage
@@ -45,7 +45,7 @@ new human visuals. The full Debug package path passed; Release packaging is not 
 
 ## Dan's review
 
-Stage-specific revision/artifact identity will be recorded after verification.
+Review build: 00c05a5b5f386705988cda504bc1cf8ccacfbaba, Debug, informational version 1.5.7+g00c05a5b5f38.clean.Debug. See [compact evidence and hashes](session-notes/nt001-baseline-evidence.json). PR #17 includes later documentation only. Rebuild that source revision for the exact review checkpoint; native runtime identity remains unverified.
 No new toy save or checkpoint has been created for this housekeeping stage.
 
 1. Build this PR with -Build -PackageOnly and inspect its manifest.

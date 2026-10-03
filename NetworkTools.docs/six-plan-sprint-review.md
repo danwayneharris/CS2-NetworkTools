@@ -5,8 +5,8 @@ This is execution status, not a declaration of verified game behavior.
 
 | Stage | Status | PR | Evidence / review |
 | --- | --- | --- | --- |
-| NT-001 | In progress: identity and runner safeguards | Not opened | Pending |
-| NT-021 | Not started | Not opened | Pending NT-001 |
+| NT-001 | Implemented; full Debug package + offline pass, live pending | [#17](https://github.com/danwayneharris/CS2-NetworkTools/pull/17) | [Guide](development-build-identity.md) |
+| NT-021 | Next: bounded vertical profile | Not opened | Offline prerequisite passed |
 | NT-023 | Not started | Not opened | Pending NT-021 |
 | NT-002 | Not started | Not opened | Pending NT-023 |
 | NT-003 | Not started | Not opened | Pending NT-002 |

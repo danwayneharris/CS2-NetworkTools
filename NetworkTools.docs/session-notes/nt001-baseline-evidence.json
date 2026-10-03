@@ -1,0 +1,60 @@
+{
+    "sourceBuild":  {
+                        "schemaVersion":  1,
+                        "releaseVersion":  "1.5.7",
+                        "informationalVersion":  "1.5.7+g00c05a5b5f38.clean.Debug",
+                        "sourceRevision":  "00c05a5b5f386705988cda504bc1cf8ccacfbaba",
+                        "workingTree":  "clean",
+                        "configuration":  "Debug"
+                    },
+    "artifacts":  [
+                      {
+                          "path":  "NetworkTools.css",
+                          "sha256":  "b56acd37d96ae9cd91820c409a9351721694f73d24ac237d979326a50da2a5a0",
+                          "bytes":  16340
+                      },
+                      {
+                          "path":  "NetworkTools.dll",
+                          "sha256":  "d1901d677311be4dc2170f4ac44ab19ab85b21127d383dc689df80ee193fcfdc",
+                          "bytes":  636416
+                      },
+                      {
+                          "path":  "NetworkTools.mjs",
+                          "sha256":  "c3b466c4931e52def2fb24792dae141162cef453215125cfeafd9ca1acb3aa15",
+                          "bytes":  357080
+                      }
+                  ],
+    "offline":  [
+                    {
+                        "suite":  "geometry",
+                        "status":  "passed"
+                    },
+                    {
+                        "suite":  "path-selection",
+                        "status":  "passed"
+                    },
+                    {
+                        "suite":  "parameters",
+                        "status":  "passed"
+                    },
+                    {
+                        "suite":  "codegen",
+                        "status":  "passed"
+                    },
+                    {
+                        "suite":  "slope-production",
+                        "status":  "passed"
+                    },
+                    {
+                        "suite":  "original-input",
+                        "status":  "passed"
+                    },
+                    {
+                        "suite":  "python",
+                        "status":  "passed"
+                    }
+                ],
+    "native":  "not run",
+    "deployment":  "not performed",
+    "pr":  "https://github.com/danwayneharris/CS2-NetworkTools/pull/17"
+}

@@ -103,8 +103,9 @@ namespace NetworkTools.Systems.Tools.Connect {
             && !EntityManager.HasComponent<Temp>(e) && !EntityManager.HasComponent<Deleted>(e);
         private void RefreshControlInputs() {
             var inputs = ControlInputs();
-            if (inputs == null || inputs != m_ControlInputs) {
-                m_ControlInputs = inputs; ++m_ControlRevision; m_ControlStableFrames = 0; m_ControlPreview = null;
+            var nextRevision = ConnectCandidate<ConnectJobConfig>.NextInputRevision(m_ControlRevision, m_ControlInputs, inputs);
+            if (nextRevision != m_ControlRevision) {
+                m_ControlInputs = inputs; m_ControlRevision = nextRevision; m_ControlStableFrames = 0; m_ControlPreview = null;
                 if (Phase == OperationPhase.Ready && m_SelectedNodes.Length == 2) m_UpdateNeeded = true;
             }
         }

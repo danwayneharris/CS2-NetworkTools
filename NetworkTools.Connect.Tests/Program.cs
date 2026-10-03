@@ -1,4 +1,4 @@
-﻿using NetworkTools.Systems.Tools.Connect;
+using NetworkTools.Systems.Tools.Connect;
 
 internal struct Config {
     public double StartHandle;
@@ -63,6 +63,30 @@ internal static class Program {
         Check(acceptedRequest.Config.StartHandle == 12, "consumer receives a value copy");
         Check(Status(inputs: "changed handle") != "accepted", "immutable config does not license stale world application");
         Check(Status() == "accepted", "pure evaluation is deterministic and has no hidden acceptance mutation");
+        // Actual input-revision helper used by provider state refresh. An idle
+        // state token must survive another state refresh inside clear/select.
+        long idleRevision = 0;
+        for (var poll = 0; poll < 4; poll++)
+            idleRevision = ConnectCandidate<Config>.NextInputRevision(idleRevision, null, null);
+        Check(idleRevision == 0, "repeated idle polling preserves revision");
+        var selectToken = idleRevision;
+        var commandRevision = ConnectCandidate<Config>.NextInputRevision(idleRevision, null, null);
+        Check(commandRevision == selectToken, "select precondition still matches after internal state refresh");
+        var selectedRevision = ConnectCandidate<Config>.NextInputRevision(commandRevision, null, "selection A");
+        Check(selectedRevision == selectToken + 1, "completed selection advances revision once");
+        Check(ConnectCandidate<Config>.NextInputRevision(selectedRevision, "selection A", "selection A") == selectedRevision,
+            "unchanged selected context does not advance revision");
+        var selected = new ConnectCandidate<Config>(selectedRevision, 1, "selection A", default);
+        var lostRevision = ConnectCandidate<Config>.NextInputRevision(selectedRevision, "selection A", null);
+        Check(lostRevision == selectedRevision + 1, "context loss invalidates old accepted revision");
+        Check(ConnectCandidate<Config>.NextInputRevision(lostRevision, null, null) == lostRevision,
+            "repeated unavailable context stays stable so clear remains possible");
+        Check(selected.Status(lostRevision, 1, null, true, false, 9, "preview", "preview", true) != "accepted",
+            "stable missing identity does not make unavailable context ready");
+        var restoredRevision = ConnectCandidate<Config>.NextInputRevision(lostRevision, null, "selection A");
+        Check(restoredRevision == lostRevision + 1, "restored context advances revision again");
+        Check(selected.Status(restoredRevision, 1, "selection A", true, false, 9, "preview", "preview", true) == "stale_submission",
+            "restoration cannot resurrect an obsolete candidate");
         Console.WriteLine($"Connect candidate production-source tests passed: {s_Checks} assertions.");
     }
 }

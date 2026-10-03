@@ -1,11 +1,11 @@
 # Detailed implementation plans
 
-This directory will hold reviewed, executable plans linked from [the roadmap](../ROADMAP.md).
+This directory holds the first six planning drafts linked from [the roadmap](../ROADMAP.md).
 No feature implementation plans have been approved merely by creating this directory.
 
 Name plans `{ID}-{short-topic}.md` using the stable roadmap ID. Reuse/link existing
-research rather than copy it. The first six selected work packages will receive
-detailed plans together; later roadmap items may retain unresolved decisions.
+research rather than copy it. The first six selected work packages have individual plans below; later roadmap
+items may retain unresolved decisions.
 
 An execution-ready plan records:
 
@@ -21,12 +21,26 @@ blocked/superseded) as plan states. Approval includes the stated scope and permi
 a roadmap link alone is not approval. On completion, update the roadmap and link
 actual evidence instead of turning the original plan into an unsupported success claim.
 
+## First six plans
+
+Read the [shared execution contract](first-six-execution-contract.md) with each plan.
+Implementation has not begun.
+
+| Order | Plan | Depends on |
+| --- | --- | --- |
+| 1 | [NT-001: development baseline](NT-001-development-baseline.md) | Verified main |
+| 2 | [NT-021: junction elevation limits](NT-021-junction-elevation-limits.md) | NT-001 |
+| 3 | [NT-023: architecture review](NT-023-architecture-review.md) | NT-021 |
+| 4 | [NT-002: Connect elevation profile](NT-002-connect-elevation-profile.md) | NT-023 |
+| 5 | [NT-003: Connect lane direction](NT-003-connect-lane-direction.md) | NT-002 |
+| 6 | [NT-022: Connect lane alignment](NT-022-connect-lane-alignment.md) | NT-003 |
+
 ## First-six-plan delivery workflow
 
 Dan selected these roadmap items, in this order, for detailed planning and then
 an autonomous sprint: **NT-001, NT-021, NT-023, NT-002, NT-003, NT-022**.
-The next step is plan-mode design, not immediate execution. Settle the material
-UI/solver/permission decisions before approving the goal-mode prompt.
+The six drafts record the reviewed product choices. The next step is approval
+of the goal-mode execution instruction, not automatic implementation.
 
 - Save one reviewed plan per item here. Each produces appropriate documentation
   updates/new documents and one independently reviewable PR stacked on its predecessor.

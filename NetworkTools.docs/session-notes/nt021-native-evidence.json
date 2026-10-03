@@ -1,0 +1,319 @@
+{
+  "build": {
+    "schemaVersion": 1,
+    "releaseVersion": "1.5.7",
+    "informationalVersion": "1.5.7+g7eebfc49830a.clean.Debug",
+    "sourceRevision": "7eebfc49830a7ab8860dc0e26fe1f3d50fc3b5cc",
+    "workingTree": "clean",
+    "configuration": "Debug"
+  },
+  "dll": {
+    "path": "NetworkTools.dll",
+    "sha256": "8ebff1373c6faf8d1c0fadc973de80710d401f89446c762a0eafcd73e4f119c4",
+    "bytes": 473600
+  },
+  "reports": {
+    "live-half-meter": {
+      "junctionElevationPolicy": {
+        "allowJunctionElevation": true,
+        "unlimitedJunctionElevation": false,
+        "junctionElevationLimit": 0.5
+      },
+      "junctionElevationMovements": [],
+      "case": "trumpet-bounded-half-meter",
+      "combined": true,
+      "checkpoint": "CitiesIIAgentBridge-regression-trumpet-bounded-half-meter-20261003-133213-298a1768",
+      "changedEdges": [
+        [
+          78923,
+          1
+        ],
+        [
+          78928,
+          1
+        ],
+        [
+          81761,
+          1
+        ]
+      ],
+      "junctions": [
+        {
+          "connections": 3,
+          "rawConnectorPairsChanged": false,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 4,
+          "rawConnectorPairsChanged": false,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 3,
+          "rawConnectorPairsChanged": true,
+          "maxCurveError": 0.0
+        }
+      ],
+      "fixedNodeDrifts": [],
+      "geometryToleranceMeters": 0.05,
+      "unselectedCurveMaxError": 0.0,
+      "limits": "Local snapshot checks; not vehicle traversal or visual approval.",
+      "passed": true
+    },
+    "live-rail-half": {
+      "junctionElevationPolicy": {
+        "allowJunctionElevation": true,
+        "unlimitedJunctionElevation": false,
+        "junctionElevationLimit": 0.5
+      },
+      "junctionElevationMovements": [
+        {
+          "node": [
+            52117,
+            1
+          ],
+          "absoluteHeightChange": 0.5,
+          "allowance": 0.5
+        }
+      ],
+      "case": "rail-bounded-half",
+      "combined": true,
+      "checkpoint": "CitiesIIAgentBridge-regression-rail-bounded-half-20261003-134258-e19d95dd",
+      "changedEdges": [
+        [
+          334202,
+          1
+        ],
+        [
+          334203,
+          1
+        ],
+        [
+          334204,
+          1
+        ],
+        [
+          334205,
+          1
+        ],
+        [
+          334207,
+          1
+        ],
+        [
+          334218,
+          1
+        ],
+        [
+          334220,
+          1
+        ]
+      ],
+      "junctions": [
+        {
+          "connections": 4,
+          "rawConnectorPairsChanged": false,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 2,
+          "rawConnectorPairsChanged": true,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 2,
+          "rawConnectorPairsChanged": true,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 2,
+          "rawConnectorPairsChanged": true,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 2,
+          "rawConnectorPairsChanged": true,
+          "maxCurveError": 0.0
+        }
+      ],
+      "fixedNodeDrifts": [],
+      "geometryToleranceMeters": 0.05,
+      "unselectedCurveMaxError": 0.0,
+      "limits": "Local snapshot checks; not vehicle traversal or visual approval.",
+      "passed": true
+    },
+    "live-rail-repeat": {
+      "junctionElevationPolicy": {
+        "allowJunctionElevation": true,
+        "unlimitedJunctionElevation": false,
+        "junctionElevationLimit": 0.5
+      },
+      "junctionElevationMovements": [
+        {
+          "node": [
+            52117,
+            1
+          ],
+          "absoluteHeightChange": 0.5,
+          "allowance": 0.5
+        }
+      ],
+      "case": "rail-bounded-repeat",
+      "combined": true,
+      "checkpoint": "CitiesIIAgentBridge-regression-rail-bounded-repeat-20261003-134428-26a51c6e",
+      "changedEdges": [
+        [
+          334218,
+          1
+        ],
+        [
+          334220,
+          1
+        ],
+        [
+          334207,
+          1
+        ],
+        [
+          334205,
+          1
+        ],
+        [
+          334204,
+          1
+        ],
+        [
+          334202,
+          1
+        ],
+        [
+          334203,
+          1
+        ]
+      ],
+      "junctions": [
+        {
+          "connections": 2,
+          "rawConnectorPairsChanged": false,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 2,
+          "rawConnectorPairsChanged": false,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 4,
+          "rawConnectorPairsChanged": false,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 2,
+          "rawConnectorPairsChanged": false,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 2,
+          "rawConnectorPairsChanged": false,
+          "maxCurveError": 0.0
+        }
+      ],
+      "fixedNodeDrifts": [],
+      "geometryToleranceMeters": 0.05,
+      "unselectedCurveMaxError": 0.0,
+      "limits": "Local snapshot checks; not vehicle traversal or visual approval.",
+      "passed": true
+    },
+    "live-rail-disabled": {
+      "junctionElevationPolicy": {
+        "allowJunctionElevation": false,
+        "unlimitedJunctionElevation": true,
+        "junctionElevationLimit": 5.0
+      },
+      "junctionElevationMovements": [
+        {
+          "node": [
+            52117,
+            1
+          ],
+          "absoluteHeightChange": 0.0,
+          "allowance": 0
+        }
+      ],
+      "case": "rail-fixed-height",
+      "combined": true,
+      "checkpoint": "CitiesIIAgentBridge-regression-rail-fixed-height-20261003-134645-18168578",
+      "changedEdges": [
+        [
+          334203,
+          1
+        ],
+        [
+          334204,
+          1
+        ],
+        [
+          334205,
+          1
+        ],
+        [
+          334207,
+          1
+        ],
+        [
+          334218,
+          1
+        ],
+        [
+          334220,
+          1
+        ]
+      ],
+      "junctions": [
+        {
+          "connections": 4,
+          "rawConnectorPairsChanged": false,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 2,
+          "rawConnectorPairsChanged": true,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 2,
+          "rawConnectorPairsChanged": true,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 2,
+          "rawConnectorPairsChanged": true,
+          "maxCurveError": 0.0
+        },
+        {
+          "connections": 2,
+          "rawConnectorPairsChanged": true,
+          "maxCurveError": 0.0
+        }
+      ],
+      "fixedNodeDrifts": [],
+      "geometryToleranceMeters": 0.05,
+      "unselectedCurveMaxError": 0.0,
+      "limits": "Local snapshot checks; not vehicle traversal or visual approval.",
+      "passed": true
+    }
+  },
+  "failedControls": [
+    "full trumpet bounded 0.5m: directed car target lane changed 3 to2 at degree-two node",
+    "full trumpet Unlimited: same directed car target reassignment"
+  ],
+  "notVerified": [
+    "ordinary UI interaction",
+    "vehicle traversal",
+    "saved-result reload",
+    "Release execution"
+  ],
+  "reviewSave": "CitiesIIAgentBridge-review-nt021-fixed-height-20261003-134806-ac400174",
+  "citySession": "78af6c37501e47a7afb92b2ffd68d733",
+  "paused": true
+}

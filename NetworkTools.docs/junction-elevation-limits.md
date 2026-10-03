@@ -243,3 +243,40 @@ Expected: bounded geometry-selected movement with fixed junction XZ, exact expli
 anchors, coherent endpoint grades, and informative rejection. Native outcomes and
 Dan's observations must be added with their actual build identities before claiming
 live qualification.
+
+
+## Native qualification on October 3
+
+Clean deployed build `7eebfc49830a` (`1.5.7+g7eebfc49830a.clean.Debug`)
+was independently identified through the live provider. Full Debug deployment and
+all seven offline suites passed. See [compact evidence](session-notes/nt021-native-evidence.json).
+
+The terrain v1.1 `rail-high-branch` selection at strength 1.0 and 0.5 m allowance
+moved its interior junction exactly 0.5 m. Authored preview/permanent curves matched
+exactly, directed rail transitions remained identical, and incident endpoint-pair
+translations matched independently. A second operation permitted another 0.5 m
+and passed the same checks. **This is 1 m cumulative movement, not idempotence.**
+The per-operation budget is explicitly renewable; persistent/cumulative limits are
+not implemented. Do not interpret either pass as satisfying an idempotent-operation
+policy. Dan must review that distinction before accepting this experimental UX.
+
+The short trumpet case passed but contains no interior junction. The full mainline
+failed directed road-lane preservation in both bounded and unchanged Unlimited modes:
+at ordinary degree-two node `(-1534.82361,624.103,-2388.344)`, one lane target changed
+from lane 3 to lane 2. This remains a recorded existing validation gap, not a tolerated
+geometric error. It is not safe to claim general road-lane preservation from the
+passing rail case. No baseline saves were overwritten.
+
+Replay the checksummed terrain baseline via `scripts/launch-toy-fixture.ps1 -Fixture
+scripts/fixtures/toy-terrain-v11.json -ExperimentalFinishHeightPreparation`. This
+visibly launches only; it does not deploy, close another game, or prove readiness.
+The flag opts into the existing hash-gated finishing experiment; it is not enabled
+implicitly by the new control. Run `live-regression.py` only after verifying the toy
+session, and use the bounded rail fixture choices documented in the session note.
+
+Ordinary UI, vehicle traversal, result reload, and Release execution remain unverified.
+
+Disabled-movement native test also passed: junction delta zero, exact preview/Apply
+curves and preserved directed rail connections. Review save: `CitiesIIAgentBridge-review-nt021-fixed-height-20261003-134806-ac400174`.
+Use fixture cases `rail-bounded-half` and `rail-fixed-height` in
+`toy-terrain-v11.json` for reproducible fresh-baseline tests.

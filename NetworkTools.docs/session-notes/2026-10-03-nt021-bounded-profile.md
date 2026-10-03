@@ -71,3 +71,45 @@ Apply/reload, and Dan's visual review remain pending. The new durable
 mathematical constraints, numerical limits, actual evidence, and numbered review
 steps on the checksummed unsmoothed trumpet baseline. Unlimited and finite settings
 with no eligible junction continue through the existing solver unchanged.
+
+## Native checkpoint: build 7eebfc49830a
+
+Deployed clean Debug informational identity `1.5.7+g7eebfc49830a.clean.Debug`;
+loaded provider independently reports the same identity. Seven-suite offline aggregate
+passed, including the new live-runner bound oracle negatives. Codegen initially
+failed on additive metadata golden expectations; explicit new-binding assertions
+now precede the retained historical hashes, and targeted/final runs pass.
+
+- Short trumpet selection: preview/Apply curves matched exactly, directed lanes
+  preserved, but **no interior junction** was present. This is legacy-path parity,
+  not bounded-solver native qualification.
+- Full trumpet mainline: 0.5 m bounded run preserved geometry correspondence and
+  junction bounds, but changed one directed car-lane target from lane 3 to lane 2
+  at ordinary two-edge node `(-1534.82361,624.103,-2388.344)`. The exact same case
+  from the untouched baseline with Unlimited reproduced the same reassignment.
+  Both tests remain failed, not waived by positional tolerance. This establishes
+  an existing lane-preservation gap; it does not establish the bounded feature
+  correct on all junctions. Interior junction Y moved only 0.000066/0.0002 m,
+  so these cases also do not exercise active height bounds.
+- One attempted control case was rejected before checkpoint creation because its
+  label exceeded the bridge limit. No uncertain mutation; a shorter label started
+  the separate documented experiment.
+
+Raw captures stay under ignored `artifacts/nt021/`. Unique recovery checkpoints:
+`CitiesIIAgentBridge-regression-trumpet-bounded-half-meter-20261003-133213-298a1768`,
+`CitiesIIAgentBridge-regression-before-reload-20261003-133340-672d5cff`,
+`CitiesIIAgentBridge-regression-before-reload-20261003-133733-8a4d7201`,
+`CitiesIIAgentBridge-regression-before-reload-20261003-134137-ad51762c`.
+
+Added `scripts/launch-toy-fixture.ps1`: verifies the named toy package checksum,
+requires Steam and no running game, launches visibly, and accepts explicit
+`-ExperimentalFinishHeightPreparation`. It does not deploy, close another game,
+change playsets, or equate launch with readiness. The current next experiment uses
+`bridge test - terrain and elevation v1%2E1.cok` after preserving the failed control.
+
+Active rail bound native pass: -0.5 m at the junction, exact authored preview/Apply
+curves, unchanged directed rail transitions and expected incident translations.
+Repeat operation moved another -0.5 m (1 m cumulative), also preserving those checks;
+this is explicit renewable-budget behavior, not idempotence. Disabled-movement case
+passed with zero junction displacement. Saved and ZIP-verified review checkpoint:
+`CitiesIIAgentBridge-review-nt021-fixed-height-20261003-134806-ac400174`. Full result reload, ordinary UI, and vehicles remain pending.

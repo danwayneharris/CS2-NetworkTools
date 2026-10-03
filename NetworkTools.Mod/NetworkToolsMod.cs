@@ -52,8 +52,13 @@ namespace NetworkTools {
             new EnUsConfig((NT_Settings)settings);
 
         /// <inheritdoc/>
+        protected override void OnAfterLoad(UpdateSystem updateSystem) {
+            Log.Info($"Development build: {InformationalVersion}");
 #if IS_DEBUG
-        protected override void OnAfterLoad(UpdateSystem updateSystem) => Compatibility.FinishHeightCompatibility.Install(Log);
+            Compatibility.FinishHeightCompatibility.Install(Log);
+#endif
+        }
+#if IS_DEBUG
         protected override void OnBeforeDispose() => Compatibility.FinishHeightCompatibility.Dispose();
 #endif
 

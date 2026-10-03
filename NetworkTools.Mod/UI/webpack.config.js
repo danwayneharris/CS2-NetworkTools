@@ -1,5 +1,6 @@
 const path = require("path");
 const MOD = require("./mod.json");
+const identity = require("./tools/build-identity").loadBuildIdentity();
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const webpack = require("webpack");
 const { CSSPresencePlugin } = require("./tools/css-presence");
@@ -8,18 +9,18 @@ const gray = (text) => `\x1b[90m${text}\x1b[0m`;
 
 const CSII_USERDATAPATH = process.env.CSII_USERDATAPATH;
 
-if (!CSII_USERDATAPATH) {
+if (!process.env.NT_UI_OUTPUT_DIR && !CSII_USERDATAPATH) {
     throw "CSII_USERDATAPATH environment variable is not set, ensure the CSII Modding Toolchain is installed correctly";
 }
 
-const OUTPUT_DIR = `${CSII_USERDATAPATH}\\Mods\\${MOD.id}`;
+const OUTPUT_DIR = process.env.NT_UI_OUTPUT_DIR || `${CSII_USERDATAPATH}\\Mods\\${MOD.id}`;
 
 const banner = `
  * Cities: Skylines II UI Module
  *
  * Id: ${MOD.id}
  * Author: ${MOD.author}
- * Version: ${MOD.version}
+ * Version: ${identity.informationalVersion}
  * Dependencies: ${MOD.dependencies.join(",")}
 `;
 
@@ -108,6 +109,7 @@ module.exports = {
         },
     },
     output: {
+        filename: "[name].mjs",
         path: path.resolve(__dirname, OUTPUT_DIR),
         library: {
             type: "module",
@@ -128,6 +130,7 @@ module.exports = {
         outputModule: true,
     },
     plugins: [
+        new webpack.BannerPlugin({ banner }),
         new MiniCssExtractPlugin(),
         new CSSPresencePlugin(),
         new webpack.EvalSourceMapDevToolPlugin({}),

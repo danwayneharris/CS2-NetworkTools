@@ -2,6 +2,7 @@
 param(
     [switch]$Install,
     [switch]$Build,
+    [switch]$PackageOnly,
     [switch]$Test,
     [switch]$OfflineTest,
     [switch]$CheckBridge,
@@ -52,6 +53,7 @@ function Install-Package {
 Push-Location $repo
 try {
     Refresh-Environment
+    if ($PackageOnly -and (-not $Build -or $Test)) { throw '-PackageOnly requires -Build and cannot be combined with -Test.' }
     if ($OfflineTest) {
         if ($Install -or $Build -or $Test -or $Decompile -or $CheckBridge -or $Configuration -ne 'Debug') {
             throw '-OfflineTest is a standalone, non-deploying Debug suite. Do not combine it with install/build/test/decompile/bridge operations or Release.'
@@ -127,14 +129,19 @@ try {
 
     if ($Build -or $Test) {
         $deploy = [IO.Path]::GetFullPath((Join-Path $env:CSII_LOCALMODSPATH 'NetworkTools'))
-        Write-Host "Build replaces the local development mod at: $deploy"
-        Write-Host 'Close CS2 before building. This does not publish to Paradox Mods.'
+        if ($PackageOnly) {
+            Write-Host 'Package-only build: postprocess and build UI into artifacts/packages; no local deployment.'
+        } else {
+            Write-Host "Build replaces the local development mod at: $deploy"
+            Write-Host 'Close CS2 before building. This does not publish to Paradox Mods.'
+        }
         # Use the game/Unity framework, including its netstandard facade, for net48.
         # NuGet's stock net48 core library lacks APIs exposed by current game assemblies.
         $buildArgs = @('build', 'CS2-NetworkTools.sln', '--configuration', $Configuration,
             '--source', 'https://api.nuget.org/v3/index.json',
             "-p:FrameworkPathOverride=$env:CSII_MANAGEDPATH",
             '-p:AdditionalExplicitAssemblyReferences=netstandard', '--verbosity', 'minimal')
+        if ($PackageOnly) { $buildArgs += '-p:NTDeploy=false' }
         Invoke-Checked dotnet $buildArgs
     }
     if ($Test) {

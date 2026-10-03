@@ -5,8 +5,8 @@ This is execution status, not a declaration of verified game behavior.
 
 | Stage | Status | PR | Evidence / review |
 | --- | --- | --- | --- |
-| NT-001 | Implemented; full Debug package + offline pass, live pending | [#17](https://github.com/danwayneharris/CS2-NetworkTools/pull/17) | [Guide](development-build-identity.md) |
-| NT-021 | Next: bounded vertical profile | Not opened | Offline prerequisite passed |
+| NT-001 | Implemented; package/offline pass; live identity verified in NT-021 | [#17](https://github.com/danwayneharris/CS2-NetworkTools/pull/17) | [Guide](development-build-identity.md) |
+| NT-021 | Implemented; active-bound and fixed-height rail pass, road control failure documented | Draft pending | [Guide](junction-elevation-limits.md) |
 | NT-023 | Not started | Not opened | Pending NT-021 |
 | NT-002 | Not started | Not opened | Pending NT-023 |
 | NT-003 | Not started | Not opened | Pending NT-002 |
@@ -14,8 +14,9 @@ This is execution status, not a declaration of verified game behavior.
 
 ## Game and evidence
 
-No deployment or game mutations this sprint yet. User reports game closed.
-Process absence must be checked again before deployment. No new checkpoints exist.
+NT-021 clean Debug build `7eebfc49830a` is deployed. Terrain v1.1 toy is paused;
+review checkpoint `CitiesIIAgentBridge-review-nt021-fixed-height-20261003-134806-ac400174` preserves the latest fixed-height rail result.
+See compact NT-021 evidence for recovery checkpoints and the existing road-lane failure.
 Human visual/UI review and vehicle traversal are pending for all changed behavior.
 
 ## Review workflow

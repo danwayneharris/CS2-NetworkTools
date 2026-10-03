@@ -133,6 +133,48 @@
         0.5,
         1.0
       ]
+    },
+    {
+      "name": "rail-bounded-half",
+      "start": [
+        -3489.08057,
+        629.6971,
+        -1657.27917
+      ],
+      "end": [
+        -3108.89746,
+        609.2662,
+        -1959.24341
+      ],
+      "strengths": [
+        1.0
+      ],
+      "combined": true,
+      "allowJunctionElevation": true,
+      "unlimitedJunctionElevation": false,
+      "junctionElevationLimit": 0.5,
+      "previewTimeoutSeconds": 90
+    },
+    {
+      "name": "rail-fixed-height",
+      "start": [
+        -3489.08057,
+        629.6971,
+        -1657.27917
+      ],
+      "end": [
+        -3108.89746,
+        609.2662,
+        -1959.24341
+      ],
+      "strengths": [
+        1.0
+      ],
+      "combined": true,
+      "allowJunctionElevation": false,
+      "unlimitedJunctionElevation": false,
+      "junctionElevationLimit": 0,
+      "previewTimeoutSeconds": 90
     }
   ]
 }

@@ -26,6 +26,7 @@ internal static class Program {
         RepeatStationReplay.Run(System.IO.Path.Combine(AppContext.BaseDirectory, "combined-repeat-stations.json"));
         VerticalProfileTests.Run();
         SectionedVerticalProfileTests.Run();
+        BoundedVerticalProfileTests.Run();
         SurfaceResponseTests.Run();
         SurfacePreviewTests.Run();
         NativeProfileReplayTests.Run();

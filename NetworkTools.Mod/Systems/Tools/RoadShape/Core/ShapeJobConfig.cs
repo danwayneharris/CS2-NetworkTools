@@ -11,6 +11,9 @@ namespace NetworkTools.Systems.Tools.RoadShape {
         public float ArchPosition;
         public float SmoothingFactor;
         public bool CombinedSlope;
+        // False retains the historical unrestricted combined profile solve.
+        public bool ConstrainJunctionElevation;
+        public double JunctionElevationLimit;
         public double JunctionStartRotation;
         public double JunctionEndRotation;
         public bool AllowInteriorJunctions;

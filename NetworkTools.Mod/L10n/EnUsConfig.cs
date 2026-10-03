@@ -240,6 +240,12 @@ namespace NetworkTools.L10n {
                 { "NetworkTools.UI.Curve.StraightenCurve", "Straighten Curve" },
                 { "NetworkTools.UI.Curve.SmoothCurve", "Smooth Curve" },
                 { "NetworkTools.UI.Curve.SmoothingFactor", "Smoothing Factor" },
+                { "NetworkTools.UI.Curve.AllowJunctionElevation", "Allow interior junction elevation modification" },
+                { "NetworkTools.UI.Curve.JunctionElevationUnlimited", "Unlimited" },
+                { "NetworkTools.UI.Curve.JunctionElevationLimit", "Maximum junction elevation change (m)" },
+                { "NetworkTools.UI.Curve.JunctionElevationPrecise", "Precise maximum change (m)" },
+                { "NetworkTools.UI.Curve.JunctionElevationExplanation", "Limit movement above or below the original junction height for this operation. Disabled or zero keeps the original height. Bounds may prevent a constant grade; endpoints and split pins remain fixed. Each new Apply starts a new movement allowance." },
+                { "NetworkTools.UI.Curve.CombinedExplanation", "Fit slope along the smoothed path. Endpoints and split points stay fixed; interior junction elevation follows the permission and limit below. Conflicting split grades cannot be applied." },
                 { "NetworkTools.HintTooltip.ShapeCurve.Invalid", "Cannot smooth this path. Reduce smoothing or change the selection." },
 
                 // ## Connect Tool

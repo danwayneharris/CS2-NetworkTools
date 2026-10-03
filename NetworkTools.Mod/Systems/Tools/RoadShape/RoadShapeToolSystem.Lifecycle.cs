@@ -59,6 +59,22 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             Template.OnChanged += _ => InvalidatePreviewObservation();
             SmoothingFactor.OnChanged += _ => InvalidatePreviewObservation();
             CombinedSlope.OnChanged += _ => InvalidatePreviewObservation();
+            // Keep these preferences across tool/world recreation, but never save them to disk.
+            AllowInteriorJunctionElevation.Value = s_AllowInteriorJunctionElevation;
+            JunctionElevationUnlimited.Value = s_JunctionElevationUnlimited;
+            JunctionElevationLimit.Value = s_JunctionElevationLimit;
+            AllowInteriorJunctionElevation.OnChanged += _ => {
+                s_AllowInteriorJunctionElevation = AllowInteriorJunctionElevation.Value;
+                InvalidatePreviewObservation();
+            };
+            JunctionElevationUnlimited.OnChanged += _ => {
+                s_JunctionElevationUnlimited = JunctionElevationUnlimited.Value;
+                InvalidatePreviewObservation();
+            };
+            JunctionElevationLimit.OnChanged += _ => {
+                s_JunctionElevationLimit = JunctionElevationLimit.Value;
+                InvalidatePreviewObservation();
+            };
             EaseInLength.OnChanged += _ => InvalidatePreviewObservation();
             EaseOutLength.OnChanged += _ => InvalidatePreviewObservation();
             ArchHeight.OnChanged += _ => InvalidatePreviewObservation();

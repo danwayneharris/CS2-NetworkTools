@@ -8,13 +8,13 @@ internal static unsafe class CombinedProfileTransformTests {
     private static int checks;
     private static void Check(bool ok,string why) { checks++; if(!ok) throw new Exception(why); }
     private static void Near(double a,double b,string why) => Check(Math.Abs(a-b)<1e-5,why);
-    private static bool Fit(EdgeState[] e,NodeState[] n,EdgeState[] o,out CombinedLinearProfileTransform.Failure reason) {
+    private static bool Fit(EdgeState[] e,NodeState[] n,EdgeState[] o,out CombinedLinearProfileTransform.Failure reason, ShapeJobConfig config = default) {
         var s=new VerticalLinearProfile.Segment[e.Length];var a=new SectionedVerticalProfile.Anchor[n.Length];
         var h=new double[n.Length];var c=new VerticalLinearProfile.Heights[e.Length];
         fixed(EdgeState* ep=e) fixed(NodeState* np=n) fixed(EdgeState* op=o)
         fixed(VerticalLinearProfile.Segment* sp=s) fixed(SectionedVerticalProfile.Anchor* ap=a)
         fixed(double* hp=h) fixed(VerticalLinearProfile.Heights* cp=c)
-            return CombinedLinearProfileTransform.Execute(ep,np,op,e.Length,default,default,sp,ap,hp,cp,out reason,out _);
+            return CombinedLinearProfileTransform.Execute(ep,np,op,e.Length,default,config,sp,ap,hp,cp,out reason,out _);
     }
     public static void Run() {
         var original=new[]{new EdgeState{IsForward=true,Bezier=new Bezier4x3(new float3(0,0,0),new float3(10,1,0),new float3(20,2,0),new float3(30,3,0))},
@@ -65,6 +65,23 @@ internal static unsafe class CombinedProfileTransformTests {
             Near(math.distance(e[i].Bezier.b,movedJunction[i].Bezier.b),0,"junction repeat B");
             Near(math.distance(e[i].Bezier.c,movedJunction[i].Bezier.c),0,"junction repeat C");
         }
+        var limited = new ShapeJobConfig { ConstrainJunctionElevation = true, JunctionElevationLimit = 1 };
+        nodes[1].OriginalPosition.y=13; nodes[1].Position.y=13;
+        var limitedEdges=(EdgeState[])original.Clone();
+        Check(Fit(limitedEdges,nodes,original,out _,limited),"bounded production fit");
+        Check(nodes[1].Position.y>=12-1e-5 && nodes[1].Position.y<=14+1e-5,"junction obeys one-meter bound");
+        Near(nodes[1].Position.x,30,"bounded X fixed");
+        var limitedRepeat=(EdgeState[])limitedEdges.Clone();var firstHeight=nodes[1].Position.y;
+        Check(Fit(limitedEdges,nodes,original,out _,limited),"same bounded input repeat");
+        Near(nodes[1].Position.y,firstHeight,"same bounded height repeat");
+        Near(math.distance(limitedEdges[0].Bezier.c,limitedRepeat[0].Bezier.c),0,"same bounded control repeat");
+        limited.JunctionElevationLimit=0;
+        Check(Fit(limitedEdges,nodes,original,out _,limited),"height-only zero bound");
+        Near(nodes[1].Position.y,13,"zero preserves original junction Y");
+        limited.JunctionElevationLimit=double.NaN;var invalidBefore=(EdgeState[])limitedEdges.Clone();
+        Check(!Fit(limitedEdges,nodes,original,out var invalidLimit,limited)
+            && invalidLimit==CombinedLinearProfileTransform.Failure.InvalidElevationLimit,"invalid domain bound rejected");
+        Near(math.distance(limitedEdges[0].Bezier.c,invalidBefore[0].Bezier.c),0,"invalid bound atomic");
         nodes[1].OriginalPosition.y=3;nodes[1].Position.y=3;
         original[0].Bezier.d.y=3;original[1].Bezier.a.y=3;
         nodes[1].SmoothJunction=false;

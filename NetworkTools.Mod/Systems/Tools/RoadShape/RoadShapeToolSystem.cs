@@ -48,6 +48,19 @@ namespace NetworkTools.Systems.Tools.RoadShape {
         public BoolParameter                         SmoothEnd       = new("roadShape.smoothEnd",   false, modes: (int)ShapeTransformTemplate.SlopeLinear | (int)ShapeTransformTemplate.SlopeEaseInOut | (int)ShapeTransformTemplate.SlopeArch, label: "NetworkTools.UI.Slope.SmoothEnd");
 
         public BoolParameter CombinedSlope = new("roadShape.combinedSlope", false, modes: (int)ShapeTransformTemplate.CurveSmooth, label: "NetworkTools.UI.Curve.CombinedSlope");
+        // Session preferences are deliberately excluded from on-disk persistence.
+        public BoolParameter AllowInteriorJunctionElevation = new("roadShape.allowInteriorJunctionElevation", true, modes: (int)ShapeTransformTemplate.CurveSmooth, label: "NetworkTools.UI.Curve.AllowJunctionElevation", persist: false);
+        public BoolParameter JunctionElevationUnlimited = new("roadShape.junctionElevationUnlimited", true, modes: (int)ShapeTransformTemplate.CurveSmooth, label: "NetworkTools.UI.Curve.JunctionElevationUnlimited", persist: false);
+        public FloatParameter JunctionElevationLimit = new("roadShape.junctionElevationLimit", 5f, 0f, 20f, modes: (int)ShapeTransformTemplate.CurveSmooth, label: "NetworkTools.UI.Curve.JunctionElevationLimit", fractionDigits: 3, numberType: NumberType.Distance, persist: false) {
+            ValidateValue = value => IsValidJunctionElevationLimit(value)
+        };
+        private static bool s_AllowInteriorJunctionElevation = true;
+        private static bool s_JunctionElevationUnlimited = true;
+        private static float s_JunctionElevationLimit = 5f;
+
+        internal static bool IsValidJunctionElevationLimit(double value) =>
+            !double.IsNaN(value) && !double.IsInfinity(value) && value >= 0 && value <= 20;
+
         private bool CombinedMode {
             get {
 #if IS_DEBUG
@@ -111,6 +124,9 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                 ArchPosition    = ArchPosition.Value,
                 SmoothingFactor = SmoothingFactor.Value,
                 CombinedSlope   = CombinedMode,
+                ConstrainJunctionElevation = CombinedMode && (!AllowInteriorJunctionElevation.Value || !JunctionElevationUnlimited.Value),
+                JunctionElevationLimit = AllowInteriorJunctionElevation.Value ? JunctionElevationLimit.Value : 0,
+
                 SmoothStart     = SmoothStart.Value,
                 SmoothEnd       = SmoothEnd.Value,
             };

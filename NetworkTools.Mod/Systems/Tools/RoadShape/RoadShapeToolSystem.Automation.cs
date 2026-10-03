@@ -28,6 +28,12 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                 ["active"] = active, ["smoothMode"] = Template.Value == ShapeTransformTemplate.CurveSmooth, ["phase"] = Phase.ToString(),
                 ["revision"] = m_PreviewInputRevision, ["submission"] = m_SmoothTraceId,
                 ["mode"] = Template.Value.ToString(), ["combinedSlope"] = CombinedMode,
+                ["junctionElevation"] = new JObject {
+                    ["allowJunctionElevation"] = AllowInteriorJunctionElevation.Value,
+                    ["unlimitedJunctionElevation"] = JunctionElevationUnlimited.Value,
+                    ["junctionElevationLimit"] = JunctionElevationLimit.Value,
+                    ["constrained"] = BuildJobConfig().ConstrainJunctionElevation,
+                    ["effectiveLimit"] = BuildJobConfig().JunctionElevationLimit },
                 ["surfaceAccepted"] = m_SurfaceAccepted, ["surfaceFailed"] = m_SurfaceFailed,
                 ["rejectionReason"] = ApplyRestrictionKey,
                 ["slopeParameters"] = new JObject { ["easeIn"] = EaseInLength.Value, ["easeOut"] = EaseOutLength.Value,
@@ -68,13 +74,8 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             Dependency.Complete();
             switch (action) {
                 case "combined":
-                    if (slope || args["enabled"]?.Type != JTokenType.Boolean) throw new ArgumentException("boolean_combined_mode_required");
-                    foreach (var key in new[] { "smoothStart", "smoothEnd" })
-                        if (args[key] != null && args[key].Type != JTokenType.Boolean) throw new ArgumentException("boolean_boundary_option_required");
-                    if (args["smoothStart"] != null) SmoothStart.Value = (bool)args["smoothStart"];
-                    if (args["smoothEnd"] != null) SmoothEnd.Value = (bool)args["smoothEnd"];
-                    CombinedSlope.Value = (bool)args["enabled"];
-                    MarkDirty();
+                    if (slope) throw new ArgumentException("combined_curve_command_required");
+                    ConfigureAutomationCombined(args);
                     break;
                 case "configure":
                     if (!slope) throw new ArgumentException("slope_command_required");
@@ -126,6 +127,30 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                 default: throw new ArgumentException("unknown_action");
             }
             return AutomationState();
+        }
+
+        private void ConfigureAutomationCombined(JObject args) {
+            // Validate all options, including hidden/disabled values, before any mutation.
+            if (args["enabled"]?.Type != JTokenType.Boolean) throw new ArgumentException("boolean_combined_mode_required");
+            foreach (var key in new[] { "smoothStart", "smoothEnd", "allowJunctionElevation", "unlimitedJunctionElevation" })
+                if (args[key] != null && args[key].Type != JTokenType.Boolean)
+                    throw new ArgumentException("boolean_combined_option_required: " + key);
+            var limit = JunctionElevationLimit.Value;
+            if (args["junctionElevationLimit"] != null) {
+                var token = args["junctionElevationLimit"];
+                if (token.Type != JTokenType.Float && token.Type != JTokenType.Integer)
+                    throw new ArgumentException("numeric_junction_elevation_limit_required");
+                var value = (double)token;
+                if (!IsValidJunctionElevationLimit(value)) throw new ArgumentException("junction_elevation_limit_out_of_range");
+                limit = (float)value;
+            }
+            if (args["smoothStart"] != null) SmoothStart.Value = (bool)args["smoothStart"];
+            if (args["smoothEnd"] != null) SmoothEnd.Value = (bool)args["smoothEnd"];
+            if (args["allowJunctionElevation"] != null) AllowInteriorJunctionElevation.Value = (bool)args["allowJunctionElevation"];
+            if (args["unlimitedJunctionElevation"] != null) JunctionElevationUnlimited.Value = (bool)args["unlimitedJunctionElevation"];
+            JunctionElevationLimit.Value = limit;
+            CombinedSlope.Value = (bool)args["enabled"];
+            MarkDirty();
         }
 
         private void ConfigureAutomationSlope(JObject args) {

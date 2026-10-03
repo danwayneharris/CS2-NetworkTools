@@ -47,10 +47,27 @@ class CodegenTests(unittest.TestCase):
                     '"roadShape.combinedSlope": { type: "bool", default: false, modes: 16, label: "NetworkTools.UI.Curve.CombinedSlope" },',
                     'combinedSlope: new TwoWayBinding<boolean>("roadShape.combinedSlope", false),',
                     '"roadShape.combinedSlope": PARAM_BINDINGS.roadShape.combinedSlope,'}
-                actual=[line.strip() for line in lines if 'combinedSlope' in line]
+                # NT-021 intentionally adds three bindings. Check their complete
+                # wire metadata in both configurations, without replacing the old
+                # golden hash or silently accepting unrelated generator changes.
+                additions = {
+                    'allowInteriorJunctionElevation': ('boolean', 'true', '{ type: "bool", default: true, modes: 16, label: "NetworkTools.UI.Curve.AllowJunctionElevation" }'),
+                    'junctionElevationUnlimited': ('boolean', 'true', '{ type: "bool", default: true, modes: 16, label: "NetworkTools.UI.Curve.JunctionElevationUnlimited" }'),
+                    'junctionElevationLimit': ('number', '5', '{ type: "float", default: 5, min: 0, max: 20, fractionDigits: 3, displayScale: 1, numberType: "distance", modes: 16, label: "NetworkTools.UI.Curve.JunctionElevationLimit" }'),
+                }
+                for name,(kind,default,metadata) in additions.items():
+                    key='roadShape.'+name
+                    added.update({
+                        f'{name}: "{key}",',
+                        f'"{key}": {metadata},',
+                        f'{name}: new TwoWayBinding<{kind}>("{key}", {default}),',
+                        f'"{key}": PARAM_BINDINGS.roadShape.{name},',
+                    })
+                additive_names={'combinedSlope',*additions}
+                actual=[line.strip() for line in lines if any(name in line for name in additive_names)]
                 self.assertEqual(len(added),len(actual))
                 self.assertEqual(added,set(actual))
-                content='\n'.join(sorted(line for line in lines if 'combinedSlope' not in line))
+                content='\n'.join(sorted(line for line in lines if not any(name in line for name in additive_names)))
                 self.assertEqual(digest,hashlib.sha256(content.encode()).hexdigest())
 
     def test_golden_styles_and_configuration_options(self):

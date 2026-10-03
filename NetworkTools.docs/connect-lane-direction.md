@@ -40,7 +40,7 @@ Reported stage-5 offline result for this source baseline: **12 suites passed**, 
 
 The tests execute production pure helpers; they do not simulate Unity ECS temporary-lane reconstruction. In particular, the physical-slave/native-master policy requires native verification beyond pure graph tests. Passing graph tests cannot establish that a live game's entity/composition adapter populated the graph correctly.
 
-Native preview/Apply results, permanent identities, reload behavior, feature-off visual parity and physical-slave fixtures are **pending** in this guide. Vehicle traversal and Dan's visual review are also **pending**. No native or traffic success is inferred from compilation, UI availability, or the offline suite totals.
+On clean Debug `deb29941bb2f`, Simple Connect and reversed Complex Connect passed native preview and permanent Apply: selected directed endpoint connections were independently observed, existing nodes/curves were unchanged, stale revision Apply was rejected, and preview/permanent control-point error was 0 m. See [compact evidence](session-notes/nt003-native-evidence.json). The initial shared-port adapter rejection and correction are retained in the session note. Reload equivalence, feature-off visual parity, added-lane highway and physical-slave group fixtures remain **not run**. Vehicle traversal and Dan's visual review are also **pending**. No native or traffic success is inferred from compilation, UI availability, or the offline suite totals.
 
 ## Limitations
 
@@ -48,14 +48,14 @@ Native preview/Apply results, permanent identities, reload behavior, feature-off
 - No lateral alignment, lane-width adjustment, exclusive routing, or promise that selected lanes are the only lanes connected.
 - Shared/mixed rail or tram lanes, aggregate master lanes, native `Twoway` lanes, public-only/bicycle-only lanes, and other unsupported flags are rejected or excluded. Effective compositions that cannot be mapped exactly remain unsupported.
 - A supported group supplies one representative direction and, when needed, grade. The horizontal agreement check does not imply that every member has identical vertical grade.
-- The native proof supports direct junction NodeLanes. Roundabouts, internal-node chains and other multi-hop-only routes can reject even if the game could route traffic through them.
+- The native proof supports exact shared node-owned ports and direct junction NodeLanes. Roundabouts, internal-node chains and other multi-hop-only routes can reject even if the game could route traffic through them.
 - Rebuilt selected-lane identity, composition or segment changes can reject conservatively. Lane counts and approximate geometric matches do not substitute for identity.
 - The proof checks each endpoint independently. Whole-route and vehicle-use qualification remain separate.
 - Native reconstruction may reject a mathematically valid direction proposal. Anarchy is not evidence that lane direction or routing is correct.
 
 ## Dan's review
 
-Use a disposable review save/checkpoint with an added-lane offramp/onramp and ordinary one-way and two-way approaches. Record the exact loaded build identity and save identity before comparing results. Native review is not yet completed for this guide.
+Use a disposable review save/checkpoint with an added-lane offramp/onramp and ordinary one-way and two-way approaches. Record the exact loaded build identity and save identity before comparing results. Use the stage-specific package `artifacts/review/NT-003/NetworkTools` (Debug `deb29941bb2f`) and the saved Simple result `CitiesIIAgentBridge-regression-before-reload-20261003-151917-abe983f9`. Native endpoint/geometry evidence exists for two-way Small Road; your visual/traffic review remains pending.
 
 1. **Legacy baseline:** leave Lane-aware direction off. Capture the existing degree-two perpendicular departure behavior and the original neighboring roads.
 2. **Explicit departure:** choose the intended approach and outer incoming lane, then an eligible outgoing arrival lane. Confirm the diagram's outward-looking frame and arrows against actual traffic direction. Check that an opposite-role lane is unavailable.
@@ -66,3 +66,5 @@ Use a disposable review save/checkpoint with an added-lane offramp/onramp and or
 7. **Traffic review:** observe vehicles entering and leaving the ramp separately. Record actual vehicle use, wrong/extra connections and any unexpected routing. Do not mark traffic qualified solely because preview/Apply or the provider reports acceptance.
 
 Expected outcome: explicit lane choices produce understandable endpoint direction constraints; unsupported or stale contexts are visible; default-off behavior remains available. Record failures and limitations as well as successful fixtures before declaring native acceptance complete.
+
+Source-grounded correction: native `LaneReferencesSystem` can collapse a skipped degree-two junction lane to a shared node-owned port. Exact shared port equality is valid directed continuity only after the adapter establishes the distinct actual owning edges and incoming/outgoing roles. Endpoints are not assumed to retain composition lane bytes; middle identity, exact `Temp.original`, composition and edge interval are retained.

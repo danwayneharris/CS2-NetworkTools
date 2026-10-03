@@ -68,7 +68,8 @@ namespace NetworkTools.Systems.Tools.Connect {
             config.NetLanePrefabEntity = netLanePrefabEntity;
 #if IS_DEBUG
             if (outputMode == ToolOutputMode.Preview) {
-                if (config.SmoothElevationProfile && !TryPrepareProfile(ref config, out m_ControlRejection)) {
+                if ((LaneAwareDirection.Value && !TryPrepareLaneDirections(ref config, out m_ControlRejection))
+                    || (config.SmoothElevationProfile && !TryPrepareProfile(ref config, out m_ControlRejection))) {
                     m_ControlCandidate = null; m_ControlAcceptedCandidate = null;
                     return inputDeps;
                 }

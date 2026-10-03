@@ -148,6 +148,7 @@ namespace NetworkTools.Systems.Tools.Connect {
             //DisableVanillaCourseSplit = true;
 
             SmoothElevationProfile.OnChanged += _ => m_UpdateNeeded = true;
+            LaneAwareDirection.OnChanged += _ => m_UpdateNeeded = true;
 
             // Mode change reinitializes context and handles
             Mode.OnChanged += _ => {

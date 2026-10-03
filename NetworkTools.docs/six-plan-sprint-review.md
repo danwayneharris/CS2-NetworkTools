@@ -6,8 +6,8 @@ This is execution status, not a declaration of verified game behavior.
 | Stage | Status | PR | Evidence / review |
 | --- | --- | --- | --- |
 | NT-001 | Implemented; package/offline pass; live identity verified in NT-021 | [#17](https://github.com/danwayneharris/CS2-NetworkTools/pull/17) | [Guide](development-build-identity.md) |
-| NT-021 | Implemented; active-bound and fixed-height rail pass, road control failure documented | Draft pending | [Guide](junction-elevation-limits.md) |
-| NT-023 | Not started | Not opened | Pending NT-021 |
+| NT-021 | Implemented; active-bound and fixed-height rail pass, road control failure documented | [#18](https://github.com/danwayneharris/CS2-NetworkTools/pull/18) | [Guide](junction-elevation-limits.md) |
+| NT-023 | Implemented; offline and native Connect smoke pass | Draft pending | [Review](architecture-review-nt023.md) |
 | NT-002 | Not started | Not opened | Pending NT-023 |
 | NT-003 | Not started | Not opened | Pending NT-002 |
 | NT-022 | Not started | Not opened | Pending NT-003 |

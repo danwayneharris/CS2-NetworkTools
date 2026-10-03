@@ -1,6 +1,6 @@
 # NT-023 architecture review and Connect acceptance
 
-Implementation checkpoint: October 3, 2026, on `dan/nt-023-architecture-review`, stacked on [NT-021 PR #18](https://github.com/danwayneharris/CS2-NetworkTools/pull/18). The review produced one bounded Connect prerequisite. The linked pure production-helper tests passed **25 assertions**. Parent integration passed the production compile through the Slope suite and all **23/23 Python scripts** after registering Connect in the aggregate inventory. Native behavior and ordinary UI review are pending at this documentation checkpoint. Historical NT-021 results do not verify this new gate.
+Implementation checkpoint: October 3, 2026, on `dan/nt-023-architecture-review`, stacked on [NT-021 PR #18](https://github.com/danwayneharris/CS2-NetworkTools/pull/18). The review produced one bounded Connect prerequisite. The linked pure production-helper tests passed **34 assertions**. Parent integration passed the production compile through the Slope suite and all **23/23 Python scripts** after registering Connect in the aggregate inventory. The corrected native road Connect smoke test also passes; ordinary UI review remains pending. See final verification below. Historical NT-021 results do not verify this new gate.
 
 This document implements the review deliverable in [NT-023](plans/NT-023-architecture-review.md). Source links describe current code; before-change descriptions are explicitly historical. Session chronology: [October 3 stage-three note](session-notes/2026-10-03-0650-nt023-architecture-review.md).
 
@@ -176,3 +176,22 @@ Review branch: `dan/nt-023-architecture-review`, stacked on NT-021 PR #18. No NT
 6. Review deferred approach/structural-elevation/lane work before NT-002/003/022. Inspect Complex/Loop feature-off behavior separately; they did not acquire the new native evidence contract here.
 
 Expected: clearer ownership and a protected SimpleCurve handoff, not new geometry options or a traffic qualification claim. Ordinary UI, rendered appearance, reload and vehicle review remain pending until actually exercised. Missing native access must be reported explicitly with a reproducible manual fixture recipe.
+
+
+## Final stage verification
+
+Clean Debug build `b35766a` deployed successfully; all eight offline aggregate
+suites passed, including 34 Connect acceptance assertions and 23 Python test scripts.
+The first live attempt found idle revision churn before selection: repeated null
+input snapshots advanced revision. The correction advances only on an actual
+identity transition; null still never licenses Apply. This failure and counterexample
+remain in the session history.
+
+The corrected terrain-baseline road Connect test passed: stale revision rejected,
+new path connected with inherited prefab, existing node/edge geometry unchanged,
+and bijective native preview/permanent cubic correspondence had zero error.
+This tests provider execution through the shared gate, not human UI interaction or
+all possible native-error/race timings. It does not certify requested lane mapping
+or vehicle traversal. [Compact evidence](session-notes/nt023-native-evidence.json).
+
+Review checkpoint: `CitiesIIAgentBridge-review-nt023-road-connect-20261003-140428-816b028b`.

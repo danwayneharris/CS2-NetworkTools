@@ -26,3 +26,9 @@ The first NT-023 native provider exercise failed before endpoint selection: repe
 Changed the production refresh path to use `ConnectCandidate.NextInputRevision`: revision advances only when content identity actually transitions, including valid-to-null and null-to-valid. Null-to-null remains stable. Candidate acceptance still rejects unavailable input; stable absence does not authorize Apply. This allows a token obtained while idle to survive the command's own state refresh.
 
 Added nine linked-production-helper regression assertions for repeated idle polls, a select token surviving internal refresh, selection establishment, context loss, repeated absence, restoration, and rejection of the old candidate after loss/restoration. `dotnet run --project NetworkTools.Connect.Tests` now passes **34 assertions**. No production compilation/deployment was run by this correction task; parent owns redeployment and native retest. This records a failed native experiment and its focused source correction, not a claimed native pass.
+
+Final clean build b35766a: Debug deploy and eight-suite aggregate pass. Corrected
+road Connect native test passes stale-revision rejection, inherited prefab, existing
+geometry preservation and one-to-one native preview/permanent curves (zero error).
+Saved/ZIP-verified `CitiesIIAgentBridge-review-nt023-road-connect-20261003-140428-816b028b` for Dan. UI/vehicles and external-race timing
+remain unverified; provider success is not ordinary UI coverage.

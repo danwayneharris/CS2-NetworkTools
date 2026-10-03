@@ -1,0 +1,63 @@
+{
+  "build": {
+    "schemaVersion": 1,
+    "releaseVersion": "1.5.7",
+    "informationalVersion": "1.5.7+gb35766afc405.clean.Debug",
+    "sourceRevision": "b35766afc4052b4382b9104c3bdbafbfe4232e80",
+    "workingTree": "clean",
+    "configuration": "Debug"
+  },
+  "dll": {
+    "path": "NetworkTools.dll",
+    "sha256": "1edff84668c69d47c294948cadc9ecc198e07a90e7e1b03cac037b5a31518014",
+    "bytes": 650240
+  },
+  "native": {
+    "geometryToleranceMeters": 0.05,
+    "stage": "connect",
+    "checkpoint": "CitiesIIAgentBridge-provider-connect-20261003-140225-efdfa7b8",
+    "beforeFingerprint": "59664b4dd4e4bd1cd8eaf11aea0018978ac8352a466fe5b747f1578655296136",
+    "afterFingerprint": "b704b60723e4714d06789846b10b37501e367b2ec4036424028990247a15e21a",
+    "staleRevisionRejected": true,
+    "nodeCount": [
+      48,
+      49
+    ],
+    "edgeCount": [
+      44,
+      46
+    ],
+    "parameters": {
+      "slopeMode": "ease",
+      "smoothStart": false,
+      "smoothEnd": false,
+      "reverse": false
+    },
+    "limits": "No visual/vehicle or rendered-surface validation.",
+    "expectedPrefab": "Small Road",
+    "prefabInherited": true,
+    "unchangedExistingEdges": true,
+    "unchangedExistingNodes": true,
+    "connected": true,
+    "newEdges": [
+      [
+        51659,
+        3
+      ],
+      [
+        51658,
+        3
+      ]
+    ],
+    "previewApplyMaxError": 0.0
+  },
+  "reviewSave": "CitiesIIAgentBridge-review-nt023-road-connect-20261003-140428-816b028b",
+  "paused": true,
+  "notVerified": [
+    "ordinary UI interaction",
+    "vehicle traversal",
+    "native error rejection fixture",
+    "request-to-execution external-world race",
+    "Release/Burst execution"
+  ]
+}

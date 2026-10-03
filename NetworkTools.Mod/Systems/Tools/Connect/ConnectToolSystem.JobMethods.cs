@@ -40,7 +40,7 @@ namespace NetworkTools.Systems.Tools.Connect {
             };
         }
 
-        private JobHandle ScheduleDefinitionsJob(JobHandle inputDeps, ToolOutputMode outputMode) {
+        private JobHandle ScheduleDefinitionsJob(JobHandle inputDeps, ToolOutputMode outputMode, ConnectJobConfig? acceptedConfig = null) {
             m_Log.Debug($"ScheduleDefinitionsJob: Mode={Mode.Value}");
 
             if (m_SelectedNodes.Length != 2) {
@@ -49,20 +49,23 @@ namespace NetworkTools.Systems.Tools.Connect {
 
             inputDeps = DestroyDefinitions(m_DefinitionQuery, m_Barrier, inputDeps);
 
-            var netPrefabEntity = NetPrefab.NetPrefabEntity;
-            var netLanePrefabEntity = NetPrefab.NetLanePrefabEntity;
+            var config = acceptedConfig ?? BuildJobConfig();
+            var netPrefabEntity = acceptedConfig.HasValue ? config.NetPrefabEntity : NetPrefab.NetPrefabEntity;
+            var netLanePrefabEntity = acceptedConfig.HasValue ? config.NetLanePrefabEntity : NetPrefab.NetLanePrefabEntity;
 
-            if (netPrefabEntity == Entity.Null && netLanePrefabEntity == Entity.Null) {
+            if (!acceptedConfig.HasValue && netPrefabEntity == Entity.Null && netLanePrefabEntity == Entity.Null) {
                 var prefabRef = EntityManager.GetComponentData<PrefabRef>(m_SelectedNodes[0]);
                 netPrefabEntity = prefabRef.m_Prefab;
             }
 
+            config.NetPrefabEntity = netPrefabEntity;
+            config.NetLanePrefabEntity = netLanePrefabEntity;
 #if IS_DEBUG
-            if (outputMode == ToolOutputMode.Preview) BeginControlPreview();
+            if (outputMode == ToolOutputMode.Preview) BeginControlPreview(config);
 #endif
             var jobHandle = new CreateDefinitionsJob {
                 Mode = Mode.Value,
-                Config = BuildJobConfig(),
+                Config = config,
                 SelectedNodeEntities = m_SelectedNodes,
                 NetPrefabEntity = netPrefabEntity,
                 NetLanePrefabEntity = netLanePrefabEntity,
@@ -97,6 +100,16 @@ namespace NetworkTools.Systems.Tools.Connect {
                 return inputDeps;
             }
 
+#if IS_DEBUG
+            // A rejected request may have lost a selected entity/component. Do not
+            // immediately feed that missing context into the preview generator.
+            if (Mode.Value == ConnectMode.SimpleCurve && ControlInputs() == null) {
+                m_ControlCandidate = null;
+                m_ControlAcceptedCandidate = null;
+                m_ControlRejection = "inputs_unavailable";
+                return Clear(inputDeps);
+            }
+#endif
             // Recreate temp entities
             applyMode = ApplyMode.Clear;
             inputDeps = ScheduleDefinitionsJob(inputDeps, ToolOutputMode.Preview);
@@ -114,8 +127,22 @@ namespace NetworkTools.Systems.Tools.Connect {
         }
 
         private JobHandle Apply(JobHandle inputDeps) {
+            ConnectJobConfig? acceptedConfig = null;
+#if IS_DEBUG
+            if (m_ControlAcceptedCandidate != null || Mode.Value == ConnectMode.SimpleCurve) {
+                inputDeps.Complete();
+                m_ControlJob.Complete();
+                if (!ControlCandidateAllowsApply(executing: true)) {
+                    m_ControlAcceptedCandidate = null;
+                    Phase = OperationPhase.Ready;
+                    m_UpdateNeeded = true;
+                    return Update(inputDeps);
+                }
+                acceptedConfig = m_ControlAcceptedCandidate.Config;
+            }
+#endif
             applyMode = ApplyMode.Apply;
-            var jobHandle = ScheduleDefinitionsJob(inputDeps, ToolOutputMode.Apply);
+            var jobHandle = ScheduleDefinitionsJob(inputDeps, ToolOutputMode.Apply, acceptedConfig);
 
             jobHandle.Complete();
 

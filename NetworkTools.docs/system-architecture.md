@@ -513,3 +513,29 @@ Elevation from the incident edge's Upgraded classification. Apply preserves thos
 structural components. The game still owns native composition/surface generation;
 authored Curve agreement alone is insufficient to establish surface agreement.
 See the [transition regression](session-notes/2026-10-01-2305-preview-structure-fix.md).
+
+
+### Connect candidate ownership (NT-023, October 3)
+
+Debug SimpleCurve now uses a Connect-owned immutable configuration/input snapshot
+and one acceptance policy for manual and provider Apply. RequestApply captures the
+accepted candidate; execution rechecks current authored inputs, submission, native
+preview evidence and NT's native Error-query policy before emitting creation
+definitions. Ready-to-Applying is a lifecycle transition, so Phase is excluded from
+content identity. Rejection requests a fresh preview; unavailable endpoint context
+clears definitions rather than entering the generator with missing components.
+
+The accepted configuration includes resolved prefab identities. SimpleCurve's
+complete authored cubic is represented by those values; Apply uses the captured
+configuration. This does not generalize RoadShape's edit output: Connect still
+creates NetCourse definitions through the shared creation emitter, while RoadShape
+updates existing curves/nodes through its own adapter. Existing observer scheduling
+and native lifetime fences remain.
+
+This prerequisite is **Debug SimpleCurve only**. Complex, Loop and Release retain
+their previous acceptance envelope; NT-002 must extend the same policy to Complex
+before enabling its new profile there. Pure helper regressions passed 25 assertions;
+production compilation and 23/23 Python scripts also passed. Native/UI verification
+is pending at this checkpoint. See the
+[NT-023 architecture review](architecture-review-nt023.md) for source references,
+prior-audit dispositions, the test matrix and Dan's review instructions.

@@ -246,6 +246,7 @@
             get {
                 if (Phase != OperationPhase.Ready || Mode.Value == ConnectMode.None) return false;
 #if IS_DEBUG
+                if (AlignmentProbeEnabled) { m_ControlRejection = "alignment_probe_preview_only"; return false; }
                 if (ControlCandidateRequired) return ControlCandidateAllowsApply();
 #endif
                 return true;

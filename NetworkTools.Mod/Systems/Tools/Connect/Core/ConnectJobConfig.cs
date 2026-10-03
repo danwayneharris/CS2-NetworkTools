@@ -9,6 +9,7 @@ namespace NetworkTools.Systems.Tools.Connect {
     public struct ConnectJobConfig {
         public bool SmoothElevationProfile;
         public bool ComplexProfile;
+        public bool FixedNodeAlignmentProbe;
         // Shared
         public float3 StartPosition;
         public float3 StartDirection;

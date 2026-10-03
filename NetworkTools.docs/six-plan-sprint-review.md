@@ -1,4 +1,4 @@
-﻿# Six-plan sprint: draft stack and individual review
+# Six-plan sprint: draft stack and individual review
 
 Baseline: merged main `f36d669`, plus planning `eace043`. Worktree: `nt-six-plan-sprint`. All PRs remain draft. **This is not six completed player features:** NT-002 is a guarded prototype with a failed sloped-native prerequisite; NT-022 delivers tested scaffolding and a diagnosed blocker, not a lane-alignment UI.
 
@@ -9,7 +9,7 @@ Baseline: merged main `f36d669`, plus planning `eace043`. Worktree: `nt-six-plan
 | 3 | NT-023 [#19](https://github.com/danwayneharris/CS2-NetworkTools/pull/19) | Focused architecture prerequisite: immutable Connect candidate and shared Apply gate. Native smoke passes. | [Architecture review](architecture-review-nt023.md) |
 | 4 | NT-002 [#20](https://github.com/danwayneharris/CS2-NetworkTools/pull/20) | Debug Connect elevation profile and exact native coverage guard. Equal-height Simple/Complex pass; different-height native mismatch rejects. **Partial.** | [Connect elevation profile](connect-elevation-profile.md) |
 | 5 | NT-003 [#21](https://github.com/danwayneharris/CS2-NetworkTools/pull/21) | Explicit approach lanes/groups, endpoint directions, native selected-lane endpoint proofs. Simple/reversed Complex two-way road pass; highway/group matrix incomplete. | [Lane direction](connect-lane-direction.md) |
-| 6 | NT-022 | Pure lane-pair translation/plane tools and preview-only diagnostic. Native offset moves fixed nodes ~0.75m. **Blocked player feature; useful partial draft.** | [Lane alignment](connect-lane-alignment.md) |
+| 6 | NT-022 [#22](https://github.com/danwayneharris/CS2-NetworkTools/pull/22) | Pure lane-pair translation/plane tools and preview-only diagnostic. Native offset moves fixed nodes ~0.75m. **Blocked player feature; useful partial draft.** | [Lane alignment](connect-lane-alignment.md) |
 
 Each PR targets its predecessor; #17 targets main. Bridge source is unchanged. The original NetworkTools checkout and its unrelated user edits were not used as the implementation worktree.
 

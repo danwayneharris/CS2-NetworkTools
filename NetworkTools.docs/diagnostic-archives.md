@@ -97,3 +97,10 @@ When prioritizing this work:
   verify actual results rather than assuming a force-push immediately shrinks storage.
 
 Keep this separate from terrain, slope and gameplay development priorities.
+
+
+## Six-plan sprint, October 3, 2026 (local archive)
+
+The sprint's raw evidence remains outside Git. `artifacts/archives/six-plan-sprint-20261003.zip` contains 3,169 JSON/log/text/Markdown records (3,867,911 bytes), verified against every manifest entry. SHA-256: `429e6629db1dc6eb88f5f9694045698a1d61dc59208bdc003738394a0d48ae8c`. This local archive is not uploaded and is not a mod release. Source/build identities within each stage's reports take precedence over the archive's collection-time HEAD. The final aggregate report is separate at `artifacts/final-six-plan-offline/summary.json`, with a compact checked-in successor summary.
+
+The existing archiver now supports repeatable `--capture-root artifacts/<run>` for new ignored runs, while retaining the historical Git-revision mode. Working-tree roots must remain under repository artifacts; overlapping roots, links/junctions, duplicate file identities and source/output overlap are rejected. Only evidence extensions are collected; no save or DLL packaging. Verify with `python scripts/archive-diagnostic-captures.py --verify artifacts/archives/six-plan-sprint-20261003.zip`. It never deletes captures or publishes anything. Twelve focused archive tests passed.

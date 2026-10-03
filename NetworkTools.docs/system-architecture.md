@@ -548,3 +548,10 @@ checks native split cubics against the frozen authored candidate before the shar
 manual/provider Apply gate. Replacements establish an empty native-preview boundary.
 This does not guarantee rendered terrain or lane correspondence; different-height
 course sampling still rejects a captured case. See [usage, evidence and limitations](connect-elevation-profile.md).
+
+
+## October 3 first-six sprint successor
+
+The [six-stage review index](six-plan-sprint-review.md) separates implemented work from guarded/blocked prototypes. Current Connect responsibilities are: immutable candidate configuration and shared Apply policy (NT-023), horizontal-station elevation proposal with independent native coverage (NT-002), actual approach lane context/direction and independent native endpoint connection proofs (NT-003), and offline alignment mathematics plus an explicit preview-only fixed-node diagnostic (partial NT-022). No player-facing lane-alignment feature is delivered by the diagnostic. Bridge remains generic and unchanged.
+
+Native skipped-junction lane references may use shared node-owned ports; edge-owned middle keys retain composition identity. Native NodeAlign can move a node even when the emitted CoursePos names its original position. These are different boundaries and neither a prefab centerline calculation nor an original entity ID proves preservation. See the feature guides for current limits and evidence.

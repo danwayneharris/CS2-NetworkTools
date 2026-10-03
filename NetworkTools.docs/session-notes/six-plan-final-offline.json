@@ -1,0 +1,91 @@
+{
+  "startedUtc": "2026-10-03T15:43:22.209426+00:00",
+  "scope": "offline; no deployment, game queries, native execution or live mutation",
+  "revision": {
+    "exitCode": 0,
+    "value": "fbd91c38cdaab817901af33cc67a9d64c8fcc2b2",
+    "error": ""
+  },
+  "policy": "Suites retain their stated mathematical/assertion tolerances; live geometry policy is not applied to offline analytical precision.",
+  "notRun": [
+    "optional trace/captured-replay command modes",
+    "Release/Burst execution",
+    "native preview/Apply",
+    "vehicle traversal",
+    "human visual review"
+  ],
+  "results": [
+    {
+      "suite": "geometry",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "suite": "path-selection",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "suite": "parameters",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "suite": "connect-profile",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "suite": "connect-coverage",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "suite": "lane-direction",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "suite": "lane-connection",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "suite": "lane-alignment",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "suite": "lane-plane",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "suite": "connect-candidate",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "suite": "codegen",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "suite": "slope-production",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "suite": "original-input",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "suite": "python",
+      "status": "passed",
+      "exitCode": 0
+    }
+  ],
+  "status": "passed",
+  "report": "artifacts/final-six-plan-offline/summary.json"
+}

@@ -1,6 +1,6 @@
 # NT-001: trustworthy development baseline
 
-Status: reviewed planning draft; saved October 3, 2026. Not yet executing.
+Status: Implemented in draft PR #17; stage-specific package/offline evidence and review are in ../development-build-identity.md. Runtime identity was subsequently observed in later native stages.
 Order: 1 of 6. Baseline: merged main f36d669 plus the roadmap-consolidation documentation.
 Dependency: none within this stack. Verify the current merged baseline before execution.
 Proposed branch: dan/nt-001-development-baseline.

@@ -5,6 +5,41 @@ one complete horizontal/vertical candidate and uses one preview and one Apply.
 Independent Curve and Slope retain their defaults. Release promotion, Connect
 reuse and terrain/obstacle routing are not part of this change.
 
+## Latest review checkpoint (October 3)
+
+A native finishing lookup discrepancy caused preview/Apply and reload surface changes
+in the captured trumpet road/ramp case even when authored curves were identical.
+The Debug compatibility experiment now prepares actual native height-map values before
+the unchanged finishing job. It applies to all native rebuilds while explicitly enabled,
+including loading. It is not terrain routing and is not enabled by ordinary launches.
+
+Use launch argument `--nt-experimental-finish-height-preparation` with this Debug build.
+It pins Game, Mathematics and native Burst binaries, rejects unqualified transpiler
+conflicts, and leaves default launches unchanged. No Bridge assembly dependency exists.
+Do not combine it with the Bridge's scheduling-trace patch. Disabling it can restore
+the native surface fault on rebuild/reload. Release promotion is deferred.
+
+Latest deployed DLL SHA256: `0DEEDFFCCF4305CBA55C08270B235948174BFC74861A03B773A4AA7AF61E44DE`.
+Current review save: `CitiesIIAgentBridge-finish-runtime-corrected-20261003-090324-9ddbf330`.
+This supersedes the older final-game-state section below, which is retained as history.
+
+Verified: five-case offline native replay/preparation comparison,18 negative replay
+contracts, compiled scheduler/version/default-off guards, seven-suite offline aggregate,
+exact native preview/Apply agreement on five edges, two successful corrected reloads,
+and directed 3/4/14 junction connections preserved. See
+[full evidence and failures](session-notes/2026-10-03-0155-finishing-validation.md).
+No large-world performance benchmark, cross-mod patch qualification, vehicle traversal
+or Release execution is claimed. Earlier visual confirmation covered the bounded
+managed experiment; final persistent candidate awaits Dan's visual review.
+
+Final manual checklist:
+1. Inspect where each ramp meets the selected road in the current paused review save.
+2. Enable Constant Slope in Smooth Curve, select the same road, vary strength, Apply,
+   and compare road/ramp surfaces and nearby terrain with preview.
+3. Try a nearby ordinary road edit/upgrade, then inspect the ramp again; broad vanilla
+   rebuild variety has not been certified by the captured NT Apply test.
+4. Test vehicles and note any delay on a larger selection. Keep original baselines.
+
 ## Behavior and architecture
 
 The original authored snapshot remains immutable. Curve fitting produces candidate

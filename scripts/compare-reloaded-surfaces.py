@@ -52,7 +52,19 @@ def main():
         used.add(nk);n=new[nk]
         rows.append(dict(original=key,reloaded=nk,authoredError=difference(o['curve'],n['curve']),surfaceError=difference(o['edgeGeometry'],n['edgeGeometry'])))
     if used != new.keys(): raise ValueError('Unexpected extra live edge coverage')
-    report=dict(city=city,rows=rows,toleranceMeters=.05,withinTolerance=all(max(x['authoredError'],x['surfaceError'])<=.05 for x in rows),limitations='No vehicle traversal, mesh-distance or lane-identity assertion. Endpoint position changes fail discovery; cannot certify broader world.')
+    owner_map={row['original'][0]:row['reloaded'][0] for row in rows}
+    owner_map.update({k[0]:v['index'] for k,v in remap.items()})
+    lane_rows=[]
+    def mapped_lane(lane):
+        owner,index,secondary=lane
+        if owner not in owner_map:raise ValueError('Unmapped lane owner after reload')
+        return owner_map[owner],index,secondary
+    for before,after in zip(old,snapshots):
+        expected={(kind,mapped_lane(source),mapped_lane(target)) for kind,source,target in m['lane_transitions'](before)}
+        actual=m['lane_transitions'](after)
+        lane_rows.append(dict(original=before['junction'],reloaded=after['junction'],expected=len(expected),observed=len(actual),removed=sorted(expected-actual),added=sorted(actual-expected)))
+    lanes_preserved=all(not x['removed'] and not x['added'] for x in lane_rows)
+    report=dict(city=city,rows=rows,laneRows=lane_rows,lanesPreserved=lanes_preserved,toleranceMeters=.05,withinTolerance=lanes_preserved and all(max(x['authoredError'],x['surfaceError'])<=.05 for x in rows),limitations='Directed lane pairs mapped through fresh owner identities; no vehicle traversal or mesh-distance assertion. Endpoint position changes fail discovery; cannot certify broader world.')
     (r.output/'snapshots.json').write_text(json.dumps(dict(snapshots=snapshots),indent=2))
     (r.output/'summary.json').write_text(json.dumps(report,indent=2));print(json.dumps(report,indent=2))
     return 0 if report['withinTolerance'] else 1

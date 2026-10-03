@@ -289,3 +289,19 @@ Debug builds expose an opt-in Constant Slope option within Smooth Curve. Buildin
 with `-Build` deploys as described above; the offline test command does not.
 See [combined review and exact toy saves](NetworkTools.docs/combined-smoothing-review.md)
 for verification scope and manual steps. Release does not expose this experiment.
+
+
+## Experimental native finishing compatibility (Debug only)
+
+Current candidate requires explicit game launch argument
+`--nt-experimental-finish-height-preparation`. It changes native geometry rebuilds,
+including save loading, not only the active tool. Ordinary launches leave it disabled.
+Read [current review and exact saves](NetworkTools.docs/combined-smoothing-review.md)
+before enabling; game binary fingerprints and patch-conflict guards can refuse it.
+No agent settings, Steam settings, global Burst settings or persistent user options
+are modified by this argument. Disabling it may reproduce native surface discrepancies
+on later rebuilding. Release promotion and broad performance testing remain deferred.
+
+The offline Python aggregate reports parameterized native research CLIs separately
+as not run. See `NetworkTools.NativeReplay/README.md` for their explicit captured-input
+commands; an aggregate pass does not imply those commands or live tests ran.

@@ -1,11 +1,13 @@
-﻿using Game.Net;
+using System;
+using Game.Net;
 using Unity.Mathematics;
 
-// Offline prototype only. GeometrySystem.FinishEdgeGeometryJob consumes these
+// Shared offline/runtime preparation. GeometrySystem.FinishEdgeGeometryJob consumes these
 // exact producer fields before limiting slopes and calculating lengths/bounds.
 // Prefilling them makes a missed native hash lookup harmless while preserving
 // the rest of the original finishing calculation. No runtime hook is installed.
-static class FinishHeightPreparation {
+namespace NetworkTools.Compatibility {
+internal static class FinishHeightPreparation {
     public static void Apply(ref EdgeGeometry geometry,int endpoint,float4 heights) {
         if(endpoint==0) {
             geometry.m_Start.m_Right.b.y=heights.x;
@@ -19,4 +21,6 @@ static class FinishHeightPreparation {
             geometry.m_End.m_Right.d.y=heights.w;
         } else throw new ArgumentOutOfRangeException(nameof(endpoint));
     }
+}
+
 }

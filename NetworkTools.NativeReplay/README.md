@@ -78,3 +78,13 @@ reports; it does not deploy, contact the game, or install a persistent correctio
 A prepared replay can correctly exit 1 because old native observations contain the
 fault: the separate cohort comparison requires exact corrected/managed agreement,
 original native reproduction and a discriminating counterexample.
+
+### Disabled runtime candidate (October 3)
+
+A Debug-only, explicitly opt-in finishing compatibility candidate now lives in
+`NetworkTools.Mod/Compatibility`; see
+[runtime candidate and gates](../NetworkTools.docs/session-notes/2026-10-03-0115-finishing-runtime-candidate.md).
+NativeReplay links the same height assignment helper. `--finish-compatibility-tests
+<compiled-NT.dll> <managed-directory> <new-report>` verifies the actual transpiler
+against installed call operands, fingerprints and default-off activation. This is
+an offline test; it does not prove runtime scheduling, performance or persistence.

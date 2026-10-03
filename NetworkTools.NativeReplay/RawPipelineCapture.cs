@@ -1,3 +1,4 @@
+using NetworkTools.Compatibility;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text.Json;

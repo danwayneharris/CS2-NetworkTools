@@ -52,6 +52,7 @@ static class Program {
         if (args.Length == 4 && args[0] == "--pipeline-prepared") return RawPipelineCapture.Run(args[1], args[3], true, true, args[2], true);
         if (args.Length == 4 && args[0] == "--raw-edge") return RawEdgeCapture.Run(args[1], args[2], args[3]);
         if (args.Length == 4 && args[0] == "--schedule-transpiler-tests") return ScheduleTranspilerTests.Run(args[1], args[2], args[3]);
+        if (args.Length == 4 && args[0] == "--finish-compatibility-tests") return ScheduleTranspilerTests.Run(args[1], args[2], args[3], true);
         if (args.Length == 3 && args[0] == "--world") return WorldCapture.Run(args[1], args[2]);
         if (args.Length == 2 && args[0] == "--world-tests") return WorldStageTests.Run(args[1]);
         if (args.Length == 3 && args[0] == "--stages") return NativeStages.Run(args[1], args[2]);

@@ -52,6 +52,11 @@ namespace NetworkTools {
             new EnUsConfig((NT_Settings)settings);
 
         /// <inheritdoc/>
+#if IS_DEBUG
+        protected override void OnAfterLoad(UpdateSystem updateSystem) => Compatibility.FinishHeightCompatibility.Install(Log);
+        protected override void OnBeforeDispose() => Compatibility.FinishHeightCompatibility.Dispose();
+#endif
+
         protected override void RegisterSystems(UpdateSystem updateSystem) {
             // Core systems
             updateSystem.UpdateAt<NT_PrefabsCreateSystem>(SystemUpdatePhase.PrefabUpdate);

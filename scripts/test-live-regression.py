@@ -58,6 +58,48 @@ class FixtureTests(unittest.TestCase):
         edges[0]['curve'][1]['z']=0.01
         self.assertNotEqual(original,runner.permanent_signature([snapshot],self.nodes,edges))
 
+class CombinedConstraintTests(unittest.TestCase):
+    def test_only_free_interiors_can_change_height(self):
+        original={(i,1):dict(index=i,version=1,position=dict(x=i,y=0,z=0),edges=[{},{}]) for i in range(5)}
+        original[(3,1)]['edges'].append({})
+        selected={(0,1),(1,1),(2,1),(3,1)};anchors={(0,1),(2,1)}
+        for moved in range(5):
+            changed=copy.deepcopy(original);changed[(moved,1)]['position']['y']=1
+            for combined in (False,True):
+                if combined and moved in (1,3):
+                    self.assertEqual([],runner.check_node_constraints(original,changed,selected,anchors,combined))
+                else:
+                    with self.assertRaises(AssertionError): runner.check_node_constraints(original,changed,selected,anchors,combined)
+    def test_tolerance_and_nonfinite_are_distinct(self):
+        original={(1,1):dict(position=dict(x=0,y=0,z=0),edges=[])}
+        changed=copy.deepcopy(original);changed[(1,1)]['position']['y']=.03
+        runner.check_node_constraints(original,changed,set(),set(),True)
+        changed[(1,1)]['position']['y']=float('nan')
+        with self.assertRaises(AssertionError): runner.check_node_constraints(original,changed,{(1,1)},set(),True)
+
+class IncidentCurveTests(unittest.TestCase):
+    def test_both_ends_and_forbidden_edits(self):
+        nodes={(i,1):dict(position=dict(x=i,y=0,z=0)) for i in (1,2)}
+        moved=copy.deepcopy(nodes);moved[(1,1)]['position']['y']=2;moved[(2,1)]['position']['y']=-3
+        edges={(9,1):dict(startNode=dict(index=1,version=1),endNode=dict(index=2,version=1),curve=[dict(x=i,y=0,z=0) for i in range(4)])}
+        edges[(10,1)]=dict(startNode=dict(index=1,version=1),endNode=dict(index=2,version=1),curve=copy.deepcopy(edges[(9,1)]['curve']))
+        selected={(10,1)}
+        result=copy.deepcopy(edges)
+        for i,p in enumerate(result[(9,1)]['curve']): p['y']=2 if i<2 else -3
+        self.assertEqual(0,runner.check_incident_curves(nodes,moved,edges,result,selected,True))
+        with self.assertRaises(AssertionError): runner.check_incident_curves(nodes,moved,edges,result,selected,False)
+        for axis,value in [('x',1),('y',1),('z',1),('y',float('nan'))]:
+            broken=copy.deepcopy(result);broken[(9,1)]['curve'][1][axis]+=value
+            with self.assertRaises(AssertionError): runner.check_incident_curves(nodes,moved,edges,broken,selected,True)
+        with self.assertRaises(AssertionError): runner.check_incident_curves(nodes,moved,edges,edges,selected,True)
+
+    def test_remote_unaffected_endpoint_needs_no_height_sample(self):
+        edge=dict(startNode=dict(index=90,version=1),endNode=dict(index=91,version=1),curve=[dict(x=i,y=0,z=0) for i in range(4)])
+        edges={(9,1):edge}
+        self.assertEqual(0,runner.check_incident_curves({}, {}, edges, edges, set(), True))
+        bad=copy.deepcopy(edges);bad[(9,1)]['curve'][1]['y']=1
+        with self.assertRaises(AssertionError):runner.check_incident_curves({}, {}, edges, bad, set(), True)
+
 class TransportTests(unittest.TestCase):
     def test_session_is_pinned_and_error_retains_request_id(self):
         class FakeClient:

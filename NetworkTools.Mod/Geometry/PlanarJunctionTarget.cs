@@ -13,7 +13,7 @@ namespace NetworkTools.Geometry {
             double strength, Point* outputNodes, PlanarCubic* outputCurves,
             Point* workNodes, PlanarCubic* workCurves, double* stations,
             out SmoothFailure failure, out int index,
-            double startRotation = 0, double endRotation = 0, double junctionHandleScale = 1, double junctionRotation = 0) {
+            double startRotation = 0, double endRotation = 0, double junctionHandleScale = 1, double junctionRotation = 0, bool stableStations = false) {
             failure = SmoothFailure.InvalidArguments;
             index = -1;
             if (nodes == null || curves == null || splits == null || outputNodes == null
@@ -35,7 +35,7 @@ namespace NetworkTools.Geometry {
                 if (!PlanarSplitTarget.Fit(nodes + start, curves + start, splits + start, end - start + 1,
                     strength, outputNodes + start, outputCurves + start, workNodes, workCurves,
                     stations, out failure, out index,
-                    start == 0 ? startRotation : 0, end == count - 1 ? endRotation : 0)) {
+                    start == 0 ? startRotation : 0, end == count - 1 ? endRotation : 0, stableStations)) {
                     if (index >= 0) index += start;
                     return false;
                 }

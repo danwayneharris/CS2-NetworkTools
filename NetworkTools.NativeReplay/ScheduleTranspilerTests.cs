@@ -6,20 +6,20 @@ using System.Text.Json;
 // Executes the research rewriter against actual installed OnUpdate call operands.
 // Does not patch or execute Unity, allocate native storage, or connect to the game.
 static class ScheduleTranspilerTests {
-    public static int Run(string bridgePath, string managedPath, string reportPath) {
+    public static int Run(string bridgePath, string managedPath, string reportPath, bool compatibility = false) {
         if (File.Exists(reportPath)) throw new IOException("Refusing to overwrite evidence");
         bridgePath = Path.GetFullPath(bridgePath);
         AppDomain.CurrentDomain.AssemblyResolve += (_, args) => {
             var name = new AssemblyName(args.Name).Name + ".dll";
-            foreach (var dir in new[] { Path.GetDirectoryName(bridgePath)!, managedPath }) {
+            foreach (var dir in new[] { Path.GetDirectoryName(bridgePath)!, Path.GetFullPath("NetworkTools.Mod/bin/Debug/net48"), managedPath }) {
                 var path = Path.Combine(dir, name);
                 if (File.Exists(path)) return Assembly.LoadFrom(path);
             }
             return null;
         };
         var bridge = Assembly.LoadFrom(bridgePath);
-        var mod = bridge.GetType("CitiesIIAgentBridge.Mod", true)!;
-        var rewrite = mod.GetMethod("GeometryTraceSchedules", BindingFlags.NonPublic | BindingFlags.Static)
+        var mod = bridge.GetType(compatibility ? "NetworkTools.Compatibility.FinishHeightCompatibility" : "CitiesIIAgentBridge.Mod", true)!;
+        var rewrite = mod.GetMethod(compatibility ? "Transpile" : "GeometryTraceSchedules", BindingFlags.NonPublic | BindingFlags.Static)
             ?? throw new InvalidOperationException("Research trace was not compiled");
         var instruction = rewrite.GetParameters()[0].ParameterType.GetGenericArguments()[0];
         var operand = instruction.GetField("operand")!;
@@ -34,7 +34,8 @@ static class ScheduleTranspilerTests {
         }
         var changed = Rewrite(calls);
         var indices = calls.Select((m, i) => i).Where(i => calls[i] != changed[i]).ToArray();
-        if (indices.Length != 8) throw new Exception($"Expected 8 replacements, got {indices.Length}");
+        int expectedCount = compatibility ? 1 : 8;
+        if (indices.Length != expectedCount) throw new Exception($"Expected {expectedCount} replacements, got {indices.Length}");
         foreach (int i in indices) {
             var before = calls[i]; var after = changed[i];
             if (after.DeclaringType != mod || before.ReturnType != after.ReturnType
@@ -47,15 +48,27 @@ static class ScheduleTranspilerTests {
             catch (Exception e) when (e.GetBaseException().Message == expected) { return; }
             throw new Exception("Missing rejection: " + expected);
         }
-        Reject(calls.Where((_, i) => i != indices[0]).ToArray(), "geometry_schedule_call_sites_changed:7");
-        Reject(calls.Append(calls[indices[0]]).ToArray(), "geometry_schedule_call_sites_changed:9");
+        Reject(calls.Where((_, i) => i != indices[0]).ToArray(), compatibility ? "Expected exactly one native finishing scheduler, got 0" : "geometry_schedule_call_sites_changed:7");
+        Reject(calls.Append(calls[indices[0]]).ToArray(), compatibility ? "Expected exactly one native finishing scheduler, got 2" : "geometry_schedule_call_sites_changed:9");
+        if (compatibility) {
+            var validate = mod.GetMethod("FingerprintsMatch", BindingFlags.NonPublic | BindingFlags.Static)!;
+            string[] hashes = { "AAEE15C4FA41C130ABAA1183840667E4FAAE531D67E8A9FA7536618EFFA2F86A", "F8C037B71D2BB4496DDAB30B79D8840F5A32F0738A1547BA5534E5B43254C9B8", "C907D1A8E74368513756FE860853DAF0B032D59DC5E30A12EA236A6469CDC2EB" };
+            if (!(bool)validate.Invoke(null, hashes)!) throw new Exception("Expected fingerprint acceptance");
+            for (int i = 0; i < hashes.Length; i++) {
+                var changedHashes = hashes.ToArray(); changedHashes[i] = "changed";
+                if ((bool)validate.Invoke(null, changedHashes)!) throw new Exception("Changed fingerprint accepted");
+            }
+            if (Environment.GetCommandLineArgs().Contains("--nt-experimental-finish-height-preparation")) throw new Exception("Unsafe test launch arguments");
+            mod.GetMethod("Install")!.Invoke(null, new object?[]{null});
+            if ((string)mod.GetProperty("Status")!.GetValue(null)! != "disabled") throw new Exception("Installed without opt-in");
+        }
         File.WriteAllText(reportPath, JsonSerializer.Serialize(new {
-            scope = "Actual research transpiler; installed native call operands; no Unity execution",
+            scope = "Actual transpiler; installed native call operands; no Unity execution", compatibility,
             gameMvid = native.Module.ModuleVersionId, bridgePath, callCount = calls.Length,
             replacements = indices.Select(i => new { native = calls[i].ToString(), replacement = changed[i].ToString() }),
             negativeTests = new[] { "missing call site rejected", "extra call site rejected" }
         }, new JsonSerializerOptions { WriteIndented = true }));
-        Console.WriteLine("PASS: 8 native scheduling signatures preserved; missing/extra sites rejected");
+        Console.WriteLine($"PASS: {expectedCount} native scheduling signatures preserved; missing/extra sites rejected; compatibility guards: {compatibility}");
         return 0;
     }
 

@@ -10,6 +10,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
         public float ArchHeight;
         public float ArchPosition;
         public float SmoothingFactor;
+        public bool CombinedSlope;
         public double JunctionStartRotation;
         public double JunctionEndRotation;
         public bool AllowInteriorJunctions;

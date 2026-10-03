@@ -58,6 +58,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
 
             Template.OnChanged += _ => InvalidatePreviewObservation();
             SmoothingFactor.OnChanged += _ => InvalidatePreviewObservation();
+            CombinedSlope.OnChanged += _ => InvalidatePreviewObservation();
             EaseInLength.OnChanged += _ => InvalidatePreviewObservation();
             EaseOutLength.OnChanged += _ => InvalidatePreviewObservation();
             ArchHeight.OnChanged += _ => InvalidatePreviewObservation();
@@ -116,6 +117,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
         protected override void OnStartRunning() {
             InvalidatePreviewObservation();
             base.OnStartRunning();
+            CombinedSlope.ResetToDefault();
 #if IS_DEBUG
             if (m_AutomationActivatePending) {
                 m_AutomationActivatePending = false;
@@ -166,6 +168,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                     ArchPosition.ResetToDefault();
                     break;
                 case ShapeTransformTemplate.CurveSmooth:
+                    CombinedSlope.ResetToDefault();
                     SmoothingFactor.ResetToDefault();
                     break;
             }

@@ -148,13 +148,28 @@ namespace NetworkTools.Systems.Tools.RoadShape {
         public string ApplyRestrictionKey => UnsupportedReleaseJunction
             ? "NetworkTools.UI.Curve.ReleaseJunctionUnsupported"
             : Phase == OperationPhase.Ready && !m_PathDataValid
-                ? "NetworkTools.UI.Shape.SelectionUnavailable" : "";
+                ? "NetworkTools.UI.Shape.SelectionUnavailable" : CombinedRestrictionKey;
+
+        private string CombinedRestrictionKey {
+            get {
+#if IS_DEBUG
+                if (!CombinedMode || m_UpdateNeeded || !m_LastShapeJob.IsCompleted || !m_SmoothResult.IsCreated) return "";
+                m_LastShapeJob.Complete();
+                if (m_SmoothResult.Value == -100 - (int)CombinedLinearProfileTransform.Failure.SplitGradeConflict)
+                    return "NetworkTools.UI.Curve.CombinedSplitConflict";
+                if (m_SmoothResult.Value <= -100) return "NetworkTools.UI.Curve.CombinedProfileInvalid";
+                if (m_SurfaceFailed) return "NetworkTools.UI.Curve.CombinedSurfaceFailed";
+#endif
+                return "";
+            }
+        }
 
         private int SmoothPreviewResult {
             get {
                 if (m_UpdateNeeded || !m_PathDataValid || !m_LastShapeJob.IsCompleted) { return 0; }
                 m_LastShapeJob.Complete();
 #if IS_DEBUG
+                if (CombinedMode && !SurfacePreviewAllowsApply()) { return 0; }
                 if (Template.Value == ShapeTransformTemplate.CurveSmooth && !JunctionSearchAllowsApply()) { return 0; }
                 if (Template.Value == ShapeTransformTemplate.SlopeLinear && !SurfacePreviewAllowsApply()) { return 0; }
 #endif

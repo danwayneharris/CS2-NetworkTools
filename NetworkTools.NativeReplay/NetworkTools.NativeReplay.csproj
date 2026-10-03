@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="obj/native-generated/WorldStages.g.cs" Condition="Exists('obj/native-generated/WorldStages.g.cs')" />
+    <Reference Include="Game"><HintPath>$(ManagedPath)/Game.dll</HintPath></Reference>
+    <Reference Include="Unity.Mathematics"><HintPath>$(ManagedPath)/Unity.Mathematics.dll</HintPath></Reference>
+    <Reference Include="Colossal.Mathematics"><HintPath>$(ManagedPath)/Colossal.Mathematics.dll</HintPath></Reference>
+    <Reference Include="Unity.Collections"><HintPath>$(ManagedPath)/Unity.Collections.dll</HintPath></Reference>
+    <Reference Include="Unity.Entities"><HintPath>$(ManagedPath)/Unity.Entities.dll</HintPath></Reference>
+    <Reference Include="UnityEngine.CoreModule"><HintPath>$(ManagedPath)/UnityEngine.CoreModule.dll</HintPath></Reference>
+  </ItemGroup>
+  <Target Name="RequireManagedPath" BeforeTargets="ResolveReferences">
+    <Error Condition="!Exists('obj/native-generated/WorldStages.g.cs')" Text="Run scripts/generate-native-world-stages.py against the verified local decompile first. Generated native source stays local." />
+    <Error Condition="!Exists('$(ManagedPath)/Game.dll')" Text="Supply -p:ManagedPath pointing to the verified installed game managed assemblies." />
+  </Target>
+</Project>

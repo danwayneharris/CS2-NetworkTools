@@ -1,0 +1,664 @@
+{
+  "schemaVersion": 1,
+  "passed": true,
+  "harnessSha256": "890A3F4312AA2E299E9BA5042F627843FFC1D05E8107701F839C210CD4D34706",
+  "manifestSha256": "3AEC6248EC6D68AEFFDF3F120D4427EC77DC9139B6D3B7BCC0279820D44496F9",
+  "runs": [
+    {
+      "id": "burst-preview-01",
+      "seconds": 1.397786699992139,
+      "exitCode": 0,
+      "stdout": "Computed 8-stage pipeline: 8 edges; within research tolerance: True\n",
+      "stderr": ""
+    },
+    {
+      "id": "burst-apply-01",
+      "seconds": 2.183833200004301,
+      "exitCode": 0,
+      "stdout": "Computed 8-stage pipeline: 5 edges; within research tolerance: True\n",
+      "stderr": ""
+    },
+    {
+      "id": "burst-control-linear-01",
+      "seconds": 1.3955321999965236,
+      "exitCode": 0,
+      "stdout": "Computed 8-stage pipeline: 7 edges; within research tolerance: True\n",
+      "stderr": ""
+    },
+    {
+      "id": "burst-held-arch-six-01",
+      "seconds": 1.4085181999980705,
+      "exitCode": 0,
+      "stdout": "Computed 8-stage pipeline: 8 edges; within research tolerance: True\n",
+      "stderr": ""
+    },
+    {
+      "id": "map-apply-01",
+      "seconds": 2.1181541999976616,
+      "exitCode": 0,
+      "stdout": "Computed 8-stage pipeline: 5 edges; within research tolerance: True\n",
+      "stderr": ""
+    }
+  ],
+  "anchorDifferences": [
+    {
+      "edge": [
+        54264,
+        1
+      ],
+      "computedMaxY": 0.0,
+      "nativeMaxY": 0.0,
+      "residualMetres": 0.0
+    },
+    {
+      "edge": [
+        54263,
+        1
+      ],
+      "computedMaxY": 0.0,
+      "nativeMaxY": 0.0,
+      "residualMetres": 0.0
+    },
+    {
+      "edge": [
+        81714,
+        1
+      ],
+      "computedMaxY": 0.0,
+      "nativeMaxY": 0.0,
+      "residualMetres": 0.0
+    },
+    {
+      "edge": [
+        54261,
+        1
+      ],
+      "computedMaxY": 0.0,
+      "nativeMaxY": 0.0,
+      "residualMetres": 0.0
+    },
+    {
+      "edge": [
+        54262,
+        1
+      ],
+      "computedMaxY": 1.844440000000077,
+      "nativeMaxY": 1.8444450000000643,
+      "residualMetres": 4.9999999873762135e-06
+    }
+  ],
+  "limits": "Captured query membership and identity-dependent native lookup; no general scheduler or lane prediction",
+  "stages": {
+    "burst-apply-01": [
+      {
+        "stage": "InitializeNodeGeometry",
+        "iteration": null,
+        "comparedScalarFields": 54,
+        "exact": true,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0,
+        "maxCurveControlPointErrorMetres": 0,
+        "maxSyncParameterError": 0
+      },
+      {
+        "stage": "CalculateEdgeGeometry",
+        "iteration": null,
+        "comparedScalarFields": 1080,
+        "exact": true,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0,
+        "maxCurveControlPointErrorMetres": 0,
+        "maxSyncParameterError": 0
+      },
+      {
+        "stage": "FlattenNodeGeometry",
+        "iteration": null,
+        "comparedScalarFields": 70,
+        "exact": true,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0,
+        "maxCurveControlPointErrorMetres": 0,
+        "maxSyncParameterError": 0
+      },
+      {
+        "stage": "FinishEdgeGeometry",
+        "iteration": null,
+        "comparedScalarFields": 290,
+        "exact": true,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0,
+        "maxCurveControlPointErrorMetres": 0,
+        "maxSyncParameterError": 0
+      },
+      {
+        "stage": "CalculateNodeGeometry",
+        "iteration": 0,
+        "comparedScalarFields": 790,
+        "exact": true,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0,
+        "maxCurveControlPointErrorMetres": 0,
+        "maxSyncParameterError": 0
+      },
+      {
+        "stage": "CalculateNodeGeometry",
+        "iteration": 1,
+        "comparedScalarFields": 790,
+        "exact": true,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0,
+        "maxCurveControlPointErrorMetres": 0,
+        "maxSyncParameterError": 0
+      },
+      {
+        "stage": "CalculateIntersectionGeometry",
+        "iteration": null,
+        "comparedScalarFields": 180,
+        "exact": true,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0,
+        "maxCurveControlPointErrorMetres": 0,
+        "maxSyncParameterError": 0
+      },
+      {
+        "stage": "CopyNodeGeometry",
+        "iteration": null,
+        "comparedScalarFields": 790,
+        "exact": true,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0,
+        "maxCurveControlPointErrorMetres": 0,
+        "maxSyncParameterError": 0
+      },
+      {
+        "stage": "UpdateNodeGeometry",
+        "iteration": null,
+        "comparedScalarFields": 54,
+        "exact": true,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0,
+        "maxCurveControlPointErrorMetres": 0,
+        "maxSyncParameterError": 0
+      }
+    ],
+    "burst-control-linear-01": [
+      {
+        "stage": "InitializeNodeGeometry",
+        "iteration": null,
+        "comparedScalarFields": 81,
+        "exact": true,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0,
+        "maxCurveControlPointErrorMetres": 0,
+        "maxSyncParameterError": 0
+      },
+      {
+        "stage": "CalculateEdgeGeometry",
+        "iteration": null,
+        "comparedScalarFields": 1512,
+        "exact": true,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0,
+        "maxCurveControlPointErrorMetres": 0,
+        "maxSyncParameterError": 0
+      },
+      {
+        "stage": "FlattenNodeGeometry",
+        "iteration": null,
+        "comparedScalarFields": 109,
+        "exact": true,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0,
+        "maxCurveControlPointErrorMetres": 0,
+        "maxSyncParameterError": 0
+      },
+      {
+        "stage": "FinishEdgeGeometry",
+        "iteration": null,
+        "comparedScalarFields": 406,
+        "exact": true,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0,
+        "maxCurveControlPointErrorMetres": 0,
+        "maxSyncParameterError": 0
+      },
+      {
+        "stage": "CalculateNodeGeometry",
+        "iteration": 0,
+        "comparedScalarFields": 1106,
+        "exact": true,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0,
+        "maxCurveControlPointErrorMetres": 0,
+        "maxSyncParameterError": 0
+      },
+      {
+        "stage": "CalculateNodeGeometry",
+        "iteration": 1,
+        "comparedScalarFields": 1106,
+        "exact": true,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0,
+        "maxCurveControlPointErrorMetres": 0,
+        "maxSyncParameterError": 0
+      },
+      {
+        "stage": "CalculateIntersectionGeometry",
+        "iteration": null,
+        "comparedScalarFields": 252,
+        "exact": true,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0,
+        "maxCurveControlPointErrorMetres": 0,
+        "maxSyncParameterError": 0
+      },
+      {
+        "stage": "CopyNodeGeometry",
+        "iteration": null,
+        "comparedScalarFields": 1106,
+        "exact": true,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0,
+        "maxCurveControlPointErrorMetres": 0,
+        "maxSyncParameterError": 0
+      },
+      {
+        "stage": "UpdateNodeGeometry",
+        "iteration": null,
+        "comparedScalarFields": 81,
+        "exact": true,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0,
+        "maxCurveControlPointErrorMetres": 0,
+        "maxSyncParameterError": 0
+      }
+    ],
+    "burst-held-arch-six-01": [
+      {
+        "stage": "InitializeNodeGeometry",
+        "iteration": null,
+        "comparedScalarFields": 99,
+        "exact": true,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0,
+        "maxCurveControlPointErrorMetres": 0,
+        "maxSyncParameterError": 0
+      },
+      {
+        "stage": "CalculateEdgeGeometry",
+        "iteration": null,
+        "comparedScalarFields": 1728,
+        "exact": false,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0.0003000000001520675,
+        "maxCurveControlPointErrorMetres": 0.00036551333774107755,
+        "maxSyncParameterError": 0
+      },
+      {
+        "stage": "FlattenNodeGeometry",
+        "iteration": null,
+        "comparedScalarFields": 127,
+        "exact": false,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0.0001399999999875945,
+        "maxCurveControlPointErrorMetres": 0,
+        "maxSyncParameterError": 0
+      },
+      {
+        "stage": "FinishEdgeGeometry",
+        "iteration": null,
+        "comparedScalarFields": 464,
+        "exact": false,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0.0003000000001520675,
+        "maxCurveControlPointErrorMetres": 0.00036551333774107755,
+        "maxSyncParameterError": 0
+      },
+      {
+        "stage": "CalculateNodeGeometry",
+        "iteration": 0,
+        "comparedScalarFields": 1264,
+        "exact": false,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0.0017000000000280124,
+        "maxCurveControlPointErrorMetres": 0.0017737248941846737,
+        "maxSyncParameterError": 4.589999999971006e-06
+      },
+      {
+        "stage": "CalculateNodeGeometry",
+        "iteration": 1,
+        "comparedScalarFields": 1264,
+        "exact": false,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0.0017000000000280124,
+        "maxCurveControlPointErrorMetres": 0.0017737248941846737,
+        "maxSyncParameterError": 4.589999999971006e-06
+      },
+      {
+        "stage": "CalculateIntersectionGeometry",
+        "iteration": null,
+        "comparedScalarFields": 288,
+        "exact": false,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0.0011000000001786248,
+        "maxCurveControlPointErrorMetres": 0.001077032961240988,
+        "maxSyncParameterError": 0
+      },
+      {
+        "stage": "CopyNodeGeometry",
+        "iteration": null,
+        "comparedScalarFields": 1264,
+        "exact": false,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0.0017000000000280124,
+        "maxCurveControlPointErrorMetres": 0.0017737248941846737,
+        "maxSyncParameterError": 4.589999999971006e-06
+      },
+      {
+        "stage": "UpdateNodeGeometry",
+        "iteration": null,
+        "comparedScalarFields": 99,
+        "exact": true,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0,
+        "maxCurveControlPointErrorMetres": 0,
+        "maxSyncParameterError": 0
+      }
+    ],
+    "burst-preview-01": [
+      {
+        "stage": "InitializeNodeGeometry",
+        "iteration": null,
+        "comparedScalarFields": 99,
+        "exact": true,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0,
+        "maxCurveControlPointErrorMetres": 0,
+        "maxSyncParameterError": 0
+      },
+      {
+        "stage": "CalculateEdgeGeometry",
+        "iteration": null,
+        "comparedScalarFields": 1728,
+        "exact": false,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0.00020000000040454324,
+        "maxCurveControlPointErrorMetres": 0.00020000000040454324,
+        "maxSyncParameterError": 0
+      },
+      {
+        "stage": "FlattenNodeGeometry",
+        "iteration": null,
+        "comparedScalarFields": 127,
+        "exact": false,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 4.999999998744897e-05,
+        "maxCurveControlPointErrorMetres": 0,
+        "maxSyncParameterError": 0
+      },
+      {
+        "stage": "FinishEdgeGeometry",
+        "iteration": null,
+        "comparedScalarFields": 464,
+        "exact": false,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0.00020000000040454324,
+        "maxCurveControlPointErrorMetres": 0.00020000000040454324,
+        "maxSyncParameterError": 0
+      },
+      {
+        "stage": "CalculateNodeGeometry",
+        "iteration": 0,
+        "comparedScalarFields": 1264,
+        "exact": true,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0,
+        "maxCurveControlPointErrorMetres": 0,
+        "maxSyncParameterError": 0
+      },
+      {
+        "stage": "CalculateNodeGeometry",
+        "iteration": 1,
+        "comparedScalarFields": 1264,
+        "exact": true,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0,
+        "maxCurveControlPointErrorMetres": 0,
+        "maxSyncParameterError": 0
+      },
+      {
+        "stage": "CalculateIntersectionGeometry",
+        "iteration": null,
+        "comparedScalarFields": 288,
+        "exact": true,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0,
+        "maxCurveControlPointErrorMetres": 0,
+        "maxSyncParameterError": 0
+      },
+      {
+        "stage": "CopyNodeGeometry",
+        "iteration": null,
+        "comparedScalarFields": 1264,
+        "exact": true,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0,
+        "maxCurveControlPointErrorMetres": 0,
+        "maxSyncParameterError": 0
+      },
+      {
+        "stage": "UpdateNodeGeometry",
+        "iteration": null,
+        "comparedScalarFields": 99,
+        "exact": true,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0,
+        "maxCurveControlPointErrorMetres": 0,
+        "maxSyncParameterError": 0
+      }
+    ],
+    "map-apply-01": [
+      {
+        "stage": "InitializeNodeGeometry",
+        "iteration": null,
+        "comparedScalarFields": 54,
+        "exact": true,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0,
+        "maxCurveControlPointErrorMetres": 0,
+        "maxSyncParameterError": 0
+      },
+      {
+        "stage": "CalculateEdgeGeometry",
+        "iteration": null,
+        "comparedScalarFields": 1080,
+        "exact": true,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0,
+        "maxCurveControlPointErrorMetres": 0,
+        "maxSyncParameterError": 0
+      },
+      {
+        "stage": "FlattenNodeGeometry",
+        "iteration": null,
+        "comparedScalarFields": 70,
+        "exact": true,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0,
+        "maxCurveControlPointErrorMetres": 0,
+        "maxSyncParameterError": 0
+      },
+      {
+        "stage": "FinishEdgeGeometry",
+        "iteration": null,
+        "comparedScalarFields": 290,
+        "exact": true,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0,
+        "maxCurveControlPointErrorMetres": 0,
+        "maxSyncParameterError": 0
+      },
+      {
+        "stage": "CalculateNodeGeometry",
+        "iteration": 0,
+        "comparedScalarFields": 790,
+        "exact": true,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0,
+        "maxCurveControlPointErrorMetres": 0,
+        "maxSyncParameterError": 0
+      },
+      {
+        "stage": "CalculateNodeGeometry",
+        "iteration": 1,
+        "comparedScalarFields": 790,
+        "exact": true,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0,
+        "maxCurveControlPointErrorMetres": 0,
+        "maxSyncParameterError": 0
+      },
+      {
+        "stage": "CalculateIntersectionGeometry",
+        "iteration": null,
+        "comparedScalarFields": 180,
+        "exact": true,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0,
+        "maxCurveControlPointErrorMetres": 0,
+        "maxSyncParameterError": 0
+      },
+      {
+        "stage": "CopyNodeGeometry",
+        "iteration": null,
+        "comparedScalarFields": 790,
+        "exact": true,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0,
+        "maxCurveControlPointErrorMetres": 0,
+        "maxSyncParameterError": 0
+      },
+      {
+        "stage": "UpdateNodeGeometry",
+        "iteration": null,
+        "comparedScalarFields": 54,
+        "exact": true,
+        "withinResearchTolerance": true,
+        "maxSpatialComponentErrorMetres": 0,
+        "maxCurveControlPointErrorMetres": 0,
+        "maxSyncParameterError": 0
+      }
+    ]
+  },
+  "negativeTests": {
+    "passed": true,
+    "tests": [
+      {
+        "name": "baseline",
+        "exitCode": 0
+      },
+      {
+        "name": "recorded-intermediates-poisoned",
+        "exitCode": 0
+      },
+      {
+        "name": "wrong-final-output",
+        "exitCode": 1
+      },
+      {
+        "name": "missing-terrain",
+        "exitCode": 2
+      },
+      {
+        "name": "corrupt-terrain",
+        "exitCode": 2
+      },
+      {
+        "name": "wrong-height-map-identity",
+        "exitCode": 2
+      },
+      {
+        "name": "small-nonspatial-sentinel-error",
+        "exitCode": 1
+      },
+      {
+        "name": "wrong-junction-output",
+        "exitCode": 1
+      },
+      {
+        "name": "small-junction-branch-marker-error",
+        "exitCode": 1
+      },
+      {
+        "name": "missing-junction-composition-pieces",
+        "exitCode": 2
+      },
+      {
+        "name": "wrong-intersection-scratch",
+        "exitCode": 1
+      },
+      {
+        "name": "wrong-published-node-bounds",
+        "exitCode": 1
+      },
+      {
+        "name": "managed-lookup-counterfactual",
+        "exitCode": 1
+      },
+      {
+        "name": "wrong-native-binary",
+        "exitCode": 2
+      },
+      {
+        "name": "wrong-execution-context",
+        "exitCode": 2
+      },
+      {
+        "name": "wrong-native-map-allocation",
+        "exitCode": 2
+      }
+    ]
+  },
+  "finalCheckpoint": {
+    "path": "C:\\Users\\danwa\\AppData\\LocalLow\\Colossal Order\\Cities Skylines II\\Saves\\76561198039943702\\CitiesIIAgentBridge-offline-geometry-research-completed-20261002-131230-4e86e526.cok",
+    "sha256": "2f23e5758a7f0deaa341cd68a350b6a557faa9122cb8857e0e712863626fa063",
+    "operation": {
+      "id": "e151fc6ef7e548958481c1de75f39256",
+      "kind": "save",
+      "status": "complete",
+      "saveName": "CitiesIIAgentBridge-offline-geometry-research-completed-20261002-131230-4e86e526"
+    },
+    "city": {
+      "cityName": "Wantagh",
+      "money": 924566,
+      "xp": 276,
+      "simulationFrame": 6541642,
+      "selectedSpeed": 0.0,
+      "date": "2026-01-06T07:06:00.2960000Z",
+      "dateMeaning": "Raw simulation DateTime; displayed game calendar may differ",
+      "controlEnabled": true,
+      "rememberControl": true,
+      "citySession": "01659fdd254142c983e75f9c4bfb625c",
+      "population": 0,
+      "populationWithMoveIn": 0,
+      "averageHappiness": 50,
+      "averageHealth": 50
+    },
+    "tracePatched": false,
+    "debugger": "detached after verifying zero suspends/breakpoints"
+  },
+  "artifacts": {
+    "C:\\Users\\danwa\\dev\\cs2-mods\\CS2-NetworkTools\\Temp\\offline-game-execution\\NetworkTools.NativeReplay\\obj\\native-generated\\WorldStages.g.cs": {
+      "sha256": "D87D2621AA83539716F2B68800B913E813A8A77FFB662792B5B04DBF424A26F0"
+    },
+    "C:\\Users\\danwa\\dev\\cs2-mods\\CS2-NetworkTools\\Temp\\offline-game-execution\\NetworkTools.NativeReplay\\obj\\native-generated\\adaptations.json": {
+      "sha256": "49567D7CBB37B462C70A2242292C5FE122569358E304872EE3BCAD9B77E93885"
+    },
+    "C:\\Users\\danwa\\dev\\cs2-mods\\CS2-NetworkTools\\Temp\\offline-game-execution\\scripts\\generate-native-world-stages.py": {
+      "sha256": "13C141E3C28C2A2640316F94A355CC5601D632CE5D1B7CCF9CFD3D2D38A8CE14"
+    },
+    "C:\\Users\\danwa\\dev\\cs2-mods\\CS2-NetworkTools\\Temp\\offline-game-execution\\NetworkTools.NativeReplay\\BurstFinishLookup.cs": {
+      "sha256": "655F3075F9739D27546AE8B9C0539E558024EFF60B57C2F3F90903FA4ED3B86B"
+    }
+  }
+}

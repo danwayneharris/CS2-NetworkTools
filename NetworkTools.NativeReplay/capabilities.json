@@ -1,0 +1,122 @@
+{
+  "schemaVersion": 2,
+  "gameSha256": "AAEE15C4FA41C130ABAA1183840667E4FAAE531D67E8A9FA7536618EFFA2F86A",
+  "capabilities": [
+    {
+      "id": "value-geometry-binary",
+      "status": "offline-executable",
+      "implementation": "Original Game.dll private methods invoked with explicit value arguments",
+      "methods": [
+        "GeometrySystem+CalculateEdgeGeometryJob.CalculateCutOffset",
+        "GeometrySystem+CalculateEdgeGeometryJob.Cut",
+        "GeometrySystem+FinishEdgeGeometryJob.StraightenMiddleHeights",
+        "GeometrySystem+FinishEdgeGeometryJob.LimitMiddleHeights"
+      ],
+      "dependencies": [
+        "Game.dll",
+        "Unity.Mathematics.dll",
+        "Colossal.Mathematics.dll"
+      ],
+      "validation": "Analytic flat and translated controls; missing/invalid inputs and wrong Game.dll hash rejected",
+      "nativeDifferential": "pending",
+      "liveChecksRetired": []
+    },
+    {
+      "id": "legacy-pairwise-flatten",
+      "status": "restricted-model-only",
+      "implementation": "Existing Python scalar reconstruction; no original native method invocation",
+      "validation": "Historical preview endpoints reproduced to approximately 0.0001 metres; iteration cap reached",
+      "unsupported": [
+        "Participant discovery",
+        "Mixed temporary/permanent branch",
+        "Retention sentinel",
+        "Complete float32 equivalence",
+        "Height-map publication",
+        "Permanent divergence"
+      ],
+      "liveChecksRetired": []
+    },
+    {
+      "id": "source-world-initialize-flatten-finish",
+      "status": "bounded-native-initialize-flatten-differential",
+      "implementation": "Hash-pinned local source generation with explicit managed storage adapters",
+      "methods": [
+        "GeometrySystem.InitializeNodeGeometryJob",
+        "GeometrySystem.FlattenNodeGeometryJob",
+        "GeometrySystem.FinishEdgeGeometryJob except terrain sampling",
+        "EdgeIterator except unused AddSorted"
+      ],
+      "validation": "40 synthetic assertions; 16 schema-2 contract cases. Instrumented preview: 11 nodes initialize/flatten and 7 height-map entries exact float32; instrumented Apply: 6 nodes and 4 map entries exact float32. Wrong output and missing identity rejected.",
+      "nativeDifferentialScope": "Separate initialize and flatten stage tests using native upstream state. Diagnostic completion barriers; this run did not exhibit the historical surface discrepancy. Not end-to-end prediction.",
+      "unsupported": [
+        "Native query discovery",
+        "Parallel scheduling equivalence",
+        "Ordinary failing anchor reproduction",
+        "Terrain",
+        "Native finishing differential",
+        "Held-out qualification"
+      ],
+      "liveChecksRetired": []
+    },
+    {
+      "id": "source-world-calculate-edge",
+      "status": "metric-validated-in-computed-pipeline",
+      "implementation": "Hash-pinned CalculateEdgeGeometryJob plus CalculateRoundaboutSize buffer helper; native binary value helpers; strict captured component fields",
+      "validation": "Strict comparison records 71/52 preview/permanent coordinate differences near 1 mm. User approved bounded centimetre-scale geometry tolerance; chained pipeline validates propagation. Seven raw capture/negative checks pass.",
+      "excludedUnusedFields": [
+        "NetGeometryData.m_EdgeCompositionArchetype",
+        "NetGeometryData.m_NodeCompositionArchetype"
+      ],
+      "unsupported": [
+        "Parallel scheduling equivalence",
+        "Explained numerical equivalence",
+        "Ordinary failing anchor reproduction",
+        "Held-out qualification"
+      ],
+      "liveChecksRetired": []
+    },
+    {
+      "id": "bounded-geometry-world",
+      "status": "validated-captured-eight-stage-native-context",
+      "supported": [
+        "Computed InitializeNodeGeometry",
+        "Computed CalculateEdgeGeometry with original EdgeIterator/cut/retention",
+        "Computed FlattenNodeGeometry and shared height map",
+        "FinishEdgeGeometry with pinned native instruction-derived lookup and captured terrain",
+        "CalculateNodeGeometry iterations 0 and 1",
+        "CalculateIntersectionGeometry scratch",
+        "CopyNodeGeometry publication",
+        "UpdateNodeGeometry bounds"
+      ],
+      "validation": "Five immutable captured transitions pass: anchor preview/permanent, simpler linear control, held-out 6m arch and independent permanent repeat. Permanent/linear stage values exact; preview max control residual 0.200 mm; arch 1.774 mm. Predicted anchor surface discrepancy 1.844440 m vs native 1.844445 m. Sixteen contract/negative checks pass.",
+      "toleranceMetres": 0.03,
+      "exactRequirements": [
+        "Entity membership",
+        "Height-map keys",
+        "Nonspatial markers"
+      ],
+      "required": [],
+      "junctionValidation": "Both iterations and publication validated in all five captures; missing buffers, wrong outputs and small discrete markers fail.",
+      "publicationValidation": "Eight-stage differential includes computed scratch and all subsequent geometry writes; native recorded outputs are comparison-only.",
+      "unsupported": [
+        "Native query discovery or parallel scheduling prediction",
+        "Arbitrary renamed entity identities",
+        "Uncaptured changed geometry, prefabs or topology",
+        "Lane generation/connectivity",
+        "Rendered mesh, retaining/quay wall or terrain-deformation systems",
+        "Unqualified game patches/CPU implementations"
+      ],
+      "liveChecksRetired": [],
+      "offlineReplacement": "Repeated execution/inspection of these captured geometry transitions; no product live suite removed",
+      "ordinaryControl": "Later untraced preview/Apply matched with a different temporary identity; permanent heights match failing traced case. Not an independently captured full-pipeline fixture.",
+      "cohort": "../NetworkTools.docs/session-notes/2026-10-02-native-qualified-cohort.json",
+      "report": "../NetworkTools.docs/offline-game-execution-results.md",
+      "nativeBurstSha256": "C907D1A8E74368513756FE860853DAF0B032D59DC5E30A12EA236A6469CDC2EB"
+    }
+  ],
+  "patchRefresh": {
+    "policy": "Changed game, dependency, runtime, capture schema or relevant prefab/asset data requires capability revalidation; historical captures remain immutable",
+    "automated": false,
+    "checklist": "../NetworkTools.docs/offline-game-execution-results.md#expansion-and-patch-refresh"
+  }
+}

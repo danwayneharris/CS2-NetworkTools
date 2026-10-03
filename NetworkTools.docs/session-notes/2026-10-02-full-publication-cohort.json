@@ -1,0 +1,899 @@
+{
+  "schemaVersion": 1,
+  "boundary": "Eight computed GeometrySystem stages; native query membership explicit; Burst-enabled context",
+  "failure": "Historical 1.844445 m reproduced live; offline permanent first diverges at Finish despite exact preceding stages/map entries",
+  "dll": {
+    "path": "C:\\Users\\danwa\\dev\\cs2-mods\\CS2-NetworkTools\\Temp\\offline-game-execution\\NetworkTools.NativeReplay\\bin\\Debug\\net8.0\\NetworkTools.NativeReplay.dll",
+    "sha256": "a4394072ad55a52aa4da69b53c72b9041f55b6b9b4d5ab60ff464aa1dfd3c819"
+  },
+  "generated": {
+    "path": "C:\\Users\\danwa\\dev\\cs2-mods\\CS2-NetworkTools\\Temp\\offline-game-execution\\NetworkTools.NativeReplay\\obj\\native-generated\\WorldStages.g.cs",
+    "sha256": "d87d2621aa83539716f2b68800b913e813a8a77ffb662792b5b04dbf424a26f0"
+  },
+  "tests": {
+    "path": "C:\\Users\\danwa\\dev\\cs2-mods\\CS2-NetworkTools\\Temp\\offline-game-execution\\artifacts\\offline-research\\full-pipeline-contract-01\\summary.json",
+    "sha256": "3ec6a13b29244c6afb4c469f8b786fe83a3f2948f811d3a8bf182dc2f4696e44"
+  },
+  "nativeComparison": {
+    "path": "C:\\Users\\danwa\\dev\\cs2-mods\\CS2-NetworkTools\\Temp\\offline-game-execution\\artifacts\\offline-research\\burst-apply-01\\comparison.json",
+    "sha256": "15396fba1f4517cbae2b9e2a5753725967f0cf6b141493475ba962ac295420b4"
+  },
+  "fixtures": [
+    {
+      "report": {
+        "path": "C:\\Users\\danwa\\dev\\cs2-mods\\CS2-NetworkTools\\Temp\\offline-game-execution\\artifacts\\offline-research\\burst-preview-01\\pipeline-full-01.json",
+        "sha256": "8a46016e66169565e784335bef1d92779686c024b33c2ea46352025ab84f0975"
+      },
+      "trace": {
+        "path": "C:\\Users\\danwa\\dev\\cs2-mods\\cities2-agent-bridge-ndc\\artifacts\\offline-geometry-capture\\artifacts\\schedule-live\\burst-preview-01-completed.json",
+        "sha256": "03b7c27c09cc600806b71eaacbaea19da795018f884329f488fcac360b11925a"
+      },
+      "passed": true,
+      "stages": [
+        {
+          "stage": "InitializeNodeGeometry",
+          "iteration": null,
+          "comparedScalarFields": 99,
+          "exact": true,
+          "withinResearchTolerance": true,
+          "maxSpatialComponentErrorMetres": 0,
+          "maxCurveControlPointErrorMetres": 0,
+          "maxSyncParameterError": 0
+        },
+        {
+          "stage": "CalculateEdgeGeometry",
+          "iteration": null,
+          "comparedScalarFields": 1728,
+          "exact": false,
+          "withinResearchTolerance": true,
+          "maxSpatialComponentErrorMetres": 0.00020000000040454324,
+          "maxCurveControlPointErrorMetres": 0.00020000000040454324,
+          "maxSyncParameterError": 0
+        },
+        {
+          "stage": "FlattenNodeGeometry",
+          "iteration": null,
+          "comparedScalarFields": 127,
+          "exact": false,
+          "withinResearchTolerance": true,
+          "maxSpatialComponentErrorMetres": 4.999999998744897e-05,
+          "maxCurveControlPointErrorMetres": 0,
+          "maxSyncParameterError": 0
+        },
+        {
+          "stage": "FinishEdgeGeometry",
+          "iteration": null,
+          "comparedScalarFields": 464,
+          "exact": false,
+          "withinResearchTolerance": true,
+          "maxSpatialComponentErrorMetres": 0.00020000000040454324,
+          "maxCurveControlPointErrorMetres": 0.00020000000040454324,
+          "maxSyncParameterError": 0
+        },
+        {
+          "stage": "CalculateNodeGeometry",
+          "iteration": 0,
+          "comparedScalarFields": 1264,
+          "exact": true,
+          "withinResearchTolerance": true,
+          "maxSpatialComponentErrorMetres": 0,
+          "maxCurveControlPointErrorMetres": 0,
+          "maxSyncParameterError": 0
+        },
+        {
+          "stage": "CalculateNodeGeometry",
+          "iteration": 1,
+          "comparedScalarFields": 1264,
+          "exact": true,
+          "withinResearchTolerance": true,
+          "maxSpatialComponentErrorMetres": 0,
+          "maxCurveControlPointErrorMetres": 0,
+          "maxSyncParameterError": 0
+        },
+        {
+          "stage": "CalculateIntersectionGeometry",
+          "iteration": null,
+          "comparedScalarFields": 288,
+          "exact": true,
+          "withinResearchTolerance": true,
+          "maxSpatialComponentErrorMetres": 0,
+          "maxCurveControlPointErrorMetres": 0,
+          "maxSyncParameterError": 0
+        },
+        {
+          "stage": "CopyNodeGeometry",
+          "iteration": null,
+          "comparedScalarFields": 1264,
+          "exact": true,
+          "withinResearchTolerance": true,
+          "maxSpatialComponentErrorMetres": 0,
+          "maxCurveControlPointErrorMetres": 0,
+          "maxSyncParameterError": 0
+        },
+        {
+          "stage": "UpdateNodeGeometry",
+          "iteration": null,
+          "comparedScalarFields": 99,
+          "exact": true,
+          "withinResearchTolerance": true,
+          "maxSpatialComponentErrorMetres": 0,
+          "maxCurveControlPointErrorMetres": 0,
+          "maxSyncParameterError": 0
+        }
+      ],
+      "captures": [
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\eb63c9ce82bd4457ba2368899ac80c0d.json",
+          "sha256": "BCBCF4D67FA5EEDB2CCD0CB623068F3E160FA21DA9F0C8186B90F337FB891DAA"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\7d027efb59ee47d7a5c9dc6959a4cfac.json",
+          "sha256": "A9493C3BFC639664796CADCDA5FD3062BD064B22B22EEE91B317C11EF6E4A246"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\bf8baf0f2ae84fca93da63fc7d79b6f3.json",
+          "sha256": "3A1CA4D62CFD1E187EEC18C308AA42283D901527FE3CD53C71192A7DE28E030D"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\7580105976ef4542afb0fa3f56315dba.json",
+          "sha256": "F3E92EC493079DF93F9C0662DA6570F2BC72E5FF63C2582D3FC0BB60DEF17EBF"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\d51a31857c4c41fb93f0d040efd3b082.json",
+          "sha256": "BD7369AF7773362B3FC8DC747BE246128C01270FCA940C37C4A001D335E27A3C"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\ac82f10e67524493b69a4d543fd1a74e.json",
+          "sha256": "31716C47F94A30AD238C2F8E044DDF73372CF2A6B6725601C30036CFF7F27474"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\c7d412f63a5440ceb26cea0356fc810f.json",
+          "sha256": "C8F62010EC5BFA6563E1D7C014DE40AD92F8DE1C50AF366DA76B3A0E6CF1B86A"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\a74d101ac87742e6b873f4cc3783f48c.json",
+          "sha256": "A1E1177187A75FA59BF7723C0026C52AD6C2BD81ED42895FA60462C8632C3B7F"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\9c1cbec2e8144284b05fe2bc0d2652c0.json",
+          "sha256": "A4E67B093B640793B8FC5483BAFE60FA4B5F08BEB83EA1FC6347AD60F5100225"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\ec05d68b6b134399b51f2caa2cd37833.json",
+          "sha256": "73EB706BED93951D108B648D370BD7EEFAB43390686A22AE42F973B7DC4C9D98"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\6643c77f68fc4cc490361d145c2441ab.json",
+          "sha256": "C2396012BE5069784D87BE094CD47120ED93900A285F3DBA175DD28D2D0CB83A"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\71a8e1c6b39248989836d37ae73b6979.json",
+          "sha256": "BDD3CE5CD103043DCBB8CAA77D36924DAC73050A7B266222F3680B6E39456953"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\99d76a9e764843039a4bf5b7e9a82940.json",
+          "sha256": "088F1BF09CCC526B7F397B02963F62D451B7FFA74DE8514D08DA68777EF6CD79"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\3c2bb59f1563406a8ba7938103b848a5.json",
+          "sha256": "A9934B3E8D4943DB054C62E93F31C762A9A3B962369D2081BD2609919C58F03B"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\c8043809922549b7894def4a273e02e4.json",
+          "sha256": "F4FB9956EC5F310AA1080921CE7CABFB7B462580D0B240F4A21C4B26F9C8EE38"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\8c06893455454fbfb6d881c033b2ba2a.json",
+          "sha256": "BABBA414753050C4A855071BF6E3D7ACD4F97D570432AEDD2138785D33BED9C1"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\b53842d720b54a8b8aed554c9e17f8c2.json",
+          "sha256": "AB8C85CC19B6C6E759024861BAA59746564A1EC275B8A1194E31396FE1A76AAF"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\74827d6e11b24f64bf4355429c36b404.json",
+          "sha256": "BCD02D269D4968C2D04AE5D07B382CABC9D8B125C61D61FF88D5CA905E41A79A"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\494f50d155da4b42a9c89a2621382a7d.json",
+          "sha256": "9B4740DE04C295587D7339F5C8192D945BA976EE62780AB795D90AED0C86A370"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\0b18b159788b49bfb94de1f842090709.json",
+          "sha256": "40F68B0E58637096C442A31DC85012576B8967C462866A625F4DE668678D2CAC"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\6d83f49e085746d6b16e75b5cf0f4153.json",
+          "sha256": "3CD3F74958AEFB4187DC3C8E9A9F6107FB989900613A3741A6FA9353683D32EE"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\929b29e54fc04200967da22650976b7e.json",
+          "sha256": "BE5061C84C3A645371B2CB523BBB0A07C8863579514786A54A1B3D2BD73EE7DF"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\47e1dbf828424d6d889d4cbb0fdb1aeb.json",
+          "sha256": "B4D3FE5434F0E8E1BF258A202B1F752994404CF1968B46BE7B980D003BA010B4"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\c66fef76217641b5961a064a939e73f6.json",
+          "sha256": "B10EAA997E29392B9C87DABE9448B0225636DB8E0BDF644E3257F7563D9D1935"
+        }
+      ]
+    },
+    {
+      "report": {
+        "path": "C:\\Users\\danwa\\dev\\cs2-mods\\CS2-NetworkTools\\Temp\\offline-game-execution\\artifacts\\offline-research\\burst-apply-01\\pipeline-full-01.json",
+        "sha256": "bdef53c0c5201268d512e49ed50075e36adf82f853bca944eaed46888c75ca47"
+      },
+      "trace": {
+        "path": "C:\\Users\\danwa\\dev\\cs2-mods\\CS2-NetworkTools\\Temp\\offline-game-execution\\artifacts\\offline-research\\burst-apply-01\\trace-completed.json",
+        "sha256": "1199a376f01ee2d08278a518e9f1a6d2a53873250078c8caa1cad204cbb87760"
+      },
+      "passed": false,
+      "stages": [
+        {
+          "stage": "InitializeNodeGeometry",
+          "iteration": null,
+          "comparedScalarFields": 54,
+          "exact": true,
+          "withinResearchTolerance": true,
+          "maxSpatialComponentErrorMetres": 0,
+          "maxCurveControlPointErrorMetres": 0,
+          "maxSyncParameterError": 0
+        },
+        {
+          "stage": "CalculateEdgeGeometry",
+          "iteration": null,
+          "comparedScalarFields": 1080,
+          "exact": true,
+          "withinResearchTolerance": true,
+          "maxSpatialComponentErrorMetres": 0,
+          "maxCurveControlPointErrorMetres": 0,
+          "maxSyncParameterError": 0
+        },
+        {
+          "stage": "FlattenNodeGeometry",
+          "iteration": null,
+          "comparedScalarFields": 70,
+          "exact": true,
+          "withinResearchTolerance": true,
+          "maxSpatialComponentErrorMetres": 0,
+          "maxCurveControlPointErrorMetres": 0,
+          "maxSyncParameterError": 0
+        },
+        {
+          "stage": "FinishEdgeGeometry",
+          "iteration": null,
+          "comparedScalarFields": 290,
+          "exact": false,
+          "withinResearchTolerance": false,
+          "maxSpatialComponentErrorMetres": 1.844440000000077,
+          "maxCurveControlPointErrorMetres": 1.844440000000077,
+          "maxSyncParameterError": 0
+        },
+        {
+          "stage": "CalculateNodeGeometry",
+          "iteration": 0,
+          "comparedScalarFields": 790,
+          "exact": false,
+          "withinResearchTolerance": false,
+          "maxSpatialComponentErrorMetres": 1.844440000000077,
+          "maxCurveControlPointErrorMetres": 1.844440000000077,
+          "maxSyncParameterError": 0
+        },
+        {
+          "stage": "CalculateNodeGeometry",
+          "iteration": 1,
+          "comparedScalarFields": 790,
+          "exact": false,
+          "withinResearchTolerance": false,
+          "maxSpatialComponentErrorMetres": 1.844440000000077,
+          "maxCurveControlPointErrorMetres": 1.844440000000077,
+          "maxSyncParameterError": 0
+        },
+        {
+          "stage": "CalculateIntersectionGeometry",
+          "iteration": null,
+          "comparedScalarFields": 180,
+          "exact": false,
+          "withinResearchTolerance": false,
+          "maxSpatialComponentErrorMetres": 1.8443999999999505,
+          "maxCurveControlPointErrorMetres": 1.8443999999999505,
+          "maxSyncParameterError": 0
+        },
+        {
+          "stage": "CopyNodeGeometry",
+          "iteration": null,
+          "comparedScalarFields": 790,
+          "exact": false,
+          "withinResearchTolerance": false,
+          "maxSpatialComponentErrorMetres": 1.844440000000077,
+          "maxCurveControlPointErrorMetres": 1.844440000000077,
+          "maxSyncParameterError": 0
+        },
+        {
+          "stage": "UpdateNodeGeometry",
+          "iteration": null,
+          "comparedScalarFields": 54,
+          "exact": false,
+          "withinResearchTolerance": false,
+          "maxSpatialComponentErrorMetres": 1.1833500000000186,
+          "maxCurveControlPointErrorMetres": 0,
+          "maxSyncParameterError": 0
+        }
+      ],
+      "captures": [
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\72af06060a4c4dc3abda5d4fdf644170.json",
+          "sha256": "7F25C746054C5793DFC58C51CDBBC5203CF79FA0A4387F0F6024B4ACA59602F7"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\221da13dc5254d099eb7812af41f9f0b.json",
+          "sha256": "2B18C695D5848399A2FD6EFB2C78595285A1A6B774AD31B8395477018F5371BB"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\665b1f8ed2794e42995f82ed08282aa8.json",
+          "sha256": "A32BF5164F72F1641F1FBEFA196C839C196ADFB8A36112B5D121BC5473016560"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\9c2dc819bf624823a9fd7f22c592373c.json",
+          "sha256": "5D483B5A1AB0DAB864958444CCBB51909CA40FD5582675674976D8852C2E27DD"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\db6a6a8742b1437db6f55147798bd0f6.json",
+          "sha256": "4D8344096CCD48032CD7A7E79AF72F3D09E6DF1308698D03C0D5A321033CCFD1"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\02ab0136c8a3447cb4085bb39e932fcf.json",
+          "sha256": "B75CA5F9DE74AFC5BDCABD4B6FC5D07A7489E7E3389EAF5C876F632A0C1AE2BB"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\b19c247f420c479d95bd97929e252fe4.json",
+          "sha256": "41D113B458DFC960431C186B56FAA739895D60D887689B58835A60A6ABF67260"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\734d0dfe285142059edde5f33807f57b.json",
+          "sha256": "AD9B2E7B371E07389239B4DCC9DD49E0FB4A56859AA3B19A3DD3A00444AF026E"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\7c4d0d6b05b84e9e9ca80b6e615f2397.json",
+          "sha256": "B562CD7C36C20302686BA3DCCD9285CAA1AF80EC56E75762A71989CF89DF8888"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\44d974c1e3424d169b9c95e51471ad7b.json",
+          "sha256": "586811AE311471DCB5BC2544C5CACE48038B6E702E15E7C04EA7636151A582C0"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\14cb9b1fba044a1eb181633175b2069b.json",
+          "sha256": "1C2279C44654A9DAD218263210B2E80AFC06F8943E958BEC1DD1087BFCF48EAD"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\09d6e3ea974a4bc8b0927facb719ed6b.json",
+          "sha256": "6D91152617996E125C36A37BB5FE39DD59C0686E982944398FB27B97B7182C66"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\aa5079b4704c4cba85e1c3b8fb63287a.json",
+          "sha256": "95BB9EBF8F1C1D5E5025A51398506FB0D9E6E7445941E60C6078E1D47606E7B6"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\8225230d15834678898d16ab9c0f7c01.json",
+          "sha256": "18B0C9FD862D3D85F74B4398FE3922391EF38A0829121615FFC03EFC316FD7FF"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\42889d9270f34e50996aa280edbdd519.json",
+          "sha256": "9B13734A43F053447D8561E9479AF96C91E0BA7AFB41949144D4C356F96D8426"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\ab54626d89c648cebd0cfee9dde29f8a.json",
+          "sha256": "C519B40E47D16B3C117E6F6F265266E270056469CAE1B70DB1458693085164E7"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\0538c4975bca4dcd9afaf292e6ccbab1.json",
+          "sha256": "253ED459DE178CD6C83A9F6A952ED8538F8852E224BB5E4575B4C203B943880A"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\49424ebf7c09486daeeed50f5cff346c.json",
+          "sha256": "94066795B9BB2F5DF01513358E58320FBA1D106838A975A6EFCCEAD121669150"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\f256a951ef1c4ab1a733abc242198abe.json",
+          "sha256": "F3BEB39CDACCD1BC2BD41BE0D40698988B39C4534891AC932EDFCD4DF6023578"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\4db1d4cf22ef47668e205a799beca189.json",
+          "sha256": "459E2EB8F0B3A6A85B3A81950D12646533940503A21D9E445A00227ABE465CC6"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\99621c7af12045a9b1bd424c703ca6ac.json",
+          "sha256": "3CFDD1633308EE0411839B6E9C26DAF4D03084A5BCE70ED4F30C319E6B9AF568"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\fa869d0caf1d4ea9bdd234457963d655.json",
+          "sha256": "D4E2A7BFF5883553E585C20FB9B52802B0D6150ECAF2A3537D30920D956BCA83"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\7f4f123c650645908b91d1527b039d9b.json",
+          "sha256": "FAA70D9D61B586184E0D13368AEB1FEE24851EA9E5CD73261C4CA27E3256DD39"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\28fd7566c9df461cbc46dae7a6849d95.json",
+          "sha256": "78F29E16F91F074D744E9DBA0F7AD164BC39C5A8018CF2F9052DD69C278040AD"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\78747ee9936446b1a0b7afcbabab0173.json",
+          "sha256": "7239AA8BE532D1C35DD537CC5EE8F482159543E9AA081F53423C7FE72D5C8A29"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\3a94804e01ca44169fc6a427d7239451.json",
+          "sha256": "80EC6856FC8AC99A0D7F190276FE34618EB1E7FB17442066AF3BB5C5FF61848F"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\a1871195c4274afab609703da79f236d.json",
+          "sha256": "E1CC459179DAEDCFC169031C07E2E64C2171D2AC2F33220563B1F7D5E4193CA9"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\7584ef68010841e9a66739cf0aa44f88.json",
+          "sha256": "9A44A0077186FA6F4DCD7DA1B4FB776654734765E2636521F8E2F7D8E425F057"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\e05f81c92ec14185b5f0a8a2700a4851.json",
+          "sha256": "F76566416C4472D32664391805516B9338C2ABDBD520A5122E06B53F70948FC8"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\16197a8736664511ae335d2a149984b8.json",
+          "sha256": "66A367572B96A06C886AA76A544EA414F34409A235EA95EE73DFDE999A9A7FB0"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\d5dd089847e84f4bbbe133782b07f4a2.json",
+          "sha256": "E2BB06C23C2C53A35490EED16E14705D19CFF3DDA4C55274D527B5C7E6D64D9F"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\3ea8b9b0615441a7a18ca8e4ee5a580e.json",
+          "sha256": "DD2A5390937F447D01E8A8DD0A8E9A4A27B234FA09CD640B5572B05801C90568"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\0f63e918207f4152945c1dccae21ffd4.json",
+          "sha256": "DF3E44ED3C7499B0470BF275273BA419368937C2F67BBD0ECF42E7AD73D9F945"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\607f6d2094a046fcb61707441a957172.json",
+          "sha256": "EA0F55140B6BBFF6AFFEE956CC70E9D9855EE35BD48BAD4828C71002AC1FA9F0"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\154a736658494960a173c4a51ec14148.json",
+          "sha256": "C76653D393C3A9A2B3706FE621806C198F2B5233B03C67222ED1020DF4129C4D"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\8912f1bfd1594093b6d2a834623d7b9e.json",
+          "sha256": "9CCC1469289F09924E9FA5C6D56AE3FA4AB2D43E80A0C0200FCE2FB474790D5B"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\0ebaa553665044fc96588628a21526a9.json",
+          "sha256": "3B17D1CC5A764C3F2293C5A9FE50E65DFD70F2D2875A234DB75776565653C84F"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\db5a01cd8de04fbeb0ab708ba96ebf42.json",
+          "sha256": "7725CB00219660BB2EB1A92B2CF8F306DAA6DE552EFD93B43440069D329C352D"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\ed94563523de42d8a44b44b3477559bd.json",
+          "sha256": "730AA567EAFF0D43912207B92FD1EB38DE16C113ACD3F4C68AF995FB72234FBB"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\c0549e756d6a456f824700232311624e.json",
+          "sha256": "6EBE3D836101E4411386B33421A82A7ECAA043AB44BC5925ED7C14DFB2937F37"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\2b58f6d1f84348a885e134b79aeaebb5.json",
+          "sha256": "0BE63BC1C101B8E0EC0F9923D39CC3D665B41C450DDF41E26CCC315258D5E456"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\6830ec4eb9cf42d29a1237c9e808357a.json",
+          "sha256": "C603A0823722D88384F259CBFC3E5B76F3121AAA59C7CC6F959532FA0B8F5BCB"
+        }
+      ]
+    },
+    {
+      "report": {
+        "path": "C:\\Users\\danwa\\dev\\cs2-mods\\CS2-NetworkTools\\Temp\\offline-game-execution\\artifacts\\offline-research\\burst-control-linear-01\\pipeline-full-01.json",
+        "sha256": "2687d29aa23dcee6008dcc723c794de671d88812345885fb6cd3acfd26a3e68e"
+      },
+      "trace": {
+        "path": "C:\\Users\\danwa\\dev\\cs2-mods\\CS2-NetworkTools\\Temp\\offline-game-execution\\artifacts\\offline-research\\burst-control-linear-01\\trace-completed.json",
+        "sha256": "660891d74c73f08c66344c41a9805eb212f75d49c75d3cd3a8b326ee801de4c6"
+      },
+      "passed": false,
+      "stages": [
+        {
+          "stage": "InitializeNodeGeometry",
+          "iteration": null,
+          "comparedScalarFields": 81,
+          "exact": true,
+          "withinResearchTolerance": true,
+          "maxSpatialComponentErrorMetres": 0,
+          "maxCurveControlPointErrorMetres": 0,
+          "maxSyncParameterError": 0
+        },
+        {
+          "stage": "CalculateEdgeGeometry",
+          "iteration": null,
+          "comparedScalarFields": 1512,
+          "exact": true,
+          "withinResearchTolerance": true,
+          "maxSpatialComponentErrorMetres": 0,
+          "maxCurveControlPointErrorMetres": 0,
+          "maxSyncParameterError": 0
+        },
+        {
+          "stage": "FlattenNodeGeometry",
+          "iteration": null,
+          "comparedScalarFields": 109,
+          "exact": true,
+          "withinResearchTolerance": true,
+          "maxSpatialComponentErrorMetres": 0,
+          "maxCurveControlPointErrorMetres": 0,
+          "maxSyncParameterError": 0
+        },
+        {
+          "stage": "FinishEdgeGeometry",
+          "iteration": null,
+          "comparedScalarFields": 406,
+          "exact": false,
+          "withinResearchTolerance": false,
+          "maxSpatialComponentErrorMetres": 2.955469999999991,
+          "maxCurveControlPointErrorMetres": 2.955469999999991,
+          "maxSyncParameterError": 0
+        },
+        {
+          "stage": "CalculateNodeGeometry",
+          "iteration": 0,
+          "comparedScalarFields": 1106,
+          "exact": false,
+          "withinResearchTolerance": false,
+          "maxSpatialComponentErrorMetres": 3.3904793,
+          "maxCurveControlPointErrorMetres": 2.955469999999991,
+          "maxSyncParameterError": 0
+        },
+        {
+          "stage": "CalculateNodeGeometry",
+          "iteration": 1,
+          "comparedScalarFields": 1106,
+          "exact": false,
+          "withinResearchTolerance": false,
+          "maxSpatialComponentErrorMetres": 3.3904793,
+          "maxCurveControlPointErrorMetres": 2.955469999999991,
+          "maxSyncParameterError": 0
+        },
+        {
+          "stage": "CalculateIntersectionGeometry",
+          "iteration": null,
+          "comparedScalarFields": 252,
+          "exact": false,
+          "withinResearchTolerance": false,
+          "maxSpatialComponentErrorMetres": 2.9554600000000164,
+          "maxCurveControlPointErrorMetres": 2.9554600000000164,
+          "maxSyncParameterError": 0
+        },
+        {
+          "stage": "CopyNodeGeometry",
+          "iteration": null,
+          "comparedScalarFields": 1106,
+          "exact": false,
+          "withinResearchTolerance": false,
+          "maxSpatialComponentErrorMetres": 3.3904793,
+          "maxCurveControlPointErrorMetres": 2.955469999999991,
+          "maxSyncParameterError": 0
+        },
+        {
+          "stage": "UpdateNodeGeometry",
+          "iteration": null,
+          "comparedScalarFields": 81,
+          "exact": false,
+          "withinResearchTolerance": false,
+          "maxSpatialComponentErrorMetres": 2.754000000000019,
+          "maxCurveControlPointErrorMetres": 0,
+          "maxSyncParameterError": 0
+        }
+      ],
+      "captures": [
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\1e63e9c815be4b02b69a37e84fcf40cb.json",
+          "sha256": "11740F14B735C35D10C9C6D55D0AAB221ABF8FADEFD9475B9B8CA4A8EC91C5DA"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\820946dfe0e14ccabe18e359340dd820.json",
+          "sha256": "0ADD460FDA8AAD29BFD12B3FC0C1BC464937FAF50C2B58617A974F9D06AA8E3A"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\43875c8df77c4633a7be6daef706dc6b.json",
+          "sha256": "2E86B7A02A6693C35187B6AE9042090FCB1E3BDE9F464165C594C54D8A4532F7"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\d3a22d232463471a818357e66ffedd0a.json",
+          "sha256": "B2EF7C2DA447BD96BF88041E688FF17EA15209E70CDC56E1C60558956EC370E6"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\59382447f76746bdbd7cff5dd7473965.json",
+          "sha256": "E026851439E2ED4FF2FE3847F60E4DF8F752A747CFA2610BDAC2D1FE525F3647"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\d20a45f70eac45f59313cd752f252bdd.json",
+          "sha256": "59667D7E82D97523805527C744894432EEE43B7BDF1D9DB602B6200E6D08F4C5"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\4b3404c3cdaf4962b667cc45c7d82a0d.json",
+          "sha256": "61BBD6E00C8158A53693D4A3A338D75F1A2B7DF9898DC6EE7B835B3721311543"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\ff498a4a74df4b228acf62c4a2ad6c7c.json",
+          "sha256": "F39432484EC1501C9A9598A179B1069F2164FAAC36555D036FD2B9B830E3CCF6"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\f1e8b1a051fb405fb063955f126db9e0.json",
+          "sha256": "F930503F902A935FAE1B24686A137BDA3EB7D5AECC3698DF2C17DEC6E386A98D"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\6a4bc1f56c95467ca461f3bc3714de2d.json",
+          "sha256": "BF86B043648F8D3D3BFD564535BC2F33B7870F9DA30A564B5B31F002154161CB"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\fa7751cc570b441984c1a927069ede17.json",
+          "sha256": "86D5C42A7F1319898A48EF47FF67EBFA118B4D12190913D37BC10A32A930F2EA"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\1bfa066293194eeabcf2e54fda459194.json",
+          "sha256": "B3DB75C14729D17535C7BD7BAE941F7C653A2975B84A82EF327E0FB6F460D064"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\9246e16809f74309b048408ccc40bafc.json",
+          "sha256": "BCE622CB67BA7CF638FF990E7C1F5E9EB1CA61814507204300B3E0D004EF5D09"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\31aaa75dec2b47cd828b4ecdf0d9071f.json",
+          "sha256": "22F520E262AF9FFE48324C6E969EB3024B2B888E3B43A6650B51C83414BDF08A"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\bc56850625e140f384aa1faa02245573.json",
+          "sha256": "0280F56AAC85E551F20FFF7C1FC06821484E8EE5BAB824D85A14F589C6324EEA"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\0d21f2633876410b9e04e9dce55256f9.json",
+          "sha256": "7CD7329FC54160BE20A248E2BFAC7D5D6E151C9296C7578FD2317A397BD8D309"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\039e83905476475fa60d48acc135fb90.json",
+          "sha256": "E5A7A849F9F951F0BCBC8462D850B7682E447CB29221ADB2CFF3CFBD90E4842C"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\166f4809c26242bb98f787d25782cf4e.json",
+          "sha256": "2DDC9A1DC26FD0E729C15D606BF4B0BA1BC8829C88152C23AB951DD474AAA20C"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\b9da0e8320114fb49aec9194ee0664b7.json",
+          "sha256": "811BD190179F0CEDB67532B357EF9D6B8BF39A074D4D617ABECF9059E13A4939"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\d024b692913a4f09b324a865caca943d.json",
+          "sha256": "19E4F13A1317C1440D07F6649DD5CCAA538528FF3352E7097406D3540E4B30F0"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\70c3c850d8dc414fa991b03a41b9424d.json",
+          "sha256": "669C828FAADA877640D732ACAC98977AABA6E80EF4120E198DC3812C96B54669"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\d18bcdf60e26450780d8f63ede58db74.json",
+          "sha256": "BF7FFCCACD7BD937802808F872FE63A976FB23D9AE87E8E1BB11E1BEDBD39747"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\bc99392ff43c43788501aaf2a826da24.json",
+          "sha256": "58E89811E4B84E58F876FFC8E5B146B18744125193B43B31FB9CA7EFE584869E"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\ddb575f0bf8c41eeba9c0c08aadc1c12.json",
+          "sha256": "08C21E6B26F92DA4FCD6331C9BCF3BBDBCDED2BB3435D3E1F5D23851FBAAB5AD"
+        }
+      ]
+    },
+    {
+      "report": {
+        "path": "C:\\Users\\danwa\\dev\\cs2-mods\\CS2-NetworkTools\\Temp\\offline-game-execution\\artifacts\\offline-research\\burst-held-arch-six-01\\pipeline-full-01.json",
+        "sha256": "732f6a6e088dd0ea90ad3e3a5565454c2f7300f9629432f79edcad485a0c4886"
+      },
+      "trace": {
+        "path": "C:\\Users\\danwa\\dev\\cs2-mods\\CS2-NetworkTools\\Temp\\offline-game-execution\\artifacts\\offline-research\\burst-held-arch-six-01\\trace-completed.json",
+        "sha256": "a53c5b828e71027271ec7d5ad0ff66a07de934543c67fa39eccc012996f35a5a"
+      },
+      "passed": false,
+      "stages": [
+        {
+          "stage": "InitializeNodeGeometry",
+          "iteration": null,
+          "comparedScalarFields": 99,
+          "exact": true,
+          "withinResearchTolerance": true,
+          "maxSpatialComponentErrorMetres": 0,
+          "maxCurveControlPointErrorMetres": 0,
+          "maxSyncParameterError": 0
+        },
+        {
+          "stage": "CalculateEdgeGeometry",
+          "iteration": null,
+          "comparedScalarFields": 1728,
+          "exact": false,
+          "withinResearchTolerance": true,
+          "maxSpatialComponentErrorMetres": 0.0003000000001520675,
+          "maxCurveControlPointErrorMetres": 0.00036551333774107755,
+          "maxSyncParameterError": 0
+        },
+        {
+          "stage": "FlattenNodeGeometry",
+          "iteration": null,
+          "comparedScalarFields": 127,
+          "exact": false,
+          "withinResearchTolerance": true,
+          "maxSpatialComponentErrorMetres": 0.0001399999999875945,
+          "maxCurveControlPointErrorMetres": 0,
+          "maxSyncParameterError": 0
+        },
+        {
+          "stage": "FinishEdgeGeometry",
+          "iteration": null,
+          "comparedScalarFields": 464,
+          "exact": false,
+          "withinResearchTolerance": false,
+          "maxSpatialComponentErrorMetres": 0.2416600000000244,
+          "maxCurveControlPointErrorMetres": 0.2416600000000244,
+          "maxSyncParameterError": 0
+        },
+        {
+          "stage": "CalculateNodeGeometry",
+          "iteration": 0,
+          "comparedScalarFields": 1264,
+          "exact": false,
+          "withinResearchTolerance": false,
+          "maxSpatialComponentErrorMetres": 0.2420399999999745,
+          "maxCurveControlPointErrorMetres": 0.24204183853207653,
+          "maxSyncParameterError": 4.589999999971006e-06
+        },
+        {
+          "stage": "CalculateNodeGeometry",
+          "iteration": 1,
+          "comparedScalarFields": 1264,
+          "exact": false,
+          "withinResearchTolerance": false,
+          "maxSpatialComponentErrorMetres": 0.2420399999999745,
+          "maxCurveControlPointErrorMetres": 0.24204183853207653,
+          "maxSyncParameterError": 4.589999999971006e-06
+        },
+        {
+          "stage": "CalculateIntersectionGeometry",
+          "iteration": null,
+          "comparedScalarFields": 288,
+          "exact": false,
+          "withinResearchTolerance": false,
+          "maxSpatialComponentErrorMetres": 0.24192999999991116,
+          "maxCurveControlPointErrorMetres": 0.24193107468855,
+          "maxSyncParameterError": 0
+        },
+        {
+          "stage": "CopyNodeGeometry",
+          "iteration": null,
+          "comparedScalarFields": 1264,
+          "exact": false,
+          "withinResearchTolerance": false,
+          "maxSpatialComponentErrorMetres": 0.2420399999999745,
+          "maxCurveControlPointErrorMetres": 0.24204183853207653,
+          "maxSyncParameterError": 4.589999999971006e-06
+        },
+        {
+          "stage": "UpdateNodeGeometry",
+          "iteration": null,
+          "comparedScalarFields": 99,
+          "exact": true,
+          "withinResearchTolerance": true,
+          "maxSpatialComponentErrorMetres": 0,
+          "maxCurveControlPointErrorMetres": 0,
+          "maxSyncParameterError": 0
+        }
+      ],
+      "captures": [
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\1c5a1b34eee54d868d91308989757b3c.json",
+          "sha256": "0D6043F6F3B973521D69FA4F10E24F3302DABB07B6EE6CB964305CA8D5ED5F18"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\a7d3c18faf664de4b4f316936db1b053.json",
+          "sha256": "FA1ECFB6B6CF98CD5CB55470EB7A43166A854E05301D4318BD6EECB7AF8C55A3"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\3e5247a61a7141dbba0b07d5b8593585.json",
+          "sha256": "8B91DFBACA76DA160F4DD06AB37FD7FD213EF100938035A299CFA4AED9C4FA98"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\07ac8444ae6e467895030634a622451e.json",
+          "sha256": "5B6764A0EC422B4D97EC3B3B6CEE38BBEFFD424A02D4243965D47E515DE62E98"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\4e1f9db9af3142a3b2c18c6e9348e0a0.json",
+          "sha256": "705B39C1DF17D7DD3C7C63A460871AD1F3641C18FAD6FB5B6020DC1E337F0CBB"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\3a41cb310ad34a30b6c186e9d8f3734b.json",
+          "sha256": "B33291D1410D04CEA405C66D89E284FD0DE4503FDBAD8FBD04E1E329F6B57874"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\a58e493600974404a7cca3c70177c577.json",
+          "sha256": "8AD292A1FF3CC35AD7AA30A04BCC5596FBBC5E9651F465AB8851FA69A6DE1139"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\115db5641c51475b9ec7ed18f34f147f.json",
+          "sha256": "4604CB6D69C021E49261BE1547257466126B1F9CE242BC7448C79081E3899E10"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\1d2d7aca764442ab9d6442587d957078.json",
+          "sha256": "E418736493504A51B42A3B24B533BFE5353FF7552D90FD96444BA764F8E052D9"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\b80064d717f24ab3a58924947366f2a6.json",
+          "sha256": "5D817A840A666ED02945EA401A01037B27FE59D08B2008B0C2C52D57C8BCF97B"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\cf98ce28310e44d5b124938a51854d0e.json",
+          "sha256": "56EED67FF392DF4E12F357072BA5FBF7BA77720E7708C366772FC3CB99AC47B8"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\e1b7ca920ff74c29a699c42f9ff8ed8c.json",
+          "sha256": "AD7ABA72373A962177BACC12410B444A47CADFDF39882F126D5AFDAFE7AE3827"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\3a90b72fbfe54cb38b372fafc75337be.json",
+          "sha256": "DC83946B05A73200CB463BA1603BE0D421FA27CF0BD741FD797C977F1C334839"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\9c54413076ec4e38b4bd7b474950e1bc.json",
+          "sha256": "DE11034D9AEE8FE10E61005F09C3142E7FC3FDE6553C118EC387176215CBFB3B"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\5cfb6af3bb024883a6624504266d6391.json",
+          "sha256": "BCE6D5201E4745C5243046C7A08646387F33A45E6AC08B2B792327DFFEC2D11B"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\c6ac6a70e8f74bf499c6eeef71d1b12b.json",
+          "sha256": "1F4C4026CADBE5758381907252C1B278A8498FCED525813905BFFFE790B046A4"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\2722bdd460c54af0902b3ef19b8002d4.json",
+          "sha256": "55CC6033B9388BECB9755D75376437F7C1732AE65FCF238547459150E56F632E"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\6526ef8bf34c41bc8cdd1c237b97ce9a.json",
+          "sha256": "CED02C26591E76AB91FBA7C6E157A4D2E93094FEFD2E5AE94F82BEB720154FE4"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\c378383fca1048799ef884e06e976887.json",
+          "sha256": "5B552ACB164CB90FCE616D9BFE8E68FD0A98F8159CB7A7B26A8AD133FC0381D3"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\40f9da6f7d6047db818b07db210135ca.json",
+          "sha256": "A7E1B2FB8980979C0453719189877C9B0F94CAB383B69367ACC3F0899FEE6EA1"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\48ad4da59cc84fa0ba865ac8ddc19228.json",
+          "sha256": "F970BD3B3318E5486EE451F149B93323C150D7BD011154410C677AAF893AE28D"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\df52f18778f94eefba35203148e890de.json",
+          "sha256": "38E3EEAAF03AE421B77802C8FD5FC12E712290E967C3FCC9694D7E7C3845C3AF"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\7e2f3a06af4d4668bc113010c92a9d7e.json",
+          "sha256": "421D9E14D4F690F713218B0B97C19E0F23BB125BC603083C9AD6075CDF4DF23A"
+        },
+        {
+          "path": "C:\\Users\\danwa\\AppData\\Local\\CitiesIIAgentBridge\\geometry-research\\eda2eebcce1e4a4ebe800479e16f404e.json",
+          "sha256": "A82241E3A8FEA4B4D4ACDA1E32F375A2D1B9476657CDD4676357B93F53523FBE"
+        }
+      ]
+    }
+  ]
+}

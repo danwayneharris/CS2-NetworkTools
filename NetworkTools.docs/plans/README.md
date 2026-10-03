@@ -4,8 +4,8 @@ This directory will hold reviewed, executable plans linked from [the roadmap](..
 No feature implementation plans have been approved merely by creating this directory.
 
 Name plans `{ID}-{short-topic}.md` using the stable roadmap ID. Reuse/link existing
-research rather than copy it. Plan the next one or two work packages in detail;
-later roadmap items may retain unresolved decisions.
+research rather than copy it. The first six selected work packages will receive
+detailed plans together; later roadmap items may retain unresolved decisions.
 
 An execution-ready plan records:
 
@@ -34,7 +34,9 @@ UI/solver/permission decisions before approving the goal-mode prompt.
   scoped prerequisite changes; it need not invent a player feature to justify a PR.
 - Dan will not manually validate between stages. Run meaningful automated offline
   and supported native tests between stages; report unsupported or blocked checks.
-  Proceed only when the next stage's prerequisites are supported by evidence.
+  When suitable live fixtures cannot be created within bounded effort, continue
+  with meaningful offline evidence under the fallback below. Distinguish missing
+  native confirmation from a known failed prerequisite.
   Never treat lack of human review as a pass or suppress a regression to finish all six.
 - Keep PRs draft pending the agreed manual review. Do not merge the stack during
   the autonomous sprint. Each description records base dependency, implementation,
@@ -55,3 +57,54 @@ UI/solver/permission decisions before approving the goal-mode prompt.
 Autonomous execution scope, toy-save/game permissions, publication details and
 blocked-work alternatives must be explicit in the six plans and goal prompt.
 No live game work or plan implementation was performed when recording this workflow.
+
+## Required section: Dan's evaluation
+
+Every plan and its resulting review documentation must include a clearly labeled
+**Dan's evaluation** section; each draft PR links it. Keep the completed handoff
+current rather than leaving only the pre-execution checklist.
+
+For each item specify:
+
+- What Dan should evaluate: expected visual/interaction behavior, workflow clarity,
+  regression signs, and any unresolved product choice. For architecture/docs-only
+  work, identify the findings, ownership boundaries or explanations to review.
+- The exact PR/build/configuration/opt-in flags, toy baseline/result save names,
+  network/location or selection, parameter settings and short numbered actions.
+  Include fixture provenance/fingerprints where available, not stale entity IDs.
+- What a satisfactory result looks like, accepted limitations, and what would
+  warrant a fix. Keep the accepted geometric tolerance distinct from connectivity,
+  topology and accumulated drift; do not ask Dan to chase harmless millimeters.
+- Which claims already have offline/native evidence and which need his visual,
+  UI or vehicle-traversal confirmation. If no suitable live case exists, say so
+  and give a practical scenario-creation recipe instead of inventing a save name.
+
+## Constructing missing live test scenarios
+
+For the planned autonomous sprint, Dan authorizes the executor to make its best
+bounded effort to build a missing test scenario in-game using available controls,
+or adapt networks in existing verified **toy** saves. For example, delete selected
+segments in a disposable copy to create Connect endpoints. This extends fixture
+preparation authority; it does not authorize touching real-city saves.
+
+Before mutation, verify the toy scenario and a recoverable checkpoint. Preserve
+unsaved toy work and save uniquely named copies; never overwrite the original
+baseline. Keep simulation paused unless a specifically authorized bounded test
+requires otherwise. Respect STOP/control settings and existing lifecycle rules.
+Record what was constructed/removed, relevant prefabs and the resulting baseline
+so Dan can reproduce the case. A successfully accepted construction request is
+not proof that the intended test layout exists; inspect the result.
+
+Each detailed plan should set a bounded live-fixture/setup effort budget. If the
+required controls are unavailable, construction is unreliable, or setup takes
+too long, stop that attempt, document the blocker and **continue the sprint using
+meaningful offline tests**. Preserve useful partial evidence and provide Dan a
+manual recipe. Do not spend the sprint fighting infrastructure or wait for Dan
+between stages solely because live coverage is missing.
+
+This fallback permits draft PRs and subsequent work without complete live testing.
+It does not turn offline success into native/visual success, excuse known failing
+assertions, or authorize weakening checks. If evidence establishes a defect that
+invalidates a dependent step, fix it or document that dependency as blocked and
+continue independent work. Clearly label unverified native behavior and relevant
+dependent assumptions in every affected PR and in Dan's evaluation checklist.

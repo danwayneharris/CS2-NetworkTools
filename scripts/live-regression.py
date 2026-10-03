@@ -78,6 +78,46 @@ def permanent_signature(snapshots, nodes, edges):
         junctions], sort_keys=True)
 
 
+def check_node_constraints(old_nodes, new_nodes, selected_nodes, anchors, combined):
+    """Selected interiors, including junctions, may change height in combined mode."""
+    if old_nodes.keys() != new_nodes.keys(): raise AssertionError('Node identities changed')
+    drifts=[]
+    for key,node in old_nodes.items():
+        target=new_nodes[key]['position']
+        if not all(math.isfinite(target[k]) for k in ('x','y','z')):
+            raise AssertionError('Nonfinite node position')
+        if not combined and abs(node['position']['y']-target['y'])>GEOMETRY_TOLERANCE_METERS:
+            raise AssertionError('Node elevation changed')
+        if combined and len(node['edges'])>2 and math.dist((node['position']['x'],node['position']['z']),(target['x'],target['z']))>GEOMETRY_TOLERANCE_METERS:
+            raise AssertionError('Junction moved horizontally')
+        if key not in selected_nodes or (not combined and len(node['edges'])>2) or key in anchors:
+            drift=math.dist(position(node['position']),position(target))
+            if drift>GEOMETRY_TOLERANCE_METERS: raise AssertionError('Fixed or unselected node moved')
+            if drift>0.001: drifts.append({'node':key,'distance':drift})
+    return drifts
+
+
+def check_incident_curves(old_nodes, new_nodes, old_edges, new_edges, selected_edges, combined):
+    """Independent endpoint-pair translation oracle; never accept arbitrary branch edits."""
+    selected_nodes={identity(old_edges[key][end]) for key in selected_edges for end in ('startNode','endNode')}
+    maximum=0.0
+    for key,edge in old_edges.items():
+        if key in selected_edges: continue
+        actual=new_edges[key]['curve']; original=edge['curve']
+        if len(actual)!=4 or len(original)!=4: raise AssertionError('Invalid incident cubic')
+        for i,(a,b) in enumerate(zip(original,actual)):
+            expected=dict(a)
+            if combined:
+                node=identity(edge['startNode' if i<2 else 'endNode'])
+                if node in selected_nodes:
+                    if node not in old_nodes or node not in new_nodes: raise AssertionError('Missing affected endpoint')
+                    expected['y']+=new_nodes[node]['position']['y']-old_nodes[node]['position']['y']
+            if not all(math.isfinite(b[k]) for k in ('x','y','z')): raise AssertionError('Nonfinite incident curve')
+            error=math.dist(position(expected),position(b)); maximum=max(maximum,error)
+            if error>GEOMETRY_TOLERANCE_METERS: raise AssertionError('Unexpected incident curve edit')
+    return maximum
+
+
 class Runner:
     def __init__(self, bridge, output):
         self.bridge, self.output = Path(bridge).resolve(), Path(output)
@@ -88,7 +128,7 @@ class Runner:
     def route_provider(self, command, args=None):
         if command.startswith('nt_'):
             action = {'nt_get_state': 'state', 'nt_activate': 'activate', 'nt_clear': 'clear',
-                      'nt_select': 'select', 'nt_strength': 'strength', 'nt_split': 'split', 'nt_apply': 'apply'}[command]
+                      'nt_select': 'select', 'nt_strength': 'strength', 'nt_split': 'split', 'nt_combined': 'combined', 'nt_apply': 'apply'}[command]
             if not getattr(self, 'provider_revision', None):
                 catalog = self.call('list_providers')
                 if not catalog.get('complete'):
@@ -176,6 +216,10 @@ class Runner:
         return self.call(command, dict(session=state['session'], revision=state['revision'], **args))
 
     def execute(self, fixture, case, save_root):
+        combined = case.get('combined', False)
+        if not isinstance(combined, bool): raise ValueError('combined must be boolean')
+        for key in ('smoothStart','smoothEnd'):
+            if key in case and not isinstance(case[key], bool): raise ValueError(key+' must be boolean')
         city = self.call('get_city_state')
         if city['selectedSpeed'] != 0 or city['population'] != 0 or not city['controlEnabled']:
             raise ValueError('Requires paused, control-enabled empty toy city')
@@ -218,6 +262,7 @@ class Runner:
         self.call('nt_activate')
         self.poll('nt_get_state', lambda s: s['active'] and s.get('smoothMode', False))
         self.control('nt_clear')
+        if combined: self.control('nt_combined', enabled=True, smoothStart=case.get('smoothStart', False), smoothEnd=case.get('smoothEnd', False))
         self.control('nt_strength', value=case.get('strengths', [0.5,0.8])[0])
         self.control('nt_select', start=start, end=end)
         for node in split_nodes:
@@ -253,26 +298,22 @@ class Runner:
         old_edges, new_edges = ({identity(e): e for e in es} for es in (edges, after_edges))
         if old_nodes.keys() != new_nodes.keys() or old_edges.keys() != new_edges.keys():
             raise AssertionError('Topology identities changed')
-        fixed_node_drifts = []
-        for key, node in old_nodes.items():
-            if abs(node['position']['y'] - new_nodes[key]['position']['y']) > GEOMETRY_TOLERANCE_METERS:
-                raise AssertionError('Node elevation changed')
-            if key not in selected_nodes or len(node['edges']) > 2 or key in {identity(start),identity(end),*(identity(n) for n in split_nodes)}:
-                drift=math.dist(position(node['position']),position(new_nodes[key]['position']))
-                if drift>0.001:
-                    fixed_node_drifts.append({'node':key,'distance':drift})
+        fixed_node_drifts = check_node_constraints(old_nodes, new_nodes, selected_nodes,
+            {identity(start), identity(end), *(identity(n) for n in split_nodes)}, combined)
         for key, edge in old_edges.items():
             if any(edge[k] != new_edges[key][k] for k in ('startNode','endNode','prefab')):
                 raise AssertionError('Topology or prefab changed')
         changes = [key for key in old_edges if old_edges[key]['curve'] != new_edges[key]['curve']]
-        outside_error=max((math.dist(position(a),position(b)) for key in changes if key not in selected_edges for a,b in zip(old_edges[key]['curve'],new_edges[key]['curve'])),default=0)
-        if outside_error>GEOMETRY_TOLERANCE_METERS:
-            raise AssertionError('Unselected edge geometry changed beyond accepted tolerance')
-        for key in selected_edges:
+        outside_error = check_incident_curves(old_nodes, new_nodes, old_edges, new_edges, selected_edges, combined)
+        expected_preview = selected_edges | {key for key,e in old_edges.items() if key not in selected_edges
+            and any(identity(e[end]) in selected_nodes for end in ('startNode','endNode'))}
+        for key in expected_preview:
+            if key not in preview_curves or len(preview_curves[key]) != 4:
+                raise AssertionError('Missing selected or incident preview curve')
             if max(math.dist(position(a),position(b)) for a,b in
                    zip(preview_curves[key],new_edges[key]['curve']))>GEOMETRY_TOLERANCE_METERS:
-                raise AssertionError('Selected preview/permanent geometry mismatch')
-        report = {'case':case['name'], 'checkpoint':saved['saveName'], 'changedEdges':changes,
+                raise AssertionError('Selected/incident preview/permanent geometry mismatch')
+        report = {'case':case['name'], 'combined':combined, 'checkpoint':saved['saveName'], 'changedEdges':changes,
                   'junctions':[], 'fixedNodeDrifts':fixed_node_drifts,
                   'geometryToleranceMeters':GEOMETRY_TOLERANCE_METERS,'unselectedCurveMaxError':outside_error,
                   'limits':'Local snapshot checks; not vehicle traversal or visual approval.'}
@@ -290,6 +331,11 @@ class Runner:
                     raise AssertionError('Split curve endpoint is not at pinned node')
             a=(left[3]['x']-left[2]['x'],left[3]['z']-left[2]['z'])
             b=(right[1]['x']-right[0]['x'],right[1]['z']-right[0]['z'])
+            if combined:
+                la,lb=math.hypot(*a),math.hypot(*b)
+                if min(la,lb)<1e-8: raise AssertionError('Undefined split vertical grade')
+                ga=(left[3]['y']-left[2]['y'])/la;gb=(right[1]['y']-right[0]['y'])/lb
+                if abs(ga-gb)>1e-5: raise AssertionError('Split vertical grades do not agree')
             lengths=math.hypot(*a)*math.hypot(*b)
             if lengths<1e-8 or (a[0]*b[0]+a[1]*b[1])/lengths<1-1e-6:
                 raise AssertionError('Split planar tangents do not agree')

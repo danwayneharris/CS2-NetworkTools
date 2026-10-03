@@ -7,7 +7,7 @@ namespace NetworkTools.Geometry {
         public static unsafe bool Fit(Point* nodes, PlanarCubic* curves, byte* splits, int count,
             double strength, Point* outputNodes, PlanarCubic* outputCurves,
             Point* workNodes, PlanarCubic* workCurves, double* stations,
-            out SmoothFailure failure, out int index, double startRotation = 0, double endRotation = 0) {
+            out SmoothFailure failure, out int index, double startRotation = 0, double endRotation = 0, bool stableStations = false) {
             failure=SmoothFailure.InvalidArguments; index=-1;
             if(nodes==null || curves==null || splits==null || outputNodes==null || outputCurves==null
                 || workNodes==null || workCurves==null || stations==null || count<2 || count>512
@@ -19,7 +19,7 @@ namespace NetworkTools.Geometry {
                 anySplit|=splits[i]!=0;
             }
             if(!anySplit) return PlanarPathTarget.Fit(nodes,curves,count,strength,outputNodes,outputCurves,
-                stations,out failure,out index,startRotation,endRotation);
+                stations,out failure,out index,startRotation,endRotation,stableStations);
             for(var i=0;i<count-1;i++) {
                 var c=curves[i];
                 if(!Finite(c.A.X)||!Finite(c.A.Z)||!Finite(c.B.X)||!Finite(c.B.Z)
@@ -44,7 +44,7 @@ namespace NetworkTools.Geometry {
                     var c=workCurves[n-2]; c.D=nodes[end]; c.C=Add(c.D,direction,-1); workCurves[n-2]=c;
                 }
                 if(!PlanarPathTarget.Fit(workNodes,workCurves,n,1,outputNodes+start,outputCurves+start,
-                    stations,out failure,out index,start==0?startRotation:0,end==count-1?endRotation:0)) {
+                    stations,out failure,out index,start==0?startRotation:0,end==count-1?endRotation:0,stableStations)) {
                     if(index>=0) index+=start; return false;
                 }
                 start=end;

@@ -33,6 +33,11 @@ namespace NetworkTools.Systems.Tools.RoadShape {
             in NativeParallelHashMap<Entity, EdgeGeometry> references) {
             var count = edges.Length;
             if (count < 2 || count > 64 || config.SmoothStart || config.SmoothEnd) { return false; }
+            if (config.CombinedSlope) {
+                for (var i = 1; i < count; i++) {
+                    if (nodes[i].SmoothSplit || nodes[i].SmoothPinned) return false;
+                }
+            }
             var reverse = connections.HasBuffer(nodes[count].Entity) && connections[nodes[count].Entity].Length >= 3;
             var startIndex = reverse ? count : 0;
             var endIndex = reverse ? 0 : count;

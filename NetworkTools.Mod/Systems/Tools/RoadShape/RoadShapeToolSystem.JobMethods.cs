@@ -41,7 +41,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
 #if IS_DEBUG
             ConfigureJunctionSearch(ref config);
             ConfigureInteriorJunctions(ref config);
-            ConfigureSurfacePreview();
+            ConfigureSurfacePreview(in config);
 #endif
             // The result is consumed by the UI only after this job completes.
             m_LastShapeJob.Complete();

@@ -1,4 +1,4 @@
-﻿namespace NetworkTools.Systems.UI {
+namespace NetworkTools.Systems.UI {
     using Colossal.UI.Binding;
     using Game.Input;
     using Game.Prefabs;
@@ -106,6 +106,11 @@
             m_ApplyStateBinding = CreateBinding("APPLY_STATE", (int)ApplyState.Hidden);
             m_SplitChoicesBinding = CreateBinding("SPLIT_CHOICES", "[]");
             m_ShapeApplyReasonBinding = CreateBinding("SHAPE_APPLY_REASON", "");
+#if IS_DEBUG
+            CreateBinding("COMBINED_SMOOTH_AVAILABLE", true);
+#else
+            CreateBinding("COMBINED_SMOOTH_AVAILABLE", false);
+#endif
             CreateTrigger<int, int, bool>("SET_SPLIT_NODE", (index, version, enabled) =>
                 m_NtRoadShapeToolSystem.SetSplitNode(new Entity { Index=index, Version=version }, enabled));
 

@@ -111,6 +111,9 @@ def main():
                 r['fields']['m_EdgeHeightMap']['capacity']=999;return True
             return False
         run('wrong-native-map-allocation',wrong_allocation,2)
+        run('mismatched-finish-context',exit_code=2,status_edit=lambda s:s.update(finishExecution='managed'))
+        def managed_context(r):r['finishExecution']='managed';return True
+        run('managed-intervention-rejected-by-native-model',managed_context,2,status_edit=lambda s:s.update(finishExecution='managed'))
     (a.output/'summary.json').write_text(json.dumps(dict(passed=True,tests=results),indent=2))
     print(f'PASS {len(results)} pipeline execution, missing-data, identity, metric and anti-substitution checks')
 

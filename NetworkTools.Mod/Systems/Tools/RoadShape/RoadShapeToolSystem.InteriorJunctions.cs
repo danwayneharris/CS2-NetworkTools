@@ -158,8 +158,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                     foreach (var state in m_EdgeStates) if (state.EdgeEntity == original) { selected = true; break; }
                     if (!selected) {
                         var a = EntityManager.GetComponentData<Curve>(temporary).m_Bezier;
-                        var b = EntityManager.GetComponentData<Curve>(original).m_Bezier;
-                        if (!SameControl(a.a,b.a) || !SameControl(a.b,b.b) || !SameControl(a.c,b.c) || !SameControl(a.d,b.d)) {
+                        if (!IncidentPreviewMatches(original, a, submission)) {
                             RejectInterior("unselected curve changed"); return;
                         }
                     }

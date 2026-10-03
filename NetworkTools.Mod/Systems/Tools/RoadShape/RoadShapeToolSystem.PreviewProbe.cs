@@ -16,16 +16,19 @@ namespace NetworkTools.Systems.Tools.RoadShape {
         private sealed class PreviewProbe {
             public int Id;
             public Dictionary<Entity, Bezier4x3> Curves = new();
+            public Dictionary<Entity, float3> NodeDeltas = new();
         }
         private static readonly object s_ProbeLock = new();
         private static PreviewProbe s_Probe;
         private string m_LastProbeMessage;
 
         private static void CapturePreviewProbe(int id, ToolOutputMode mode, bool valid,
-            NativeArray<EdgeState> edges) {
+            NativeArray<EdgeState> edges, NativeArray<NodeState> nodes = default) {
             var probe = new PreviewProbe { Id = id };
             if (valid && mode == ToolOutputMode.Preview && edges.Length <= 128) {
                 foreach (var edge in edges) probe.Curves.Add(edge.EdgeEntity, edge.Bezier);
+                if (nodes.IsCreated) foreach (var node in nodes)
+                    probe.NodeDeltas.Add(node.Entity, node.Position - node.OriginalPosition);
             }
             lock (s_ProbeLock) { s_Probe = probe; }
         }
@@ -77,10 +80,12 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                 && matches.Count == probe.Curves.Count && duplicates == 0 && mismatches == 0 && missingBuffers == 0 ? probe.Id : 0;
             ObserveSurfacePreview(probe, revisionMatches && originalInputs == "matches"
                 && matches.Count == probe.Curves.Count && duplicates == 0 && mismatches == 0 && missingBuffers == 0);
-            ObserveJunctionSearch(probe.Id, revisionMatches && originalInputs == "matches"
+            if (!CombinedMode || (SurfacePreviewAllowsApply() && !m_UpdateNeeded)) {
+            ObserveJunctionSearch(probe.Id, !m_UpdateNeeded && revisionMatches && originalInputs == "matches"
                 && matches.Count == probe.Curves.Count && duplicates == 0 && mismatches == 0 && missingBuffers == 0);
-            ObserveInteriorJunctions(probe.Id, revisionMatches && originalInputs == "matches"
+            ObserveInteriorJunctions(probe.Id, !m_UpdateNeeded && revisionMatches && originalInputs == "matches"
                 && matches.Count == probe.Curves.Count && duplicates == 0 && mismatches == 0 && missingBuffers == 0);
+            }
             var message = $"[NetworkTools.PreviewProbe] session={s_SmoothSession} submission={probe.Id} inputRevision={m_PreviewInputRevision} submittedRevision={m_SubmittedPreviewRevision} revisionMatches={revisionMatches} dirty={m_UpdateNeeded} expectedEdges={probe.Curves.Count} matchedEdges={matches.Count} ambiguousEdges={duplicates} curveMismatches={mismatches} missingLaneBuffers={missingBuffers} edgeTrackLanes={tracks} phase=AfterModificationEndBarrier validationReady=false";
             message += $" originalInputs={originalInputs}";
             if (message != m_LastProbeMessage) {
@@ -89,6 +94,24 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                     + Newtonsoft.Json.JsonConvert.SerializeObject(mismatchDetails, new NetworkTools.Automation.VectorJsonConverter()));
                 m_LastProbeMessage = message;
             }
+        }
+
+        // Compare the native side-road curve against the same endpoint translation
+        // emitted by the job. Never accept arbitrary changes outside the selection.
+        private bool IncidentPreviewMatches(Entity original, Bezier4x3 actual, int submission) {
+            var expected = EntityManager.GetComponentData<Curve>(original).m_Bezier;
+            if (CombinedMode) {
+                PreviewProbe probe;
+                lock (s_ProbeLock) { probe = s_Probe; }
+                if (probe == null || probe.Id != submission) return false;
+                var edge = EntityManager.GetComponentData<Edge>(original);
+                probe.NodeDeltas.TryGetValue(edge.m_Start, out var start);
+                probe.NodeDeltas.TryGetValue(edge.m_End, out var end);
+                if (start.x != 0 || start.z != 0 || end.x != 0 || end.z != 0) return false;
+                expected = IncidentCurveAdjustment.Translate(expected, start, end);
+            }
+            return SameControl(actual.a, expected.a) && SameControl(actual.b, expected.b)
+                && SameControl(actual.c, expected.c) && SameControl(actual.d, expected.d);
         }
 
         private static bool SameControl(float3 a, float3 b) => math.all(math.isfinite(a))

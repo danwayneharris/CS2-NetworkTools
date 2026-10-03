@@ -96,6 +96,7 @@ export const EMPTY_NET_PREFAB_DATA: NetPrefabData = {
 export type DistanceUnits = "Meters" | "Units";
 
 export const GAME_BINDINGS = {
+    COMBINED_SMOOTH_AVAILABLE: new TwoWayBinding<boolean>("COMBINED_SMOOTH_AVAILABLE", false),
     SHAPE_APPLY_REASON: new TwoWayBinding<string>("SHAPE_APPLY_REASON", ""),
     SPLIT_CHOICES: new TwoWayBinding<string>("SPLIT_CHOICES", "[]"),
     UI_DATA: new TwoWayBinding<ToolUIData[]>("UI_DATA", []),

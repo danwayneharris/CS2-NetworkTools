@@ -58,7 +58,7 @@ try {
         }
         Write-Host 'Running actual offline suites; writes build/test artifacts but does not deploy or contact CS2.'
         if (Get-Command uv -ErrorAction SilentlyContinue) {
-            Invoke-Checked uv @('run', '--no-project', 'python', 'scripts/run-offline-tests.py')
+            Invoke-Checked uv @('run', 'python', 'scripts/run-offline-tests.py')
         } elseif (Get-Command python -ErrorAction SilentlyContinue) {
             Invoke-Checked python @('scripts/run-offline-tests.py')
         } else {

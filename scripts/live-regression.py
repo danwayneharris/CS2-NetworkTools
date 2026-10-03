@@ -120,7 +120,8 @@ class Runner:
         if self.city_session is not None and self.transport_session['citySession'] != self.city_session:
             raise RuntimeError('City changed before regression request')
         try:
-            response = self.client.call(command, args or {}, expected=self.transport_session)
+            options = {'timeout': self.command_timeout} if hasattr(self, 'command_timeout') else {}
+            response = self.client.call(command, args or {}, expected=self.transport_session, **options)
         except Exception as error:
             prefix.with_suffix('.error.json').write_text(json.dumps({
                 'error': str(error), 'requestId': self.client.last_request,

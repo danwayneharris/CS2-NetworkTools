@@ -69,6 +69,30 @@ static class Program {
             Verify(new[]{B,A},new[]{Y,X},new[]{second,first});
             Verify(new[]{A,B},new[]{X,Y},new[]{Link(X,A,i),Link(Y,B,(ushort)(i+30))},false);
         }
+        // Native skipped-junction mapping shares a node-owned full path key.
+        // Direction itself was established by the ECS adapter's EdgeDelta/role check.
+        var shared = new Port(30,1); var sharedOther = new Port(30,257);
+        Verify(new[]{shared},new[]{shared},Array.Empty<Connection>());
+        Verify(new[]{shared},new[]{shared},Array.Empty<Connection>(),false);
+        Verify(new[]{shared,sharedOther},new[]{sharedOther,shared},Array.Empty<Connection>());
+        Verify(new[]{shared,A},new[]{shared,X},new[]{Link(A,X)}); // mixed shared/direct
+        Verify(new[]{shared,A},new[]{shared,X},new[]{Link(X,A)},false);
+        Verify(new[]{shared},new[]{X},new[]{Link(shared,X)}); // explicit node-owned endpoint
+        Verify(new[]{A},new[]{shared},new[]{Link(A,shared)});
+        Verify(new[]{shared},new[]{sharedOther},Array.Empty<Connection>(),true,Failure.MissingConnection,0);
+        Verify(new[]{shared},new[]{new Port(30,1,.5f)},Array.Empty<Connection>(),true,Failure.MissingConnection,0);
+        Verify(new[]{shared},new[]{new Port(31,1)},Array.Empty<Connection>(),true,Failure.WrongOwner);
+        Verify(new[]{new Port(31,1)},new[]{new Port(31,1)},Array.Empty<Connection>(),true,Failure.WrongOwner);
+        Verify(new[]{shared},new[]{new Port(30,1,0,true)},Array.Empty<Connection>(),true,Failure.SecondaryPort);
+        Verify(new[]{shared},new[]{X},Array.Empty<Connection>(),true,Failure.MissingConnection,0);
+        Verify(new[]{A},new[]{A},Array.Empty<Connection>(),true,Failure.WrongOwner); // no edge-owner shortcut
+        Verify(new[]{shared,shared},new[]{shared},Array.Empty<Connection>(),true,Failure.DuplicateSelectedPort);
+        Verify(new[]{shared},new[]{shared,shared},Array.Empty<Connection>(),true,Failure.DuplicateNewPort);
+        // A direct shared witness must not hide bad/duplicated junction evidence.
+        Verify(new[]{shared},new[]{shared},new[]{Link(A,X),Link(A,X)},true,Failure.DuplicateJunctionIdentity);
+        Verify(new[]{shared},new[]{shared},new[]{new Connection(A,new Port(99,1),X)},true,Failure.WrongOwner);
+        Verify(new[]{shared,A},new[]{shared,X},Array.Empty<Connection>(),true,Failure.MissingConnection,1);
         Console.WriteLine("LaneConnectionProof: " + checks + " assertions passed (pure graph proof; ECS/native mapping untested).");
     }
 }
+

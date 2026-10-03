@@ -4,7 +4,7 @@
 
     /// <summary>
     /// Pure direct-junction existence proof. The adapter supplies current, permitted
-    /// native lanes after checking entity versions, Temp.original, ownership and composition.
+    /// native lanes after checking entity versions, Temp.original, ownership, composition and endpoint travel role.
     /// This proves each selected port has at least one directed witness to/from the
     /// new edge. It does not prove exclusivity, cross-junction routing or traffic flow.
     /// </summary>
@@ -54,7 +54,7 @@
                 int owner = group == 0 ? approachOwner : newEdgeOwner;
                 foreach (var port in ports) {
                     if (!port.Valid) { failure = Failure.InvalidInput; return false; }
-                    if (port.Owner != owner) { failure = Failure.WrongOwner; return false; }
+                    if (port.Owner != owner && port.Owner != nodeOwner) { failure = Failure.WrongOwner; return false; }
                     if (port.Secondary) { failure = Failure.SecondaryPort; return false; }
                     if (!set.Add(port)) { failure = group == 0 ? Failure.DuplicateSelectedPort : Failure.DuplicateNewPort; return false; }
                 }
@@ -62,6 +62,17 @@
             var identities = new HashSet<Port>();
             var connections = new HashSet<Tuple<Port, Port>>();
             var witnessed = new HashSet<Port>();
+            // LaneReferencesSystem (Game 1.6.2f1):163-176 maps skipped junction
+            // lane start/middle/end to one node-owned key; :237-307 rewrites the
+            // incident edge ports to that key. Exact shared-node identity is then
+            // direct continuity, even though no NodeLane entity remains between them.
+            // The adapter MUST supply incoming/outgoing boundary ports for the
+            // requested role, from distinct verified approach/new-edge lane entities.
+            // Never accept same lane number, owner-blind equality or an edge-owned
+            // shared port as this shortcut. Inspect ALL evidence below before success.
+            foreach (var port in selected) {
+                if (port.Owner == nodeOwner && newSet.Contains(port)) witnessed.Add(port);
+            }
             foreach (var junction in junctions) {
                 if (!junction.Start.Valid || !junction.Middle.Valid || !junction.End.Valid) { failure = Failure.InvalidInput; return false; }
                 if (junction.Middle.Owner != nodeOwner) { failure = Failure.WrongOwner; return false; }
@@ -81,3 +92,4 @@
         }
     }
 }
+

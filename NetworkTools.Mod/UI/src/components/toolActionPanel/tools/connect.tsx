@@ -5,6 +5,7 @@ import { useValue } from "cs2/api";
 import { PrefabSelection } from "../shared/prefabSelection";
 import { ParameterField } from "../shared/parameterField";
 import { TabBar } from "../shared/tabBar";
+import { LaneDirectionControls } from "./laneDirection";
 
 import { GAME_BINDINGS, GAME_TRIGGERS } from "gameBindings";
 import { useLocalization } from "cs2/l10n";
@@ -66,6 +67,7 @@ export const ConnectControls: React.FC = () => {
                                 </button>)}
                             </div>)}
                         </>)}
+                    <LaneDirectionControls />
                     {activeConnectMode === ConnectMode.Loop && (
                         <ParameterField paramKey="connect.loopArcSide" />
                     )}

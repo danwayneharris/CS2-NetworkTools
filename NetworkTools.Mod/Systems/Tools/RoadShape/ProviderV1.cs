@@ -55,6 +55,10 @@ namespace CitiesBridge {
                         props["mode"] = new JObject { ["type"] = "string", ["enum"] = new JArray("SimpleCurve", "ComplexCurve") };
                         props["smoothElevationProfile"] = new JObject { ["type"] = "boolean" };
                         props["startApproach"] = Node(); props["endApproach"] = Node();
+                        props["laneAwareDirection"] = new JObject { ["type"] = "boolean" };
+                        JObject LaneGroup() => new JObject { ["type"] = "array", ["items"] = Node(),
+                            ["minItems"] = 1, ["maxItems"] = 64, ["uniqueItems"] = true };
+                        props["startLanes"] = LaneGroup(); props["endLanes"] = LaneGroup();
                     }
                     commands.Add(new JObject { ["name"] = tool + "_" + action, ["readOnly"] = action == "state",
                         ["description"] = tool + " " + action + ". Paused city and local controls required. Connect supports SimpleCurve and ComplexCurve; profile configuration requires current, unambiguous incident approaches. Configure requires at least one option or control point. Apply requires current observed preview; independently inspect permanent results.",

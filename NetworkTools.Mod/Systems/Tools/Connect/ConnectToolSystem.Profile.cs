@@ -39,8 +39,13 @@ namespace NetworkTools.Systems.Tools.Connect {
             var horizontal = stackalloc PlanarCubic[2];
             var heights = stackalloc VerticalLinearProfile.Heights[2];
             for (var i = 0; i < curves.Length; i++) horizontal[i] = ProfilePlanar(curves[i]);
+            var startGrade = start.OutwardGrade; var endGrade = -end.OutwardGrade;
+            if (LaneAwareDirection.Value) {
+                if (!TryResolveLaneDirectionEndpoints(out var laneStart, out var laneEnd, out reason)) return false;
+                startGrade = laneStart.HandleGrade; endGrade = -laneEnd.HandleGrade;
+            }
             if (!ConnectVerticalProfile.Fit(horizontal, curves.Length, start.NodePosition.y, end.NodePosition.y,
-                start.OutwardGrade, -end.OutwardGrade, heights, out _, out var failure)) {
+                startGrade, endGrade, heights, out _, out var failure)) {
                 reason = "profile_" + failure; return false;
             }
             if (!config.ComplexProfile) {

@@ -70,7 +70,13 @@ class CodegenTests(unittest.TestCase):
                     'smoothElevationProfile: new TwoWayBinding<boolean>("connect.smoothElevationProfile", false),',
                     '"connect.smoothElevationProfile": PARAM_BINDINGS.connect.smoothElevationProfile,',
                 })
-                additive_names={'combinedSlope','smoothElevationProfile',*additions}
+                added.update({
+                    'laneAwareDirection: "connect.laneAwareDirection",',
+                    '"connect.laneAwareDirection": { type: "bool", default: false, modes: 0, label: "NetworkTools.UI.Connect.LaneAwareDirection" },',
+                    'laneAwareDirection: new TwoWayBinding<boolean>("connect.laneAwareDirection", false),',
+                    '"connect.laneAwareDirection": PARAM_BINDINGS.connect.laneAwareDirection,',
+                })
+                additive_names={'combinedSlope','smoothElevationProfile','laneAwareDirection',*additions}
                 actual=[line.strip() for line in lines if any(name in line for name in additive_names)]
                 self.assertEqual(len(added),len(actual))
                 self.assertEqual(added,set(actual))

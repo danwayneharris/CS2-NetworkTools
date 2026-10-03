@@ -1,0 +1,230 @@
+{
+  "build": {
+    "schemaVersion": 1,
+    "releaseVersion": "1.5.7",
+    "informationalVersion": "1.5.7+gdeb29941bb2f.clean.Debug",
+    "sourceRevision": "deb29941bb2f42f5ea8e7ab376329ca5f39972c1",
+    "workingTree": "clean",
+    "configuration": "Debug"
+  },
+  "toleranceMeters": 0.05,
+  "offline": "12 suites passed; 42 direction and 402 connection-proof assertions; 23 Python scripts",
+  "simple": {
+    "geometryToleranceMeters": 0.05,
+    "stage": "connect",
+    "checkpoint": "CitiesIIAgentBridge-provider-connect-20261003-151801-4d60fd9c",
+    "beforeFingerprint": "59664b4dd4e4bd1cd8eaf11aea0018978ac8352a466fe5b747f1578655296136",
+    "afterFingerprint": "1c4b1e56a624ce27ad58825bc8b87510207b81702f09ee7ef3cf993eab80817a",
+    "staleRevisionRejected": true,
+    "nodeCount": [
+      48,
+      49
+    ],
+    "edgeCount": [
+      44,
+      46
+    ],
+    "parameters": {
+      "slopeMode": "ease",
+      "smoothStart": false,
+      "smoothEnd": false,
+      "reverse": false,
+      "connectProfile": false,
+      "connectMode": "SimpleCurve",
+      "connectStraightControls": false,
+      "connectLanes": true,
+      "selectedLanes": [
+        {
+          "index": 52060,
+          "version": 1
+        },
+        {
+          "index": 52112,
+          "version": 1
+        }
+      ]
+    },
+    "limits": "No visual/vehicle or rendered-surface validation.",
+    "expectedPrefab": "Small Road",
+    "prefabInherited": true,
+    "unchangedExistingEdges": true,
+    "unchangedExistingNodes": true,
+    "connected": true,
+    "newEdges": [
+      [
+        51659,
+        7
+      ],
+      [
+        51658,
+        7
+      ]
+    ],
+    "previewApplyMaxError": 0.0,
+    "selectedLaneConnections": [
+      {
+        "selected": [
+          51685,
+          3,
+          false
+        ],
+        "witnesses": [
+          [
+            [
+              51685,
+              3,
+              false
+            ],
+            [
+              51658,
+              3,
+              false
+            ]
+          ]
+        ]
+      },
+      {
+        "selected": [
+          51675,
+          3,
+          false
+        ],
+        "witnesses": [
+          [
+            [
+              51659,
+              3,
+              false
+            ],
+            [
+              51675,
+              3,
+              false
+            ]
+          ]
+        ]
+      }
+    ]
+  },
+  "reversedComplex": {
+    "geometryToleranceMeters": 0.05,
+    "stage": "connect",
+    "checkpoint": "CitiesIIAgentBridge-provider-connect-20261003-152029-4d544a00",
+    "beforeFingerprint": "59664b4dd4e4bd1cd8eaf11aea0018978ac8352a466fe5b747f1578655296136",
+    "afterFingerprint": "29ac53fad8771a3d84550618f7b598414bd446c0e57694bb09d64c8f8112f045",
+    "staleRevisionRejected": true,
+    "nodeCount": [
+      48,
+      51
+    ],
+    "edgeCount": [
+      44,
+      48
+    ],
+    "parameters": {
+      "slopeMode": "ease",
+      "smoothStart": false,
+      "smoothEnd": false,
+      "reverse": true,
+      "connectProfile": false,
+      "connectMode": "ComplexCurve",
+      "connectStraightControls": false,
+      "connectLanes": true,
+      "selectedLanes": [
+        {
+          "index": 52111,
+          "version": 1
+        },
+        {
+          "index": 52059,
+          "version": 1
+        }
+      ]
+    },
+    "limits": "No visual/vehicle or rendered-surface validation.",
+    "expectedPrefab": "Small Road",
+    "prefabInherited": true,
+    "unchangedExistingEdges": true,
+    "unchangedExistingNodes": true,
+    "connected": true,
+    "newEdges": [
+      [
+        51667,
+        7
+      ],
+      [
+        51666,
+        7
+      ],
+      [
+        51668,
+        7
+      ],
+      [
+        51665,
+        7
+      ]
+    ],
+    "previewApplyMaxError": 0.0,
+    "selectedLaneConnections": [
+      {
+        "selected": [
+          51675,
+          2,
+          false
+        ],
+        "witnesses": [
+          [
+            [
+              51675,
+              2,
+              false
+            ],
+            [
+              51665,
+              3,
+              false
+            ]
+          ]
+        ]
+      },
+      {
+        "selected": [
+          51685,
+          2,
+          false
+        ],
+        "witnesses": [
+          [
+            [
+              51668,
+              3,
+              false
+            ],
+            [
+              51685,
+              2,
+              false
+            ]
+          ]
+        ]
+      }
+    ]
+  },
+  "initialRejected": {
+    "reason": "lane_native_start_new_lane_mapping_unsupported",
+    "blockedApply": true,
+    "permanentUnchanged": true,
+    "resolvedBy": "shared node-owned port support"
+  },
+  "notRun": [
+    "added-lane highway native fixture",
+    "multi-lane physical-slave group native fixture",
+    "profile interaction native",
+    "Release/Burst execution",
+    "manual UI",
+    "vehicle traversal",
+    "save/reload equivalence"
+  ],
+  "reviewSave": "CitiesIIAgentBridge-regression-before-reload-20261003-151917-abe983f9"
+}

@@ -7,6 +7,9 @@ namespace NetworkTools.Systems.UI {
     public partial class NT_UISystem {
         /// <inheritdoc />
         protected override void OnUpdate() {
+            m_ConnectLaneDirectionStatusBinding.Value = m_ToolSystem.activeTool == m_NtConnectToolSystem ? m_NtConnectToolSystem.LaneDirectionStatus : "disabled";
+            m_ConnectLaneDirectionChoicesBinding.Value = m_ToolSystem.activeTool == m_NtConnectToolSystem && m_NtConnectToolSystem.LaneAwareDirection.Value
+                ? m_NtConnectToolSystem.LaneDirectionChoicesJson() : "[]";
             m_ConnectProfileStatusBinding.Value = m_ToolSystem.activeTool == m_NtConnectToolSystem
                 ? m_NtConnectToolSystem.ProfileStatusJson : "{}";
             m_ConnectProfileContextBinding.Value = m_ToolSystem.activeTool == m_NtConnectToolSystem

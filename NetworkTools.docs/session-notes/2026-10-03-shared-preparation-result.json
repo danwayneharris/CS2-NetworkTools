@@ -1,0 +1,52 @@
+{
+  "passed": true,
+  "discriminatingCounterexample": true,
+  "rows": [
+    {
+      "id": "burst-preview-01",
+      "nativeObservationReproduced": true,
+      "preparedEqualsManagedAllComputedEdges": true,
+      "preparedEndpoints": 7,
+      "edgeCount": 8,
+      "managedMatchesOldObservation": true,
+      "preparedMatchesOldObservation": true
+    },
+    {
+      "id": "burst-apply-01",
+      "nativeObservationReproduced": true,
+      "preparedEqualsManagedAllComputedEdges": true,
+      "preparedEndpoints": 4,
+      "edgeCount": 5,
+      "managedMatchesOldObservation": false,
+      "preparedMatchesOldObservation": false
+    },
+    {
+      "id": "burst-control-linear-01",
+      "nativeObservationReproduced": true,
+      "preparedEqualsManagedAllComputedEdges": true,
+      "preparedEndpoints": 7,
+      "edgeCount": 7,
+      "managedMatchesOldObservation": false,
+      "preparedMatchesOldObservation": false
+    },
+    {
+      "id": "burst-held-arch-six-01",
+      "nativeObservationReproduced": true,
+      "preparedEqualsManagedAllComputedEdges": true,
+      "preparedEndpoints": 7,
+      "edgeCount": 8,
+      "managedMatchesOldObservation": false,
+      "preparedMatchesOldObservation": false
+    },
+    {
+      "id": "map-apply-01",
+      "nativeObservationReproduced": true,
+      "preparedEqualsManagedAllComputedEdges": true,
+      "preparedEndpoints": 4,
+      "edgeCount": 5,
+      "managedMatchesOldObservation": false,
+      "preparedMatchesOldObservation": false
+    }
+  ],
+  "boundary": "Offline computed pipeline; compare EdgeGeometry and Start/EndNodeGeometry exactly. No runtime scheduler, performance, terrain deformation, reload or lane proof. Old observation mismatch is retained, not relabeled passing."
+}

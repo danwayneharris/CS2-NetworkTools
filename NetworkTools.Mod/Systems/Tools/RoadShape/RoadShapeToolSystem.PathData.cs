@@ -211,7 +211,9 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                         Position = nodePos,
                         OriginalPosition = nodePos,
                         SmoothPinned = !ConnectedEdgeLookup.TryGetBuffer(nodeEntity, out var incidentEdges)
-                            || incidentEdges.Length != 2
+                            || incidentEdges.Length != 2,
+                        SmoothJunction = ConnectedEdgeLookup.TryGetBuffer(nodeEntity, out var junctionEdges)
+                            && junctionEdges.Length > 2
                     };
                 }
 

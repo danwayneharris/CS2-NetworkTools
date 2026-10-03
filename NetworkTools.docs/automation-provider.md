@@ -87,3 +87,19 @@ root and fresh output directory. Curve starts from the checksummed v1.1 fixture;
 Slope/Connect additionally require an explicit known `--expected-fingerprint`.
 Every stage verifies a recoverable checkpoint before mutations. Captures under
 `session-notes/captures/provider-tools-*` include the blocked ramp experiment.
+
+### Combined experiment (provider 1.2.0, Debug only)
+
+After ordinary `activate`, call `combined` with the current `session`, `revision`
+and `enabled: true`. Activate intentionally resets this option off for backwards
+compatibility. Strength continues to control horizontal smoothing. `state` adds
+`combinedSlope`, `surfaceAccepted`, and `surfaceFailed`; use `previewReady` and the
+current submission for Apply, not a single stage's acceptance flag. The command
+changes a preview parameter, not permanent geometry. Apply remains an explicit,
+separately validated mutation. This interface is under integration; see the
+combined architecture session note for verification status.
+
+The combined command also accepts optional boolean `smoothStart` and `smoothEnd`,
+matching the visible boundary controls. Regression fixtures set them explicitly;
+otherwise the existing tool values are retained. `rejectionReason` is a localization
+key shared with the manual Apply panel. These controls remain Debug-only.

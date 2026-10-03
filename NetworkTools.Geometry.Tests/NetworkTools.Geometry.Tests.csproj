@@ -5,10 +5,13 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="../NetworkTools.Mod/Geometry/SurfacePreviewIdentity.cs" Link="SurfacePreviewIdentity.cs" />
+    <None Update="Fixtures/combined-repeat-stations.json" Link="combined-repeat-stations.json" CopyToOutputDirectory="PreserveNewest" />
     <None Update="Fixtures/surface-response.json" Link="surface-response.json" CopyToOutputDirectory="PreserveNewest" />
     <None Update="Fixtures/offset-profile-native.json" Link="offset-profile-native.json" CopyToOutputDirectory="PreserveNewest" />
     <Compile Include="../NetworkTools.Mod/Geometry/SurfacePreviewConvergence.cs" Link="SurfacePreviewConvergence.cs" />
     <Compile Include="../NetworkTools.Mod/Geometry/SurfaceProfileResponseFit.cs" Link="SurfaceProfileResponseFit.cs" />
+    <Compile Include="../NetworkTools.Mod/Geometry/SectionedVerticalProfile.cs" Link="SectionedVerticalProfile.cs" />
     <Compile Include="../NetworkTools.Mod/Geometry/VerticalLinearProfile.cs" Link="VerticalLinearProfile.cs" />
     <Compile Include="../NetworkTools.Mod/Geometry/JunctionCandidateSearch.cs" Link="JunctionCandidateSearch.cs" />
     <Compile Include="../NetworkTools.Mod/Geometry/OriginalInputComparison.cs" Link="OriginalInputComparison.cs" />

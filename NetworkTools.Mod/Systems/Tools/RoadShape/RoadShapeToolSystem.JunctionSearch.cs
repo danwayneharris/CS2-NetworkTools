@@ -146,8 +146,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                 if (!selected) {
                     if (!EntityManager.HasComponent<Curve>(pair.Value) || !EntityManager.HasComponent<Curve>(pair.Key)) { WaitForJunction(); return; }
                     var a = EntityManager.GetComponentData<Curve>(pair.Value).m_Bezier;
-                    var b = EntityManager.GetComponentData<Curve>(pair.Key).m_Bezier;
-                    if (!SameControl(a.a,b.a) || !SameControl(a.b,b.b) || !SameControl(a.c,b.c) || !SameControl(a.d,b.d)) {
+                    if (!IncidentPreviewMatches(pair.Key, a, id)) {
                         m_JunctionFailed = true; m_JunctionAccepted = false;
                         UnityEngine.Debug.Log("[NetworkTools.JunctionSearch] rejected: unselected curve changed");
                         return;
@@ -199,3 +198,4 @@ namespace NetworkTools.Systems.Tools.RoadShape {
     }
 }
 #endif
+

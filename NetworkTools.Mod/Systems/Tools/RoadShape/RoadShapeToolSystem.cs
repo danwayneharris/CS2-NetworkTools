@@ -47,6 +47,17 @@ namespace NetworkTools.Systems.Tools.RoadShape {
         public BoolParameter                         SmoothStart     = new("roadShape.smoothStart", false, modes: (int)ShapeTransformTemplate.SlopeLinear | (int)ShapeTransformTemplate.SlopeEaseInOut | (int)ShapeTransformTemplate.SlopeArch, label: "NetworkTools.UI.Slope.SmoothStart");
         public BoolParameter                         SmoothEnd       = new("roadShape.smoothEnd",   false, modes: (int)ShapeTransformTemplate.SlopeLinear | (int)ShapeTransformTemplate.SlopeEaseInOut | (int)ShapeTransformTemplate.SlopeArch, label: "NetworkTools.UI.Slope.SmoothEnd");
 
+        public BoolParameter CombinedSlope = new("roadShape.combinedSlope", false, modes: (int)ShapeTransformTemplate.CurveSmooth, label: "NetworkTools.UI.Curve.CombinedSlope");
+        private bool CombinedMode {
+            get {
+#if IS_DEBUG
+                return Template.Value == ShapeTransformTemplate.CurveSmooth && CombinedSlope.Value;
+#else
+                return false;
+#endif
+            }
+        }
+
         /// <inheritdoc />
         protected override int GetActiveModeFlag() => (int)Template.Value;
 
@@ -99,6 +110,7 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                 ArchHeight      = ArchHeight.Value,
                 ArchPosition    = ArchPosition.Value,
                 SmoothingFactor = SmoothingFactor.Value,
+                CombinedSlope   = CombinedMode,
                 SmoothStart     = SmoothStart.Value,
                 SmoothEnd       = SmoothEnd.Value,
             };

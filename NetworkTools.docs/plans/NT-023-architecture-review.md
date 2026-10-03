@@ -1,6 +1,6 @@
 # NT-023: architecture review and focused prerequisites
 
-Status: reviewed planning draft; saved October 3, 2026. Not yet executing.
+Status: Focused prerequisite implemented in draft PR #19; shared Connect candidate gate and native smoke passed. See ../architecture-review-nt023.md.
 Order: 3 of 6. Dependency: [NT-021](NT-021-junction-elevation-limits.md).
 Proposed branch: dan/nt-023-architecture-review.
 All [shared execution rules](first-six-execution-contract.md) and [documentation requirements](README.md#required-implementation-document-all-plans) apply.

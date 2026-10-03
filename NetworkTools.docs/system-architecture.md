@@ -24,8 +24,8 @@ commands, see [BOOTSTRAP.md](../BOOTSTRAP.md).
 
 This guide is for contributors familiar with programming who are new to this mod
 or Unity's Entity Component System (ECS). For a focused source-reading path, follow
-**parameter declaration → UI binding → job configuration → transformation →
-preview/apply** through sections 6–9.
+**parameter declaration â†’ UI binding â†’ job configuration â†’ transformation â†’
+preview/apply** through sections 6â€“9.
 
 **Historical status and limitations (Sept 26, 2026):** the architecture below follows the mod's
 source. Debug builds and local deployment pass; an in-game smoke test confirmed the
@@ -223,7 +223,7 @@ on `USE_BURST`, enabled by the shared Release configuration.
 
 | Data type | Role |
 | --- | --- |
-| [EdgeState](../NetworkTools.Mod/Systems/Tools/RoadShape/Core/EdgeState.cs) | Edge identity, path direction, composition, mutable Bézier geometry, and original geometry data. |
+| [EdgeState](../NetworkTools.Mod/Systems/Tools/RoadShape/Core/EdgeState.cs) | Edge identity, path direction, composition, mutable BÃ©zier geometry, and original geometry data. |
 | [NodeState](../NetworkTools.Mod/Systems/Tools/RoadShape/Core/NodeState.cs) | Node identity, original position, and transformed position. |
 | [ShapeTransformContext](../NetworkTools.Mod/Systems/Tools/RoadShape/Core/ShapeTransformContext.cs) | Path-level geometry, total length, endpoint information, and slope boundary data. |
 | [ShapeJobConfig](../NetworkTools.Mod/Systems/Tools/RoadShape/Core/ShapeJobConfig.cs) | User-selected transformation settings. |
@@ -231,7 +231,7 @@ on `USE_BURST`, enabled by the shared Release configuration.
 An edge's stored direction may oppose traversal direction; `IsForward` records
 that distinction. Algorithms must not assume every edge points along the selected path.
 
-A node position represents an intersection center; Bézier endpoints can be offset
+A node position represents an intersection center; BÃ©zier endpoints can be offset
 from it. Treating them as identical would lose geometric information.
 
 [TransformPipeline.Execute<T>](../NetworkTools.Mod/Systems/Tools/RoadShape/Core/TransformPipeline.cs#L11)
@@ -552,3 +552,9 @@ then recomputes ordinary-course structural elevation before node generation.
 It preserves existing roads and keeps independent native-result validation.
 See [course-height mechanics and replay](connect-course-height-replay.md) and
 [usage, evidence and limitations](connect-elevation-profile.md).
+
+## October 3 first-six sprint successor
+
+The [six-stage review index](six-plan-sprint-review.md) separates implemented work from guarded/blocked prototypes. Current Connect responsibilities are: immutable candidate configuration and shared Apply policy (NT-023), horizontal-station elevation proposal with independent native coverage (NT-002), actual approach lane context/direction and independent native endpoint connection proofs (NT-003), and offline alignment mathematics plus an explicit preview-only fixed-node diagnostic (partial NT-022). No player-facing lane-alignment feature is delivered by the diagnostic. Bridge remains generic and unchanged.
+
+Native skipped-junction lane references may use shared node-owned ports; edge-owned middle keys retain composition identity. Native NodeAlign can move a node even when the emitted CoursePos names its original position. These are different boundaries and neither a prefab centerline calculation nor an original entity ID proves preservation. See the feature guides for current limits and evidence.

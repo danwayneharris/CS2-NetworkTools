@@ -39,3 +39,12 @@ up this fresh worktree. First attempts correctly failed for an uninitialized
 pinned Common submodule, then missing NuGet assets. Initialized Common at its
 existing recorded revision and restored packages; no production changes were
 needed. The already-tested uv invocation fix is included in this base PR.
+
+## Published review links
+
+Companion PR: https://github.com/danwayneharris/cities2-agent-bridge-ndc/pull/7
+
+NetworkTools #16 targets main; #15 is stacked above it. Bridge #7 targets its
+own main. They can be reviewed independently and have no assembly/release
+dependency. Archive branch: `archive/combined-before-offline-split-20261003`
+in NetworkTools preserves the complete pre-extraction feature/research history.

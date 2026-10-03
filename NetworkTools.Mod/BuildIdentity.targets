@@ -1,0 +1,37 @@
+﻿<Project>
+    <PropertyGroup>
+        <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+        <NTDeploy Condition="'$(NTDeploy)' == ''">true</NTDeploy>
+    </PropertyGroup>
+
+    <!-- Capture once, before the SDK computes its assembly-attribute cache. -->
+    <Target Name="NTGenerateBuildIdentity" BeforeTargets="GetAssemblyAttributes">
+        <PropertyGroup>
+            <NTIdentityPath>$([System.IO.Path]::GetFullPath('$(IntermediateOutputPath)build-identity.json'))</NTIdentityPath>
+        </PropertyGroup>
+        <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildProjectDirectory)\..\scripts\build-identity.ps1&quot; -RepositoryRoot &quot;$(MSBuildProjectDirectory)\..&quot; -ReleaseVersion &quot;$(Version)&quot; -Configuration &quot;$(Configuration)&quot; -IdentityPath &quot;$(NTIdentityPath)&quot;" />
+        <ReadLinesFromFile File="$(NTIdentityPath).version">
+            <Output TaskParameter="Lines" PropertyName="InformationalVersion" />
+        </ReadLinesFromFile>
+    </Target>
+
+    <!-- The SDK sets DeployDir during BuildGetFullPaths. Redirect packaging only;
+         its normal postprocessor and deployment-copy ordering remain in use. -->
+    <Target Name="NTSelectPackageDirectory" AfterTargets="BuildGetFullPaths" Condition="'$(NTDeploy)' == 'false'">
+        <PropertyGroup>
+            <DeployDir>$([System.IO.Path]::GetFullPath('$(MSBuildProjectDirectory)\..\artifacts\packages\$(Configuration)'))</DeployDir>
+        </PropertyGroup>
+    </Target>
+
+    <!-- Override the parent's UI invocation to pass this build's immutable capture
+         and exact SDK destination. Common itself stays pinned and unchanged. -->
+    <Target Name="BuildUI" AfterTargets="DeployWIP" DependsOnTargets="NTGenerateBuildIdentity" Condition="'$(NeedBuild)' == 'true'">
+        <Exec Command="npm run build" WorkingDirectory="$(ProjectDir)UI"
+              EnvironmentVariables="NT_BUILD_IDENTITY=$(NTIdentityPath);NT_UI_OUTPUT_DIR=$(DeployDir)" />
+    </Target>
+
+    <!-- Build completion is after postprocessing, DLL copy, UI, and icon copy. -->
+    <Target Name="NTWriteBuildManifest" AfterTargets="Build" Condition="'$(NeedBuild)' == 'true'">
+        <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildProjectDirectory)\..\scripts\build-identity.ps1&quot; -Mode Manifest -IdentityPath &quot;$(NTIdentityPath)&quot; -ArtifactDirectory &quot;$(DeployDir)&quot; -AssemblyName &quot;$(TargetName)&quot;" />
+    </Target>
+</Project>

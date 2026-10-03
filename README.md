@@ -7,35 +7,19 @@ Welcome to my fork of Luca's Network Tools! I absolutely love this mod, and I've
 
 # First: Some Docs! Always!!
 
-Audit sprint (October 1): focused correctness and test-runner changes are being
-validated on top of the terrain/profile PR. See the [audit disposition](NetworkTools.docs/audit-disposition.md)
-for implemented, in-progress and deferred findings; it is not a declaration that
-all new behavior has passed in-game. Start offline checks with
-`./scripts/bootstrap.ps1 -OfflineTest` (no deployment).
+## Current development baseline
 
-Current guides: [automation/provider](NetworkTools.docs/automation-provider.md),
-[live regressions](NetworkTools.docs/live-regression-runner.md),
-[terrain/profile review](NetworkTools.docs/terrain-profile-review.md), and
-[verification confidence](NetworkTools.docs/offline-validation-confidence.md).
-The brainstorming roadmap below mixes delivered prototypes and future work:
-simple smoothing and substantial instrumentation exist. This branch experiments
-with Debug-only combined Curve + Constant Slope; terrain/obstacle routing remains
-future work. See [combined behavior and limitations](NetworkTools.docs/combined-smoothing-options.md).
+Main f36d669 merged the combined smoothing and offline native execution milestones.
+The current six-plan sprint is tracked in [the review index](NetworkTools.docs/six-plan-sprint-review.md).
+Smooth Curve, splits, and interior-junction smoothing have bounded native evidence.
+Combined Curve + Constant Slope remains a Debug-only experiment. The finishing
+compatibility experiment remains default-off, launch-opt-in, and binary-pinned;
+it affects native rebuilds including load. Tight junctions with large elevation
+changes can still look janky. Offline replay qualifies captured cases, not arbitrary
+terrain deformation or traffic. Historical notes below are not current blockers.
 
-Current experimental checkpoint (October 1, 2026): Smooth Curve, ordinary split
-points and Debug-only interior-junction smoothing have native preview/Apply
-coverage. This branch adds an offset-aware **Constant Slope** profile fit tested on
-the non-flat toy road, rail and highway cases. It improves the captured off-ramp
-grade dip. A further **Debug-only surface-aware ramp correction** addresses the
-captured native junction/surface discontinuity and settles its preview before Apply.
-The maintainer visually confirmed a substantial improvement; this is not terrain-
-following or a claim that all rendered terrain artifacts are resolved. Small geometric discrepancies up to 5 cm are accepted under
-the maintainer's current development policy; connections/topology remain separate
-strict checks. Release/Burst and vehicle traversal are not qualified here.
-See [terrain/profile findings](NetworkTools.docs/terrain-profile-investigation.md),
-[split points](NetworkTools.docs/split-points.md),
-[interior junctions](NetworkTools.docs/interior-junctions.md), and
-[the regression workflow](NetworkTools.docs/live-regression-runner.md).
+See [development build identity](NetworkTools.docs/development-build-identity.md)
+for About/provider identity, artifact hashes, and package-only builds.
 
 The first thing I've done is update this readme, and generate a couple of other docs to make others' lives easier if they ever wanted to contribute and to make my own life easier because I am forgetful as all hell: 
 

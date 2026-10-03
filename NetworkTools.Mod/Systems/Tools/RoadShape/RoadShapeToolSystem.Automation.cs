@@ -180,6 +180,20 @@ namespace NetworkTools.Automation {
 
     // Fixed, versioned public endpoint for the bridge's main-thread dispatcher.
     public static class BridgeApi {
+        // Read the loaded assembly, not a mutable deployment directory or checkout.
+        private static string WithBuildIdentity(JObject result) {
+            var assembly = typeof(BridgeApi).Assembly;
+            var info = (System.Reflection.AssemblyInformationalVersionAttribute)Attribute.GetCustomAttribute(
+                assembly, typeof(System.Reflection.AssemblyInformationalVersionAttribute));
+            var config = (System.Reflection.AssemblyConfigurationAttribute)Attribute.GetCustomAttribute(
+                assembly, typeof(System.Reflection.AssemblyConfigurationAttribute));
+            result["build"] = new JObject {
+                ["assemblyVersion"] = assembly.GetName().Version?.ToString() ?? "unknown",
+                ["informationalVersion"] = info?.InformationalVersion ?? "unknown",
+                ["configuration"] = config?.Configuration ?? "unknown"
+            };
+            return result.ToString(Newtonsoft.Json.Formatting.None);
+        }
         public static string InvokeV1(string action, string json) {
             var world = World.DefaultGameObjectInjectionWorld;
             if (world == null || !world.IsCreated || GameManager.instance.isGameLoading
@@ -189,11 +203,11 @@ namespace NetworkTools.Automation {
             if (action.StartsWith("connect_", StringComparison.Ordinal)) {
                 var connect = world.GetExistingSystemManaged<NetworkTools.Systems.Tools.Connect.NT_ConnectToolSystem>();
                 if (connect == null) throw new InvalidOperationException("connect_unavailable");
-                return connect.AutomationCommand(action.Substring(8), JObject.Parse(json)).ToString(Newtonsoft.Json.Formatting.None);
+                return WithBuildIdentity(connect.AutomationCommand(action.Substring(8), JObject.Parse(json)));
             }
             var tool = world.GetExistingSystemManaged<NT_RoadShapeToolSystem>();
             if (tool == null) throw new InvalidOperationException("networktools_unavailable");
-            return tool.AutomationCommand(action, JObject.Parse(json)).ToString(Newtonsoft.Json.Formatting.None);
+            return WithBuildIdentity(tool.AutomationCommand(action, JObject.Parse(json)));
         }
     }
 }

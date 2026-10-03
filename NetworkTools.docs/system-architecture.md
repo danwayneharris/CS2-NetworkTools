@@ -1,5 +1,7 @@
 # NetworkTools system architecture
 
+> October 3 successor: see [development build identity](development-build-identity.md) and [six-plan sprint status](six-plan-sprint-review.md). Historical verification statements below apply only to their recorded revisions; later bounded native/Release evidence is linked in the audit disposition. Broad Release qualification and vehicle traversal remain separate.
+
 Current audit checkpoint (October 1): source-based changes on the terrain/profile
 PR are being verified; see [audit disposition](audit-disposition.md) for status.
 Do not infer live qualification of this sprint from earlier results. The supported
@@ -482,9 +484,9 @@ inputs and completed job state for UI and provider entry points, and checks agai
 when Apply executes. Debug Smooth Curve and Slope also require the corresponding
 native observation. This is stronger correlation, not a universal native completion
 fence. See `RoadShapeToolSystem.PathData.cs`, `.JobMethods.cs`, `.OriginalProbe.cs`
-and `.Update.cs`; final native validation of the new gate is still pending.
+and `.Update.cs`. Later bounded native gate evidence is recorded in [native audit gates](session-notes/2026-10-01-1537-native-audit-gates.md); it does not qualify arbitrary races.
 
-Release Smooth Curve is being restricted to selections without degree>2 nodes,
+Release Smooth Curve is restricted to selections without degree>2 nodes,
 including endpoints, because it does not include the Debug native junction search.
 The experimental surface-aware Constant Slope path remains Debug-only. Ordinary
 Slope and Straighten do not acquire a new general lane/terrain guarantee from

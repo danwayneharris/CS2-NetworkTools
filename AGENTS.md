@@ -1,5 +1,7 @@
 # Working in this repository
 
+> October 3 successor: see [development build identity](NetworkTools.docs/development-build-identity.md) and [six-plan sprint status](NetworkTools.docs/six-plan-sprint-review.md). Historical verification statements below apply only to their recorded revisions; later bounded native/Release evidence is linked in the audit disposition. Broad Release qualification and vehicle traversal remain separate.
+
 For roadmap/status planning, read [NetworkTools.docs/ROADMAP.md](NetworkTools.docs/ROADMAP.md)
 and its linked evidence. Historical proposals are not automatically unfinished work.
 Detailed plans live in [NetworkTools.docs/plans/](NetworkTools.docs/plans/README.md); roadmap priority does not authorize execution.

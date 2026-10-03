@@ -37,17 +37,38 @@ class OfflineRunnerTests(unittest.TestCase):
         result = self.invoke(lambda *a, **k: self.fail('Missing suite must not launch'))
         self.assertEqual(result['status'], 'blocked')
 
-    def test_launch_and_timeout_block(self):
-        for error in (FileNotFoundError('tool missing'), subprocess.TimeoutExpired('fake', 1)):
+    def test_launch_blocks_but_timeout_fails(self):
+        for error, expected in ((FileNotFoundError('tool missing'), 'blocked'), (subprocess.TimeoutExpired('fake', 1), 'failed')):
             def fail(*args, **kwargs):
                 raise error
-            self.assertEqual(self.invoke(fail)['status'], 'blocked')
+            self.assertEqual(self.invoke(fail)['status'], expected)
 
     def test_aggregate_never_passes_empty_failed_or_blocked(self):
         self.assertEqual(offline.aggregate_status([]), 'failed')
         self.assertEqual(offline.aggregate_status([{'status': 'passed'}]), 'passed')
         for status in ('failed', 'blocked', 'skipped'):
             self.assertNotEqual(offline.aggregate_status([{'status': 'passed'}, {'status': status}]), 'passed')
+
+    def test_prerequisite_block_does_not_launch(self):
+        row = offline.run_suite('fixture', ['fake'], 'suite.py', 'passed', self.root, self.root, 1,
+                                run=lambda *a, **k: self.fail('must not launch'), prerequisites=['Missing SDK'])
+        self.assertEqual(row['status'], 'blocked')
+        self.assertEqual(row['prerequisites'], ['Missing SDK'])
+
+    def test_sdk_prerequisites_are_distinct(self):
+        self.assertTrue(offline.prerequisite_issues('geometry', self.root, which=lambda _: None))
+        for output, blocked in [('9.0.100 [sdk]', True), ('8.0.425 [sdk]', False)]:
+            issues = offline.prerequisite_issues('geometry', self.root, which=lambda _: 'dotnet',
+                run=lambda *a, **k: subprocess.CompletedProcess(a, 0, output, ''))
+            self.assertEqual(bool(issues), blocked)
+
+    def test_slope_missing_installed_inputs_block(self):
+        def fake(command, **kwargs):
+            output = '8.0.425 [sdk]' if '--list-sdks' in command else '{"managed": null, "tool": null}'
+            return subprocess.CompletedProcess(command, 0, output, '')
+        issues = offline.prerequisite_issues('slope-production', self.root, run=fake, which=lambda n: n)
+        self.assertTrue(any('installed input' in x for x in issues))
+        self.assertTrue(any('Common' in x for x in issues))
 
     def test_commands_are_explicit_non_deploying_stages(self):
         specs = offline.suite_specs(self.root, self.root)

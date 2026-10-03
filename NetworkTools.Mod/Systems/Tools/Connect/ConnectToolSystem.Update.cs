@@ -246,7 +246,7 @@
             get {
                 if (Phase != OperationPhase.Ready || Mode.Value == ConnectMode.None) return false;
 #if IS_DEBUG
-                if (Mode.Value == ConnectMode.SimpleCurve) return ControlCandidateAllowsApply();
+                if (ControlCandidateRequired) return ControlCandidateAllowsApply();
 #endif
                 return true;
             }
@@ -260,7 +260,7 @@
         private bool TryRequestApply() {
             if (!CanApply) return false;
 #if IS_DEBUG
-            m_ControlAcceptedCandidate = Mode.Value == ConnectMode.SimpleCurve ? m_ControlCandidate : null;
+            m_ControlAcceptedCandidate = ControlCandidateRequired ? m_ControlCandidate : null;
 #endif
             Phase = OperationPhase.Applying;
             return true;
@@ -297,6 +297,7 @@
         /// </summary>
         protected void ClearSelectionState() {
             // Clear caches
+            ResetProfileApproaches();
             m_SelectedNodes.Clear();
 
             // Batch remove all marker components using cached queries

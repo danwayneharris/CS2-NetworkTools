@@ -72,7 +72,7 @@ class OfflineRunnerTests(unittest.TestCase):
 
     def test_commands_are_explicit_non_deploying_stages(self):
         specs = offline.suite_specs(self.root, self.root)
-        self.assertEqual({row[0] for row in specs}, {'geometry', 'path-selection', 'parameters', 'connect-candidate', 'codegen', 'slope-production', 'original-input', 'python'})
+        self.assertEqual({row[0] for row in specs}, {'geometry', 'path-selection', 'parameters', 'connect-profile', 'connect-coverage', 'connect-candidate', 'codegen', 'slope-production', 'original-input', 'python'})
         for _, command, _, _ in specs:
             self.assertNotIn('build', command)
             self.assertNotIn('bootstrap.ps1', command)

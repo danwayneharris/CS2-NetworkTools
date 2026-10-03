@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../NetworkTools.Mod/Geometry/ConnectVerticalProfile.cs" Link="ConnectVerticalProfile.cs" />
+    <Compile Include="../NetworkTools.Mod/Geometry/VerticalLinearProfile.cs" Link="VerticalLinearProfile.cs" />
+    <Compile Include="../NetworkTools.Mod/Geometry/PlanarCubic.cs" Link="PlanarCubic.cs" />
+    <Compile Include="../NetworkTools.Mod/Geometry/PlanarFairing.cs" Link="PlanarFairing.cs" />
+  </ItemGroup>
+</Project>

@@ -51,10 +51,13 @@ namespace CitiesBridge {
                     if (action == "configure" && tool == "connect") {
                         JObject Point() => new JObject { ["type"] = "array", ["minItems"] = 3, ["maxItems"] = 3,
                             ["items"] = Number(-100000,100000) };
-                        Add("startControl", Point()); Add("endControl", Point());
+                        foreach (var key in new[] { "startControl", "endControl", "midPoint", "midStartControl", "midEndControl" }) props[key] = Point();
+                        props["mode"] = new JObject { ["type"] = "string", ["enum"] = new JArray("SimpleCurve", "ComplexCurve") };
+                        props["smoothElevationProfile"] = new JObject { ["type"] = "boolean" };
+                        props["startApproach"] = Node(); props["endApproach"] = Node();
                     }
                     commands.Add(new JObject { ["name"] = tool + "_" + action, ["readOnly"] = action == "state",
-                        ["description"] = tool + " " + action + ". Paused city and local controls required. Connect initially supports SimpleCurve between matching dead ends. Apply requires current observed preview; independently inspect permanent results.",
+                        ["description"] = tool + " " + action + ". Paused city and local controls required. Connect supports SimpleCurve and ComplexCurve; profile configuration requires current, unambiguous incident approaches. Configure requires at least one option or control point. Apply requires current observed preview; independently inspect permanent results.",
                         ["inputSchema"] = Obj(props, required.ToArray()), ["outputSchema"] = new JObject { ["type"] = "object" } });
                 }
             }

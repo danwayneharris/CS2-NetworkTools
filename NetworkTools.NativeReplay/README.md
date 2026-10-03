@@ -37,10 +37,11 @@ instructions without executing the native DLL.
 | `--pipeline-junction <trace> <new-report>` | Adds CalculateNode iterations 0/1 |
 | `--pipeline-full <trace> <new-report>` | Adds intersection, copy and node publication; managed lookup semantics |
 | `--pipeline-native <trace> <BurstDLL> <new-report>` | All eight stages with pinned instruction-derived Finish lookup |
+| `--pipeline-prepared <trace> <BurstDLL> <new-report>` | Offline correction experiment: prefill computed height-map values, then run native lookup model; old observed mismatches remain failures |
 
 Use `scripts/validate-native-cohort.py` for the five-case native qualification and
 paired discrepancy check. Use `scripts/test-native-pipeline.py --burst-binary ...`
-for the 16 contract/negative checks. Full commands and local manifests are in the
+for the 18 contract/negative checks. Full commands and local manifests are in the
 research report. The source-only full pipeline intentionally fails the recovered
 Burst permanent case; do not loosen tolerance to make that counterfactual pass.
 
@@ -66,3 +67,14 @@ rendering, retaining/quay walls, arbitrary geometry/prefabs, or future game patc
 No product live test has been disabled. Use offline replay first, then targeted
 live checks for unsupported behavior. The research report defines the expansion
 and global patch-refresh process.
+
+
+The offline preparation experiment is described in
+[finishing preparation](../NetworkTools.docs/session-notes/2026-10-03-0100-finishing-preparation.md).
+`scripts/test-finish-height-preparation.py --manifest <cohort.json> --dll <harness.dll>
+--burst-binary <installed-Burst.dll> --output <new-directory>` compares it with managed
+finishing across the captured cohort. This reads local proprietary inputs and writes
+reports; it does not deploy, contact the game, or install a persistent correction.
+A prepared replay can correctly exit 1 because old native observations contain the
+fault: the separate cohort comparison requires exact corrected/managed agreement,
+original native reproduction and a discriminating counterexample.

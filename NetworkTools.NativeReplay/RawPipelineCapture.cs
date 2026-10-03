@@ -13,7 +13,7 @@ static class RawPipelineCapture {
     static string Job(JsonElement capture) => capture.GetProperty("job").GetString()!.Split('+')[1];
     static object Get(ReplayWorld world, Entity entity, Type type) => typeof(ReplayWorld).GetMethod("Get")!.MakeGenericMethod(type).Invoke(world,new object[]{entity})!;
 
-    public static int Run(string tracePath,string output,bool includeJunction=false,bool includePublication=false,string? burstBinary=null) {
+    public static int Run(string tracePath,string output,bool includeJunction=false,bool includePublication=false,string? burstBinary=null,bool prepareFinishHeights=false) {
         if(File.Exists(output))throw new IOException("Refusing to overwrite evidence");
         var native=typeof(GeometrySystem).Assembly;
         if(Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(native.Location)))!=RawEdgeCapture.GameHash)throw new ArgumentException("Game hash changed");
@@ -177,7 +177,23 @@ static class RawPipelineCapture {
             nativeLookup=new BurstFinishLookup(burstBinary,edgeIds.Length,finish.GetProperty("fields").GetProperty("m_EdgeHeightMap"));
             heightMap.LookupReachable=nativeLookup.CanRetrieve;
         }
-        var finishIds=Roots(finish);var finishing=WorldStageTests.Bind<FinishEdgeGeometryJob>(world);
+        if(prepareFinishHeights && nativeLookup==null)throw new ArgumentException("Height preparation requires native lookup model");
+        var preparedKeys=new List<int[]>();
+        var finishIds=Roots(finish);
+        if(prepareFinishHeights)foreach(var entity in finishIds) {
+            var geometry=world.Get<EdgeGeometry>(entity);
+            bool changed=false;
+            for(int endpoint=0;endpoint<2;endpoint++) {
+                // Read actual computed producer values without the modeled broken consumer lookup.
+                // No captured intermediate values or entity-specific correction is substituted.
+                if(heightMap.Values.TryGetValue(new int2(entity.Index,endpoint),out var heights)) {
+                    FinishHeightPreparation.Apply(ref geometry,endpoint,heights);
+                    preparedKeys.Add(new[]{entity.Index,endpoint});changed=true;
+                }
+            }
+            if(changed)world.Set(entity,geometry);
+        }
+        var finishing=WorldStageTests.Bind<FinishEdgeGeometryJob>(world);
         finishing.m_Entities=new(i=>finishIds[i],(_,_)=>throw new InvalidOperationException("Read-only identity"),finishIds.Length);
         finishing.m_EdgeHeightMap=heightMap;finishing.m_TerrainHeightData=TerrainCapture.Load(finish.GetProperty("fields").GetProperty("m_TerrainHeightData"));
         ReplayTerrain.SampleCount=0;
@@ -223,7 +239,7 @@ static class RawPipelineCapture {
         File.WriteAllText(output,JsonSerializer.Serialize(new{scope="Computed initialize -> edge -> flatten -> finish"+(includeJunction?" -> junction iterations 0/1":"")+(includePublication?" -> intersection -> copy -> node bounds":"")+"; no recorded intermediate overwrites; explicit native query membership",
             passed,toleranceMetres=0.03,toleranceBasis="Dan accepts a few cm of bounded accumulated geometric error; 3 cm spatial scalar/control-point bounds; nonspatial differences and identity/key mismatches remain failures",
             gameSha256=RawEdgeCapture.GameHash,tracePath,stageReports=reports,computedEdges,terrainSamples=ReplayTerrain.SampleCount,reads=world.Reads,writes=world.Writes,
-            nativeLookup=nativeLookup?.Evidence,nativeLookupQueries=nativeLookup?.Queries,
+            finishHeightPreparation=prepareFinishHeights,preparedKeys,nativeLookup=nativeLookup?.Evidence,nativeLookupQueries=nativeLookup?.Queries,
             scratchPolicy=includePublication?"AllocateBuffers.ResizeUninitialized(entities.Length) reproduced as fresh output storage; entry bytes never read; native entry nonfinite scratch is excluded, computed exit compared":null,
             captures=paths.Select(p=>new{path=p,sha256=Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(p)))})},new JsonSerializerOptions{WriteIndented=true}));
         Console.WriteLine($"Computed {(includePublication?8:includeJunction?5:4)}-stage pipeline: {edgeIds.Length} edges; within research tolerance: {passed}");

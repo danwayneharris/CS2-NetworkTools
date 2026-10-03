@@ -1,3 +1,6 @@
+Current priority index: [ROADMAP.md](ROADMAP.md) (planning baseline).
+The saved planning response below remains historical.
+
 **Historical plan; successor status October 1:** the generic-provider separation
 and Python/MCP work have since been implemented in their respective products.
 The saved response below is not the current task list. Use [audit disposition](audit-disposition.md)

@@ -1,5 +1,8 @@
 # DeezNotas' Network Tools Fork
 
+Current development priorities: [roadmap](NetworkTools.docs/ROADMAP.md) (planning baseline).
+Detailed execution plans will be indexed in [NetworkTools.docs/plans/](NetworkTools.docs/plans/README.md).
+
 Welcome to my fork of Luca's Network Tools! I absolutely love this mod, and I've been hoping that the "SmoothCurve" feature would graduate out of the "coming soon" phase and into "check this shit out" phase. I am a professional software developer, although I've mostly been an old-school embedded audio guy, writing SW for professional and consumer electronics devices that have mics and/or speakers. I've designed and written audio DSP algorithms, audio processing and pipelining frameworks, designed system architectures, conducted subjective listening tests, written factory test sequences and factory data analysis scripts, and everything in between. HOWEVER, I haven't really done that MUCH in gaming ... YET (I'll be joining Roblox as a Staff SW Developer in November).  But in October, I've got some free time!  I've been interested in dipping my toe into CS2 modding, and super stoked about this mod, and I figure Luca is probably a busy person: life, family, day job, etc. SO I've decided to try my hand at playing around with the legendary NetworkTools mod and see what pops out! Wish me luck! 
 
 # First: Some Docs! Always!!

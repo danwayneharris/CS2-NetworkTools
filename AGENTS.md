@@ -1,5 +1,9 @@
 # Working in this repository
 
+For roadmap/status planning, read [NetworkTools.docs/ROADMAP.md](NetworkTools.docs/ROADMAP.md)
+and its linked evidence. Historical proposals are not automatically unfinished work.
+Detailed plans live in [NetworkTools.docs/plans/](NetworkTools.docs/plans/README.md); roadmap priority does not authorize execution.
+
 This is a fork of Luca Rager's CS2 Network Tools. Keep changes incremental and
 explain the relevant systems concepts: the maintainer is an experienced audio/DSP
 engineer learning CS2 modding. Ground implementation claims in the actual source

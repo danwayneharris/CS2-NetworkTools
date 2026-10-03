@@ -96,6 +96,9 @@ export const EMPTY_NET_PREFAB_DATA: NetPrefabData = {
 export type DistanceUnits = "Meters" | "Units";
 
 export const GAME_BINDINGS = {
+    CONNECT_PROFILE_AVAILABLE: new TwoWayBinding<boolean>("CONNECT_PROFILE_AVAILABLE", false),
+    CONNECT_PROFILE_STATUS: new TwoWayBinding<string>("CONNECT_PROFILE_STATUS", "{}"),
+    CONNECT_PROFILE_CONTEXT: new TwoWayBinding<string>("CONNECT_PROFILE_CONTEXT", "[]"),
     COMBINED_SMOOTH_AVAILABLE: new TwoWayBinding<boolean>("COMBINED_SMOOTH_AVAILABLE", false),
     SHAPE_APPLY_REASON: new TwoWayBinding<string>("SHAPE_APPLY_REASON", ""),
     SPLIT_CHOICES: new TwoWayBinding<string>("SPLIT_CHOICES", "[]"),
@@ -119,6 +122,7 @@ export const GAME_BINDINGS = {
 };
 
 export const GAME_TRIGGERS = {
+    SET_CONNECT_PROFILE_APPROACH: (json: string) => trigger(mod.id, "TRIGGER:SET_CONNECT_PROFILE_APPROACH", json),
     SET_SPLIT_NODE: (index: number, version: number, enabled: boolean) => {
         trigger(mod.id, "TRIGGER:SET_SPLIT_NODE", index, version, enabled);
     },

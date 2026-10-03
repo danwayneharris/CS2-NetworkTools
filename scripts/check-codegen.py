@@ -63,7 +63,14 @@ class CodegenTests(unittest.TestCase):
                         f'{name}: new TwoWayBinding<{kind}>("{key}", {default}),',
                         f'"{key}": PARAM_BINDINGS.roadShape.{name},',
                     })
-                additive_names={'combinedSlope',*additions}
+                # NT-002 profile is an explicit session-only opt-in in both wire schemas.
+                added.update({
+                    'smoothElevationProfile: "connect.smoothElevationProfile",',
+                    '"connect.smoothElevationProfile": { type: "bool", default: false, modes: 0, label: "NetworkTools.UI.Connect.SmoothElevationProfile" },',
+                    'smoothElevationProfile: new TwoWayBinding<boolean>("connect.smoothElevationProfile", false),',
+                    '"connect.smoothElevationProfile": PARAM_BINDINGS.connect.smoothElevationProfile,',
+                })
+                additive_names={'combinedSlope','smoothElevationProfile',*additions}
                 actual=[line.strip() for line in lines if any(name in line for name in additive_names)]
                 self.assertEqual(len(added),len(actual))
                 self.assertEqual(added,set(actual))

@@ -6,7 +6,6 @@ namespace NetworkTools.Systems.Tools.Connect {
     using Game.Net;
     using Game.Notifications;
     using Game.Prefabs;
-    using Game.Prefabs;
     using Game.Rendering;
     using Game.Simulation;
     using Game.Tools;
@@ -15,11 +14,18 @@ namespace NetworkTools.Systems.Tools.Connect {
     using Unity.Jobs;
 
     public partial class NT_ConnectToolSystem {
+#if IS_DEBUG
+        private bool m_ControlClearingPreview;
+#endif
         /// <summary>
         ///     Builds a Burst-compatible snapshot struct from the current parameter values and contextual state.
         /// </summary>
         internal ConnectJobConfig BuildJobConfig() {
             return new ConnectJobConfig {
+#if IS_DEBUG
+                SmoothElevationProfile = SmoothElevationProfile.Value,
+                ComplexProfile = Mode.Value == ConnectMode.ComplexCurve,
+#endif
                 StartPosition                  = StartPosition.Value,
                 EndPosition                    = EndPosition.Value,
                 StartDirection                 = StartDirection.Value,
@@ -61,7 +67,13 @@ namespace NetworkTools.Systems.Tools.Connect {
             config.NetPrefabEntity = netPrefabEntity;
             config.NetLanePrefabEntity = netLanePrefabEntity;
 #if IS_DEBUG
-            if (outputMode == ToolOutputMode.Preview) BeginControlPreview(config);
+            if (outputMode == ToolOutputMode.Preview) {
+                if (config.SmoothElevationProfile && !TryPrepareProfile(ref config, out m_ControlRejection)) {
+                    m_ControlCandidate = null; m_ControlAcceptedCandidate = null;
+                    return inputDeps;
+                }
+                BeginControlPreview(config);
+            }
 #endif
             var jobHandle = new CreateDefinitionsJob {
                 Mode = Mode.Value,
@@ -103,11 +115,26 @@ namespace NetworkTools.Systems.Tools.Connect {
 #if IS_DEBUG
             // A rejected request may have lost a selected entity/component. Do not
             // immediately feed that missing context into the preview generator.
-            if (Mode.Value == ConnectMode.SimpleCurve && ControlInputs() == null) {
+            if (ControlCandidateRequired && ControlInputs() == null) {
                 m_ControlCandidate = null;
                 m_ControlAcceptedCandidate = null;
                 m_ControlRejection = "inputs_unavailable";
                 return Clear(inputDeps);
+            }
+#endif
+#if IS_DEBUG
+            // A native rebuild may reuse temporary IDs. Establish an empty preview
+            // boundary before replacing a guarded candidate; never accept old IDs
+            // merely because their coordinates happen to match the new request.
+            if (ControlCandidateRequired && (m_ControlCandidate != null || m_ControlClearingPreview)) {
+                m_ControlCandidate = null; m_ControlAcceptedCandidate = null;
+                using var oldPreview = ControlTempQuery();
+                if (!m_ControlClearingPreview || oldPreview.CalculateEntityCount() != 0) {
+                    m_ControlClearingPreview = true;
+                    m_ControlRejection = "preview_clearing";
+                    return Clear(inputDeps);
+                }
+                m_ControlClearingPreview = false;
             }
 #endif
             // Recreate temp entities
@@ -129,7 +156,7 @@ namespace NetworkTools.Systems.Tools.Connect {
         private JobHandle Apply(JobHandle inputDeps) {
             ConnectJobConfig? acceptedConfig = null;
 #if IS_DEBUG
-            if (m_ControlAcceptedCandidate != null || Mode.Value == ConnectMode.SimpleCurve) {
+            if (m_ControlAcceptedCandidate != null || ControlCandidateRequired) {
                 inputDeps.Complete();
                 m_ControlJob.Complete();
                 if (!ControlCandidateAllowsApply(executing: true)) {

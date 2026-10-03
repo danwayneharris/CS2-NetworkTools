@@ -26,6 +26,14 @@ namespace NetworkTools.Systems.Tools.Connect {
         public NetPrefabParameter         NetPrefab  = new("connect.netPrefab", nullable: true);
         public EnumParameter<ConnectMode> Mode       = new("connect.mode", ConnectMode.SimpleCurve, label: "NetworkTools.UI.Common.Mode");
 
+        // Session-only opt-in; Release never enables the experimental profile.
+        public BoolParameter SmoothElevationProfile = new("connect.smoothElevationProfile", false,
+            label: "NetworkTools.UI.Connect.SmoothElevationProfile", persist: false) {
+#if !IS_DEBUG
+            ValidateValue = value => !value,
+#endif
+        };
+
         // Shared (from node selection)
         public Float3Parameter StartPosition  = new("connect.startPosition");
         public Float3Parameter EndPosition    = new("connect.endPosition");

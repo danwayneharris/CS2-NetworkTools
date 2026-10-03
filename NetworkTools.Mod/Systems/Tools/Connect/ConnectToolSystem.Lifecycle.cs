@@ -147,6 +147,8 @@ namespace NetworkTools.Systems.Tools.Connect {
             RenderHandles             = true;
             //DisableVanillaCourseSplit = true;
 
+            SmoothElevationProfile.OnChanged += _ => m_UpdateNeeded = true;
+
             // Mode change reinitializes context and handles
             Mode.OnChanged += _ => {
                 if (Phase == OperationPhase.Ready)

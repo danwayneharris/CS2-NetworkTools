@@ -4,7 +4,8 @@ param(
     [Parameter(Mandatory)][string]$Fixture,
     [string]$SaveRoot=(Join-Path $env:USERPROFILE 'AppData\LocalLow\Colossal Order\Cities Skylines II\Saves'),
     [string]$BridgePath=(Join-Path $PSScriptRoot '..\..\cities2-agent-bridge-ndc'),
-    [switch]$ExperimentalFinishHeightPreparation
+    [switch]$ExperimentalFinishHeightPreparation,
+    [switch]$ConnectFixedAnchorProbe
 )
 $ErrorActionPreference='Stop'
 if(Get-Process Cities2 -ErrorAction SilentlyContinue){throw 'Game already running; checkpoint and close gracefully first'}
@@ -24,5 +25,6 @@ New-Item -ItemType Directory $working | Out-Null
 [IO.File]::WriteAllText((Join-Path $working 'steam_appid.txt'),'949230',[Text.Encoding]::ASCII)
 $gameArgs=@('--noSplash',"--startGame=$id")
 if($ExperimentalFinishHeightPreparation){$gameArgs+='--nt-experimental-finish-height-preparation'}
+if($ConnectFixedAnchorProbe){$gameArgs+='--nt-connect-fixed-anchor-probe'}
 $p=Start-Process -FilePath $exe -WorkingDirectory $working -ArgumentList $gameArgs -WindowStyle Normal -PassThru
 [pscustomobject]@{pid=$p.Id;save=$save;arguments=$gameArgs;status='Launch requested; verify loaded toy geometry, pause, controls and build independently'}

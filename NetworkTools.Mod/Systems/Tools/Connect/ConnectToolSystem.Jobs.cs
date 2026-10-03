@@ -83,6 +83,20 @@ namespace NetworkTools.Systems.Tools.Connect {
                     curve.EndNodePosition   = curve.Bezier.d;
                     curve.StartNodeRotation = NetUtils.GetNodeRotation(MathUtils.StartTangent(curve.Bezier));
                     curve.EndNodeRotation   = NetUtils.GetNodeRotation(MathUtils.EndTangent(curve.Bezier));
+#if IS_DEBUG
+                    if (Config.FixedNodeAlignmentProbe) {
+                        if (i == 0) {
+                            curve.StartNodeEntity = SelectedNodeEntities[0];
+                            var node = NodeLookup[curve.StartNodeEntity];
+                            curve.StartNodePosition = node.m_Position; curve.StartNodeRotation = node.m_Rotation;
+                        }
+                        if (i == curves.Length - 1) {
+                            curve.EndNodeEntity = SelectedNodeEntities[1];
+                            var node = NodeLookup[curve.EndNodeEntity];
+                            curve.EndNodePosition = node.m_Position; curve.EndNodeRotation = node.m_Rotation;
+                        }
+                    }
+#endif
                     NetCourseEmitter.EmitPreview(ref ECB, in curve, CreationFlags.SubElevation);
                 }
             }

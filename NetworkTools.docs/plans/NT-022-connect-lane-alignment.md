@@ -1,6 +1,6 @@
-# NT-022: explicit lateral lane alignment
+﻿# NT-022: explicit lateral lane alignment
 
-Status: reviewed planning draft; saved October 3, 2026. Not yet executing.
+Status: PARTIAL / BLOCKED for the full feature (October 3, 2026). Pure helpers and a preview-only diagnostic are delivered; the native fixed-node prerequisite failed. No Align selected lanes control is delivered. See [implementation, blocker, evidence and review guide](../connect-lane-alignment.md).
 Order: 6 of 6. Dependency: [NT-003](NT-003-connect-lane-direction.md).
 Proposed branch: dan/nt-022-connect-lane-alignment.
 All [shared execution rules](first-six-execution-contract.md) and [documentation requirements](README.md#required-implementation-document-all-plans) apply.
@@ -38,7 +38,7 @@ prefab centerline is insufficient evidence of resulting lane alignment.
 
 ## Verification and acceptance
 
-Cover 2→3 and 3→2 one-way transitions; either side gaining a lane; differing widths;
+Cover 2â†’3 and 3â†’2 one-way transitions; either side gaining a lane; differing widths;
 curved approaches; reversed selection; two-way carriageways; incompatible groups;
 stale composition; and smooth elevation profile interaction.
 
@@ -55,7 +55,7 @@ neighbor-editing or direct lane-routing feature.
 Create a durable lane-alignment guide with features/usage, architecture, actual tests,
 limitations, and **Dan's review**. Also finish the six-stage review index.
 
-1. In a 2→3-lane fixture, select the left pair, then the right pair.
+1. In a 2â†’3-lane fixture, select the left pair, then the right pair.
 2. Inspect which pair continues and which side gains the extra lane.
 3. Compare preview with Apply and check markings/taper quality.
 4. Follow the supplied vehicle-traversal check separately from geometry review.

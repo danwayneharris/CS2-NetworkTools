@@ -1,6 +1,6 @@
 # NT-021: bounded interior-junction elevation movement
 
-Status: reviewed planning draft; saved October 3, 2026. Not yet executing.
+Status: Implemented in draft PR #18; rail bound/disabled native cases passed, existing road-lane control failure remains documented. See ../junction-elevation-limits.md.
 Order: 2 of 6. Dependency: [NT-001](NT-001-development-baseline.md).
 Proposed branch: dan/nt-021-junction-elevation-limits.
 All [shared execution rules](first-six-execution-contract.md) and [documentation requirements](README.md#required-implementation-document-all-plans) apply.

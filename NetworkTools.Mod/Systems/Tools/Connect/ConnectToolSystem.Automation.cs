@@ -34,6 +34,7 @@ namespace NetworkTools.Systems.Tools.Connect {
         private bool ControlCandidateRequired => Mode.Value == ConnectMode.SimpleCurve
             || (Mode.Value == ConnectMode.ComplexCurve && (SmoothElevationProfile.Value || LaneAwareDirection.Value));
         private bool ControlCandidateAllowsApply(bool executing = false) {
+            if (AlignmentProbeEnabled) { m_ControlRejection = "alignment_probe_preview_only"; return false; }
             if (!Enabled || m_ToolSystem.activeTool != this || !ControlCandidateRequired) {
                 m_ControlRejection = "connect_not_active";
                 return false;

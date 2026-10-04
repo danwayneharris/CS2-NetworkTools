@@ -107,3 +107,11 @@ Public GitHub Issues will also make known limitations discoverable to other mod 
 BUG-005 review update (October 4): Dan confirms scrolling works on the deployed fix 531d970. Broader footer/picker/UI-scale checks remain pending; this is partial human validation rather than a claim of every layout case passing.
 
 BUG-006 implementation update: [concise lane-choice UI](session-notes/2026-10-04-0340-lane-labels.md) replaces composition indices with travel-relative names and shortens repeated instructions. Status: fixed in source, awaiting native visual review. Required selection and native lane validation remain unchanged; no automatic lane selection added.
+
+## BUG-007 — Unambiguous dead-end Connect requires unnecessary lane choices
+
+- Status: reproduced in provider state, UX fix pending. Priority: medium; blocks frictionless basic lane-aware Connect review.
+- Baseline reported by Dan: `bridge test - connect repro 2`; build 92e6cff. Both endpoints have one Small Road approach (already selected), one eligible required-role lane and one wrong-role lane. Rejection is lane_choice_required solely because eligible lanes are not selected.
+- Expected: obvious same-type dead-end connection defaults without user configuration. Proposed scoped correction: resolve the unique eligible lane automatically while retaining all acceptance checks; keep overrides for genuinely ambiguous choices. Do not silently infer arbitrary junction/lane-group intent.
+- [Capture and scope](session-notes/2026-10-04-0729-connect-deadend-defaults.md). No Apply performed; acceptance after default selection has not been tested in this case.
+- Review: select this pair after reload with lane-aware mode enabled; no additional choices should be necessary, and preview/Apply must still pass independent checks. Ineligible opposite-direction lanes should not look like user errors. Dan is providing another example before implementation.

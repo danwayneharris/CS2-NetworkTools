@@ -1,0 +1,5 @@
+﻿# 2026-10-04 07:29 — Dead-end Connect default-selection UX
+
+Dan's baseline: `bridge test - connect repro 2`. Read-only capture at artifacts/connect-deadend-inspect-1791124152, clean Debug 92e6cff, paused toy city. Both selected endpoints have exactly one Small Road approach, already auto-selected. Each endpoint has precisely one eligible lane in its required travel role and one ineligible opposite-direction lane. Neither eligible lane is selected; rejection lane_choice_required, previewReady false.
+
+Dan expects this unambiguous same-type dead-end connection to work without extra configuration. Agree: auto-resolve the sole eligible lane after resolving the unique approach, retaining validation. Wrong-role lanes should not read as errors the player must fix. Do not generalize to multi-lane/junction intent without a deliberate default policy. Recorded as BUG-007; wait for Dan's next example before implementing the combined UX change. No selection, parameter, Apply, save or simulation mutation performed.

@@ -195,3 +195,12 @@ all possible native-error/race timings. It does not certify requested lane mappi
 or vehicle traversal. [Compact evidence](session-notes/nt023-native-evidence.json).
 
 Review checkpoint: `CitiesIIAgentBridge-review-nt023-road-connect-20261003-140428-816b028b`.
+
+## Dan's manual review — October 3, 2026
+
+Dan confirmed basic Simple Connect behavior appears correct on deployed Debug
+`7dfb76ffeb88`. First selection after a fresh game launch can leave Create Connection
+disabled; ending-node reselection resolves it, and an in-process save reload does
+not reproduce it. This is accepted as a minor non-blocking issue for this PR and
+tracked as [BUG-001](BUG-BACKLOG.md). The failed state was not captured by the agent.
+More complex cases and vehicle traversal remain pending. Dan authorized squash merge.

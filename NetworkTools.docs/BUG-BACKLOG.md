@@ -86,3 +86,41 @@ When Dan or an executor says “note this bug,” update this file in the same c
 Later GitHub Issues migration should preserve these IDs, link the evidence, and move authoritative status there deliberately. Until then, PRs link to this file and record any new review findings here; there is no parallel issue tracker to keep synchronized.
 
 Public GitHub Issues will also make known limitations discoverable to other mod developers, reviewers and eventual users. Migration is intended to communicate awareness and scope clearly, not just move internal bookkeeping. No issues are created by this reconciliation.
+
+## BUG-005 — Expanded Connect controls extend below the screen
+
+- Status: fixed in source, awaiting native UI verification. Priority: review-blocking usability for lane-aware Connect (#21).
+- Reported build: clean Debug d78c172. Enabling lane-aware direction/profile controls can push required lane selections and Apply below the screen without an overall scrollbar.
+- Source cause: action panel lacked a viewport height limit and overall scrolling area. Individual list overflow did not bound the combined panel.
+- Correction: use the game's Scrollable for controls, bound panel height, keep header/Apply outside the scrolling area, remove nested scrolling from choice lists inside this area. Geometry/Apply validation is unchanged.
+- Evidence and review checklist: [panel scrolling session](session-notes/2026-10-04-0300-connect-panel-scroll.md). Gameface inspection endpoint was unavailable; initial diagnosis combines user's observation, bridge state and source rather than a live layout measurement.
+- Closure: at the reported UI scale, all start/end approach and lane choices must be reachable via wheel and scrollbar, and Apply must stay visible; check shorter tools and prefab picker too. No accepted connection is implied merely by making the missing controls accessible.
+
+## BUG-006 — Lane-choice labels make Connect setup difficult to reproduce
+
+- Status: reported UX issue; priority medium, no geometry failure established in this capture.
+- On clean Debug 531d970, a three-lane highway lists composition lane indices 2/3/4, and a one-lane arrival lists lane 2. These are not familiar player-facing lane ordinals. Required selection can therefore look like a native geometry error.
+- Captured rejection was lane_choice_required; selecting physical rightmost incoming lane 4 and outgoing lane 2 produced a stable accepted preview. No Apply performed. [Evidence and saved checkpoint](session-notes/2026-10-04-0331-highway-lane-review.md).
+- Workaround: explicitly select an incoming departure and outgoing arrival lane after selecting approaches; choices are transient and reset with tool selection. Do not infer them from the saved network alone.
+- Follow-up: clearer player-facing lane labels/orientation and required-selection guidance, keeping internal IDs available diagnostically. Verify a user can reconstruct the intended slip-lane setup without agent intervention. Reload causality and geometry/traffic remain separate checks.
+
+BUG-005 review update (October 4): Dan confirms scrolling works on the deployed fix 531d970. Broader footer/picker/UI-scale checks remain pending; this is partial human validation rather than a claim of every layout case passing.
+
+BUG-006 implementation update: [concise lane-choice UI](session-notes/2026-10-04-0340-lane-labels.md) replaces composition indices with travel-relative names and shortens repeated instructions. Status: fixed in source, awaiting native visual review. Required selection and native lane validation remain unchanged; no automatic lane selection added.
+
+## BUG-007 — Unambiguous dead-end Connect requires unnecessary lane choices
+
+- Status: reproduced in provider state, UX fix pending. Priority: medium; blocks frictionless basic lane-aware Connect review.
+- Baseline reported by Dan: `bridge test - connect repro 2`; build 92e6cff. Both endpoints have one Small Road approach (already selected), one eligible required-role lane and one wrong-role lane. Rejection is lane_choice_required solely because eligible lanes are not selected.
+- Expected: obvious same-type dead-end connection defaults without user configuration. Proposed scoped correction: resolve the unique eligible lane automatically while retaining all acceptance checks; keep overrides for genuinely ambiguous choices. Do not silently infer arbitrary junction/lane-group intent.
+- [Capture and scope](session-notes/2026-10-04-0729-connect-deadend-defaults.md). No Apply performed; acceptance after default selection has not been tested in this case.
+- Review: select this pair after reload with lane-aware mode enabled; no additional choices should be necessary, and preview/Apply must still pass independent checks. Ineligible opposite-direction lanes should not look like user errors. Dan is providing another example before implementation.
+
+## BUG-008 — Connect elevation profile can look awkward despite curve continuity
+
+- Status: open, accepted non-blocking for PR #21 by Dan on October 4, 2026. This is a visual-quality defect, not excused by numerical tolerances.
+- Build: clean Debug 92e6cff8fafb. Captured Simple Connect with lane-aware direction and Smooth Elevation Profile enabled produced an accepted preview. Authored rise was 8.75 m with nearly flat endpoint grades and a sampled maximum grade of about 12.54%. The two native preview curves had no height gap and matching join grades; they closely reproduced the authored candidate. These measurements do not establish good visual quality, surface correctness, or vehicle traversal.
+- Dan reports severe visual elevation jank, improved manually with MoveIt. Edited reference save: `bridge test - connect repro 2 - looks better`. Do not treat that edited save as the untouched failing baseline. Agent inspected the rendered edited ramp; no controlled rendered before/after comparison or exact edit reconstruction was performed.
+- Evidence: [October 4 review note](session-notes/2026-10-04-connect-grade-review.md). Underlying cause remains unresolved; distinguish undesirable authored grade distribution from terrain/native surface generation. Do not assume it is the same cause as BUG-004.
+- Follow-up: compare the original candidate with the edited reference, preserving both saves; evaluate grade distribution and native surfaces independently. Closure requires visual improvement without endpoint/connectivity regressions. No fix or Apply was performed during this inspection.
+- Testing lesson: [bounded oracle-gap review](session-notes/2026-10-04-0810-connect-quality-test-gap.md). Current offline tests prove profile contracts; automated live tests prove preservation/connection and preview/Apply agreement. Neither grades visual quality, and authored-curve checks do not certify rendered surfaces. An undesirable candidate reproduced faithfully can pass. The exact case was not run through a full automated Apply test, so this is not evidence of such a run passing. Deferred follow-up: compare grade distribution and native surfaces against the MoveIt reference before choosing a meaningful quality regression; do not tighten the 5 cm tolerance or invent a grade rejection threshold.

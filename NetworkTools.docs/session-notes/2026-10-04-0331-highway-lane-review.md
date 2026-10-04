@@ -1,0 +1,9 @@
+﻿# 2026-10-04 03:31 — Highway departure lane review
+
+Dan reports scrollbar works. Toy save: `bridge test - connect highway merge-off direction`, loaded paused, zero population, controls enabled. Clean deployed build 531d970. Read-only captures: artifacts/connect-direction-inspect-1791109839. Start/end approaches were selected correctly (three-lane highway departure and one-lane arrival); all lane choices were unselected. Actual rejection: lane_choice_required, no authored accepted candidate. No geometric regression established from this initial state.
+
+Before preview edits, created completed checkpoint `CitiesIIAgentBridge-connect-direction-before-preview-probe-20261004-103124-651af3e1`. Captures: artifacts/connect-direction-probe-1791109883. Selected physical rightmost incoming lane using the travel-direction/XZ cross product (composition index 4) and the only eligible outgoing arrival lane (composition index 2). Six bounded observations all returned accepted, previewReady true, revision 151/submission 36, profileRestoration restored_2. Left that preview selected, city paused. No Apply, reload, permanent geometry edit, or deployment. Vehicle and visual shape verification remain Dan's review.
+
+Source: LaneContext keeps transient entity-based choices; Update.ClearSelectionState resets them when tool stops/resets. This explains why a saved city does not encode the complete Connect UI setup, but no controlled reload causality experiment was performed here. Current labels expose composition indices; highway lanes 2/3/4 and single road lane 2 are confusing player-facing names. Record BUG-006 for actionable labels/instructions rather than treating the necessary lane-choice rejection as a geometry fault. Do not auto-assume intended lanes at ambiguous junctions.
+
+BUG-005: Dan confirms the UI now scrolls. Full footer/picker/scale matrix remains unverified; retain bounded review scope.

@@ -88,4 +88,32 @@ class ConnectTests(unittest.TestCase):
         for error in (.051,float('nan'),float('inf')):
             with self.assertRaises(AssertionError):tool['assert_connect_report'](dict(good,previewApplyMaxError=error))
 
+class SelectedLaneTests(unittest.TestCase):
+    def fixture(self):
+        before=[];after=[];selected=[]
+        for ordinal in range(2):
+            owner=10+ordinal;new=30+ordinal;junction=100+ordinal
+            def port(eq,edge):return dict(equalityId=eq,ownerIndex=edge,laneIndex=1,secondary=False)
+            approach=dict(index=50+ordinal,version=1,owner=dict(index=owner,version=1),car={},start=port(1 if ordinal==0 else 4,owner),middle=port(8,owner),end=port(3 if ordinal==0 else 7,owner))
+            added=dict(index=60+ordinal,version=1,owner=dict(index=new,version=1),car={},start=port(4 if ordinal==0 else 1,new),middle=port(9,new),end=port(7 if ordinal==0 else 3,new))
+            link=dict(index=70+ordinal,version=1,owner=dict(index=junction,version=1),car={},start=port(3,owner if ordinal==0 else new),middle=port(10,junction),end=port(4,new if ordinal==0 else owner))
+            def comp(i):return dict(index=i,composition={'edge':{'width':16,'lanes':[]}})
+            old=dict(complete=True,errors=[],junction={'index':junction,'version':1},incidentEdges=[{'index':owner,'version':1}],owners=[comp(owner)],lanes=[approach])
+            current=copy.deepcopy(old);current['incidentEdges'].append({'index':new,'version':1});current['owners'].append(comp(new));current['lanes'] += [added,link]
+            before.append(old);after.append(current);selected.append({'index':50+ordinal,'version':1})
+        return before,after,selected,[(30,1),(31,1)]
+    def test_actual_graph_reachability_both_endpoints(self):
+        self.assertEqual(2,len(tool['connect_selected_lane_proof'](*self.fixture())))
+    def test_missing_reversed_wrong_new_edge_and_stale_lane_fail(self):
+        for kind in ('missing','reversed','wrong-edge','stale','composition'):
+            before,after,selected,new=self.fixture()
+            if kind=='missing':after[0]['lanes'].pop()
+            if kind=='reversed':
+                link=after[0]['lanes'][-1];link['start'],link['end']=link['end'],link['start']
+            if kind=='wrong-edge':new=[(999,1)]
+            if kind=='stale':selected[0]['version']=2
+            if kind=='composition':after[0]['owners'][0]['composition']['edge']['width']=20
+            with self.subTest(kind=kind),self.assertRaises((AssertionError,ValueError)):
+                tool['connect_selected_lane_proof'](before,after,selected,new)
+
 if __name__=='__main__':unittest.main()

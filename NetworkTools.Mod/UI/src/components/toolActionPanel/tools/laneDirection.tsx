@@ -33,7 +33,7 @@ export const LaneDirectionControls: React.FC = () => {
     const json = useValue(GAME_BINDINGS.CONNECT_LANE_DIRECTION_CHOICES.binding);
     const endpoints: LaneEndpoint[] = React.useMemo(() => JSON.parse(json), [json]);
     const { translate } = useLocalization();
-    const label = (key: string, fallback: string) => translate(`NetworkTools.UI.Connect.${key}`, fallback);
+    const label = (key: string, fallback: string) => translate(`NetworkTools.UI.Connect.${key}`, fallback) ?? fallback;
     const reasonLabel = (reason: string) => { const [key, fallback] = reasonText(reason); return label(key, fallback); };
     const send = (endpoint: LaneEndpoint, lanes: LaneEntity[]) => GAME_TRIGGERS.SET_CONNECT_LANE_DIRECTION(JSON.stringify({
         endpoint: endpoint.endpoint, node: endpoint.node, edge: endpoint.approach, lanes
@@ -57,10 +57,10 @@ export const LaneDirectionControls: React.FC = () => {
                     const selected = endpoint.choices.filter(lane => lane.selected).map(lane => lane.lane);
                     send(endpoint, choice.selected ? selected.filter(lane => !sameLane(lane, choice.lane)) : [...selected, choice.lane]);
                 }}>
-                {choice.selected ? "? " : ""}
+                {choice.selected ? "\u2713 " : ""}
                 {label(laneLabel(choice, endpoint.choices).key, laneLabel(choice, endpoint.choices).fallback)
                     .replace("{number}", String(laneOrdinal(choice, endpoint.choices)))}
-                {new Set(endpoint.choices.map(x => x.carriageway)).size > 1 && ` ? ${label("LaneCarriageway", "Carriageway")} ${choice.carriageway + 1}`}
+                {new Set(endpoint.choices.map(x => x.carriageway)).size > 1 && ` - ${label("LaneCarriageway", "Carriageway")} ${choice.carriageway + 1}`}
                 {choice.reason && <div>{reasonLabel(choice.reason)}</div>}
             </button>)}
             {endpoint.choices.some(choice => choice.selected) && <button className={styles.splitChoice} onClick={() => send(endpoint, [])}>

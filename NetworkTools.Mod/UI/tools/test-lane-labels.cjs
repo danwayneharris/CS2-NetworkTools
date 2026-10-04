@@ -1,0 +1,20 @@
+﻿// Run with node from the UI directory. Tests the actual TypeScript label helper.
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const ts = require('typescript');
+const source = fs.readFileSync('src/components/toolActionPanel/tools/laneLabels.ts', 'utf8');
+const output = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText;
+const api = {};
+new Function('exports', output)(api);
+const lanes = (incoming, count) => Array.from({length:count}, (_, i) => ({index:i+2,position:(i-1)*4,incoming,carriageway:0}));
+let a=lanes(true,3);
+assert.deepEqual(a.map(x=>api.laneLabel(x,a).fallback),['Leftmost lane','Middle lane','Rightmost lane']);
+a=lanes(false,3);
+assert.deepEqual(a.map(x=>api.laneLabel(x,a).fallback),['Rightmost lane','Middle lane','Leftmost lane']);
+a=lanes(false,1);assert.equal(api.laneLabel(a[0],a).fallback,'Only lane');
+a=lanes(true,4);assert.equal(api.laneLabel(a[1],a).key,'LaneFromLeft');assert.equal(api.laneOrdinal(a[1],a),2);
+const other={...a[0],carriageway:1};assert.equal(api.laneLabel(other,[...a,other]).fallback,'Only lane');
+const opposite={...a[0],incoming:false};assert.equal(api.laneLabel(opposite,[...a,opposite]).fallback,'Only lane');
+a=lanes(true,2);a[1].position=a[0].position;assert.equal(api.laneLabel(a[0],a).key,'LanePositionUnknown');
+a[1].position=NaN;assert.equal(api.laneLabel(a[0],a).key,'LanePositionUnknown');
+console.log('Lane label tests passed: incoming/outgoing reversal, single/multiple lanes, carriageway/direction isolation, ambiguous/nonfinite positions.');

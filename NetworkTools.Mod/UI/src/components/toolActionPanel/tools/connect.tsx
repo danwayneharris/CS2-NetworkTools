@@ -33,6 +33,7 @@ const profileStatusMessage = (reason: string): [string, string] => {
 
 export const ConnectControls: React.FC = () => {
     const activeConnectMode = useValue(C.mode.binding) as ConnectMode;
+    const laneAware = useValue(C.laneAwareDirection.binding);
     const available = useValue(GAME_BINDINGS.CONNECT_PROFILE_AVAILABLE.binding);
     const statusJson = useValue(GAME_BINDINGS.CONNECT_PROFILE_STATUS.binding);
     const status: { reason?: string; accepted?: boolean } = React.useMemo(() => JSON.parse(statusJson), [statusJson]);
@@ -53,12 +54,9 @@ export const ConnectControls: React.FC = () => {
                         ? <div>{translate("NetworkTools.UI.Connect.ProfileLoop", "Smooth elevation profile is unavailable for Loop.")}</div>
                         : <>
                             <ParameterField paramKey="connect.smoothElevationProfile" />
-                            <div>{translate(`NetworkTools.UI.Connect.${statusKey}`, statusFallback)}
-                                {status.reason && !["accepted", "profile_disabled"].includes(status.reason) && <div>{status.reason}</div>}
-                            </div>
-                            <div>{translate("NetworkTools.UI.Connect.ProfileExplanation", "Match endpoint heights and approach grades. Choose the existing approach at each junction. Native validation may reject profiles it cannot preserve.")}</div>
-                            {contexts.map(context => <div className={styles.splitChoices} key={context.endpoint}>
-                                <div>{translate(context.endpoint === 0 ? "NetworkTools.UI.Connect.StartApproach" : "NetworkTools.UI.Connect.EndApproach", context.endpoint === 0 ? "Start approach" : "End approach")}</div>
+                            {status.reason !== "profile_disabled" && !status.reason?.startsWith("lane_") && <div>{translate(`NetworkTools.UI.Connect.${statusKey}`, statusFallback)}</div>}
+                            {(laneAware || status.reason !== "profile_disabled") && contexts.map(context => <div className={styles.splitChoices} key={context.endpoint}>
+                                <div>{translate(context.endpoint === 0 ? "NetworkTools.UI.Connect.StartRoad" : "NetworkTools.UI.Connect.EndRoad", context.endpoint === 0 ? "From road" : "To road")}</div>
                                 {context.reason && <div>{translate(context.reason === "profile_approach_required" ? "NetworkTools.UI.Connect.ProfileChoose" : "NetworkTools.UI.Connect.ProfileUnavailable", context.reason === "profile_approach_required" ? "Choose an approach edge." : "Approach context is unavailable or changed. Reselect the endpoint or approach.")}</div>}
                                 {context.choices.map(choice => <button className={styles.splitChoice} key={`${choice.index}:${choice.version}`}
                                     aria-pressed={choice.selected}

@@ -68,3 +68,7 @@ Use a disposable review save/checkpoint with an added-lane offramp/onramp and or
 Expected outcome: explicit lane choices produce understandable endpoint direction constraints; unsupported or stale contexts are visible; default-off behavior remains available. Record failures and limitations as well as successful fixtures before declaring native acceptance complete.
 
 Source-grounded correction: native `LaneReferencesSystem` can collapse a skipped degree-two junction lane to a shared node-owned port. Exact shared port equality is valid directed continuity only after the adapter establishes the distinct actual owning edges and incoming/outgoing roles. Endpoints are not assumed to retain composition lane bytes; middle identity, exact `Temp.original`, composition and edge interval are retained.
+
+## October 4 lane-label successor
+
+The UI now labels lanes Leftmost/Middle/Rightmost/Only lane (or an ordinal from left for larger groups), relative to traffic direction within the carriageway. Internal composition indices remain in diagnostic data, not player labels. From/To road selects the approach; incoming/outgoing lane buttons select lane intent. Short status messages replace the historical verbose diagram instructions above. Selection and validation semantics are unchanged. See [implementation and verification](session-notes/2026-10-04-0340-lane-labels.md); native visual review is pending.

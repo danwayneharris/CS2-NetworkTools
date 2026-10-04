@@ -105,3 +105,5 @@ Public GitHub Issues will also make known limitations discoverable to other mod 
 - Follow-up: clearer player-facing lane labels/orientation and required-selection guidance, keeping internal IDs available diagnostically. Verify a user can reconstruct the intended slip-lane setup without agent intervention. Reload causality and geometry/traffic remain separate checks.
 
 BUG-005 review update (October 4): Dan confirms scrolling works on the deployed fix 531d970. Broader footer/picker/UI-scale checks remain pending; this is partial human validation rather than a claim of every layout case passing.
+
+BUG-006 implementation update: [concise lane-choice UI](session-notes/2026-10-04-0340-lane-labels.md) replaces composition indices with travel-relative names and shortens repeated instructions. Status: fixed in source, awaiting native visual review. Required selection and native lane validation remain unchanged; no automatic lane selection added.

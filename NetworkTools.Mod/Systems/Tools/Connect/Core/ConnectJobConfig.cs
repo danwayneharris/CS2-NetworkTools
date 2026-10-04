@@ -7,6 +7,8 @@ namespace NetworkTools.Systems.Tools.Connect {
     ///     Built by <c>NT_ConnectToolSystem.BuildJobConfig</c> immediately before job scheduling.
     /// </summary>
     public struct ConnectJobConfig {
+        public bool SmoothElevationProfile;
+        public bool ComplexProfile;
         // Shared
         public float3 StartPosition;
         public float3 StartDirection;

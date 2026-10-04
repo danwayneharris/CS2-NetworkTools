@@ -1,6 +1,6 @@
 # NT-002: optional smooth elevation profiles in Connect
 
-Status: reviewed planning draft; saved October 3, 2026. Not yet executing.
+Status: experimental implementation and native qualification on October 3, 2026. See [implemented scope and unresolved native course sampling](../connect-elevation-profile.md).
 Order: 4 of 6. Dependency: [NT-023](NT-023-architecture-review.md).
 Proposed branch: dan/nt-002-connect-elevation-profile.
 All [shared execution rules](first-six-execution-contract.md) and [documentation requirements](README.md#required-implementation-document-all-plans) apply.

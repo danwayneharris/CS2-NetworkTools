@@ -44,6 +44,8 @@ namespace NetworkTools.Systems.UI {
         private ValueBindingHelper<int>                 m_SelectedTargetsBinding;
         private ValueBindingHelper<int>                 m_SelectedViewsBinding;
         private ValueBindingHelper<int>                 m_ApplyStateBinding;
+        private ValueBindingHelper<string>              m_ConnectProfileStatusBinding;
+        private ValueBindingHelper<string>              m_ConnectProfileContextBinding;
         private ValueBindingHelper<string>              m_SplitChoicesBinding;
         private ValueBindingHelper<string>              m_ShapeApplyReasonBinding;
         private ValueBindingHelper<bool>                m_PanelOpenBinding;
@@ -104,12 +106,17 @@ namespace NetworkTools.Systems.UI {
             m_AvailableViewsBinding = CreateBinding("AVAILABLE_VIEWS", (int)ViewOption.All);
             m_SelectedViewsBinding  = CreateBinding("SELECTED_VIEWS",  (int)ViewOption.None, HandleUpdateSelectedViews);
             m_ApplyStateBinding = CreateBinding("APPLY_STATE", (int)ApplyState.Hidden);
+            m_ConnectProfileStatusBinding = CreateBinding("CONNECT_PROFILE_STATUS", "{}");
+            m_ConnectProfileContextBinding = CreateBinding("CONNECT_PROFILE_CONTEXT", "[]");
+            CreateTrigger<string>("SET_CONNECT_PROFILE_APPROACH", json => m_NtConnectToolSystem.SetProfileApproachJson(json));
             m_SplitChoicesBinding = CreateBinding("SPLIT_CHOICES", "[]");
             m_ShapeApplyReasonBinding = CreateBinding("SHAPE_APPLY_REASON", "");
 #if IS_DEBUG
             CreateBinding("COMBINED_SMOOTH_AVAILABLE", true);
+            CreateBinding("CONNECT_PROFILE_AVAILABLE", true);
 #else
             CreateBinding("COMBINED_SMOOTH_AVAILABLE", false);
+            CreateBinding("CONNECT_PROFILE_AVAILABLE", false);
 #endif
             CreateTrigger<int, int, bool>("SET_SPLIT_NODE", (index, version, enabled) =>
                 m_NtRoadShapeToolSystem.SetSplitNode(new Entity { Index=index, Version=version }, enabled));

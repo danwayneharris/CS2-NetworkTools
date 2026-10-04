@@ -30,23 +30,28 @@ namespace NetworkTools.Systems.Tools.Connect {
         private ConnectCandidate<ConnectJobConfig> m_ControlAcceptedCandidate;
         private string m_ControlRejection = "preview_unavailable";
 
-        // Bounded prerequisite: Debug SimpleCurve only. Complex/Loop keep their
-        // legacy domain until their explicit profile/approach acceptance is added.
+        // Complex uses the same frozen candidate when the optional profile is active.
+        private bool ControlCandidateRequired => Mode.Value == ConnectMode.SimpleCurve
+            || (Mode.Value == ConnectMode.ComplexCurve && SmoothElevationProfile.Value);
         private bool ControlCandidateAllowsApply(bool executing = false) {
-            if (!Enabled || m_ToolSystem.activeTool != this || Mode.Value != ConnectMode.SimpleCurve) {
+            if (!Enabled || m_ToolSystem.activeTool != this || !ControlCandidateRequired) {
                 m_ControlRejection = "connect_not_active";
                 return false;
             }
             RefreshControlInputs();
             var candidate = executing ? m_ControlAcceptedCandidate : m_ControlCandidate;
             if (candidate == null || (executing && candidate != m_ControlCandidate)) {
-                m_ControlRejection = "candidate_unavailable";
+                if (!SmoothElevationProfile.Value || m_ControlRejection == null
+                    || !m_ControlRejection.StartsWith("profile_", StringComparison.Ordinal))
+                    m_ControlRejection = "candidate_unavailable";
                 return false;
             }
             if (m_ControlJob.IsCompleted) m_ControlJob.Complete();
             var preview = m_ControlJob.IsCompleted && !m_UpdateNeeded ? ReadControlPreview() : null;
             m_ControlRejection = candidate.Status(m_ControlRevision, m_ControlSubmission, m_ControlInputs,
                 m_ControlJob.IsCompleted, m_UpdateNeeded, m_ControlStableFrames, m_ControlPreview, preview, GetAllowApply());
+            if (m_ControlRejection == "accepted" && candidate.Config.SmoothElevationProfile
+                && !ValidateNativeProfile(candidate.Config, out m_ControlRejection)) return false;
             return m_ControlRejection == "accepted";
         }
 
@@ -55,7 +60,7 @@ namespace NetworkTools.Systems.Tools.Connect {
         // parameters, prefab selection and validation setting. Not a city-wide lock.
         private string ControlInputs() {
             var data = new List<object> { AnarchyEnabled, Mode.Value,
-                NetPrefab.NetPrefabEntity, NetPrefab.NetLanePrefabEntity, BuildJobConfig() };
+                NetPrefab.NetPrefabEntity, NetPrefab.NetLanePrefabEntity, BuildJobConfig(), ProfileContextIdentity };
             if (!m_SelectedNodes.IsCreated || m_SelectedNodes.Length != 2) return null;
             var incident = new HashSet<Entity>();
             foreach (var node in m_SelectedNodes) {
@@ -160,15 +165,18 @@ namespace NetworkTools.Systems.Tools.Connect {
         }
         internal JObject AutomationState() {
             RefreshControlInputs();
-            var ready = CanApply && Mode.Value == ConnectMode.SimpleCurve;
+            var ready = CanApply && ControlCandidateRequired;
             return new JObject { ["apiVersion"] = 1, ["tool"] = "connect", ["session"] = m_ControlSession,
                 ["revision"] = m_ControlRevision, ["submission"] = m_ControlSubmission,
                 ["active"] = Enabled && m_ToolSystem.activeTool == this, ["phase"] = Phase.ToString(),
                 ["rejectionReason"] = m_ControlRejection, ["previewReady"] = ready, ["mode"] = Mode.Value.ToString(), ["anarchy"] = AnarchyEnabled,
+                ["profileRestoration"] = World.GetOrCreateSystemManaged<NT_ConnectProfileRestoreSystem>().Status,
                 ["start"] = JToken.FromObject(StartNode), ["end"] = JToken.FromObject(EndNode),
+                ["profileContext"] = JArray.Parse(ProfileContextJson()),
                 ["parameters"] = JToken.Parse(JsonConvert.SerializeObject(BuildJobConfig(), NetworkTools.Automation.VectorJsonConverter.Settings)),
+                ["authoredCandidate"] = m_ControlCandidate == null ? JValue.CreateNull() : JToken.Parse(JsonConvert.SerializeObject(m_ControlCandidate.Config, NetworkTools.Automation.VectorJsonConverter.Settings)),
                 ["previewObservation"] = m_ControlPreview == null ? JValue.CreateNull() : JToken.Parse(m_ControlPreview),
-                ["limits"] = "SimpleCurve, existing dead-end nodes with matching prefab; native preview stability is not collision or lane-connectivity certification." };
+                ["limits"] = "SimpleCurve and profile-enabled ComplexCurve, existing connected nodes with matching prefab. Profile acceptance checks authored/native curves, not terrain surfaces, collision or lane-connectivity certification." };
         }
         internal JObject AutomationCommand(string action, JObject args) {
             if (action == "state") return AutomationState();
@@ -180,7 +188,7 @@ namespace NetworkTools.Systems.Tools.Connect {
                 return AutomationState();
             }
             var state = AutomationState();
-            if (!(bool)state["active"] || Mode.Value != ConnectMode.SimpleCurve) throw new InvalidOperationException("connect_not_active");
+            if (!(bool)state["active"] || Mode.Value == ConnectMode.Loop) throw new InvalidOperationException("connect_not_active");
             if ((string)args["session"] != m_ControlSession || args["revision"]?.Type != JTokenType.Integer
                 || (long)args["revision"] != m_ControlRevision) throw new InvalidOperationException("stale_tool_revision");
             m_ControlJob.Complete(); Dependency.Complete();
@@ -189,7 +197,7 @@ namespace NetworkTools.Systems.Tools.Connect {
                     throw new ArgumentException("entity_identity_required");
                 var e = new Entity { Index = (int)token["index"], Version = (int)token["version"] };
                 if (!ControlLive(e) || !EntityManager.HasComponent<Node>(e) || !EntityManager.HasBuffer<ConnectedEdge>(e)
-                    || EntityManager.GetBuffer<ConnectedEdge>(e, true).Length != 1) throw new ArgumentException("existing_dead_end_required");
+                    || EntityManager.GetBuffer<ConnectedEdge>(e, true).Length < 1) throw new ArgumentException("existing_connected_node_required");
                 return e;
             }
             switch (action) {
@@ -212,8 +220,35 @@ namespace NetworkTools.Systems.Tools.Connect {
                         return v;
                     }
                     if (Phase != OperationPhase.Ready) throw new InvalidOperationException("select_endpoints_first");
-                    var b = Point("startControl"); var c = Point("endControl");
-                    CurveStartControlPointPosition.Value = b; CurveEndControlPointPosition.Value = c; m_UpdateNeeded = true; break;
+                    var requestedMode = Mode.Value;
+                    if (args["mode"] != null && (args["mode"].Type != JTokenType.String
+                        || !Enum.TryParse((string)args["mode"], out requestedMode)
+                        || (requestedMode != ConnectMode.SimpleCurve && requestedMode != ConnectMode.ComplexCurve)))
+                        throw new ArgumentException("invalid_connect_mode");
+                    var points = new Dictionary<string, float3>();
+                    foreach (var key in new[] { "startControl", "endControl", "midPoint", "midStartControl", "midEndControl" })
+                        if (args[key] != null) points[key] = Point(key);
+                    if (requestedMode != ConnectMode.ComplexCurve && (points.ContainsKey("midPoint")
+                        || points.ContainsKey("midStartControl") || points.ContainsKey("midEndControl")))
+                        throw new ArgumentException("complex_controls_require_complex_mode");
+                    if (!TryPrepareProfileOptions(args, requestedMode, out var applyProfile, out var profileReason))
+                        throw new ArgumentException(profileReason);
+                    if (points.Count == 0 && args["mode"] == null && args["smoothElevationProfile"] == null
+                        && args["startApproach"] == null && args["endApproach"] == null)
+                        throw new ArgumentException("configuration_required");
+                    Mode.Value = requestedMode;
+                    applyProfile();
+                    if (requestedMode == ConnectMode.SimpleCurve) {
+                        if (points.TryGetValue("startControl", out var b)) CurveStartControlPointPosition.Value = b;
+                        if (points.TryGetValue("endControl", out var c)) CurveEndControlPointPosition.Value = c;
+                    } else {
+                        if (points.TryGetValue("startControl", out var b)) ComplexStartControlPointPosition.Value = b;
+                        if (points.TryGetValue("endControl", out var c)) ComplexEndControlPointPosition.Value = c;
+                        if (points.TryGetValue("midPoint", out var mid)) ComplexMidPosition.Value = mid;
+                        if (points.TryGetValue("midStartControl", out var mb)) ComplexMidStartControlPointPosition.Value = mb;
+                        if (points.TryGetValue("midEndControl", out var mc)) ComplexMidEndControlPointPosition.Value = mc;
+                    }
+                    m_UpdateNeeded = true; break;
                 case "apply":
                     if (!(bool)state["previewReady"] || args["submission"]?.Type != JTokenType.Integer
                         || (long)args["submission"] != m_ControlSubmission || ReadControlPreview() != m_ControlPreview)

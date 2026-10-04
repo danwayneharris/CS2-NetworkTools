@@ -26,6 +26,10 @@ def suite_specs(root, output):
          'NetworkTools.PathSelection.Tests/NetworkTools.PathSelection.Tests.csproj', r'Path selection production-source tests passed: [1-9][0-9]* assertions'),
         ('parameters', [dotnet, 'run', '--project', 'NetworkTools.Parameter.Tests'],
          'NetworkTools.Parameter.Tests/NetworkTools.Parameter.Tests.csproj', r'Parameter production-source tests passed: [1-9][0-9]* assertions'),
+        ('connect-profile', [dotnet, 'run', '--project', 'NetworkTools.ConnectProfile.Tests'],
+         'NetworkTools.ConnectProfile.Tests/NetworkTools.ConnectProfile.Tests.csproj', r'Connect vertical profile: [1-9][0-9]* assertions passed'),
+        ('connect-coverage', [dotnet, 'run', '--project', 'NetworkTools.ConnectCoverage.Tests'],
+         'NetworkTools.ConnectCoverage.Tests/NetworkTools.ConnectCoverage.Tests.csproj', r'Connect profile coverage: [1-9][0-9]* assertions passed'),
         ('connect-candidate', [dotnet, 'run', '--project', 'NetworkTools.Connect.Tests'],
          'NetworkTools.Connect.Tests/NetworkTools.Connect.Tests.csproj', r'Connect candidate production-source tests passed: [1-9][0-9]* assertions'),
         ('codegen', ps + ['scripts/test-codegen.ps1'],
@@ -42,7 +46,7 @@ def suite_specs(root, output):
 def prerequisite_issues(name, root, run=subprocess.run, which=shutil.which):
     """Inspect tools/installed inputs separately from compiling or executing tests."""
     issues = []
-    if name in ('geometry', 'path-selection', 'parameters', 'connect-candidate', 'codegen', 'slope-production'):
+    if name in ('geometry', 'path-selection', 'parameters', 'connect-candidate', 'connect-profile', 'connect-coverage', 'codegen', 'slope-production'):
         dotnet = which('dotnet')
         if not dotnet:
             issues.append('Missing dotnet executable / .NET 8 SDK')

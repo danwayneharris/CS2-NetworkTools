@@ -83,7 +83,11 @@ namespace NetworkTools.Systems.Tools.Connect {
                     curve.EndNodePosition   = curve.Bezier.d;
                     curve.StartNodeRotation = NetUtils.GetNodeRotation(MathUtils.StartTangent(curve.Bezier));
                     curve.EndNodeRotation   = NetUtils.GetNodeRotation(MathUtils.EndTangent(curve.Bezier));
-                    NetCourseEmitter.EmitPreview(ref ECB, in curve, CreationFlags.SubElevation);
+                    var definition = NetCourseEmitter.EmitPreview(ref ECB, in curve, CreationFlags.SubElevation);
+#if IS_DEBUG
+                    if (Config.SmoothElevationProfile)
+                        ECB.AddComponent(definition, new NT_ConnectProfileDefinition { Authored = curve.Bezier, Index = i });
+#endif
                 }
             }
         }

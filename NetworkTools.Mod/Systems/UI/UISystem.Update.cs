@@ -7,6 +7,10 @@ namespace NetworkTools.Systems.UI {
     public partial class NT_UISystem {
         /// <inheritdoc />
         protected override void OnUpdate() {
+            m_ConnectProfileStatusBinding.Value = m_ToolSystem.activeTool == m_NtConnectToolSystem
+                ? m_NtConnectToolSystem.ProfileStatusJson : "{}";
+            m_ConnectProfileContextBinding.Value = m_ToolSystem.activeTool == m_NtConnectToolSystem
+                ? m_NtConnectToolSystem.ProfileContextJson() : "[]";
             m_SplitChoicesBinding.Value = m_ToolSystem.activeTool == m_NtRoadShapeToolSystem
                 ? m_NtRoadShapeToolSystem.SplitChoicesJson() : "[]";
             m_ShapeApplyReasonBinding.Value = m_ToolSystem.activeTool == m_NtRoadShapeToolSystem

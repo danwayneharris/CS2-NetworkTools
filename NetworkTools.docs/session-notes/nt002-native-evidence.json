@@ -1,0 +1,265 @@
+{
+  "sourceRevision": "36112148cf97d907e8aeaff9dbfe53375b5918a1",
+  "build": {
+    "schemaVersion": 1,
+    "releaseVersion": "1.5.7",
+    "informationalVersion": "1.5.7+g36112148cf97.clean.Debug",
+    "sourceRevision": "36112148cf97d907e8aeaff9dbfe53375b5918a1",
+    "workingTree": "clean",
+    "configuration": "Debug"
+  },
+  "dll": {
+    "path": "NetworkTools.dll",
+    "sha256": "8a58cee4663aa532a9b4919940e849345f2753e6dbfed46c724b3118dd8e48c8",
+    "bytes": 672256
+  },
+  "baseline": "bridge test - terrain and elevation v1%2E1.cok",
+  "activation": [
+    "--nt-experimental-finish-height-preparation"
+  ],
+  "geometryToleranceMeters": 0.05,
+  "simple": {
+    "geometryToleranceMeters": 0.05,
+    "stage": "connect",
+    "checkpoint": "CitiesIIAgentBridge-provider-connect-20261003-143341-277c550b",
+    "beforeFingerprint": "59664b4dd4e4bd1cd8eaf11aea0018978ac8352a466fe5b747f1578655296136",
+    "afterFingerprint": "526dd3c91e34bfcd87b4310ea35cc5e018c3907be6c13f9a026f12909fb36115",
+    "staleRevisionRejected": true,
+    "nodeCount": [
+      48,
+      49
+    ],
+    "edgeCount": [
+      44,
+      46
+    ],
+    "parameters": {
+      "slopeMode": "ease",
+      "smoothStart": false,
+      "smoothEnd": false,
+      "reverse": false,
+      "connectProfile": true,
+      "connectMode": "SimpleCurve",
+      "connectStraightControls": true
+    },
+    "limits": "No visual/vehicle or rendered-surface validation.",
+    "expectedPrefab": "Small Road",
+    "prefabInherited": true,
+    "unchangedExistingEdges": true,
+    "unchangedExistingNodes": true,
+    "connected": true,
+    "newEdges": [
+      [
+        51659,
+        17
+      ],
+      [
+        51658,
+        17
+      ]
+    ],
+    "previewApplyMaxError": 0.0
+  },
+  "complex": {
+    "geometryToleranceMeters": 0.05,
+    "stage": "connect",
+    "checkpoint": "CitiesIIAgentBridge-provider-connect-20261003-143805-2a99a46f",
+    "beforeFingerprint": "59664b4dd4e4bd1cd8eaf11aea0018978ac8352a466fe5b747f1578655296136",
+    "afterFingerprint": "0e25bd06277de067fa339566334297d5334c764ddeb88b1eeb44933733b21e3e",
+    "staleRevisionRejected": true,
+    "nodeCount": [
+      48,
+      49
+    ],
+    "edgeCount": [
+      44,
+      46
+    ],
+    "parameters": {
+      "slopeMode": "ease",
+      "smoothStart": false,
+      "smoothEnd": false,
+      "reverse": false,
+      "connectProfile": true,
+      "connectMode": "ComplexCurve",
+      "connectStraightControls": true
+    },
+    "limits": "No visual/vehicle or rendered-surface validation.",
+    "expectedPrefab": "Small Road",
+    "prefabInherited": true,
+    "unchangedExistingEdges": true,
+    "unchangedExistingNodes": true,
+    "connected": true,
+    "newEdges": [
+      [
+        51662,
+        27
+      ],
+      [
+        51661,
+        27
+      ]
+    ],
+    "previewApplyMaxError": 0.0
+  },
+  "differentHeight": {
+    "previewAccepted": false,
+    "reason": "profile_native_CurveMismatch_0",
+    "blockedApplyVerified": true,
+    "checkpoint": "CitiesIIAgentBridge-provider-connect-20261003-143734-6555fa26",
+    "authoredCandidate": {
+      "SmoothElevationProfile": true,
+      "ComplexProfile": false,
+      "StartPosition": [
+        -4056.953,
+        602.176331,
+        -1903.39368
+      ],
+      "StartDirection": [
+        -0.993525565,
+        -0.00256804214,
+        0.113579787
+      ],
+      "StartElevation": 0.0,
+      "EndPosition": [
+        -3740.21167,
+        629.6971,
+        -1486.88208
+      ],
+      "EndDirection": [
+        -0.9999828,
+        -2.08074857e-06,
+        -0.00586354965
+      ],
+      "EndElevation": 0.0,
+      "Elevation": 0.0,
+      "NetPrefabEntity": {
+        "Index": 16060,
+        "Version": 1
+      },
+      "NetLanePrefabEntity": {
+        "Index": 0,
+        "Version": 0
+      },
+      "NetWidth": 0.0,
+      "ElevationLimit": 0.0,
+      "CurveStartPointPosition": [
+        -4056.953,
+        602.176331,
+        -1903.39368
+      ],
+      "CurveStartControlPointPosition": [
+        -3951.37256,
+        601.7284,
+        -1764.55652
+      ],
+      "CurveEndControlPointPosition": [
+        -3845.792,
+        629.6967,
+        -1625.71924
+      ],
+      "CurveEndPointPosition": [
+        -3740.21167,
+        629.6971,
+        -1486.88208
+      ],
+      "ComplexStartPointPosition": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "ComplexStartControlPointPosition": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "ComplexEndControlPointPosition": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "ComplexEndPointPosition": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "ComplexMidPosition": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "ComplexMidStartControlPointPosition": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "ComplexMidEndControlPointPosition": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "LoopRadiusFactor": 0.5,
+      "LoopArcSide": 0
+    }
+  },
+  "reviewCheckpoints": {
+    "simple": "CitiesIIAgentBridge-regression-before-reload-20261003-143533-4d66a61a",
+    "complex": "CitiesIIAgentBridge-regression-before-reload-20261003-143916-1054d6f2"
+  },
+  "notVerified": [
+    "surface/terrain appearance",
+    "lane correspondence",
+    "vehicle traversal",
+    "human UI review",
+    "Release/Burst",
+    "reload result comparison"
+  ],
+  "offline": {
+    "profileAssertions": 184,
+    "coverageAssertions": 190,
+    "aggregateSuites": 10,
+    "status": "passed"
+  },
+  "legacyOff": {
+    "geometryToleranceMeters": 0.05,
+    "stage": "connect",
+    "checkpoint": "CitiesIIAgentBridge-provider-connect-20261003-144047-ec1039a4",
+    "beforeFingerprint": "59664b4dd4e4bd1cd8eaf11aea0018978ac8352a466fe5b747f1578655296136",
+    "afterFingerprint": "b704b60723e4714d06789846b10b37501e367b2ec4036424028990247a15e21a",
+    "staleRevisionRejected": true,
+    "nodeCount": [
+      48,
+      49
+    ],
+    "edgeCount": [
+      44,
+      46
+    ],
+    "parameters": {
+      "slopeMode": "ease",
+      "smoothStart": false,
+      "smoothEnd": false,
+      "reverse": false,
+      "connectProfile": false,
+      "connectMode": "SimpleCurve",
+      "connectStraightControls": false
+    },
+    "limits": "No visual/vehicle or rendered-surface validation.",
+    "expectedPrefab": "Small Road",
+    "prefabInherited": true,
+    "unchangedExistingEdges": true,
+    "unchangedExistingNodes": true,
+    "connected": true,
+    "newEdges": [
+      [
+        51659,
+        3
+      ],
+      [
+        51658,
+        3
+      ]
+    ],
+    "previewApplyMaxError": 0.0
+  }
+}

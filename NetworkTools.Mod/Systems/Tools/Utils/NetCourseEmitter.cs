@@ -18,7 +18,7 @@ namespace NetworkTools.Systems.Tools.Utils {
         ///     Creates a temp definition entity (<c>CreationDefinition</c> + <c>Updated</c> +
         ///     <c>NetCourse</c>) describing a single new edge.
         /// </summary>
-        public static void EmitPreview(ref EntityCommandBuffer ecb, in EdgeConfig e,
+        public static Entity EmitPreview(ref EntityCommandBuffer ecb, in EdgeConfig e,
                                        CreationFlags flags, Entity original = default) {
             var definitionEntity = ecb.CreateEntity();
 
@@ -57,6 +57,7 @@ namespace NetworkTools.Systems.Tools.Utils {
                     m_SplitPosition = 0,
                 },
             });
+            return definitionEntity;
         }
     }
 }

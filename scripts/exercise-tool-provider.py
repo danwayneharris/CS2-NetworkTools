@@ -82,7 +82,7 @@ def preview_curves_to_rows(curves):
  return [{'edge':key,'curve':curve} for key,curve in curves.items()]
 
 def main():
- p=argparse.ArgumentParser();p.add_argument('--fixture',default=str(Path(__file__).parent/'fixtures/toy-terrain-v11.json'));p.add_argument('--bridge',default='../cities2-agent-bridge-ndc');p.add_argument('--slope-mode',choices=['linear','ease','arch'],default='ease');p.add_argument('--smooth-start',action='store_true');p.add_argument('--smooth-end',action='store_true');p.add_argument('--reverse',action='store_true');p.add_argument('--output',required=True);p.add_argument('--save-root',required=True);p.add_argument('--run',action='store_true');p.add_argument('--stage',choices=['curve','slope','connect'],required=True);p.add_argument('--expected-fingerprint');p.add_argument('--case',default='highway-ramp-out');p.add_argument('--connect-kind',choices=['road','rail'],default='road');a=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('--fixture',default=str(Path(__file__).parent/'fixtures/toy-terrain-v11.json'));p.add_argument('--bridge',default='../cities2-agent-bridge-ndc');p.add_argument('--slope-mode',choices=['linear','ease','arch'],default='ease');p.add_argument('--smooth-start',action='store_true');p.add_argument('--smooth-end',action='store_true');p.add_argument('--reverse',action='store_true');p.add_argument('--output',required=True);p.add_argument('--save-root',required=True);p.add_argument('--run',action='store_true');p.add_argument('--stage',choices=['curve','slope','connect'],required=True);p.add_argument('--expected-fingerprint');p.add_argument('--case',default='highway-ramp-out');p.add_argument('--connect-start-endpoint',choices=['start','end'],default='end');p.add_argument('--connect-straight-controls',action='store_true');p.add_argument('--connect-profile',action='store_true');p.add_argument('--connect-mode',choices=['SimpleCurve','ComplexCurve'],default='SimpleCurve');p.add_argument('--preview-only',action='store_true');p.add_argument('--connect-kind',choices=['road','rail'],default='road');a=p.parse_args()
  if not a.run:p.error('Explicit --run required')
  f=json.loads(Path(a.fixture).read_text());case=next(c for c in f['cases'] if c['name']==a.case);r=m['Runner'](a.bridge,a.output)
  city=r.call('get_city_state')
@@ -113,10 +113,36 @@ def main():
   control('configure',mode=a.slope_mode,easeIn=.1,easeOut=.1,archHeight=10,archPosition=.5,smoothStart=a.smooth_start,smoothEnd=a.smooth_end)
   start,end=(m['resolve'](ns,case[k]) for k in ('start','end'))
  else:
-  first,second,first_key=('hill-road','crest-dip-road','end') if a.connect_kind=='road' else ('rail-high-branch','rail-low-branch','start')
+  first,second,first_key=('hill-road','crest-dip-road',a.connect_start_endpoint) if a.connect_kind=='road' else ('rail-high-branch','rail-low-branch','start')
   start=m['resolve'](ns,next(c for c in f['cases'] if c['name']==first)[first_key]);end=m['resolve'](ns,next(c for c in f['cases'] if c['name']==second)['start'])
  if a.reverse:start,end=end,start
- control('select',start=start,end=end);s=poll(lambda s:s['previewReady'])
+ control('select',start=start,end=end)
+ if a.stage=='connect' and (a.connect_profile or a.connect_mode!='SimpleCurve'):
+  control('configure',mode=a.connect_mode,smoothElevationProfile=a.connect_profile)
+  # Native may reuse the previous temp graph when controls produce identical
+  # geometry. Reselect from a cleared observation rather than certify reused IDs.
+  control('clear');time.sleep(1);control('select',start=start,end=end)
+ if a.stage=='connect' and a.connect_straight_controls:
+  node_map={m['identity'](n):n for n in ns}
+  pa=m['position'](node_map[m['identity'](start)]['position']);pb=m['position'](node_map[m['identity'](end)]['position'])
+  def lerp(t):return [x+(y-x)*t for x,y in zip(pa,pb)]
+  opts={'startControl':lerp(1/3),'endControl':lerp(2/3)} if a.connect_mode=='SimpleCurve' else {'startControl':lerp(1/6),'endControl':lerp(5/6),'midPoint':lerp(.5),'midStartControl':lerp(1/3),'midEndControl':lerp(2/3)}
+  control('configure',**opts)
+ if a.preview_only:
+  if a.stage!='connect':raise ValueError('Preview-only currently supports Connect')
+  s=poll(lambda s:s['previewReady'] or str(s.get('rejectionReason','')).startswith(('profile_native_','profile_endpoint_','profile_Horizontal','profile_Degenerate')))
+  blocked_apply=False
+  if not s['previewReady']:
+   try:invoke('apply',{k:s[k] for k in ('session','revision','submission')})
+   except RuntimeError as error:
+    if 'stale_or_unverified_preview' not in str(error):raise
+    blocked_apply=True
+   else:raise AssertionError('Unverified profile Apply unexpectedly accepted; stop mutations')
+   current_nodes,current_edges=r.network(f['region'])
+   if m['fingerprint'](current_nodes,current_edges)!=m['fingerprint'](ns,es):raise AssertionError('Rejected Apply changed geometry')
+  (r.output/'preview-report.json').write_text(json.dumps({'stage':'connect','applied':False,'blockedApplyVerified':blocked_apply,'checkpoint':saved['saveName'],'state':s,'limits':'Native preview only; no permanent result, rendered-surface, visual or vehicle verification.'},indent=2))
+  print(json.dumps({'previewReady':s['previewReady'],'reason':s['rejectionReason'],'checkpoint':saved['saveName']}));return
+ s=poll(lambda s:s['previewReady'])
  # Deliberately invalid old revision must fail before any mutation.
  try:invoke('apply',{'session':s['session'],'revision':s['revision']-1,'submission':s['submission']})
  except RuntimeError as error:
@@ -143,7 +169,7 @@ def main():
  if not final['previewReady'] or any(final[k]!=s[k] for k in ('session','revision','submission')):raise RuntimeError('Preview token changed')
  invoke('apply',{k:s[k] for k in ('session','revision','submission')});poll(lambda s:s['phase']=='Idle')
  after,an,ae=r.settled_permanent(watched,f['region']);new={m['identity'](e):e for e in ae};old={m['identity'](e):e for e in es}
- report={'geometryToleranceMeters':TOLERANCE,'stage':a.stage,'checkpoint':saved['saveName'],'beforeFingerprint':m['fingerprint'](ns,es),'afterFingerprint':m['fingerprint'](an,ae),'staleRevisionRejected':True,'nodeCount':[len(ns),len(an)],'edgeCount':[len(es),len(ae)],'parameters':{'slopeMode':a.slope_mode,'smoothStart':a.smooth_start,'smoothEnd':a.smooth_end,'reverse':a.reverse},'limits':'No visual/vehicle or rendered-surface validation.'}
+ report={'geometryToleranceMeters':TOLERANCE,'stage':a.stage,'checkpoint':saved['saveName'],'beforeFingerprint':m['fingerprint'](ns,es),'afterFingerprint':m['fingerprint'](an,ae),'staleRevisionRejected':True,'nodeCount':[len(ns),len(an)],'edgeCount':[len(es),len(ae)],'parameters':{'slopeMode':a.slope_mode,'smoothStart':a.smooth_start,'smoothEnd':a.smooth_end,'reverse':a.reverse,'connectProfile':a.connect_profile,'connectMode':a.connect_mode,'connectStraightControls':a.connect_straight_controls},'limits':'No visual/vehicle or rendered-surface validation.'}
  if a.stage=='slope':
   report['sameTopology']=old.keys()==new.keys() and all(all(e[k]==new[key][k] for k in ('startNode','endNode','prefab')) for key,e in old.items())
   report['previewApplyMaxError']=max(math.dist(m['position'](p),m['position'](q)) for key in chosen for p,q in zip(preview_curves[key],new[key]['curve']))

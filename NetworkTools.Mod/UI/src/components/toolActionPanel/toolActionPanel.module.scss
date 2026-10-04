@@ -32,6 +32,8 @@
     margin-left: 4rem;
     animation: slideIn 0.16s ease-out forwards;
     width: 370rem;
+    // Match the wrapper top offset and reserve the bottom HUD area.
+    max-height: calc(100vh - 238rem);
 }
 
 .divider {
@@ -549,4 +551,21 @@
         height: 6rem;
         background: rgba(255, 255, 255, 0.5);
     }
+}
+
+// Keep controls scrollable without shrinking the title or Apply out of view.
+.fixedHeader, .fixedFooter {
+    flex: 0 0 auto;
+}
+
+.scrollArea {
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+// The outer game Scrollable owns scrolling; avoid nested wheel traps in lists.
+.scrollArea .splitChoices {
+    max-height: none;
+    overflow-y: visible;
+    flex-shrink: 0;
 }

@@ -86,3 +86,12 @@ When Dan or an executor says “note this bug,” update this file in the same c
 Later GitHub Issues migration should preserve these IDs, link the evidence, and move authoritative status there deliberately. Until then, PRs link to this file and record any new review findings here; there is no parallel issue tracker to keep synchronized.
 
 Public GitHub Issues will also make known limitations discoverable to other mod developers, reviewers and eventual users. Migration is intended to communicate awareness and scope clearly, not just move internal bookkeeping. No issues are created by this reconciliation.
+
+## BUG-005 — Expanded Connect controls extend below the screen
+
+- Status: fixed in source, awaiting native UI verification. Priority: review-blocking usability for lane-aware Connect (#21).
+- Reported build: clean Debug d78c172. Enabling lane-aware direction/profile controls can push required lane selections and Apply below the screen without an overall scrollbar.
+- Source cause: action panel lacked a viewport height limit and overall scrolling area. Individual list overflow did not bound the combined panel.
+- Correction: use the game's Scrollable for controls, bound panel height, keep header/Apply outside the scrolling area, remove nested scrolling from choice lists inside this area. Geometry/Apply validation is unchanged.
+- Evidence and review checklist: [panel scrolling session](session-notes/2026-10-04-0300-connect-panel-scroll.md). Gameface inspection endpoint was unavailable; initial diagnosis combines user's observation, bridge state and source rather than a live layout measurement.
+- Closure: at the reported UI scale, all start/end approach and lane choices must be reachable via wheel and scrollbar, and Apply must stay visible; check shorter tools and prefab picker too. No accepted connection is implied merely by making the missing controls accessible.

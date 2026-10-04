@@ -3,7 +3,7 @@ import styles from "./toolActionPanel.module.scss";
 import panels from "../shared/panels.module.scss";
 import { GAME_BINDINGS, GAME_TRIGGERS, ApplyState } from "gameBindings";
 import { useValue } from "cs2/api";
-import { Button } from "cs2/ui";
+import { Button, Scrollable } from "cs2/ui";
 import { ShapeSlopeControls } from "./tools/shapeSlope";
 import { ShapeCurveControls } from "./tools/shapeCurve";
 import { ConnectControls } from "./tools/connect";
@@ -53,7 +53,7 @@ const ToolActionPanelInner = () => {
     return (
         <div className={styles.wrapper}>
             <div className={[panels.nt_panel, styles.panel].join(" ")} key={selectedBinding}>
-                <div className={panels.nt_panel__header}>
+                <div className={[panels.nt_panel__header, styles.fixedHeader].join(" ")}>
                     <div className={styles.titleBlock}>
                         <span className={styles.toolTitle}>
                             {translate(activeTool.DisplayName)}
@@ -70,6 +70,7 @@ const ToolActionPanelInner = () => {
                             <VC.TintedIcon src={"Media/Glyphs/Info.svg"} className={styles.icon} />
                     </Button> */}
                 </div>
+                <Scrollable className={styles.scrollArea} vertical horizontal={false} trackVisibility="scrollable">
                 <div className={panels.nt_panel__content}>
                     <div className={styles.section}>
                         <div className={styles.section__content}>
@@ -81,8 +82,10 @@ const ToolActionPanelInner = () => {
                     </div>
                     {ToolComponent && <ToolComponent />}
                     {shapeApplyReason && <div className={styles.helper}>{translate(shapeApplyReason)}</div>}
+                </div>
+                </Scrollable>
                     {applyState !== ApplyState.Hidden && (
-                        <div className={styles.row}>
+                        <div className={[styles.row, styles.fixedFooter].join(" ")}>
                             <div className={styles.actions}>
                                 {applyState === ApplyState.InsufficientNodes ? (
                                     <span className={styles.helper}>
@@ -100,7 +103,6 @@ const ToolActionPanelInner = () => {
                             </div>
                         </div>
                     )}
-                </div>
             </div>
             {showTutorial && (
                 <div className={[panels.nt_panel, styles.tutorialPanel].join(" ")}>

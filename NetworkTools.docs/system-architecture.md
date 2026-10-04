@@ -24,8 +24,8 @@ commands, see [BOOTSTRAP.md](../BOOTSTRAP.md).
 
 This guide is for contributors familiar with programming who are new to this mod
 or Unity's Entity Component System (ECS). For a focused source-reading path, follow
-**parameter declaration â†’ UI binding â†’ job configuration â†’ transformation â†’
-preview/apply** through sections 6â€“9.
+**parameter declaration → UI binding → job configuration → transformation →
+preview/apply** through sections 6–9.
 
 **Historical status and limitations (Sept 26, 2026):** the architecture below follows the mod's
 source. Debug builds and local deployment pass; an in-game smoke test confirmed the
@@ -223,7 +223,7 @@ on `USE_BURST`, enabled by the shared Release configuration.
 
 | Data type | Role |
 | --- | --- |
-| [EdgeState](../NetworkTools.Mod/Systems/Tools/RoadShape/Core/EdgeState.cs) | Edge identity, path direction, composition, mutable BÃ©zier geometry, and original geometry data. |
+| [EdgeState](../NetworkTools.Mod/Systems/Tools/RoadShape/Core/EdgeState.cs) | Edge identity, path direction, composition, mutable Bézier geometry, and original geometry data. |
 | [NodeState](../NetworkTools.Mod/Systems/Tools/RoadShape/Core/NodeState.cs) | Node identity, original position, and transformed position. |
 | [ShapeTransformContext](../NetworkTools.Mod/Systems/Tools/RoadShape/Core/ShapeTransformContext.cs) | Path-level geometry, total length, endpoint information, and slope boundary data. |
 | [ShapeJobConfig](../NetworkTools.Mod/Systems/Tools/RoadShape/Core/ShapeJobConfig.cs) | User-selected transformation settings. |
@@ -231,7 +231,7 @@ on `USE_BURST`, enabled by the shared Release configuration.
 An edge's stored direction may oppose traversal direction; `IsForward` records
 that distinction. Algorithms must not assume every edge points along the selected path.
 
-A node position represents an intersection center; BÃ©zier endpoints can be offset
+A node position represents an intersection center; Bézier endpoints can be offset
 from it. Treating them as identical would lose geometric information.
 
 [TransformPipeline.Execute<T>](../NetworkTools.Mod/Systems/Tools/RoadShape/Core/TransformPipeline.cs#L11)

@@ -46,3 +46,5 @@ Review saves (preserved, never baseline-overwritten):
 - Different-height pre-test checkpoint: `CitiesIIAgentBridge-provider-connect-20261003-143734-6555fa26`
 
 Baseline: `bridge test - terrain and elevation v1.1`. Reproduce with `scripts/exercise-tool-provider.py --stage connect --connect-profile --connect-straight-controls` plus explicit baseline fingerprint, save root, output and `--run`. This command checkpoints then mutates through Apply. Add `--preview-only` for preview plus a rejected-Apply negative test when rejected; `--connect-mode ComplexCurve` chooses the two-section case; `--connect-start-endpoint start --preview-only` reproduces the different-height rejection. All scripts preserve baseline saves. They do not certify rendered terrain, selected lane correspondence, vehicle use or reload equivalence.
+
+Active follow-up: [captured course-height and endpoint-grade investigation](session-notes/2026-10-03-2030-connect-course-height-investigation.md). Shared endpoint heights already agree in Dan's repro; native vertical resampling changes the approach grades materially. A correction remains in progress.

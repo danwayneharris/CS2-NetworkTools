@@ -76,6 +76,14 @@ def main():
                   'public float2 m_SampleRange; public float m_SampleFactor;\n'
                   + block(course, 'public void SampleCourseHeight(ref NetCourse course, NetGeometryData netGeometryData)')
                   + '\n' + sample + '\n}')
+    pieces.append('public sealed class ReplayCourseElevation {\n'
+                  'public bool m_EditorMode = true; public TerrainHeightData m_TerrainHeightData;\n'
+                  'public WaterSurfaceData<SurfaceWater> m_WaterSurfaceData;\n'
+                  'public ComponentLookup<Game.Objects.Transform> m_TransformData;\n'
+                  'public ComponentLookup<ServiceUpgradeData> m_PrefabServiceUpgradeData;\n'
+                  + block(course, 'private float2 CalculateElevation(CreationDefinition').replace('private float2', 'public float2', 1)
+                  + '\n' + block(course, 'private void CalculateElevation(CreationDefinition').replace('private void', 'public void', 1)
+                  + '\n' + block(course, 'private void LimitElevation(ref float2') + '\n}')
     text = '\n'.join(pieces)
     # The raw stage decoder excludes native archetype handles. Fail regeneration
     # if this fixed stage closure starts reading them after a reviewed source change.
@@ -99,6 +107,7 @@ using Game.Net;
 using Game.Common;
 using Game.Prefabs;
 using Game.Tools;
+using Game.Simulation;
 using Colossal.Mathematics;
 using Unity.Entities;
 using Unity.Mathematics;

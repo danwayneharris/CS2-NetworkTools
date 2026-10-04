@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0</TargetFramework><AllowUnsafeBlocks>true</AllowUnsafeBlocks></PropertyGroup>
   <ItemGroup>
+    <Compile Include="../NetworkTools.Mod/Geometry/ConnectCourseElevation.cs" Link="ConnectCourseElevation.cs" />
     <None Update="Fixtures/connect-course-height.json" CopyToOutputDirectory="PreserveNewest" />
     <Compile Include="../NetworkTools.Mod/Geometry/ConnectProfileCoverage.cs" Link="ConnectProfileCoverage.cs" />
     <Compile Include="../NetworkTools.Mod/Geometry/VerticalLinearProfile.cs" Link="VerticalLinearProfile.cs" />

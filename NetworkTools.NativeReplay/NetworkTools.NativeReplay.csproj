@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="../NetworkTools.Mod/Geometry/ConnectCourseElevation.cs" Link="ConnectCourseElevation.cs" />
     <Compile Include="../NetworkTools.Mod/Compatibility/FinishHeightPreparation.cs" Link="FinishHeightPreparation.cs" />
     <Compile Include="obj/native-generated/WorldStages.g.cs" Condition="Exists('obj/native-generated/WorldStages.g.cs')" />
     <Reference Include="Game"><HintPath>$(ManagedPath)/Game.dll</HintPath></Reference>

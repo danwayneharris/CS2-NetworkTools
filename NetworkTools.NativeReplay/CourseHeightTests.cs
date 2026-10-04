@@ -34,6 +34,18 @@ internal static class CourseHeightTests {
         var cut=MathUtils.Cut(authored,new float2(.2f,.7f));
         Check("subinterval grades preserved with authored samples",math.abs(part.m_Curve.b.y-cut.b.y)<.001f&&math.abs(part.m_Curve.c.y-cut.c.y)<.001f);
         Check("native output resets interval",part.m_StartPosition.m_CourseDelta==0&&part.m_EndPosition.m_CourseDelta==1);
+        var elevationStage=new ReplayCourseElevation { m_TerrainHeightData=new ReplayTerrainData {
+            captured=true,heights=new ushort[256*256],resolution=new int3(256,1,256),scale=new float3(1),offset=new float3(100,0,100)} };
+        foreach(var height in new[]{-8f,-4f,-3.99f,0f,3.99f,4f,8f})
+        foreach(var minimum in new[]{-100f,0f})
+        foreach(var transition in new[]{false,true}) {
+            var e=Course();e.m_Curve.a.y=height;e.m_Curve.b.y=height;e.m_Curve.c.y=height;e.m_Curve.d.y=height;
+            e.m_StartPosition.m_Flags=transition?CoursePosFlags.LeftTransition:0;
+            var upgraded=default(Game.Net.Upgraded);
+            elevationStage.CalculateElevation(default,default,ref e,ref upgraded,new NetGeometryData{m_DefaultWidth=16,m_ElevationLimit=4},new PlaceableNetData{m_ElevationRange=new Bounds1(minimum,100)});
+            var expected=NetworkTools.Geometry.ConnectCourseElevation.Classify(height,4,minimum,100,transition);
+            Check($"native elevation parity {height}/{minimum}/{transition}",e.m_StartPosition.m_Elevation.x==expected);
+        }
         File.WriteAllText(path,JsonSerializer.Serialize(new {schemaVersion=1,gameSha256=hash,status=failed?"failed":"passed",
             boundary="Hash-pinned native SampleCourseHeight/SampleHeight with supplied sample buffers; no terrain constructor, ECS splitting, classification, preview or Apply",results},new JsonSerializerOptions{WriteIndented=true}));
         Console.WriteLine($"Course-height native method replay: {results.Count} checks, {(failed?"FAILED":"passed")}");

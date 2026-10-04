@@ -31,6 +31,12 @@ internal static unsafe class CourseRestorationTests {
         fixed(C* ap=a,np=n) fixed(M* mp=maps) return ConnectProfileCoverage.Validate(ap,a.Length,np,n.Length,mp,out _,out _);
     }
     public static void Run() {
+        Check(ConnectCourseElevation.Classify(3.99f,4,-100,100,false)==0,"ground threshold");
+        Check(ConnectCourseElevation.Classify(4,4,-100,100,false)==4,"elevated boundary inclusive");
+        Check(ConnectCourseElevation.Classify(-4,4,-100,100,false)==-4,"tunnel boundary inclusive");
+        Check(ConnectCourseElevation.Classify(-8,4,0,100,false)==0,"prefab forbids negative elevation");
+        Check(ConnectCourseElevation.Classify(8,4,-100,-4,false)==-4,"negative-only prefab clamp");
+        Check(ConnectCourseElevation.Classify(8,4,-100,100,true)==0,"explicit endpoint side transition");
         using var doc=JsonDocument.Parse(File.ReadAllText(Path.Combine(AppContext.BaseDirectory,"Fixtures/connect-course-height.json")));
         var a=doc.RootElement.GetProperty("authored").EnumerateArray().Select(Read).ToArray();
         var n=doc.RootElement.GetProperty("native").EnumerateArray().Select(Read).ToArray();

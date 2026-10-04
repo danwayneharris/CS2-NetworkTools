@@ -33,3 +33,25 @@ All six method tests passed. This does not replay terrain-buffer construction,
 intersection search, classification or a complete native course pipeline.
 
 Runtime verification pending at this commit. No deployment performed yet.
+
+## First live experiment and revised classification
+
+Deployed 22920bc and loaded the checksummed `bridge test - connect repro` baseline.
+The adapter ran at the intended boundary but refused the ground-only envelope.
+Inspection found four native definitions with asymmetric nonzero elevation values
+and RightTransition flags on new interior courses. The apparent ordinary road
+connection already exercises elevated/cut classification. No Apply was attempted.
+
+Revised the adapter to recompute classification at A/mid/D, on both road edges,
+using restored heights, native terrain sampling, prefab thresholds and placement
+clamps. New, unconnected interior transition flags belong to the old sampled
+profile and are cleared; flags at existing endpoints remain. Forced structures,
+auxiliary/fixed/service/owned/shoreline cases remain outside scope. Splits and XZ
+remain native; all writes are staged until the whole batch qualifies.
+
+Added original CalculateElevation/LimitElevation bodies to the local generated
+replay, using the existing checked terrain adapter. 34 native-method checks pass,
+including 28 classifier comparisons over signed limits, prefab clamps and side
+transitions. Course restoration now has 65 assertions. Non-deploying production
+compile and Slope tests passed. Broader offline aggregate passed on 22920bc.
+Second live experiment remains pending.

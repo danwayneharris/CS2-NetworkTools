@@ -157,4 +157,4 @@ audit after every small feature. Revisit earlier only if a concrete blocker appe
 - Bridge work supports NT when it removes a concrete blocker; it remains a separate
   product, release and backlog. No NT-specific commands/schemas belong in Bridge.
 
-Known non-blocking defects and repro steps: [bug backlog](BUG-BACKLOG.md).
+Authoritative defects, accepted limitations, repro evidence and reconciliation: [bug backlog](BUG-BACKLOG.md). Feature priorities remain here; GitHub Issues migration is deferred.

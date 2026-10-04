@@ -95,3 +95,13 @@ Public GitHub Issues will also make known limitations discoverable to other mod 
 - Correction: use the game's Scrollable for controls, bound panel height, keep header/Apply outside the scrolling area, remove nested scrolling from choice lists inside this area. Geometry/Apply validation is unchanged.
 - Evidence and review checklist: [panel scrolling session](session-notes/2026-10-04-0300-connect-panel-scroll.md). Gameface inspection endpoint was unavailable; initial diagnosis combines user's observation, bridge state and source rather than a live layout measurement.
 - Closure: at the reported UI scale, all start/end approach and lane choices must be reachable via wheel and scrollbar, and Apply must stay visible; check shorter tools and prefab picker too. No accepted connection is implied merely by making the missing controls accessible.
+
+## BUG-006 — Lane-choice labels make Connect setup difficult to reproduce
+
+- Status: reported UX issue; priority medium, no geometry failure established in this capture.
+- On clean Debug 531d970, a three-lane highway lists composition lane indices 2/3/4, and a one-lane arrival lists lane 2. These are not familiar player-facing lane ordinals. Required selection can therefore look like a native geometry error.
+- Captured rejection was lane_choice_required; selecting physical rightmost incoming lane 4 and outgoing lane 2 produced a stable accepted preview. No Apply performed. [Evidence and saved checkpoint](session-notes/2026-10-04-0331-highway-lane-review.md).
+- Workaround: explicitly select an incoming departure and outgoing arrival lane after selecting approaches; choices are transient and reset with tool selection. Do not infer them from the saved network alone.
+- Follow-up: clearer player-facing lane labels/orientation and required-selection guidance, keeping internal IDs available diagnostically. Verify a user can reconstruct the intended slip-lane setup without agent intervention. Reload causality and geometry/traffic remain separate checks.
+
+BUG-005 review update (October 4): Dan confirms scrolling works on the deployed fix 531d970. Broader footer/picker/UI-scale checks remain pending; this is partial human validation rather than a claim of every layout case passing.

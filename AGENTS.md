@@ -141,3 +141,7 @@ Use scripts/check-bridge.ps1 or bootstrap.ps1 -CheckBridge for read-only file/ha
 checks. Never equate installed files with live query support. Keep bridge code/local
 commits in its own repository; origin is danwayneharris/cities2-agent-bridge-ndc and upstream is FTPAiYT/cities2-agent-bridge-ndc. Changes go through PRs to our fork. The cs2-modding
 plugin provides source-reading guidance, not game access or mutation authorization.
+
+## Defect tracking
+
+[NetworkTools.docs/BUG-BACKLOG.md](NetworkTools.docs/BUG-BACKLOG.md) is the authoritative defect log pending GitHub Issues migration. Record new review observations there, preserving stable BUG IDs and separating symptoms from suspected causes. Link dated evidence and fixing PRs; distinguish current failures, accepted limitations, resolved history, feature requests and not-run qualification. Do not treat all entries as non-blocking or silently close them after compilation. Follow the entry checklist in that file.

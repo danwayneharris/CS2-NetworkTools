@@ -1,5 +1,7 @@
 # DeezNotas' Network Tools Fork
 
+Known defects and review observations: [official bug backlog](NetworkTools.docs/BUG-BACKLOG.md).
+
 Current development priorities: [roadmap](NetworkTools.docs/ROADMAP.md) (planning baseline).
 Detailed execution plans will be indexed in [NetworkTools.docs/plans/](NetworkTools.docs/plans/README.md).
 

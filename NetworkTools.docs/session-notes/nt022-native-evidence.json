@@ -1,0 +1,131 @@
+{
+  "build": {
+    "assemblyVersion": "1.5.7.0",
+    "informationalVersion": "1.5.7+gfbd91c38cdaa.clean.Debug",
+    "configuration": "Debug"
+  },
+  "checkpoint": "CitiesIIAgentBridge-nt022-fixed-anchor-probe-20261003-153148-edb0e810",
+  "probe": "1.5 m lateral offset; fixed original outer CoursePos entities/positions",
+  "applied": false,
+  "authoredCandidate": {
+    "SmoothElevationProfile": false,
+    "ComplexProfile": false,
+    "FixedNodeAlignmentProbe": true,
+    "StartPosition": [
+      -3616.03613,
+      629.6971,
+      -1677.03259
+    ],
+    "StartDirection": [
+      0.9976492,
+      -2.86102022e-06,
+      0.0685271546
+    ],
+    "StartElevation": 0.0,
+    "EndPosition": [
+      -3740.21167,
+      629.6971,
+      -1486.88208
+    ],
+    "EndDirection": [
+      -0.9999828,
+      -2.08074857e-06,
+      -0.00586354965
+    ],
+    "EndElevation": 0.0,
+    "Elevation": 0.0,
+    "NetPrefabEntity": {
+      "Index": 16060,
+      "Version": 1
+    },
+    "NetLanePrefabEntity": {
+      "Index": 0,
+      "Version": 0
+    },
+    "NetWidth": 0.0,
+    "ElevationLimit": 0.0,
+    "CurveStartPointPosition": [
+      -3616.139,
+      629.6971,
+      -1675.53613
+    ],
+    "CurveStartControlPointPosition": [
+      -3541.27686,
+      629.696838,
+      -1670.39392
+    ],
+    "CurveEndControlPointPosition": [
+      -3815.25757,
+      629.6969,
+      -1485.822
+    ],
+    "CurveEndPointPosition": [
+      -3740.22046,
+      629.6971,
+      -1485.38208
+    ],
+    "ComplexStartPointPosition": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "ComplexStartControlPointPosition": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "ComplexEndControlPointPosition": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "ComplexEndPointPosition": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "ComplexMidPosition": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "ComplexMidStartControlPointPosition": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "ComplexMidEndControlPointPosition": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "LoopRadiusFactor": 0.5,
+    "LoopArcSide": 0
+  },
+  "endpoints": [
+    {
+      "node": {
+        "index": 58022,
+        "version": 1
+      },
+      "nodeErrorMeters": 0.7499417706062965,
+      "curveEndpointToNodeMeters": 0.750049829411363,
+      "curveEndpointToAuthoredMeters": 0.0
+    },
+    {
+      "node": {
+        "index": 58011,
+        "version": 1
+      },
+      "nodeErrorMeters": 0.7500124991625126,
+      "curveEndpointToNodeMeters": 0.7500132609494321,
+      "curveEndpointToAuthoredMeters": 0.0
+    }
+  ],
+  "limits": "Preview observations only; no selected lane correspondence, Apply, rendered-surface, reload or vehicle claim.",
+  "applyBlocked": true,
+  "permanentUnchanged": true,
+  "fixedNodeInvariantPassed": false,
+  "status": "blocked_fixed_node_invariant",
+  "sourceExplanation": "NodeAlignSystem.AlignNode averages compatible incident curve endpoints, then tangent-line centers; CoursePos identity is not a node-position constraint."
+}

@@ -2,8 +2,7 @@
 
 Status: **reviewed planning baseline**, October 3, 2026. Baseline: main `f36d669`
 (PRs #13 through #16 merged). This is the authoritative index of current priorities;
-the first six items have individual planning drafts linked below. Implementation has not
-started, and the remaining order is not blanket execution authorization.
+the first six items have individual plans linked below. The October 3 sprint delivered a draft stack with explicitly partial NT-002/NT-022 scope; see [current execution status and review](six-plan-sprint-review.md). The remaining order is not blanket execution authorization.
 
 NetworkTools serves players editing and connecting networks. The Bridge is an
 independently released developer/automation product, not a required NT assembly.
@@ -19,9 +18,7 @@ links after they are published.
   not a future feature to implement from scratch.
 - Combined mode allows interior-junction Y changes while keeping their XZ fixed;
   selected outer/split nodes remain XYZ anchors. Independent Curve retains its
-  elevation-preserving contract. A separate user control for interior-junction
-  elevation permission/displacement limit (NT-021) and horizontal junction movement
-  (NT-005) are still future work.
+  elevation-preserving contract. The NT-021 draft now adds user permission and a per-operation elevation displacement limit; horizontal junction movement (NT-005) remains future work.
 - Native preview/Apply, repeatability and save/reload have bounded evidence.
   Dan considers current visuals good enough; exceptionally tight junctions with
   substantial elevation changes can still look janky. Do not chase perfect grade.

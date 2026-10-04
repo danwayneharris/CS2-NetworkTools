@@ -34,6 +34,10 @@ def suite_specs(root, output):
          'NetworkTools.LaneDirection.Tests/NetworkTools.LaneDirection.Tests.csproj', r'Lane direction policy: [1-9][0-9]* assertions passed'),
         ('lane-connection', [dotnet, 'run', '--project', 'NetworkTools.LaneConnection.Tests'],
          'NetworkTools.LaneConnection.Tests/NetworkTools.LaneConnection.Tests.csproj', r'LaneConnectionProof: [1-9][0-9]* assertions passed'),
+        ('lane-alignment', [dotnet, 'run', '--project', 'NetworkTools.LaneAlignment.Tests'],
+         'NetworkTools.LaneAlignment.Tests/NetworkTools.LaneAlignment.Tests.csproj', r'ConnectLaneAlignment: [1-9][0-9]* assertions passed'),
+        ('lane-plane', [dotnet, 'run', '--project', 'NetworkTools.LanePlane.Tests'],
+         'NetworkTools.LanePlane.Tests/NetworkTools.LanePlane.Tests.csproj', r'LanePlaneIntersection: [1-9][0-9]* assertions passed'),
         ('connect-candidate', [dotnet, 'run', '--project', 'NetworkTools.Connect.Tests'],
          'NetworkTools.Connect.Tests/NetworkTools.Connect.Tests.csproj', r'Connect candidate production-source tests passed: [1-9][0-9]* assertions'),
         ('codegen', ps + ['scripts/test-codegen.ps1'],
@@ -50,7 +54,7 @@ def suite_specs(root, output):
 def prerequisite_issues(name, root, run=subprocess.run, which=shutil.which):
     """Inspect tools/installed inputs separately from compiling or executing tests."""
     issues = []
-    if name in ('geometry', 'path-selection', 'parameters', 'connect-candidate', 'connect-profile', 'connect-coverage', 'lane-direction', 'lane-connection', 'codegen', 'slope-production'):
+    if name in ('geometry', 'path-selection', 'parameters', 'connect-candidate', 'connect-profile', 'connect-coverage', 'lane-direction', 'lane-connection', 'lane-alignment', 'lane-plane', 'codegen', 'slope-production'):
         dotnet = which('dotnet')
         if not dotnet:
             issues.append('Missing dotnet executable / .NET 8 SDK')

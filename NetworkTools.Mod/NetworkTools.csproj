@@ -63,4 +63,6 @@
 		<Exec Command="dotnet run --project &quot;$(SolutionDir)NetworkTools.Codegen&quot; -- &quot;$(ProjectDir)Systems&quot; &quot;$(ProjectDir)UI/src/generated/parameters.generated.ts&quot; --configuration $(Configuration)" />
 	</Target>
 
+	<Import Project="BuildIdentity.targets" />
+
 </Project>

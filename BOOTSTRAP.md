@@ -1,5 +1,7 @@
 # Windows bootstrap and local builds
 
+> October 3 successor: see [development build identity](NetworkTools.docs/development-build-identity.md) and [six-plan sprint status](NetworkTools.docs/six-plan-sprint-review.md). Historical verification statements below apply only to their recorded revisions; later bounded native/Release evidence is linked in the audit disposition. Broad Release qualification and vehicle traversal remain separate.
+
 Run from PowerShell as the Windows user who installed the CS2 modding toolchain.
 The script supports Windows PowerShell 5.1 and PowerShell 7.
 
@@ -12,6 +14,9 @@ The script supports Windows PowerShell 5.1 and PowerShell 7.
 
 # Restore packages, compile, postprocess, and deploy locally (close CS2 first).
 .\scripts\bootstrap.ps1 -Install -Build
+
+# Full Debug package, including postprocessing/UI, without installing into CS2.
+.\scripts\bootstrap.ps1 -Build -PackageOnly
 
 # Run the actual offline suites; no deployment or game access.
 .\scripts\bootstrap.ps1 -OfflineTest
@@ -216,7 +221,7 @@ starts after this baseline is confirmed.
 Our junction diagnostic workflow depends on the locally extended Cities II Agent
 Bridge, maintained in sibling `../cities2-agent-bridge-ndc`. Network Tools itself
 has no bridge assembly/runtime dependency: normal players do not need it.
-Upstream releases alone lack our snapshot/preview queries. Clone https://github.com/danwayneharris/cities2-agent-bridge-ndc with `git clone --branch dan/junction-snapshot https://github.com/danwayneharris/cities2-agent-bridge-ndc.git ../cities2-agent-bridge-ndc` from this repository root. The diagnostic branch is pending review into our fork; upstream releases do not contain it.
+Use the merged fork main: `git clone https://github.com/danwayneharris/cities2-agent-bridge-ndc.git ../cities2-agent-bridge-ndc`. Follow that checkout's current INSTALL.md and docs/MOD-PROVIDERS.md; the historical junction-snapshot branch is not a setup requirement. Discover live generic provider capabilities rather than inferring them from installed files.
 
 From the NetworkTools root, build the available local checkout without deploying:
 

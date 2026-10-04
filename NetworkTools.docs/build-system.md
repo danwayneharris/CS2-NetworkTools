@@ -1,5 +1,7 @@
 # NetworkTools build system
 
+> October 3 successor: see [development build identity](development-build-identity.md) and [six-plan sprint status](six-plan-sprint-review.md). Historical verification statements below apply only to their recorded revisions; later bounded native/Release evidence is linked in the audit disposition. Broad Release qualification and vehicle traversal remain separate.
+
 This guide explains how source becomes a locally installed CS2 mod. For commands,
 prerequisite installation, and machine-specific paths, use [the bootstrap guide](../BOOTSTRAP.md).
 For behavior inside the running game, see [system architecture](system-architecture.md).

@@ -37,8 +37,52 @@ def suite_specs(root, output):
     ]
 
 
-def run_suite(name, command, required_file, marker, root, output, timeout, run=subprocess.run):
+def prerequisite_issues(name, root, run=subprocess.run, which=shutil.which):
+    """Inspect tools/installed inputs separately from compiling or executing tests."""
+    issues = []
+    if name in ('geometry', 'path-selection', 'parameters', 'codegen', 'slope-production'):
+        dotnet = which('dotnet')
+        if not dotnet:
+            issues.append('Missing dotnet executable / .NET 8 SDK')
+        else:
+            try:
+                result = run([dotnet, '--list-sdks'], capture_output=True, text=True, timeout=20)
+                if result.returncode or not re.search(r'^8\.', result.stdout, re.M):
+                    issues.append('Required .NET 8 SDK unavailable')
+            except (OSError, subprocess.TimeoutExpired) as exc:
+                issues.append('Cannot inspect .NET SDK: ' + str(exc))
+    if name in ('codegen', 'slope-production', 'original-input'):
+        ps = which('pwsh') or which('powershell')
+        if not ps:
+            issues.append('Missing PowerShell executable')
+        elif name == 'slope-production':
+            query = "@{managed=[Environment]::GetEnvironmentVariable('CSII_MANAGEDPATH','User');tool=[Environment]::GetEnvironmentVariable('CSII_TOOLPATH','User')} | ConvertTo-Json -Compress"
+            try:
+                result = run([ps, '-NoProfile', '-Command', query], capture_output=True, text=True, timeout=20)
+                if result.returncode:
+                    raise ValueError(result.stderr)
+                paths = json.loads(result.stdout)
+                for key, files in {'tool': ('Mod.props', 'Mod.targets'), 'managed': (
+                        'Game.dll', 'Unity.Mathematics.dll', 'Colossal.Mathematics.dll',
+                        'Unity.Entities.dll', 'Unity.Collections.dll', 'UnityEngine.CoreModule.dll', 'Unity.Burst.dll')}.items():
+                    base = paths.get(key)
+                    for filename in files:
+                        if not base or not (Path(base) / filename).is_file():
+                            issues.append('Missing Slope installed input: ' + key + '/' + filename)
+            except (OSError, subprocess.TimeoutExpired, ValueError) as exc:
+                issues.append('Cannot inspect User-scoped CS2 toolchain paths: ' + str(exc))
+        if name == 'slope-production':
+            for filename in ('LucaModsCommon.props', 'LucaModsCommon.targets'):
+                if not (root / 'NetworkTools.Mod/Common' / filename).is_file():
+                    issues.append('Missing pinned Common submodule input: ' + filename)
+    return issues
+
+
+def run_suite(name, command, required_file, marker, root, output, timeout, run=subprocess.run, prerequisites=None):
     row = {'suite': name, 'command': command, 'configuration': 'Debug', 'status': 'blocked'}
+    if prerequisites:
+        row.update(reason='Missing prerequisites', prerequisites=prerequisites)
+        return row
     if not (root / required_file).is_file():
         row['reason'] = 'Expected suite entry point missing: ' + required_file
         return row
@@ -50,8 +94,11 @@ def run_suite(name, command, required_file, marker, root, output, timeout, run=s
         row['status'] = 'passed' if child.returncode == 0 else 'failed'
         if child.returncode == 0 and not re.search(marker, text):
             row.update(status='failed', reason='Expected execution/coverage marker absent; zero exit is insufficient')
-    except (OSError, subprocess.TimeoutExpired) as exc:
-        row['reason'] = str(exc)
+    except subprocess.TimeoutExpired as exc:
+        row.update(status='failed', reason='Suite timed out: ' + str(exc))
+        text = str(exc)
+    except OSError as exc:
+        row['reason'] = 'Cannot launch suite: ' + str(exc)
         text = str(exc)
     row['elapsedSeconds'] = round(time.monotonic() - started, 3)
     log = output / (name + '.log')
@@ -101,9 +148,19 @@ def main():
         'notRun': ['optional trace/captured-replay command modes', 'Release/Burst execution', 'native preview/Apply', 'vehicle traversal', 'human visual review'],
         'results': [],
     }
+    (output / 'python.json').unlink(missing_ok=True)
     specs = suite_specs(root, output)
     for name, command, required_file, marker in specs:
-        row = run_suite(name, command, required_file, marker, root, output, args.timeout)
+        row = run_suite(name, command, required_file, marker, root, output, args.timeout,
+                        prerequisites=prerequisite_issues(name, root))
+        if name == 'python' and (output / 'python.json').is_file():
+            try:
+                details = json.loads((output / 'python.json').read_text(encoding='utf-8'))
+                row['notRunResearch'] = details.get('notRunResearch', [])
+                if details.get('status') == 'blocked' and row.get('exitCode') == 1:
+                    row.update(status='blocked', reason='Python child prerequisites unavailable')
+            except (OSError, ValueError) as exc:
+                row.update(status='failed', reason='Invalid Python summary: ' + str(exc))
         summary['results'].append(row)
         summary['status'] = aggregate_status(summary['results'])
         (output / 'summary.json').write_text(json.dumps(summary, indent=2) + '\n', encoding='utf-8')

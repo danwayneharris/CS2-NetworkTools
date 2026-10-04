@@ -156,3 +156,5 @@ audit after every small feature. Revisit earlier only if a concrete blocker appe
   evidence in Git; retain raw captures and proprietary inputs outside source control.
 - Bridge work supports NT when it removes a concrete blocker; it remains a separate
   product, release and backlog. No NT-specific commands/schemas belong in Bridge.
+
+Known non-blocking defects and repro steps: [bug backlog](BUG-BACKLOG.md).

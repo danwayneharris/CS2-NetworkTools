@@ -146,12 +146,16 @@ namespace NetworkTools.Systems.Tools.RoadShape {
                             valid = CombinedLinearProfileTransform.Execute(ref edges, ref nodes, in EdgeStates,
                                 in Context, in Config, out var verticalFailure, out var verticalIndex);
                             combinedFailure = (int)verticalFailure;
-                            UnityEngine.Debug.Log($"[NetworkTools.CombinedProfile] submission={SmoothTraceId} valid={valid} failure={verticalFailure} index={verticalIndex}");
+                            UnityEngine.Debug.Log($"[NetworkTools.CombinedProfile] submission={SmoothTraceId} valid={valid} failure={verticalFailure} index={verticalIndex} constrainJunctionElevation={Config.ConstrainJunctionElevation} junctionElevationLimit={Config.JunctionElevationLimit}");
                             if (valid) {
                                 TraceSmooth(SmoothTraceId, OutputMode, Config.SmoothingFactor, true,
                                     NodeStates, EdgeStates, nodes, edges, failure, failureIndex,
                                     ConnectedEdgeLookup, EdgeLookup, SmoothSelectedNodes, "vertical");
                                 ApplySurfaceCorrection(ref edges, ref nodes);
+                                if (!CombinedLinearProfileTransform.WithinElevationLimits(in nodes, in Config)) {
+                                    valid = false;
+                                    combinedFailure = (int)CombinedLinearProfileTransform.Failure.ElevationLimitExceeded;
+                                }
                             }
                         }
 #endif

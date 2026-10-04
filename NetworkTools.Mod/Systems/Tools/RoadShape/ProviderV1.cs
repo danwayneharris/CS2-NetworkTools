@@ -22,6 +22,9 @@ namespace CitiesBridge {
                     props["enabled"] = new JObject { ["type"] = "boolean" }; required.Add("enabled");
                     props["smoothStart"] = new JObject { ["type"] = "boolean" };
                     props["smoothEnd"] = new JObject { ["type"] = "boolean" };
+                    props["allowJunctionElevation"] = new JObject { ["type"] = "boolean" };
+                    props["unlimitedJunctionElevation"] = new JObject { ["type"] = "boolean" };
+                    props["junctionElevationLimit"] = new JObject { ["type"] = "number", ["minimum"] = 0, ["maximum"] = 20 };
                 }
                 if (action == "apply") { props["submission"] = Integer(); required.Add("submission"); }
                 commands.Add(new JObject { ["name"] = action, ["readOnly"] = action == "state",
@@ -38,12 +41,7 @@ namespace CitiesBridge {
                         Add("session", new JObject { ["type"] = "string" }); Add("revision", Integer());
                     }
                     if (action == "select") { Add("start", Node()); Add("end", Node()); }
-                    if (action == "combined") {
-                    props["enabled"] = new JObject { ["type"] = "boolean" }; required.Add("enabled");
-                    props["smoothStart"] = new JObject { ["type"] = "boolean" };
-                    props["smoothEnd"] = new JObject { ["type"] = "boolean" };
-                }
-                if (action == "apply") Add("submission", Integer());
+                    if (action == "apply") Add("submission", Integer());
                     if (action == "configure" && tool == "slope") {
                         Add("mode", new JObject { ["type"] = "string", ["enum"] = new JArray("linear", "ease", "arch") });
                         Add("easeIn", Number(0,.5)); Add("easeOut", Number(0,.5));

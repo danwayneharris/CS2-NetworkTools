@@ -78,6 +78,31 @@ def permanent_signature(snapshots, nodes, edges):
         junctions], sort_keys=True)
 
 
+def junction_elevation_policy(case):
+    policy = {k: case.get(k, default) for k, default in (
+        ('allowJunctionElevation', True), ('unlimitedJunctionElevation', True),
+        ('junctionElevationLimit', 5.0))}
+    if any(not isinstance(policy[k], bool) for k in ('allowJunctionElevation','unlimitedJunctionElevation')):
+        raise ValueError('Junction permissions must be boolean')
+    limit=policy['junctionElevationLimit']
+    if isinstance(limit,bool) or not isinstance(limit,(int,float)) or not math.isfinite(limit) or not 0<=limit<=20:
+        raise ValueError('Junction elevation limit must be finite in [0,20]')
+    return policy
+
+
+def check_junction_elevation_bounds(old_nodes,new_nodes,selected_nodes,policy):
+    limit=0 if not policy['allowJunctionElevation'] else (
+        None if policy['unlimitedJunctionElevation'] else policy['junctionElevationLimit'])
+    movements=[]
+    for key,node in old_nodes.items():
+        if key not in selected_nodes or len(node['edges'])<=2: continue
+        movement=abs(new_nodes[key]['position']['y']-node['position']['y'])
+        if not math.isfinite(movement) or (limit is not None and movement>limit+GEOMETRY_TOLERANCE_METERS):
+            raise AssertionError('Interior junction exceeds per-operation elevation allowance')
+        movements.append({'node':key,'absoluteHeightChange':movement,'allowance':limit})
+    return movements
+
+
 def check_node_constraints(old_nodes, new_nodes, selected_nodes, anchors, combined):
     """Selected interiors, including junctions, may change height in combined mode."""
     if old_nodes.keys() != new_nodes.keys(): raise AssertionError('Node identities changed')
@@ -220,6 +245,7 @@ class Runner:
         if not isinstance(combined, bool): raise ValueError('combined must be boolean')
         for key in ('smoothStart','smoothEnd'):
             if key in case and not isinstance(case[key], bool): raise ValueError(key+' must be boolean')
+        elevation_policy = junction_elevation_policy(case)
         city = self.call('get_city_state')
         if city['selectedSpeed'] != 0 or city['population'] != 0 or not city['controlEnabled']:
             raise ValueError('Requires paused, control-enabled empty toy city')
@@ -262,7 +288,7 @@ class Runner:
         self.call('nt_activate')
         self.poll('nt_get_state', lambda s: s['active'] and s.get('smoothMode', False))
         self.control('nt_clear')
-        if combined: self.control('nt_combined', enabled=True, smoothStart=case.get('smoothStart', False), smoothEnd=case.get('smoothEnd', False))
+        if combined: self.control('nt_combined', enabled=True, smoothStart=case.get('smoothStart', False), smoothEnd=case.get('smoothEnd', False), **elevation_policy)
         self.control('nt_strength', value=case.get('strengths', [0.5,0.8])[0])
         self.control('nt_select', start=start, end=end)
         for node in split_nodes:
@@ -313,7 +339,8 @@ class Runner:
             if max(math.dist(position(a),position(b)) for a,b in
                    zip(preview_curves[key],new_edges[key]['curve']))>GEOMETRY_TOLERANCE_METERS:
                 raise AssertionError('Selected/incident preview/permanent geometry mismatch')
-        report = {'case':case['name'], 'combined':combined, 'checkpoint':saved['saveName'], 'changedEdges':changes,
+        elevation_movements = check_junction_elevation_bounds(old_nodes, new_nodes, selected_nodes, elevation_policy) if combined else []
+        report = {'junctionElevationPolicy':elevation_policy, 'junctionElevationMovements':elevation_movements, 'case':case['name'], 'combined':combined, 'checkpoint':saved['saveName'], 'changedEdges':changes,
                   'junctions':[], 'fixedNodeDrifts':fixed_node_drifts,
                   'geometryToleranceMeters':GEOMETRY_TOLERANCE_METERS,'unselectedCurveMaxError':outside_error,
                   'limits':'Local snapshot checks; not vehicle traversal or visual approval.'}

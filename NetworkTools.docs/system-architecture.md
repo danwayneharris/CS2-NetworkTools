@@ -546,5 +546,9 @@ Debug Simple/Complex Connect can author an endpoint/join-grade profile through
 `ConnectVerticalProfile`, using explicit incident approaches. `ConnectProfileCoverage`
 checks native split cubics against the frozen authored candidate before the shared
 manual/provider Apply gate. Replacements establish an empty native-preview boundary.
-This does not guarantee rendered terrain or lane correspondence; different-height
-course sampling still rejects a captured case. See [usage, evidence and limitations](connect-elevation-profile.md).
+This does not guarantee rendered terrain or lane correspondence. A scoped Debug
+adapter now restores authored heights on qualified native course subdivisions,
+then recomputes ordinary-course structural elevation before node generation.
+It preserves existing roads and keeps independent native-result validation.
+See [course-height mechanics and replay](connect-course-height-replay.md) and
+[usage, evidence and limitations](connect-elevation-profile.md).

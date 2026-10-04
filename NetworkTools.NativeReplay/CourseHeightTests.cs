@@ -47,7 +47,7 @@ internal static class CourseHeightTests {
             Check($"native elevation parity {height}/{minimum}/{transition}",e.m_StartPosition.m_Elevation.x==expected);
         }
         File.WriteAllText(path,JsonSerializer.Serialize(new {schemaVersion=1,gameSha256=hash,status=failed?"failed":"passed",
-            boundary="Hash-pinned native SampleCourseHeight/SampleHeight with supplied sample buffers; no terrain constructor, ECS splitting, classification, preview or Apply",results},new JsonSerializerOptions{WriteIndented=true}));
+            boundary="Hash-pinned native height sampling and ordinary unowned elevation classification with supplied buffers/terrain; no height constructor, ECS splitting, preview or Apply",results},new JsonSerializerOptions{WriteIndented=true}));
         Console.WriteLine($"Course-height native method replay: {results.Count} checks, {(failed?"FAILED":"passed")}");
         return failed?1:0;
     }

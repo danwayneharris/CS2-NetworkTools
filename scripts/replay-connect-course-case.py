@@ -69,10 +69,11 @@ def main():
     added=[x for x in ae if live['identity'](x) not in before]
     trace=r.call('trace_network',{'fromIndex':start['index'],'fromVersion':start['version'],'toIndex':end['index'],'toVersion':end['version']})
     report.update(checks['connect_preservation'](ns,es,an,ae))
-    report.update(applied=True,newEdges=len(added),previewApplyMaxError=checks['connect_preview_error'](s,added),trace=trace)
+    source=[e for e in es if live['identity'](start) in (live['identity'](e['startNode']),live['identity'](e['endNode']))]
+    report.update(applied=True,newEdges=len(added),previewApplyMaxError=checks['connect_preview_error'](s,added),trace=trace,
+                  connected=trace['connected'],prefabInherited=len(source)==1 and all(e['prefab']==source[0]['prefab'] for e in added))
     (r.output/'apply-report.json').write_text(json.dumps(report,indent=2))
-    if not added or not report['unchangedExistingEdges'] or not report['unchangedExistingNodes'] or report['previewApplyMaxError']>.05:
-        raise AssertionError('Permanent preservation/correspondence failure; inspect results, do not repeat Apply')
+    checks['assert_connect_report'](report)
     print(json.dumps({k:v for k,v in report.items() if k not in ('state','trace')}))
 
 if __name__=='__main__':main()

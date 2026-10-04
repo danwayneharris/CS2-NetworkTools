@@ -47,4 +47,10 @@ Review saves (preserved, never baseline-overwritten):
 
 Baseline: `bridge test - terrain and elevation v1.1`. Reproduce with `scripts/exercise-tool-provider.py --stage connect --connect-profile --connect-straight-controls` plus explicit baseline fingerprint, save root, output and `--run`. This command checkpoints then mutates through Apply. Add `--preview-only` for preview plus a rejected-Apply negative test when rejected; `--connect-mode ComplexCurve` chooses the two-section case; `--connect-start-endpoint start --preview-only` reproduces the different-height rejection. All scripts preserve baseline saves. They do not certify rendered terrain, selected lane correspondence, vehicle use or reload equivalence.
 
-Active follow-up: [captured course-height and endpoint-grade investigation](session-notes/2026-10-03-2030-connect-course-height-investigation.md). Shared endpoint heights already agree in Dan's repro; native vertical resampling changes the approach grades materially. A correction remains in progress.
+Successor: [course-height correction and replay](connect-course-height-replay.md).
+The October 3 `connect repro` case now passes native preview and Apply with exact
+curve agreement on deployed `02b899b89f9c`. The historical different-height result
+above remains evidence for its earlier revision, not a rerun of that fixture.
+The new adapter restores authored heights on qualified native subdivisions and
+recomputes ordinary-course elevation classification; see its narrower supported
+envelope, replay methods, limitations and Dan's review checklist.

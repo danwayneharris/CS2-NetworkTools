@@ -127,6 +127,7 @@ namespace NativeReplay;
                      'Source-adapt CalculateRoundaboutSize buffer helper; other game value helpers remain binary calls',
                      'Source-adapt six TerrainUtils sampling/coordinate helpers; native ushort arrays become checked managed arrays',
                      'Pinned game TerrainSystem.kDownScaledHeightmapScale is 4; revalidate on game patch'],
+        valueMethods=['CourseHeightData.SampleCourseHeight', 'CourseHeightData.SampleHeight', 'SplitJob.CalculateElevation (both overloads)', 'SplitJob.LimitElevation'],
         storageSemantics='See ReplayStorage.cs; no ECS scheduler or native allocation reproduced',
         generatedSha256=hashlib.sha256(output.read_bytes()).hexdigest().upper())
     (destination / 'adaptations.json').write_text(json.dumps(ledger, indent=2), encoding='utf-8')

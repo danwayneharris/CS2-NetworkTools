@@ -5,9 +5,9 @@
     {
       "id": "course-height-resampling",
       "status": "offline-executable-bounded-methods",
-      "implementation": "Hash-pinned CourseSplitSystem.SampleCourseHeight and SampleHeight bodies with managed sample storage",
-      "validation": "6 synthetic method checks; ConnectCoverage separately replays captured horizontal subdivision and restores authored heights with strict validation and negative tests",
-      "unsupported": ["CourseHeightData terrain constructor", "Intersection discovery", "Complete CourseSplit execution", "Structural classification", "Native preview and Apply certification"],
+      "implementation": "Hash-pinned CourseSplitSystem.SampleCourseHeight, SampleHeight, CalculateElevation and LimitElevation with managed sample/terrain storage",
+      "validation": "34 synthetic method checks including ordinary unowned classification parity; ConnectCoverage separately replays captured horizontal subdivision with strict validation and negative tests",
+      "unsupported": ["CourseHeightData terrain constructor", "Intersection discovery", "Complete CourseSplit execution", "Owned/shoreline/forced structural classification qualification", "Native preview and Apply certification"],
       "liveChecksRetired": []
     },
     {

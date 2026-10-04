@@ -29,7 +29,7 @@ instructions without executing the native DLL.
 | CLI mode (arguments follow the mode) | Boundary |
 |---|---|
 | `<new-report>` | Original binary/runtime feasibility probe |
-| `--course-height-tests <new-report>` | Pinned CourseSplit height sampling methods with explicit synthetic buffers; excludes height-buffer construction, ECS splitting and classification |
+| `--course-height-tests <new-report>` | Pinned CourseSplit height sampling and ordinary-course classification with explicit sample/terrain buffers; excludes height-buffer construction and ECS splitting |
 | `--stages <fixture> <new-report>` | Original private value-only methods |
 | `--world-tests <new-report>` | Synthetic storage/stage assertions |
 | `--world <fixture> <new-report>` | Projected schema-2 initialization/flatten/finishing, no terrain |

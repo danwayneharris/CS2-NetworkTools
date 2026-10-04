@@ -111,6 +111,46 @@
 
         private static bool Later(Mapping a, Mapping b) => a.AuthoredIndex > b.AuthoredIndex
             || (a.AuthoredIndex == b.AuthoredIndex && a.StartParameter > b.StartParameter);
+
+        /// <summary>
+        /// Reconstruct an authored vertical profile on a complete native horizontal
+        /// subdivision. This is a construction operation, NOT an acceptance oracle.
+        /// Callers must establish definition ownership and that moving new interior
+        /// course points cannot move an existing junction, then regenerate elevation
+        /// classification before native node/edge generation. Validate still checks
+        /// the independently generated result with its original tolerances.
+        /// Failure leaves output untouched; inputs and output must be disjoint.
+        /// </summary>
+        public static bool RestoreHeights(Cubic* authored, int authoredCount, Cubic* native, int nativeCount,
+            Cubic* output, out Failure failure, out int failedNativeIndex) {
+            failure = Failure.InvalidInput; failedNativeIndex = -1;
+            if (authored == null || native == null || output == null || authoredCount < 1 || authoredCount > 2
+                || nativeCount < 1 || nativeCount > MaximumNativeCurves) return false;
+            var planarAuthored = stackalloc Cubic[2];
+            var planarNative = stackalloc Cubic[MaximumNativeCurves];
+            var maps = stackalloc Mapping[MaximumNativeCurves];
+            for (var i = 0; i < authoredCount; i++) {
+                if (!Finite(authored[i])) return false;
+                if (i > 0 && Math.Abs(authored[i-1].Vertical.D - authored[i].Vertical.A) > AuthoredJoinTolerance) return false;
+                planarAuthored[i] = authored[i]; planarAuthored[i].Vertical = default;
+            }
+            for (var i = 0; i < nativeCount; i++) {
+                if (!Finite(native[i])) { failedNativeIndex = i; return false; }
+                planarNative[i] = native[i]; planarNative[i].Vertical = default;
+            }
+            if (!Validate(planarAuthored, authoredCount, planarNative, nativeCount, maps, out failure, out failedNativeIndex)) return false;
+            var staged = stackalloc Cubic[MaximumNativeCurves];
+            for (var i = 0; i < nativeCount; i++) {
+                var map = maps[i];
+                var h = Slice(authored[map.AuthoredIndex].Vertical, map.StartParameter, map.EndParameter);
+                staged[i] = native[i]; // Preserve native XZ bit-for-bit.
+                staged[i].Vertical = map.Reversed ? new Heights { A=h.D, B=h.C, C=h.B, D=h.A } : h;
+            }
+            // Also catches overflow in the reconstructed controls before any write.
+            if (!Validate(authored, authoredCount, staged, nativeCount, maps, out failure, out failedNativeIndex)) return false;
+            for (var i = 0; i < nativeCount; i++) output[i] = staged[i];
+            return true;
+        }
         private static bool Monotone(PlanarCubic c) {
             var chord = Distance(c.A, c.D);
             if (!Finite(chord) || chord < .01) return false;

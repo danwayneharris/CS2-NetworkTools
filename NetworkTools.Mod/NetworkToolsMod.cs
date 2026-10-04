@@ -70,6 +70,8 @@ namespace NetworkTools {
             updateSystem.UpdateAt<NT_RoadShapeToolSystem>(SystemUpdatePhase.ToolUpdate);
 #if IS_DEBUG
             updateSystem.UpdateAfter<NT_PreviewProbeSystem, Game.Common.ModificationEndBarrier>(SystemUpdatePhase.ModificationEnd);
+            updateSystem.UpdateBefore<NT_ConnectProfileCaptureSystem, Game.Tools.CourseSplitSystem>(SystemUpdatePhase.PostTool);
+            updateSystem.UpdateBefore<NT_ConnectProfileRestoreSystem, Game.Tools.GenerateNodesSystem>(SystemUpdatePhase.Modification1);
 #endif
             updateSystem.UpdateAt<NT_AddNodeToolSystem>(SystemUpdatePhase.ToolUpdate);
             updateSystem.UpdateAt<NT_RemoveNodeToolSystem>(SystemUpdatePhase.ToolUpdate);

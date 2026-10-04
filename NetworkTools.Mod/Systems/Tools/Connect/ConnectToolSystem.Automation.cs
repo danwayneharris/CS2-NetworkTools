@@ -170,6 +170,7 @@ namespace NetworkTools.Systems.Tools.Connect {
                 ["revision"] = m_ControlRevision, ["submission"] = m_ControlSubmission,
                 ["active"] = Enabled && m_ToolSystem.activeTool == this, ["phase"] = Phase.ToString(),
                 ["rejectionReason"] = m_ControlRejection, ["previewReady"] = ready, ["mode"] = Mode.Value.ToString(), ["anarchy"] = AnarchyEnabled,
+                ["profileRestoration"] = World.GetOrCreateSystemManaged<NT_ConnectProfileRestoreSystem>().Status,
                 ["start"] = JToken.FromObject(StartNode), ["end"] = JToken.FromObject(EndNode),
                 ["profileContext"] = JArray.Parse(ProfileContextJson()),
                 ["parameters"] = JToken.Parse(JsonConvert.SerializeObject(BuildJobConfig(), NetworkTools.Automation.VectorJsonConverter.Settings)),

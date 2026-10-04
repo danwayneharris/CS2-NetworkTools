@@ -30,9 +30,10 @@ def main():
                 'EdgeIterator.cs': 'D99AC105FF6127A13B015CE1369AB4B8DCCDF5A3F2C482A2D4A6CBB28E106B31'}
     expected['NetCompositionHelpers.cs'] = '0D9ECED94C6ADBB0E6DF14F0A1715A5B78AC97F43EDCF393AAA2E7BC9951EDD3'
     expected['TerrainUtils.cs'] = '423656241A8817F56077DABFB5E624389B47E94E468D1EB32699427AE4E5BE85'
+    expected['CourseSplitSystem.cs'] = 'D58207A8E9BCF8A6CB734F1B134A47A2BE0F7A2D102CA25D42CBE65EFCF7BEA9'
     sources = {}
     for name, checksum in expected.items():
-        folder = 'Game.Prefabs' if name == 'NetCompositionHelpers.cs' else 'Game.Simulation' if name == 'TerrainUtils.cs' else 'Game.Net'
+        folder = 'Game.Tools' if name == 'CourseSplitSystem.cs' else 'Game.Prefabs' if name == 'NetCompositionHelpers.cs' else 'Game.Simulation' if name == 'TerrainUtils.cs' else 'Game.Net'
         path = a.decompile / 'src/Game' / folder / name
         data = path.read_bytes()
         if hashlib.sha256(data).hexdigest().upper() != checksum:
@@ -66,6 +67,15 @@ def main():
         'public static float SampleHeightBackdrop(ref TerrainHeightData data, float3 worldPosition)',
         'private static float SampleHeightInternal(ref TerrainHeightData data, float3 worldPosition)']
     pieces.append('public static class ReplayTerrainCore {\n' + constant + '\n' + '\n'.join(block(terrain, m) for m in terrain_methods) + '\n}')
+    course = sources['CourseSplitSystem.cs']
+    pieces.append(block(course, 'private struct CourseHeightItem').replace('private struct', 'public struct', 1))
+    sample = block(course, 'public float SampleHeight(float courseDelta, out bool forceElevated)')
+    sample = sample.replace('Mathf.FloorToInt(num)', '(int)MathF.Floor(num)')
+    pieces.append('public sealed class ReplayCourseHeight {\n'
+                  'public CourseHeightItem[] m_Buffer = Array.Empty<CourseHeightItem>();\n'
+                  'public float2 m_SampleRange; public float m_SampleFactor;\n'
+                  + block(course, 'public void SampleCourseHeight(ref NetCourse course, NetGeometryData netGeometryData)')
+                  + '\n' + sample + '\n}')
     text = '\n'.join(pieces)
     # The raw stage decoder excludes native archetype handles. Fail regeneration
     # if this fixed stage closure starts reading them after a reviewed source change.
@@ -101,7 +111,7 @@ namespace NativeReplay;
     output = destination / 'WorldStages.g.cs'
     output.write_text(header + text, encoding='utf-8')
     ledger = dict(sourceHashes=expected, stages=['InitializeNodeGeometryJob', 'CalculateEdgeGeometryJob', 'FlattenNodeGeometryJob', 'FinishEdgeGeometryJob', 'CalculateNodeGeometryJob', 'CalculateIntersectionGeometryJob', 'CopyNodeGeometryJob', 'UpdateNodeGeometryJob'],
-        adaptations=['Rename storage/lookup types', 'Single explicit replay chunk entry point',
+        adaptations=['CourseHeight SampleCourseHeight/SampleHeight bodies: supplied managed sample buffer; Mathf floor replaced by MathF floor; constructor/terrain sampling/splitting not replayed', 'Rename storage/lookup types', 'Single explicit replay chunk entry point',
                      'Remove job scheduling/read-only attributes and interface forwarding',
                      'Exclude unused EdgeIterator.AddSorted', 'Replace temporary allocator argument with inert marker',
                      'Alias OutsideConnection/SubNet to original Game.Net namespace resolution',

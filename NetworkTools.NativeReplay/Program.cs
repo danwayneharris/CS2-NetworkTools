@@ -45,6 +45,7 @@ static class Program {
     }
 
     static int Run(string[] args) {
+        if (args.Length == 2 && args[0] == "--course-height-tests") return CourseHeightTests.Run(args[1]);
         if (args.Length == 3 && args[0] == "--pipeline") return RawPipelineCapture.Run(args[1], args[2]);
         if (args.Length == 3 && args[0] == "--pipeline-junction") return RawPipelineCapture.Run(args[1], args[2], true);
         if (args.Length == 3 && args[0] == "--pipeline-full") return RawPipelineCapture.Run(args[1], args[2], true, true);

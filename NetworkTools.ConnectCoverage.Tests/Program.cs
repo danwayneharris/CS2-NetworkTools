@@ -25,6 +25,7 @@ internal static unsafe class Program {
         fixed(C* ap=a,np=n)fixed(M* mp=mappings){var ok=ConnectProfileCoverage.Validate(ap,a.Length,np,n.Length,mp,out failure,out _,tolerance,tolerance);if(!ok)foreach(var m in mappings){Check(m.AuthoredIndex==-123,"failure atomic identity");Near(123,m.StartParameter,"failure atomic start");Near(456,m.EndParameter,"failure atomic end");}return ok;}
     }
     static void Main(){
+        CourseRestorationTests.Run();
         var c=Curve(0,100,20,30);Split(c,.37,out var first,out var last);
         Check(Validate(new[]{c},new[]{Reverse(last),first},out var m,out _),"split reversed shuffled coverage");Check(m[0].Reversed&&!m[1].Reversed,"orientation mapping");Near(.37,m[0].StartParameter,"split parameter");Near(1,m[0].EndParameter,"end parameter");Near(0,m[1].StartParameter,"start parameter");
         var c2=Curve(100,160,30,25);Split(c2,.6,out var secondA,out var secondB);
